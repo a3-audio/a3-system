@@ -1,0 +1,66 @@
+#:kivy 1.11.1
+
+#### Layout
+<Container>
+    orientation: 'horizontal'
+    spacing: 10
+
+# Linke Spalte
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text:
+                "linke Spalte"
+
+        Button:
+            text: "Button 1"
+            on_press: root.btn1()
+
+        Button:
+            text: "Button 2"
+            on_press: root.btn2()
+# mein Weidget
+    MotionDisplay:
+        pos_ind_ch1: posCH1
+
+        size_hint: None, None # ich muss erst hint auschalten samit size geht
+        size: root.height, root.height
+
+        PositionIndicator:
+            id: posCH1
+            center: self.parent.center
+
+
+# Rechte Spalte
+    BoxLayout:
+        orientation: "vertical"
+
+        Label:
+            text:
+                "rechte Spalte"
+
+        Button:
+            text: "Button 3"
+            on_press: root.btn3()
+
+        Button:
+            text: "Button 4"
+            on_press: root.btn4()
+
+
+#### Wedgets
+<MotionDisplay>
+    canvas:
+
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: "Pix/MoverMeterBG.png"
+
+
+<PositionIndicator>
+    size: 50, 50
+    canvas:
+        Ellipse:
+            pos: self.pos
+            size: self.size

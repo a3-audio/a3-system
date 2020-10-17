@@ -1,0 +1,9 @@
+/Controller_Mixer/software/include
+/Controller_Mixer/software/lib
+/Controller_Mixer/software/test
+/Controller_Mixer/software/supercode
+/Controller_Mixer/software/platformio.ini
+/Controller_Mixer/software/.pio
+**/env
+**/.DS_Store
+**/.vscode

@@ -4,7 +4,7 @@
 /Controller_Mixer/software/supercode
 /Controller_Mixer/software/platformio.ini
 /Controller_Mixer/software/.pio
-
+/Controller_Motion/software/TouchOSC
 **/env
 **/.DS_Store
 **/.vscode

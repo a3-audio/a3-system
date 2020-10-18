@@ -26,7 +26,7 @@ Hier kommt eine Projektbeschreibung rein
 
 ### git
 
-Der einfach halthalber haben wir uns erst mal für einen [Centralized Workflow](https://www.git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows) entschieden.
+Der einfachhalthalber haben wir uns erst mal für einen [Centralized Workflow](https://www.git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows) entschieden.
 
 1. Der Main Branch darf nicht direkt bearbeitet werden, die edits sollten immer in einem seperarten Branch gemacht werden und dann über ein pull requests zusammen gefügt werden. Die Ausnahmen bilden das [Balckboard](#Balckboard) in deiser README und die korektur von offensichtlichen Rechtschreibfehlern in der Doku.
 

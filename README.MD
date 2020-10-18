@@ -24,7 +24,6 @@ Hier kommt eine Projektbeschreibung rein
 
 5. Easter Eggs sind erwünscht!!!
 
-
 ### git
 
 Der einfach halthalber haben wir uns erst mal für einen [Centralized Workflow](https://www.git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows) entschieden.

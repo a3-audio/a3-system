@@ -17,8 +17,8 @@ Hier kommt eine Projektbeschreibung rein
     - documentieren
     - keypad dirver anpassen
     - encoder auf alle kanäle erwitern
-
-- Server 
+- Server
+    - OSC-router adressen nach ausen anpassen
 
 ## dependences
 

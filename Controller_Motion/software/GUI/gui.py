@@ -1,5 +1,7 @@
 """
 Der Erste versuch ein richtiges App für meinen Py zu schreiben
+
+
 """
 
 ###### Imports
@@ -12,10 +14,14 @@ from oscpy.server import ServerClass
 
 
 ###### Setup OSC
+osc_client_ip_addr = "192.168.43.121"
+osc_client_port = 9000
+osc_server_port = 8000
+
+#### OSC init 
 osc = OSCThreadServer()
-sock = osc.listen(address='0.0.0.0', port=8000, default=True)
-cli_ip = "192.168.43.121"
-cli_port = 9000
+sock = osc.listen(address='0.0.0.0', port=osc_server_port, default=True)
+
 
 
 
@@ -26,22 +32,22 @@ class Container(BoxLayout):
 
     def btn1(self):
         print("butten 1")
-        osc.send_message(b'/test/button1', [1], cli_ip, cli_port)
+        osc.send_message(b'/test/button1', [1], osc_client_ip_addr, osc_client_port)
 
 
     def btn2(self):
         print("butten 2")
-        osc.send_message(b'/test/button2', [2], cli_ip, cli_port)
+        osc.send_message(b'/test/button2', [2], osc_client_ip_addr, osc_client_port)
 
 
     def btn3(self):
         print("butten 3")
-        osc.send_message(b'/test/button1', [3], cli_ip, cli_port)
+        osc.send_message(b'/test/button1', [3], osc_client_ip_addr, osc_client_port)
 
 
     def btn4(self):
         print("butten 4")
-        osc.send_message(b'/test/button4', [4], cli_ip, cli_port)
+        osc.send_message(b'/test/button4', [4], osc_client_ip_addr, osc_client_port)
 
 
 ##### Das Bewegungs anzeiger Widget
@@ -80,7 +86,7 @@ class MotionDisplay(Widget):
             # den PositionIndicator auf die aktuelle Position setzte
             self.pos_ind_ch1.center = touch.pos
             # LocPos per osc senden
-            osc.send_message(b"/test/locPos", [x, y],cli_ip, cli_port)
+            osc.send_message(b"/test/locPos", [x, y],osc_client_ip_addr, osc_client_port)
 
 
     def on_touch_move(self, touch):
@@ -101,7 +107,7 @@ class MotionDisplay(Widget):
             # den PositionIndicator auf die aktuelle Position setzte
             self.pos_ind_ch1.center = touch.pos
             # LocPos per osc senden
-            osc.send_message(b"/test/locPos", [x, y],cli_ip, cli_port)
+            osc.send_message(b"/test/locPos", [x, y],osc_client_ip_addr, osc_client_port)
             
 
 

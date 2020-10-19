@@ -1,3 +1,14 @@
+#!/usr/bin/python3
+"""
+Das ist ein tool umd unseremn server nach ausen eine konsistent OSC Adressierung zu geben.
+@TODO wir mussen uns uns noch malüber die OSC-Adressen convention unter halten
+Vorschlag jendrik:
+template: /AmbiJocky/CH#/{contoler}/{funktion}/.../{args}
+exampel: /AmbiJocky/CH1/Mixer/EQ/MID/[0-1]
+
+Alle von ausen eingehenden und ausgehenden Volias sind Sollen Normaliesiert sein
+"""
+
 import argparse
 import math
 import numpy
@@ -8,7 +19,7 @@ from pythonosc.udp_client import SimpleUDPClient
 
 client = SimpleUDPClient('127.0.0.1', 9001)
 
-
+### Mixer-Contoler
 def poti_handler(address: str,
                  *osc_arguments: List[Any]) -> None:
     words = address.split("/")

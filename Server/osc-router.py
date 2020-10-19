@@ -1,10 +1,15 @@
-#!/usr/bin/python3
+
 """
 Das ist ein tool umd unseremn server nach ausen eine konsistent OSC Adressierung zu geben.
-@TODO wir mussen uns uns noch malüber die OSC-Adressen convention unter halten
+
+@TODO wir mussen uns uns noch mal über die OSC-Adressen convention unter halten
 Vorschlag jendrik:
 template: /AmbiJocky/CH#/{contoler}/{funktion}/.../{args}
 exampel: /AmbiJocky/CH1/Mixer/EQ/MID/[0-1]
+oder
+template: /AmbiJocky/{contoler}/CH#/{funktion}/.../{args}
+exampel: /AmbiJocky/Mixer/CH1/EQ/MID/[0-1]
+
 
 Alle von ausen eingehenden und ausgehenden Volias sind Sollen Normaliesiert sein
 """

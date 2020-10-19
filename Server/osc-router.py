@@ -19,7 +19,20 @@ from pythonosc.udp_client import SimpleUDPClient
 
 client = SimpleUDPClient('127.0.0.1', 9001)
 
-### Mixer-Contoler
+# Motion-Controller
+
+
+def motion_ctr_handler(address: str, *osc_arguments: List[Any]) -> None:
+    """
+    docstring
+    """
+    words = address.split("/")
+    print(words)
+    ch_nr = words[1]
+
+# Mixer-Contoller
+
+
 def poti_handler(address: str,
                  *osc_arguments: List[Any]) -> None:
     words = address.split("/")
@@ -33,13 +46,13 @@ def poti_handler(address: str,
         if poti == "1":
             client.send_message("/track/15/fxeq/hishelf/freq", value)
         if poti == "2":
-            ph_vol = numpy.interp(value,[0,1],[0,0.50])
+            ph_vol = numpy.interp(value, [0, 1], [0, 0.50])
             client.send_message("/track/15/fxeq/hishelf/gain", ph_vol)
         if poti == "3":
-            ph_vol = numpy.interp(value,[0,1],[0.01,0.50])
+            ph_vol = numpy.interp(value, [0, 1], [0.01, 0.50])
             client.send_message("/track/15/fxeq/band/0/gain", ph_vol)
         if poti == "4":
-            ph_vol = numpy.interp(value,[0,1],[0.01,0.50])
+            ph_vol = numpy.interp(value, [0, 1], [0.01, 0.50])
             client.send_message("/track/15/fxeq/loshelf/gain", ph_vol)
         if poti == "5":
             client.send_message("/track/14/volume", value)
@@ -47,13 +60,13 @@ def poti_handler(address: str,
         if poti == "1":
             client.send_message("/track/21/fxeq/hishelf/freq", value)
         if poti == "2":
-            ph_vol = numpy.interp(value,[0,1],[0,0.50])
+            ph_vol = numpy.interp(value, [0, 1], [0, 0.50])
             client.send_message("/track/21/fxeq/hishelf/gain", ph_vol)
         if poti == "3":
-            ph_vol = numpy.interp(value,[0,1],[0.01,0.50])
+            ph_vol = numpy.interp(value, [0, 1], [0.01, 0.50])
             client.send_message("/track/21/fxeq/band/0/gain", ph_vol)
         if poti == "4":
-            ph_vol = numpy.interp(value,[0,1],[0.01,0.50])
+            ph_vol = numpy.interp(value, [0, 1], [0.01, 0.50])
             client.send_message("/track/21/fxeq/loshelf/gain", ph_vol)
         if poti == "5":
             client.send_message("/track/20/volume", value)
@@ -61,13 +74,13 @@ def poti_handler(address: str,
         if poti == "1":
             client.send_message("/track/27/fxeq/hishelf/freq", value)
         if poti == "2":
-            ph_vol = numpy.interp(value,[0,1],[0,0.50])
+            ph_vol = numpy.interp(value, [0, 1], [0, 0.50])
             client.send_message("/track/27/fxeq/hishelf/gain", ph_vol)
         if poti == "3":
-            ph_vol = numpy.interp(value,[0,1],[0.01,0.50])
+            ph_vol = numpy.interp(value, [0, 1], [0.01, 0.50])
             client.send_message("/track/27/fxeq/band/0/gain", ph_vol)
         if poti == "4":
-            ph_vol = numpy.interp(value,[0,1],[0.01,0.50])
+            ph_vol = numpy.interp(value, [0, 1], [0.01, 0.50])
             client.send_message("/track/27/fxeq/loshelf/gain", ph_vol)
         if poti == "5":
             client.send_message("/track/26/volume", value)
@@ -75,28 +88,29 @@ def poti_handler(address: str,
         if poti == "1":
             client.send_message("/track/33/fxeq/hishelf/freq", value)
         if poti == "2":
-            ph_vol = numpy.interp(value,[0,1],[0,0.50])
+            ph_vol = numpy.interp(value, [0, 1], [0, 0.50])
             client.send_message("/track/33/fxeq/hishelf/gain", ph_vol)
         if poti == "3":
-            ph_vol = numpy.interp(value,[0,1],[0.01,0.50])
+            ph_vol = numpy.interp(value, [0, 1], [0.01, 0.50])
             client.send_message("/track/33/fxeq/band/0/gain", ph_vol)
         if poti == "4":
-            ph_vol = numpy.interp(value,[0,1],[0.01,0.50])
+            ph_vol = numpy.interp(value, [0, 1], [0.01, 0.50])
             client.send_message("/track/33/fxeq/loshelf/gain", ph_vol)
         if poti == "5":
             client.send_message("/track/32/volume", value)
-    elif  track == "5":
+    elif track == "5":
         if poti == "1":
             client.send_message("/master/volume", value)
         if poti == "2":
-            ph_vol = numpy.interp(value,[0,1],[0.01,0.5])
+            ph_vol = numpy.interp(value, [0, 1], [0.01, 0.5])
             client.send_message("/track/7/fxeq/hishelf/gain", ph_vol)
         if poti == "3":
-            ph_vol = numpy.interp(value,[0,1],[0.01,0.5])
+            ph_vol = numpy.interp(value, [0, 1], [0.01, 0.5])
             client.send_message("/track/7/fxeq/band/0/gain", ph_vol)
         if poti == "4":
-            ph_vol = numpy.interp(value,[0,1],[0.01,0.5])
+            ph_vol = numpy.interp(value, [0, 1], [0.01, 0.5])
             client.send_message("/track/7/fxeq/loshelf/gain", ph_vol)
+
 
 def button_handler(address: str,
                    *osc_arguments: List[Any]) -> None:
@@ -106,10 +120,10 @@ def button_handler(address: str,
     value = osc_arguments[0]
     if button == "1":
         client.send_message("/track/2/volume", 0)
-        client.send_message("/track/18/send/1/volume", 1) #dj1 m/s
-        client.send_message("/track/19/send/1/volume", 1) #dj1 b-format
-        client.send_message("/track/24/send/1/volume", 0) #dj2 ..
-        client.send_message("/track/25/send/1/volume", 0) #..
+        client.send_message("/track/18/send/1/volume", 1)  # dj1 m/s
+        client.send_message("/track/19/send/1/volume", 1)  # dj1 b-format
+        client.send_message("/track/24/send/1/volume", 0)  # dj2 ..
+        client.send_message("/track/25/send/1/volume", 0)  # ..
         client.send_message("/track/30/send/1/volume", 0)
         client.send_message("/track/31/send/1/volume", 0)
         client.send_message("/track/36/send/1/volume", 0)
@@ -117,10 +131,10 @@ def button_handler(address: str,
 
     if button == "2":
         client.send_message("/track/2/volume", 0)
-        client.send_message("/track/18/send/1/volume", 0) #dj1 m/s
-        client.send_message("/track/19/send/1/volume", 0) #dj1 b-format
-        client.send_message("/track/24/send/1/volume", 1) #dj2 ..
-        client.send_message("/track/25/send/1/volume", 1) #..
+        client.send_message("/track/18/send/1/volume", 0)  # dj1 m/s
+        client.send_message("/track/19/send/1/volume", 0)  # dj1 b-format
+        client.send_message("/track/24/send/1/volume", 1)  # dj2 ..
+        client.send_message("/track/25/send/1/volume", 1)  # ..
         client.send_message("/track/30/send/1/volume", 0)
         client.send_message("/track/31/send/1/volume", 0)
         client.send_message("/track/36/send/1/volume", 0)
@@ -128,10 +142,10 @@ def button_handler(address: str,
 
     if button == "3":
         client.send_message("/track/2/volume", 0)
-        client.send_message("/track/18/send/1/volume", 0) #dj1 m/s
-        client.send_message("/track/19/send/1/volume", 0) #dj1 b-format
-        client.send_message("/track/24/send/1/volume", 0) #dj2 ..
-        client.send_message("/track/25/send/1/volume", 0) #..
+        client.send_message("/track/18/send/1/volume", 0)  # dj1 m/s
+        client.send_message("/track/19/send/1/volume", 0)  # dj1 b-format
+        client.send_message("/track/24/send/1/volume", 0)  # dj2 ..
+        client.send_message("/track/25/send/1/volume", 0)  # ..
         client.send_message("/track/30/send/1/volume", 1)
         client.send_message("/track/31/send/1/volume", 1)
         client.send_message("/track/36/send/1/volume", 0)
@@ -139,10 +153,10 @@ def button_handler(address: str,
 
     if button == "4":
         client.send_message("/track/2/volume", 0)
-        client.send_message("/track/18/send/1/volume", 0) #dj1 m/s
-        client.send_message("/track/19/send/1/volume", 0) #dj1 b-format
-        client.send_message("/track/24/send/1/volume", 0) #dj2 ..
-        client.send_message("/track/25/send/1/volume", 0) #..
+        client.send_message("/track/18/send/1/volume", 0)  # dj1 m/s
+        client.send_message("/track/19/send/1/volume", 0)  # dj1 b-format
+        client.send_message("/track/24/send/1/volume", 0)  # dj2 ..
+        client.send_message("/track/25/send/1/volume", 0)  # ..
         client.send_message("/track/30/send/1/volume", 0)
         client.send_message("/track/31/send/1/volume", 0)
         client.send_message("/track/36/send/1/volume", 1)
@@ -159,6 +173,7 @@ def button_handler(address: str,
         client.send_message("/track/36/send/1/volume", 0)
         client.send_message("/track/37/send/1/volume", 0)
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--ip",
@@ -169,11 +184,15 @@ if __name__ == "__main__":
 
     dispatcher = dispatcher.Dispatcher()
     #  dispatcher.map("/track/*", print)
+    
+    # Mixer-Controller 
     dispatcher.map("/track/*", poti_handler)
     dispatcher.map("/button/*", button_handler)
+
+    # Motion-Contoller
+    dispatcher.map("/AmbiJocky/CH1", [handler])
 
     server = osc_server.ThreadingOSCUDPServer(
         (args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))
     server.serve_forever()
-

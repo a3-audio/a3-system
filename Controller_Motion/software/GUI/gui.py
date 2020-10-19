@@ -4,7 +4,7 @@ Der Erste versuch ein richtiges App für meinen Py zu schreiben
 
 """
 
-###### Imports
+# Imports
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
@@ -13,16 +13,14 @@ from oscpy.server import OSCThreadServer
 from oscpy.server import ServerClass
 
 
-###### Setup OSC
+# Setup OSC
 osc_client_ip_addr = "192.168.43.121"
 osc_client_port = 9000
 osc_server_port = 8000
 
-#### OSC init 
+# OSC init
 osc = OSCThreadServer()
 sock = osc.listen(address='0.0.0.0', port=osc_server_port, default=True)
-
-
 
 
 class Container(BoxLayout):
@@ -32,48 +30,48 @@ class Container(BoxLayout):
 
     def btn1(self):
         print("butten 1")
-        osc.send_message(b'/test/button1', [1], osc_client_ip_addr, osc_client_port)
-
+        osc.send_message(b'/test/button1',
+                         [1], osc_client_ip_addr, osc_client_port)
 
     def btn2(self):
         print("butten 2")
-        osc.send_message(b'/test/button2', [2], osc_client_ip_addr, osc_client_port)
-
+        osc.send_message(b'/test/button2',
+                         [2], osc_client_ip_addr, osc_client_port)
 
     def btn3(self):
         print("butten 3")
-        osc.send_message(b'/test/button1', [3], osc_client_ip_addr, osc_client_port)
-
+        osc.send_message(b'/test/button1',
+                         [3], osc_client_ip_addr, osc_client_port)
 
     def btn4(self):
         print("butten 4")
-        osc.send_message(b'/test/button4', [4], osc_client_ip_addr, osc_client_port)
+        osc.send_message(b'/test/button4',
+                         [4], osc_client_ip_addr, osc_client_port)
 
 
-##### Das Bewegungs anzeiger Widget
+# Das Bewegungs anzeiger Widget
 @ServerClass
 class MotionDisplay(Widget):
     """
     docstring
     """
-    pos_ind_ch1 = ObjectProperty(None) # PositionIndicator
-        
+    pos_ind_ch1 = ObjectProperty(None)  # PositionIndicator
 
     @osc.address_method(b'/test/locPos')
-    def callback(self,*values):
+    def callback(self, *values):
         """
         docstring
         """
-        self.pos_ind_ch1.center = self.to_parent(values[0]*self.width, values[1]*self.height,True) 
-
+        self.pos_ind_ch1.center = self.to_parent(
+            values[0]*self.width, values[1]*self.height, True)
 
     def on_touch_down(self, touch):
         """
         docstring
         """
-        #beschreäönkung auf dieses Widget
+        # beschreäönkung auf dieses Widget
         if self.collide_point(*touch.pos):
-            
+
             # in locale Widget coordinate umrechenen
             loc_pos = self.to_local(touch.x, touch.y, True)
             #print("pos: {}".format(loc_pos))
@@ -82,12 +80,11 @@ class MotionDisplay(Widget):
             x = loc_pos[0] / self.width
             y = loc_pos[1] / self.height
 
-
             # den PositionIndicator auf die aktuelle Position setzte
             self.pos_ind_ch1.center = touch.pos
             # LocPos per osc senden
-            osc.send_message(b"/test/locPos", [x, y],osc_client_ip_addr, osc_client_port)
-
+            osc.send_message(
+                b"/test/locPos", [x, y], osc_client_ip_addr, osc_client_port)
 
     def on_touch_move(self, touch):
         """
@@ -95,7 +92,7 @@ class MotionDisplay(Widget):
         """
         # beschreäönkung auf dieses Widget
         if self.collide_point(*touch.pos):
-            
+
             # in locale Widget coordinate umrechenen
             loc_pos = self.to_local(touch.x, touch.y, True)
             #print("pos: {}".format(loc_pos))
@@ -107,8 +104,8 @@ class MotionDisplay(Widget):
             # den PositionIndicator auf die aktuelle Position setzte
             self.pos_ind_ch1.center = touch.pos
             # LocPos per osc senden
-            osc.send_message(b"/test/locPos", [x, y],osc_client_ip_addr, osc_client_port)
-            
+            osc.send_message(
+                b"/test/locPos", [x, y], osc_client_ip_addr, osc_client_port)
 
 
 class PositionIndicator(Widget):
@@ -118,7 +115,7 @@ class PositionIndicator(Widget):
     pass
 
 
-###### MainApp
+# MainApp
 class MainApp(App):
     """
     docsting

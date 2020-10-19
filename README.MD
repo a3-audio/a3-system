@@ -1,4 +1,5 @@
 # Ambijocky
+![first ambijocky](doc/pix/gif1.gif)
 
 Hier kommt eine Projektbeschreibung rein
 

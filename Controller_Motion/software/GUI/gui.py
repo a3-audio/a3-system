@@ -14,7 +14,7 @@ from oscpy.server import ServerClass
 
 
 # Setup OSC
-osc_client_ip_addr = "192.168.43.121"
+osc_client_ip_addr = "127.0.0.1"
 osc_client_port = 9000
 osc_server_port = 8000
 
@@ -57,7 +57,7 @@ class MotionDisplay(Widget):
     """
     pos_ind_ch1 = ObjectProperty(None)  # PositionIndicator
 
-    @osc.address_method(b'/test/locPos')
+    @osc.address_method(b"/ambiJocky/ch1/motion/pos/cartesian")
     def callback(self, *values):
         """
         docstring
@@ -84,7 +84,7 @@ class MotionDisplay(Widget):
             self.pos_ind_ch1.center = touch.pos
             # LocPos per osc senden
             osc.send_message(
-                b"/test/locPos", [x, y], osc_client_ip_addr, osc_client_port)
+                b"/ambiJocky/ch1/motion/pos/cartesian", [x, y], osc_client_ip_addr, osc_client_port)
 
     def on_touch_move(self, touch):
         """
@@ -105,7 +105,7 @@ class MotionDisplay(Widget):
             self.pos_ind_ch1.center = touch.pos
             # LocPos per osc senden
             osc.send_message(
-                b"/test/locPos", [x, y], osc_client_ip_addr, osc_client_port)
+                b"/ambiJocky/ch1/motion/pos/cartesian", [x, y], osc_client_ip_addr, osc_client_port)
 
 
 class PositionIndicator(Widget):

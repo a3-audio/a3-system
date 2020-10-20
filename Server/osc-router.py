@@ -1,17 +1,19 @@
 
 """
-Das ist ein tool umd unseremn server nach ausen eine konsistent OSC Adressierung zu geben.
+Das ist ein tool umd unseren server nach ausen eine konsistent OSC Adressierung zu geben.
+Alle von ausen eingehenden und ausgehenden Values Sollen Normaliesiert sein (0-1).
 
-@TODO wir mussen uns uns noch mal über die OSC-Adressen convention unter halten
+@TODO wir mussen uns noch mal über die OSC-Adressen convention unter halten
+
 Vorschlag jendrik:
+
 template: /AmbiJocky/CH#/{contoler}/{funktion}/.../{args}
 exampel: /AmbiJocky/CH1/Mixer/EQ/MID/[0-1]
+
 oder
+
 template: /AmbiJocky/{contoler}/CH#/{funktion}/.../{args}
 exampel: /AmbiJocky/Mixer/CH1/EQ/MID/[0-1]
-
-
-Alle von ausen eingehenden und ausgehenden Volias sind Sollen Normaliesiert sein
 """
 
 import argparse
@@ -24,18 +26,35 @@ from pythonosc.udp_client import SimpleUDPClient
 
 client = SimpleUDPClient('127.0.0.1', 9001)
 
-# Motion-Controller
 
-
-def motion_ctr_handler(address: str, *osc_arguments: List[Any]) -> None:
+def in_ch1_handler(address: str, *osc_args: List[Any]) -> None:
     """
     docstring
     """
     words = address.split("/")
-    print(words)
-    ch_nr = words[1]
+    ch = words[2]
+    contoler = words[3]
+    ctr_function = []
+    for i in range(4, len(words)):
+        ctr_function.append(words[i])
 
-# Mixer-Contoller
+    # Motion-Controller
+    if contoler == "motion":
+        if ctr_function[0] == "reset":
+            pass
+        elif ctr_function[0] == "pos":
+            if ctr_function[1] == "cartesian":
+                pass
+            elif ctr_function[1] == "polar":
+                pass
+        elif ctr_function[0] == "pos_x":
+            pass
+        elif ctr_function[0] == "pos_y":
+            pass
+        elif ctr_function[0] == "pos_r":
+            pass
+        elif ctr_function[0] == "pos_t":
+            pass
 
 
 def poti_handler(address: str,
@@ -189,13 +208,13 @@ if __name__ == "__main__":
 
     dispatcher = dispatcher.Dispatcher()
     #  dispatcher.map("/track/*", print)
-    
-    # Mixer-Controller 
+
+    # Mixer-Controller
     dispatcher.map("/track/*", poti_handler)
     dispatcher.map("/button/*", button_handler)
 
     # Motion-Contoller
-    dispatcher.map("/AmbiJocky/CH1", [handler])
+    dispatcher.map("/ambiJocky/ch1/*", in_ch1_handler)
 
     server = osc_server.ThreadingOSCUDPServer(
         (args.ip, args.port), dispatcher)

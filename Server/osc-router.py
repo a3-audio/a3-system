@@ -27,35 +27,42 @@ from pythonosc.udp_client import SimpleUDPClient
 client = SimpleUDPClient('127.0.0.1', 9001)
 
 
-def in_ch1_handler(address: str, *osc_args: List[Any]) -> None:
+class CH_handler(object):
     """
-    docstring
+    Hier mit werden die eingehenden OSC-Messages auf die Server funtionen gemappt 
     """
-    words = address.split("/")
-    ch = words[2]
-    ch_nr = int(ch[len(ch)-1])
-    contoler = words[3]
-    ctr_function = []
-    for i in range(4, len(words)):
-        ctr_function.append(words[i])
+    def __init__(self):
+        pass
 
-    # Motion-Controller
-    if contoler == "motion":
-        if ctr_function[0] == "reset":
-            pass
-        elif ctr_function[0] == "pos":
-            if ctr_function[1] == "cartesian":
+    def msg_in(self, address: str, *osc_args: List[Any]) -> None:
+        """
+        docstring
+        """
+        words = address.split("/")
+        ch = words[2]
+        ch_nr = int(ch[len(ch)-1])
+        contoler = words[3]
+        ctr_function = []
+        for i in range(4, len(words)):
+            ctr_function.append(words[i])
+
+        # Motion-Controller
+        if contoler == "motion":
+            if ctr_function[0] == "reset":
                 pass
-            elif ctr_function[1] == "polar":
+            elif ctr_function[0] == "pos":
+                if ctr_function[1] == "cartesian":
+                    print(osc_args)
+                elif ctr_function[1] == "polar":
+                    pass
+            elif ctr_function[0] == "pos_x":
                 pass
-        elif ctr_function[0] == "pos_x":
-            pass
-        elif ctr_function[0] == "pos_y":
-            pass
-        elif ctr_function[0] == "pos_r":
-            pass
-        elif ctr_function[0] == "pos_t":
-            pass
+            elif ctr_function[0] == "pos_y":
+                pass
+            elif ctr_function[0] == "pos_r":
+                pass
+            elif ctr_function[0] == "pos_t":
+                pass
 
 
 def poti_handler(address: str,
@@ -209,13 +216,14 @@ if __name__ == "__main__":
 
     dispatcher = dispatcher.Dispatcher()
     #  dispatcher.map("/track/*", print)
+    ch1 = CH_handler()
 
     # Mixer-Controller
     dispatcher.map("/track/*", poti_handler)
     dispatcher.map("/button/*", button_handler)
 
     # Motion-Contoller
-    dispatcher.map("/ambiJocky/ch1/*", in_ch1_handler)
+    dispatcher.map("/ambiJocky/ch1/*", ch1.msg_in)
 
     server = osc_server.ThreadingOSCUDPServer(
         (args.ip, args.port), dispatcher)

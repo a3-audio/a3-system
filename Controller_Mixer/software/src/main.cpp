@@ -1,13 +1,12 @@
 //////////////////////////////// OSC ROTARY MIXER /////////////////////////////////
 //
-// Zu diesr Software gehört ein Stück Hardware was aussieht wie ein DJ-Mixer.
-// Ziel ist es, mit diesem Stück einen Softwaremixer via OSC fernzubedienen,
-// ein Controller...
+// osc rotary mixer as it says is a piece of hardware which looks like a 4-channel
+// dj-mixer with a mastersection.
 //
-// Im Mixer steckt ein Teensy 4.1 mit Netzwerkschnittstelle und 5x hc4051 
-// analog multiplexer.
+// This is the firmware for the builtin Teensy 4.1. It uses NativeEthernet and 5x 
+// hc4051 analog multiplexer. Each multiplexer is reserved for one channelstrip.
 // 
-// Diese osc-Adressen soll er senden:
+// osc-data sending to Server:
 //
 // - /track/1-4/gain/
 // - /track/1-4/hi/
@@ -21,7 +20,7 @@
 // - /master/1-4/vol/
 // - /master/1-4/pfl-button/
 //
-// Diese osc-Adressen soll er empfangen:
+// osc-data receiving from Sever:
 //
 // - /led/1-5/
 // - /vu/1-4/
@@ -31,23 +30,13 @@
 //  5 x leds pfl status bool
 //  4 x vu-meter
 // 
-// Notiz: Aktuell sendet teensy durchgehend osc. treshhold einbauen...
-// Notiz: https://www.pjrc.com/teensy/td_midi.html (multiplexer)
-//
-// Raphael Eismann
-// r.eismann@posteo.de
-//
-// contributers:
-//
 ///////////////////////////////////Libraries///////////////////////////////
-
 #include <Arduino.h>
 #include <SPI.h>
 #include <NativeEthernet.h>
 #include <NativeEthernetUdp.h>
 #include <OSCBundle.h>
 #include <OSCMessage.h>
-
 /////////////////////////////Network Configuration////////////////////////
 
 EthernetUDP Udp;                                    // Create UDP message object
@@ -59,7 +48,6 @@ IPAddress outIp(192, 168, 43, 141);                 // destination IP
 const unsigned int outPort = 9000;                  // Send port teensy
 
 ////////////////////////////////Assigning Pins/////////////////////////////
-
 const int ledPin_1 = 41;
 const int ledPin_2 = 40;
 const int ledPin_3 = 39;
@@ -76,8 +64,8 @@ const int analogInput_3 = 2;            // hc4051 multiplexer
 const int analogInput_4 = 3;            // hc4051 multiplexer
 const int analogInput_5 = 4;            // hc4051 multiplexer
 const int selectPins[3] = {30, 31, 32}; // Multiplexer abc
-
 //////////////////////////////////////OSC Server//////////////////////////////
+///LED Dispatcher
 
 void dispatchAddress_1(OSCMessage &msg){
     if (msg.isFloat(0)){
@@ -91,19 +79,13 @@ void dispatchAddress_1(OSCMessage &msg){
         }
     }
 };
-
-
-
 // last sent states
 const int num_tracks = 5;
 const int num_pots = 5;
 
 int pots_sent[num_tracks][num_pots];
 int buttons_last[num_tracks];
-
 ///////////////////////////////////////Setup///////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
 void setup() {
 
     // initialize sent values to 0
@@ -135,21 +117,12 @@ void setup() {
     pinMode(buttonPin_5, INPUT_PULLUP);   // Pushbutton
 } 
 ////////////////////////////////////////LOOP////////////////////////////////////
-
 void loop(){
 
-// Jeder Kanalzug am Controller reserviert einen 8-fach Multiplexer (hc4051).
-//
-// Wir haben am Controller 4 Eingangskanäle und den Masterikanal. Die Multiplexer 
-// sind über die Stellbits (abc) gleichgeschaltet. 
-
-    // OSCBundle bndl;
-
-    // Potis
     // hc4051 reading potis
     for (byte pot=0 ; pot <= 4; pot++)     
     {
-        // hc4051 pinselector abc (binär)
+        // hc4051 pinselector abc (binary)
         for (int i=0; i<3; i++) {     
             digitalWrite(selectPins[i], pot & (1 << i)?HIGH:LOW); // select hc4051
         }
@@ -200,8 +173,15 @@ void loop(){
         buttons_last[track] = digital;
     }
 
-//////////////////////////////Leds//////////////////////////////////
+//////////////////////////////Leds////////////////////////////////////
+
+// TODO the leds should be switched by "pfl" status from reaper:
 //
+// if (/track/5/recv/1/volume = 0){
+//    digitalWrite(ledPin_1, LOW);
+// } else HIGH
+//
+
     //process received messages
     OSCMessage msg;
         int size;
@@ -212,6 +192,8 @@ void loop(){
                     msg.dispatch("/track/5/recv/1/volume", dispatchAddress_1);
                 }
             }
+
+// TODO the vu-meters should be build in and should do something right...
 
 /*
     void OSCReceive(){

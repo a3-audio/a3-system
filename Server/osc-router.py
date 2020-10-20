@@ -33,6 +33,7 @@ def in_ch1_handler(address: str, *osc_args: List[Any]) -> None:
     """
     words = address.split("/")
     ch = words[2]
+    ch_nr = int(ch[len(ch)-1])
     contoler = words[3]
     ctr_function = []
     for i in range(4, len(words)):

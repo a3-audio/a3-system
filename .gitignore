@@ -5,6 +5,7 @@
 /Controller_Mixer/software/platformio.ini
 /Controller_Mixer/software/.pio
 /Controller_Motion/software/TouchOSC
+/Server/reaper/ambijockey.RPP-bak
 **/env
 **/.DS_Store
 **/.vscode

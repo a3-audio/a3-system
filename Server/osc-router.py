@@ -24,22 +24,27 @@ CONTROLLER_MIXER POTIS              REAPER
 /track/5/4 (Master low)         >>  /track/7/fxeq/loshelf/gain
 
 CONTROLLER_MIXER BUTTONS            REAPER
-/button/1 (Channel 1 pfl)       >>  turns vol 1 for stereo and binaural headphone send.
+/button/1 (Channel 1 pfl)       >>  Sets vol=1 for stereo and binaural headphone send.
 /button/2 (Channel 2 pfl)           Also it sets vol 0 for every other headphone send.
 /button/3 (Channel 3 pfl)           TODO: send the value to Controller_Mixer /led/*
 /button/4 (Channel 4 pfl)
 /button/5 (Master pfl)
 
 CONTROLLER_MOTION                   IEM COORDINATECONVERTER HOSTET BY REAPER
-/track/1/xy                     >>  this osc data will be send by different oscClients
-/track/2/xy                         to different ports
-/track/3/xy
-/track/4/xy
+/track/1/xy                     >>  /CoordinateConverter_1/xPos /CoordinateConverter_1/yPos
+/track/2/xy                     >>  /CoordinateConverter_2/xPos /CoordinateConverter_2/yPos
+/track/3/xy                     >>  /CoordinateConverter_3/xPos /CoordinateConverter_3/yPos
+/track/4/xy                     >>  /CoordinateConverter_4/xPos /CoordinateConverter_4/yPos
 
 IEM COORDINATECONVERTER             CONTROLLER_MOTION
-/CoordinateConverter/xPos       >>  osc data is send to different ports
-/CoordinateConverter/yPos
-... same for track 2-4
+/CoordinateConverter_1/xPos     >>  /track/1/xy
+/CoordinateConverter_1/yPos     >>  /track/1/xy
+/CoordinateConverter_2/xPos     >>  /track/2/xy
+/CoordinateConverter_2/yPos     >>  /track/2/xy
+/CoordinateConverter_3/xPos     >>  /track/3/xy
+/CoordinateConverter_3/yPos     >>  /track/3/xy
+/CoordinateConverter_4/xPos     >>  /track/4/xy
+/CoordinateConverter_4/yPos     >>  /track/4/xy
 
 REAPER                              CONTROLLER_MIXER
 /track/14/vu (VU-Meter)         >>  /vu/1
@@ -58,11 +63,7 @@ from pythonosc import osc_server
 from pythonosc.udp_client import SimpleUDPClient
 
 # OSC-Server
-OSC-Router-Port  = 9000
-IEM-Port_1  = 8610
-IEM-Port_2  = 8620
-IEM-Port_3  = 8630
-IEM-Port_4  = 8640
+oscRouterPort  = 9000
 
 # OSC-Clients
 ctrl_mixer  = SimpleUDPClient('192.168.43.139', 8500) # Set IP Adress
@@ -214,8 +215,8 @@ def button_handler(address: str,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--ip", "0.0.0.0", help="The ip to listen on")
-    parser.add_argument("--port", type=int, default=OSC-Router-Port, help="The port to listen on")
+    parser.add_argument("--ip", default="0.0.0.0", help="The ip to listen on")
+    parser.add_argument("--port", type=int, default=oscRouterPort, help="The port to listen on")
     args = parser.parse_args()
 
     dispatcher = dispatcher.Dispatcher()
@@ -226,4 +227,3 @@ if __name__ == "__main__":
     server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))
     server.serve_forever()
-

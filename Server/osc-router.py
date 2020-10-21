@@ -47,10 +47,6 @@ REAPER                              CONTROLLER_MIXER
 /track/26/vu (VU-Meter)         >>  /vu/3
 /track/32/vu (VU-Meter)         >>  /vu/4
 /track/master/vu (VU-Meter)     >>  /vu/5
-
-
-
-
 """
 
 import argparse
@@ -62,8 +58,11 @@ from pythonosc import osc_server
 from pythonosc.udp_client import SimpleUDPClient
 
 # OSC-Server
-OSC-Router-IP    = "0.0.0.0"
 OSC-Router-Port  = 9000
+IEM-Port_1  = 8610
+IEM-Port_2  = 8620
+IEM-Port_3  = 8630
+IEM-Port_4  = 8640
 
 # OSC-Clients
 ctrl_mixer  = SimpleUDPClient('192.168.43.139', 8500) # Set IP Adress
@@ -215,10 +214,8 @@ def button_handler(address: str,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--ip",
-                        default=OSC-Router-IP, help="The ip to listen on")
-    parser.add_argument("--port",
-                        type=int, default=OSC-Router-Port, help="The port to listen on")
+    parser.add_argument("--ip", "0.0.0.0", help="The ip to listen on")
+    parser.add_argument("--port", type=int, default=OSC-Router-Port, help="The port to listen on")
     args = parser.parse_args()
 
     dispatcher = dispatcher.Dispatcher()
@@ -226,8 +223,7 @@ if __name__ == "__main__":
     dispatcher.map("/track/*", poti_handler)
     dispatcher.map("/button/*", button_handler)
 
-    server = osc_server.ThreadingOSCUDPServer(
-        (args.ip, args.port), dispatcher)
+    server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))
     server.serve_forever()
 

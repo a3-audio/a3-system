@@ -31,10 +31,15 @@ CONTROLLER_MIXER BUTTONS            REAPER
 /button/5 (Master pfl)
 
 CONTROLLER_MOTION                   IEM COORDINATECONVERTER HOSTET BY REAPER
-/ctrlMotion/track/1/xyz         >>  /CoordinateConverter_1/xPos /CoordinateConverter_1/yPos
-/ctrlMotion/track/2/xyz         >>  /CoordinateConverter_2/xPos /CoordinateConverter_2/yPos
-/ctrlMotion/track/3/xyz         >>  /CoordinateConverter_3/xPos /CoordinateConverter_3/yPos
-/ctrlMotion/track/4/xyz         >>  /CoordinateConverter_4/xPos /CoordinateConverter_4/yPos
+/ctrlMotion/track/1/xyz         >>  /CoordinateConverter/1/xPos
+/ctrlMotion/track/2/xyz             /CoordinateConverter/1/yPos
+/ctrlMotion/track/3/xyz             /CoordinateConverter/1/zPos
+/ctrlMotion/track/4/xyz             ... same for 2-4
+
+/ctrlMotion/track/1/width       >>  /CoordinateConverter/1/radius
+/ctrlMotion/track/2/width       >>  /CoordinateConverter/2/radius
+/ctrlMotion/track/3/width       >>  /CoordinateConverter/3/radius
+/ctrlMotion/track/4/width       >>  /CoordinateConverter/4/radius
 
 IEM COORDINATECONVERTER             CONTROLLER_MOTION
 /CoordinateConverter/1/xPos     >>  /track/1/xy
@@ -75,8 +80,58 @@ iem_2       = SimpleUDPClient('127.0.0.1', 1338)
 iem_3       = SimpleUDPClient('127.0.0.1', 1339)
 iem_4       = SimpleUDPClient('127.0.0.1', 1340)
 
-def iemToCtrlMotion_handler(address: str,
+def ctrlMotionToIem_handler(address: str,
                  *osc_arguments: List[Any]) -> None:
+    words = address.split("/")
+    track = words[3]
+    param = words[4]
+
+    #value = osc_arguments[0]
+    #print("/ctrlMotion/track/" + track + "/" + param + "/ : " + str(value))
+
+    if track == "1":
+        match_xyz = re.match(param, "xyz")
+        if match_xyz:
+            iem_1.send_message("/CoordinateConverter/xPos", osc_arguments[0])
+            iem_1.send_message("/CoordinateConverter/yPos", osc_arguments[1])
+            iem_1.send_message("/CoordinateConverter/zPos", osc_arguments[2])
+        match_radius = re.match(param, "radius")
+        if match_radius:
+            iem_1.send_message("/CoordinateConverter/radius", osc_arguments[0])
+
+    if track == "2":
+        match_xyz = re.match(param, "xyz")
+        if match_xyz:
+            iem_2.send_message("/CoordinateConverter/xPos", osc_arguments[0])
+            iem_2.send_message("/CoordinateConverter/yPos", osc_arguments[1])
+            iem_2.send_message("/CoordinateConverter/zPos", osc_arguments[2])
+        match_radius = re.match(param, "radius")
+        if match_radius:
+            iem_2.send_message("/CoordinateConverter/radius", osc_arguments[0])
+
+    if track == "3":
+        match_xyz = re.match(param, "xyz")
+        if match_xyz:
+            iem_3.send_message("/CoordinateConverter/xPos", osc_arguments[0])
+            iem_3.send_message("/CoordinateConverter/yPos", osc_arguments[1])
+            iem_3.send_message("/CoordinateConverter/zPos", osc_arguments[2])
+        match_radius = re.match(param, "radius")
+        if match_radius:
+            iem_3.send_message("/CoordinateConverter/radius", osc_arguments[0])
+
+    if track == "4":
+        match_xyz = re.match(param, "xyz")
+        if match_xyz:
+            iem_4.send_message("/CoordinateConverter/xPos", osc_arguments[0])
+            iem_4.send_message("/CoordinateConverter/yPos", osc_arguments[1])
+            iem_4.send_message("/CoordinateConverter/zPos", osc_arguments[2])
+        match_radius = re.match(param, "radius")
+        if match_radius:
+            iem_4.send_message("/CoordinateConverter/radius", osc_arguments[0])
+
+
+def iemToCtrlMotion_handler(address: str,
+                 *osc_arguments: List[Any])->None:
     words = address.split("/")
     track = words[2]
     param = words[3]
@@ -84,32 +139,70 @@ def iemToCtrlMotion_handler(address: str,
     value = osc_arguments[0]
     print("/CoordinateConverter/" + track + "/" + param + " : " + str(value))
 
-# TODO IEM CoordinateConverter sends xPos yPos zPos as individual messages.
-#      Trying to construct a single message with xyz values
-#
-#     if track == "1":
-#         match_x = re.match(param, "xPos")
-#         if match_x:
-#             x = osc_arguments[0]
-#         match_y = re.match(param, "yPos")
-#         if match_y:
-#             y = osc_arguments[0]
-#         match_z = re.match(param, "zPos")
-#         if match_z:
-#             z = osc_arguments[0]
-#         ctrl_motion.send_message("/ctrlMotion/track/1/xyz", x, y, z)
+    if track == "1":
+        val_send=[]
+        match_x = re.match(param, "xPos")
+        if match_x:
+           val_send.append(osc_arguments[0])
+        match_y = re.match(param, "yPos")
+        if match_y:
+           val_send.append(osc_arguments[0])
+        match_z = re.match(param, "zPos")
+        if match_z:
+           val_send.append(osc_arguments[0])
+        ctrl_motion.send_message("/ctrlMotion/track/1/xyz", val_send)
+        match_radius = re.match(param, "radius")
+        if match_radius:
+            ctrl_motion.send_message("/ctrlMotion/track/1/width", osc_arguments[0])
 
+    if track == "2":
+        val_send=[]
+        match_x = re.match(param, "xPos")
+        if match_x:
+           val_send.append(osc_arguments[0])
+        match_y = re.match(param, "yPos")
+        if match_y:
+           val_send.append(osc_arguments[0])
+        match_z = re.match(param, "zPos")
+        if match_z:
+           val_send.append(osc_arguments[0])
+        ctrl_motion.send_message("/ctrlMotion/track/2/xyz", val_send)
+        match_radius = re.match(param, "radius")
+        if match_radius:
+            ctrl_motion.send_message("/ctrlMotion/track/2/width", osc_arguments[0])
 
-def ctrlMotionToIem_handler(address: str,
-                 *osc_arguments: List[Any]) -> None:
-    words = address.split("/")
-    track = words[3]
+    if track == "3":
+        val_send=[]
+        match_x = re.match(param, "xPos")
+        if match_x:
+           val_send.append(osc_arguments[0])
+        match_y = re.match(param, "yPos")
+        if match_y:
+           val_send.append(osc_arguments[0])
+        match_z = re.match(param, "zPos")
+        if match_z:
+           val_send.append(osc_arguments[0])
+        ctrl_motion.send_message("/ctrlMotion/track/3/xyz", val_send)
+        match_radius = re.match(param, "radius")
+        if match_radius:
+            ctrl_motion.send_message("/ctrlMotion/track/3/width", osc_arguments[0])
 
-    value = osc_arguments[0]
-    print("/ctrlMotion/track/" + track + " : " + str(value))
+    if track == "4":
+        val_send=[]
+        match_x = re.match(param, "xPos")
+        if match_x:
+           val_send.append(osc_arguments[0])
+        match_y = re.match(param, "yPos")
+        if match_y:
+           val_send.append(osc_arguments[0])
+        match_z = re.match(param, "zPos")
+        if match_z:
+           val_send.append(osc_arguments[0])
+        ctrl_motion.send_message("/ctrlMotion/track/4/xyz", val_send)
+        match_radius = re.match(param, "radius")
+        if match_radius:
+            ctrl_motion.send_message("/ctrlMotion/track/4/width", osc_arguments[0])
 
-# TODO
-# send xy from Motion_Controller to CoordinateConverter...
 
 def poti_handler(address: str,
                  *osc_arguments: List[Any]) -> None:

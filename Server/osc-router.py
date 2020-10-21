@@ -26,7 +26,7 @@ CONTROLLER_MIXER POTIS              REAPER
 CONTROLLER_MIXER BUTTONS            REAPER
 /button/1 (Channel 1 pfl)       >>  Sets vol=1 for stereo and binaural headphone send.
 /button/2 (Channel 2 pfl)           Also it sets vol 0 for every other headphone send.
-/button/3 (Channel 3 pfl)           TODO: send the value to Controller_Mixer /led/*
+/button/3 (Channel 3 pfl)           send the value to Controller_Mixer /led/*
 /button/4 (Channel 4 pfl)
 /button/5 (Master pfl)
 
@@ -168,6 +168,11 @@ def button_handler(address: str,
         reaper.send_message("/track/31/send/1/volume", 0)
         reaper.send_message("/track/36/send/1/volume", 0)
         reaper.send_message("/track/37/send/1/volume", 0)
+        ctrl_mixer.send_message("/led/1", 1)
+        ctrl_mixer.send_message("/led/2", 0)
+        ctrl_mixer.send_message("/led/3", 0)
+        ctrl_mixer.send_message("/led/4", 0)
+        ctrl_mixer.send_message("/led/5", 0)
 
     if button == "2":
         reaper.send_message("/track/2/volume", 0)
@@ -179,6 +184,11 @@ def button_handler(address: str,
         reaper.send_message("/track/31/send/1/volume", 0)
         reaper.send_message("/track/36/send/1/volume", 0)
         reaper.send_message("/track/37/send/1/volume", 0)
+        ctrl_mixer.send_message("/led/1", 0)
+        ctrl_mixer.send_message("/led/2", 1)
+        ctrl_mixer.send_message("/led/3", 0)
+        ctrl_mixer.send_message("/led/4", 0)
+        ctrl_mixer.send_message("/led/5", 0)
 
     if button == "3":
         reaper.send_message("/track/2/volume", 0)
@@ -190,6 +200,11 @@ def button_handler(address: str,
         reaper.send_message("/track/31/send/1/volume", 1)
         reaper.send_message("/track/36/send/1/volume", 0)
         reaper.send_message("/track/37/send/1/volume", 0)
+        ctrl_mixer.send_message("/led/1", 0)
+        ctrl_mixer.send_message("/led/2", 0)
+        ctrl_mixer.send_message("/led/3", 1)
+        ctrl_mixer.send_message("/led/4", 0)
+        ctrl_mixer.send_message("/led/5", 0)
 
     if button == "4":
         reaper.send_message("/track/2/volume", 0)
@@ -201,6 +216,11 @@ def button_handler(address: str,
         reaper.send_message("/track/31/send/1/volume", 0)
         reaper.send_message("/track/36/send/1/volume", 1)
         reaper.send_message("/track/37/send/1/volume", 1)
+        ctrl_mixer.send_message("/led/1", 0)
+        ctrl_mixer.send_message("/led/2", 0)
+        ctrl_mixer.send_message("/led/3", 0)
+        ctrl_mixer.send_message("/led/4", 1)
+        ctrl_mixer.send_message("/led/5", 0)
 
     if button == "5":
         reaper.send_message("/track/2/volume", 1)
@@ -212,6 +232,11 @@ def button_handler(address: str,
         reaper.send_message("/track/31/send/1/volume", 0)
         reaper.send_message("/track/36/send/1/volume", 0)
         reaper.send_message("/track/37/send/1/volume", 0)
+        ctrl_mixer.send_message("/led/1", 0)
+        ctrl_mixer.send_message("/led/2", 0)
+        ctrl_mixer.send_message("/led/3", 0)
+        ctrl_mixer.send_message("/led/4", 0)
+        ctrl_mixer.send_message("/led/5", 1)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

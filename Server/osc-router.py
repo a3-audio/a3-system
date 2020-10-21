@@ -36,10 +36,10 @@ CONTROLLER_MOTION                   IEM COORDINATECONVERTER HOSTET BY REAPER
 /ctrlMotion/track/3/xyz             /CoordinateConverter/1/zPos
 /ctrlMotion/track/4/xyz             ... same for 2-4
 
-/ctrlMotion/track/1/width       >>  /CoordinateConverter/1/radius
-/ctrlMotion/track/2/width       >>  /CoordinateConverter/2/radius
-/ctrlMotion/track/3/width       >>  /CoordinateConverter/3/radius
-/ctrlMotion/track/4/width       >>  /CoordinateConverter/4/radius
+/ctrlMotion/track/1/radius      >>  /CoordinateConverter/1/radius
+/ctrlMotion/track/2/radius      >>  /CoordinateConverter/2/radius
+/ctrlMotion/track/3/radius      >>  /CoordinateConverter/3/radius
+/ctrlMotion/track/4/radius      >>  /CoordinateConverter/4/radius
 
 IEM COORDINATECONVERTER             CONTROLLER_MOTION
 /CoordinateConverter/1/xPos     >>  /track/1/xy

@@ -31,10 +31,10 @@ CONTROLLER_MIXER BUTTONS            REAPER
 /button/5 (Master pfl)
 
 CONTROLLER_MOTION                   IEM COORDINATECONVERTER HOSTET BY REAPER
-/ctrlMotion/track/1/xyz                     >>  /CoordinateConverter_1/xPos /CoordinateConverter_1/yPos
-/ctrlMotion/track/2/xyz                     >>  /CoordinateConverter_2/xPos /CoordinateConverter_2/yPos
-/ctrlMotion/track/3/xyz                     >>  /CoordinateConverter_3/xPos /CoordinateConverter_3/yPos
-/ctrlMotion/track/4/xyz                     >>  /CoordinateConverter_4/xPos /CoordinateConverter_4/yPos
+/ctrlMotion/track/1/xyz         >>  /CoordinateConverter_1/xPos /CoordinateConverter_1/yPos
+/ctrlMotion/track/2/xyz         >>  /CoordinateConverter_2/xPos /CoordinateConverter_2/yPos
+/ctrlMotion/track/3/xyz         >>  /CoordinateConverter_3/xPos /CoordinateConverter_3/yPos
+/ctrlMotion/track/4/xyz         >>  /CoordinateConverter_4/xPos /CoordinateConverter_4/yPos
 
 IEM COORDINATECONVERTER             CONTROLLER_MOTION
 /CoordinateConverter/1/xPos     >>  /track/1/xy
@@ -98,6 +98,18 @@ def iemToCtrlMotion_handler(address: str,
 #         if match_z:
 #             z = osc_arguments[0]
 #         ctrl_motion.send_message("/ctrlMotion/track/1/xyz", x, y, z)
+
+
+def ctrlMotionToIem_handler(address: str,
+                 *osc_arguments: List[Any]) -> None:
+    words = address.split("/")
+    track = words[3]
+
+    value = osc_arguments[0]
+    print("/ctrlMotion/track/" + track + " : " + str(value))
+
+# TODO
+# send xy from Motion_Controller to CoordinateConverter...
 
 def poti_handler(address: str,
                  *osc_arguments: List[Any]) -> None:
@@ -274,7 +286,7 @@ if __name__ == "__main__":
     dispatcher.map("/track/*", poti_handler)
     dispatcher.map("/button/*", button_handler)
     dispatcher.map("/CoordinateConverter/*", iemToCtrlMotion_handler)
-    dispatcher.map("/ctrlMotion/track/*", iemToCtrlMotion_handler)
+    dispatcher.map("/ctrlMotion/track/*", ctrlMotionToIem_handler)
 
     server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))

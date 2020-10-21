@@ -31,20 +31,20 @@ CONTROLLER_MIXER BUTTONS            REAPER
 /button/5 (Master pfl)
 
 CONTROLLER_MOTION                   IEM COORDINATECONVERTER HOSTET BY REAPER
-/track/1/xy                     >>  /CoordinateConverter_1/xPos /CoordinateConverter_1/yPos
-/track/2/xy                     >>  /CoordinateConverter_2/xPos /CoordinateConverter_2/yPos
-/track/3/xy                     >>  /CoordinateConverter_3/xPos /CoordinateConverter_3/yPos
-/track/4/xy                     >>  /CoordinateConverter_4/xPos /CoordinateConverter_4/yPos
+/ctrlMotion/track/1/xyz                     >>  /CoordinateConverter_1/xPos /CoordinateConverter_1/yPos
+/ctrlMotion/track/2/xyz                     >>  /CoordinateConverter_2/xPos /CoordinateConverter_2/yPos
+/ctrlMotion/track/3/xyz                     >>  /CoordinateConverter_3/xPos /CoordinateConverter_3/yPos
+/ctrlMotion/track/4/xyz                     >>  /CoordinateConverter_4/xPos /CoordinateConverter_4/yPos
 
 IEM COORDINATECONVERTER             CONTROLLER_MOTION
-/CoordinateConverter_1/xPos     >>  /track/1/xy
-/CoordinateConverter_1/yPos     >>  /track/1/xy
-/CoordinateConverter_2/xPos     >>  /track/2/xy
-/CoordinateConverter_2/yPos     >>  /track/2/xy
-/CoordinateConverter_3/xPos     >>  /track/3/xy
-/CoordinateConverter_3/yPos     >>  /track/3/xy
-/CoordinateConverter_4/xPos     >>  /track/4/xy
-/CoordinateConverter_4/yPos     >>  /track/4/xy
+/CoordinateConverter/1/xPos     >>  /track/1/xy
+/CoordinateConverter/1/yPos     >>  /track/1/xy
+/CoordinateConverter/2/xPos     >>  /track/2/xy
+/CoordinateConverter/2/yPos     >>  /track/2/xy
+/CoordinateConverter/3/xPos     >>  /track/3/xy
+/CoordinateConverter/3/yPos     >>  /track/3/xy
+/CoordinateConverter/4/xPos     >>  /track/4/xy
+/CoordinateConverter/4/yPos     >>  /track/4/xy
 
 REAPER                              CONTROLLER_MIXER
 /track/14/vu (VU-Meter)         >>  /vu/1
@@ -57,6 +57,7 @@ REAPER                              CONTROLLER_MIXER
 import argparse
 import math
 import numpy
+import re
 from typing import List, Any
 from pythonosc import dispatcher
 from pythonosc import osc_server
@@ -73,6 +74,30 @@ iem_1       = SimpleUDPClient('127.0.0.1', 1337)
 iem_2       = SimpleUDPClient('127.0.0.1', 1338)
 iem_3       = SimpleUDPClient('127.0.0.1', 1339)
 iem_4       = SimpleUDPClient('127.0.0.1', 1340)
+
+def iemToCtrlMotion_handler(address: str,
+                 *osc_arguments: List[Any]) -> None:
+    words = address.split("/")
+    track = words[2]
+    param = words[3]
+
+    value = osc_arguments[0]
+    print("/CoordinateConverter/" + track + "/" + param + " : " + str(value))
+
+# TODO IEM CoordinateConverter sends xPos yPos zPos as individual messages.
+#      Trying to construct a single message with xyz values
+#
+#     if track == "1":
+#         match_x = re.match(param, "xPos")
+#         if match_x:
+#             x = osc_arguments[0]
+#         match_y = re.match(param, "yPos")
+#         if match_y:
+#             y = osc_arguments[0]
+#         match_z = re.match(param, "zPos")
+#         if match_z:
+#             z = osc_arguments[0]
+#         ctrl_motion.send_message("/ctrlMotion/track/1/xyz", x, y, z)
 
 def poti_handler(address: str,
                  *osc_arguments: List[Any]) -> None:
@@ -248,6 +273,8 @@ if __name__ == "__main__":
     #  dispatcher.map("/track/*", print)
     dispatcher.map("/track/*", poti_handler)
     dispatcher.map("/button/*", button_handler)
+    dispatcher.map("/CoordinateConverter/*", iemToCtrlMotion_handler)
+    dispatcher.map("/ctrlMotion/track/*", iemToCtrlMotion_handler)
 
     server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))

@@ -312,7 +312,6 @@ Wire Wire Line
 Connection ~ 7850 1550
 Wire Wire Line
 	7850 1550 7850 1650
-Connection ~ 7850 1650
 Wire Wire Line
 	4650 700  7150 700 
 Wire Wire Line
@@ -349,121 +348,8 @@ Wire Wire Line
 	6950 1650 7400 1650
 Text GLabel 7950 2650 1    50   UnSpc ~ 0
 VU-CONNECTORS
-$Comp
-L Connector:Conn_01x04_Male J17
-U 1 1 5FB7A905
-P 7650 2250
-F 0 "J17" H 7758 2531 50  0000 C CNN
-F 1 "Conn_01x04_Male" H 7758 2440 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" H 7650 2250 50  0001 C CNN
-F 3 "~" H 7650 2250 50  0001 C CNN
-	1    7650 2250
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:Conn_01x04_Male VUs1
-U 1 1 5FB7E38C
-P 7600 2350
-F 0 "VUs1" H 7572 2232 50  0000 R CNN
-F 1 "Conn_01x04_Male" H 7572 2323 50  0000 R CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" H 7600 2350 50  0001 C CNN
-F 3 "~" H 7600 2350 50  0001 C CNN
-	1    7600 2350
-	-1   0    0    1   
-$EndComp
-Connection ~ 7850 2150
-Wire Wire Line
-	7850 2150 7850 2250
-Connection ~ 7850 2250
-Wire Wire Line
-	7850 2250 7850 2350
-Connection ~ 7850 2350
-Wire Wire Line
-	7850 2350 7850 2450
-Connection ~ 7850 2450
-$Comp
-L Connector:Conn_01x04_Male J18
-U 1 1 5FB8B727
-P 7650 3050
-F 0 "J18" H 7758 3331 50  0000 C CNN
-F 1 "Conn_01x04_Male" H 7758 3240 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" H 7650 3050 50  0001 C CNN
-F 3 "~" H 7650 3050 50  0001 C CNN
-	1    7650 3050
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	7850 2450 7850 2950
-Connection ~ 7850 2950
-Wire Wire Line
-	7850 2950 7850 3050
-Connection ~ 7850 3050
-Wire Wire Line
-	7850 3050 7850 3150
-Connection ~ 7850 3150
-Wire Wire Line
-	7850 3150 7850 3250
-Connection ~ 7850 3250
-Wire Wire Line
-	7850 3250 7850 3750
 Text GLabel 7950 3250 1    50   UnSpc ~ 0
 VU-LEDS
-Wire Wire Line
-	3750 3250 3750 3650
-Wire Wire Line
-	3750 3650 7150 3650
-Wire Wire Line
-	7150 3650 7150 2150
-Wire Wire Line
-	7150 2150 7400 2150
-Wire Wire Line
-	7400 2250 7100 2250
-Wire Wire Line
-	7100 2250 7100 3600
-Wire Wire Line
-	7100 3600 3850 3600
-Wire Wire Line
-	3850 3600 3850 3250
-Wire Wire Line
-	3950 3250 3950 3550
-Wire Wire Line
-	3950 3550 7050 3550
-Wire Wire Line
-	7050 3550 7050 2350
-Wire Wire Line
-	7050 2350 7400 2350
-Wire Wire Line
-	7400 2450 7000 2450
-Wire Wire Line
-	7000 2450 7000 3500
-Wire Wire Line
-	7000 3500 4050 3500
-Wire Wire Line
-	4050 3500 4050 3250
-Connection ~ 7400 3050
-Wire Wire Line
-	7400 3050 7400 3150
-Connection ~ 7400 3150
-Wire Wire Line
-	7400 3150 7400 3250
-Wire Wire Line
-	7400 3250 6950 3250
-Wire Wire Line
-	6950 3250 6950 3450
-Wire Wire Line
-	6950 3450 4150 3450
-Connection ~ 7400 3250
-Wire Wire Line
-	4150 4000 4300 4000
-Wire Wire Line
-	7400 3000 7400 3050
-Wire Wire Line
-	7400 2950 7400 3050
-Wire Wire Line
-	4150 3250 4150 3450
-Connection ~ 4150 3450
-Wire Wire Line
-	4150 3450 4150 4000
 Connection ~ 4300 4000
 $Comp
 L Connector:Conn_01x08_Male J20
@@ -798,22 +684,152 @@ F 3 "~" H 7600 750 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	7850 1650 7850 2150
-Wire Wire Line
 	7850 1250 7850 1350
 Connection ~ 7850 1250
 Connection ~ 7850 1350
 Wire Wire Line
 	7850 1350 7850 1450
+Wire Wire Line
+	2400 900  2950 900 
+Wire Wire Line
+	2950 900  2950 1050
 $Comp
-L Connector:Conn_01x04_Male VU-LEDs1
-U 1 1 5FB8B72D
+L Connector:Conn_01x05_Male J5
+U 1 1 5FDC9B36
+P 7650 2350
+F 0 "J5" H 7758 2731 50  0000 C CNN
+F 1 "Conn_01x05_Male" H 7758 2640 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 7650 2350 50  0001 C CNN
+F 3 "~" H 7650 2350 50  0001 C CNN
+	1    7650 2350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x05_Male VUs1
+U 1 1 5FDC9B3C
+P 7600 2350
+F 0 "VUs1" H 7572 2282 50  0000 R CNN
+F 1 "Conn_01x05_Male" H 7572 2373 50  0000 R CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 7600 2350 50  0001 C CNN
+F 3 "~" H 7600 2350 50  0001 C CNN
+	1    7600 2350
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x05_Male J6
+U 1 1 5FE2A081
+P 7650 3150
+F 0 "J6" H 7758 3531 50  0000 C CNN
+F 1 "Conn_01x05_Male" H 7758 3440 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 7650 3150 50  0001 C CNN
+F 3 "~" H 7650 3150 50  0001 C CNN
+	1    7650 3150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x05_Male VUVs1
+U 1 1 5FE2A087
 P 7600 3150
-F 0 "VU-LEDs1" H 7572 3032 50  0000 R CNN
-F 1 "Conn_01x04_Male" H 7572 3123 50  0000 R CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" H 7600 3150 50  0001 C CNN
+F 0 "VUVs1" H 7572 3082 50  0000 R CNN
+F 1 "Conn_01x05_Male" H 7572 3173 50  0000 R CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 7600 3150 50  0001 C CNN
 F 3 "~" H 7600 3150 50  0001 C CNN
 	1    7600 3150
 	-1   0    0    1   
 $EndComp
+Wire Wire Line
+	7400 2950 7400 3050
+Connection ~ 7400 3050
+Wire Wire Line
+	7400 3050 7400 3150
+Connection ~ 7400 3150
+Wire Wire Line
+	7400 3150 7400 3250
+Connection ~ 7400 3250
+Wire Wire Line
+	7400 3250 7400 3350
+Connection ~ 7850 3350
+Wire Wire Line
+	7850 3350 7850 3750
+Connection ~ 7850 1650
+Wire Wire Line
+	7850 1650 7850 2150
+Connection ~ 7850 2150
+Wire Wire Line
+	7850 2150 7850 2250
+Connection ~ 7850 2250
+Wire Wire Line
+	7850 2250 7850 2350
+Connection ~ 7850 2350
+Wire Wire Line
+	7850 2350 7850 2450
+Connection ~ 7850 2450
+Wire Wire Line
+	7850 2450 7850 2550
+Connection ~ 7850 2550
+Wire Wire Line
+	7850 2550 7850 2950
+Connection ~ 7850 2950
+Wire Wire Line
+	7850 2950 7850 3050
+Connection ~ 7850 3050
+Wire Wire Line
+	7850 3050 7850 3150
+Connection ~ 7850 3150
+Wire Wire Line
+	7850 3150 7850 3250
+Connection ~ 7850 3250
+Wire Wire Line
+	7850 3250 7850 3350
+Connection ~ 7400 3350
+Wire Wire Line
+	2400 900  2400 4000
+Wire Wire Line
+	2400 4000 4300 4000
+Wire Wire Line
+	4150 3250 4150 3650
+Wire Wire Line
+	4150 3650 7400 3650
+Wire Wire Line
+	7400 3350 7400 3650
+Wire Wire Line
+	4050 3250 4050 3600
+Wire Wire Line
+	4050 3600 7300 3600
+Wire Wire Line
+	7300 3600 7300 2550
+Wire Wire Line
+	7300 2550 7400 2550
+Wire Wire Line
+	7400 2450 7250 2450
+Wire Wire Line
+	7250 2450 7250 3550
+Wire Wire Line
+	7250 3550 3950 3550
+Wire Wire Line
+	3950 3550 3950 3250
+Wire Wire Line
+	3850 3250 3850 3500
+Wire Wire Line
+	3850 3500 7150 3500
+Wire Wire Line
+	7150 3500 7150 2350
+Wire Wire Line
+	7150 2350 7400 2350
+Wire Wire Line
+	7400 2250 7100 2250
+Wire Wire Line
+	7100 2250 7100 3450
+Wire Wire Line
+	7100 3450 3750 3450
+Wire Wire Line
+	3750 3450 3750 3250
+Wire Wire Line
+	3650 3250 3650 3400
+Wire Wire Line
+	3650 3400 7050 3400
+Wire Wire Line
+	7050 3400 7050 2150
+Wire Wire Line
+	7050 2150 7400 2150
 $EndSCHEMATC

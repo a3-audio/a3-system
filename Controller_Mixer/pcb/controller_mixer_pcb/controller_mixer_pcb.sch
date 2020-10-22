@@ -125,7 +125,7 @@ Wire Wire Line
 	1850 5550 1850 600 
 Wire Wire Line
 	1950 5600 1950 700 
-Text GLabel 7950 550  3    50   UnSpc ~ 0
+Text GLabel 8450 550  3    50   UnSpc ~ 0
 LED-Connectors
 Text GLabel 7950 1300 3    50   UnSpc ~ 0
 BTN-Connectors
@@ -275,37 +275,31 @@ Wire Wire Line
 Wire Wire Line
 	7350 550  7350 650 
 Wire Wire Line
-	7350 650  7400 650 
-Wire Wire Line
 	4450 600  7300 600 
 Wire Wire Line
 	7300 600  7300 750 
-Wire Wire Line
-	7300 750  7400 750 
 Wire Wire Line
 	4550 650  7250 650 
 Wire Wire Line
 	7250 650  7250 850 
 Wire Wire Line
-	7250 850  7400 850 
-Wire Wire Line
 	7200 3700 7200 950 
 Wire Wire Line
-	7200 950  7400 950 
+	7700 950  7900 950 
 Wire Wire Line
 	4250 3700 7200 3700
 Wire Wire Line
-	7850 550  7850 650 
-Connection ~ 7850 650 
+	8350 550  8350 650 
+Connection ~ 8350 650 
 Wire Wire Line
-	7850 650  7850 750 
-Connection ~ 7850 750 
+	8350 650  8350 750 
+Connection ~ 8350 750 
 Wire Wire Line
-	7850 750  7850 850 
-Connection ~ 7850 850 
+	8350 750  8350 850 
+Connection ~ 8350 850 
 Wire Wire Line
-	7850 850  7850 950 
-Connection ~ 7850 950 
+	8350 850  8350 950 
+Connection ~ 8350 950 
 Connection ~ 7850 1450
 Wire Wire Line
 	7850 1450 7850 1550
@@ -662,30 +656,29 @@ $EndComp
 $Comp
 L Connector:Conn_01x05_Male J15
 U 1 1 5FA665C1
-P 7650 750
-F 0 "J15" H 7758 1131 50  0000 C CNN
-F 1 "Conn_01x05_Male" H 7758 1040 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 7650 750 50  0001 C CNN
-F 3 "~" H 7650 750 50  0001 C CNN
-	1    7650 750 
+P 8150 750
+F 0 "J15" H 8258 1131 50  0000 C CNN
+F 1 "Conn_01x05_Male" H 8258 1040 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 8150 750 50  0001 C CNN
+F 3 "~" H 8150 750 50  0001 C CNN
+	1    8150 750 
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7850 950  7850 1250
+	8350 950  8350 1250
 $Comp
 L Connector:Conn_01x05_Male LEDs1
 U 1 1 5FA69E13
-P 7600 750
-F 0 "LEDs1" H 7572 682 50  0000 R CNN
-F 1 "Conn_01x05_Male" H 7572 773 50  0000 R CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 7600 750 50  0001 C CNN
-F 3 "~" H 7600 750 50  0001 C CNN
-	1    7600 750 
+P 8100 750
+F 0 "LEDs1" H 8072 682 50  0000 R CNN
+F 1 "Conn_01x05_Male" H 8072 773 50  0000 R CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 8100 750 50  0001 C CNN
+F 3 "~" H 8100 750 50  0001 C CNN
+	1    8100 750 
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	7850 1250 7850 1350
-Connection ~ 7850 1250
 Connection ~ 7850 1350
 Wire Wire Line
 	7850 1350 7850 1450
@@ -832,4 +825,78 @@ Wire Wire Line
 	7050 3400 7050 2150
 Wire Wire Line
 	7050 2150 7400 2150
+$Comp
+L Device:R_PHOTO R1
+U 1 1 5F92DF7D
+P 7550 550
+F 0 "R1" V 7757 550 50  0000 C CNN
+F 1 "R_PHOTO" V 7666 550 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P5.08mm_Vertical" V 7600 300 50  0001 L CNN
+F 3 "~" H 7550 500 50  0001 C CNN
+	1    7550 550 
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_PHOTO R2
+U 1 1 5F96E19E
+P 7550 650
+F 0 "R2" V 7757 650 50  0000 C CNN
+F 1 "R_PHOTO" V 7666 650 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P5.08mm_Vertical" V 7600 400 50  0001 L CNN
+F 3 "~" H 7550 600 50  0001 C CNN
+	1    7550 650 
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_PHOTO R3
+U 1 1 5F97B054
+P 7550 750
+F 0 "R3" V 7757 750 50  0000 C CNN
+F 1 "R_PHOTO" V 7666 750 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P5.08mm_Vertical" V 7600 500 50  0001 L CNN
+F 3 "~" H 7550 700 50  0001 C CNN
+	1    7550 750 
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_PHOTO R4
+U 1 1 5F987FB9
+P 7550 850
+F 0 "R4" V 7757 850 50  0000 C CNN
+F 1 "R_PHOTO" V 7666 850 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P5.08mm_Vertical" V 7600 600 50  0001 L CNN
+F 3 "~" H 7550 800 50  0001 C CNN
+	1    7550 850 
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_PHOTO R5
+U 1 1 5F994DBD
+P 7550 950
+F 0 "R5" V 7757 950 50  0000 C CNN
+F 1 "R_PHOTO" V 7666 950 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P5.08mm_Vertical" V 7600 700 50  0001 L CNN
+F 3 "~" H 7550 900 50  0001 C CNN
+	1    7550 950 
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	7350 650  7400 650 
+Wire Wire Line
+	7300 750  7400 750 
+Wire Wire Line
+	7250 850  7400 850 
+Wire Wire Line
+	7200 950  7400 950 
+Wire Wire Line
+	7700 850  7900 850 
+Wire Wire Line
+	7700 750  7900 750 
+Wire Wire Line
+	7700 650  7900 650 
+Wire Wire Line
+	7700 550  7900 550 
+Wire Wire Line
+	7850 1250 8350 1250
+Connection ~ 7850 1250
 $EndSCHEMATC

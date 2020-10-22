@@ -896,4 +896,7 @@ Wire Wire Line
 	7700 650  7900 650 
 Wire Wire Line
 	7700 550  7900 550 
+Wire Wire Line
+	7850 1250 8350 1250
+Connection ~ 7850 1250
 $EndSCHEMATC

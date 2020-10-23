@@ -19,6 +19,17 @@ It consists of three elements:
 
 ### TODO`s
 
+- beat-counter / beat-detection
+- OSC looper
+- Motion-contoler
+  - GUI
+    - Motion-inticator für jeden kana erstellen
+    - farbe
+    - OSC-adressen eintragen
+  - documentieren
+  - keypad dirver anpassen
+  - encoder auf alle kanäle erwitern
+
 ## dependencies
 
 - Python3

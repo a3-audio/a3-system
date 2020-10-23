@@ -10,24 +10,44 @@
         orientation: "vertical"
         Label:
             text:
-                "linke Spalte"
+                "Select"
 
         Button:
-            text: "Button 1"
-            on_press: root.btn1()
+            text: "CH 1"
+            background_color: (1, 0, 0, .5)
+            on_press: root.btn1_press()
+            on_release: root.btn1_release()
 
         Button:
-            text: "Button 2"
-            on_press: root.btn2()
+            text: "CH 2"
+            background_color: (0, 1, 0, .5)
+            on_press: root.btn2_press()
+            on_release: root.btn2_release()
+
 # mein Weidget
     MotionDisplay:
-        pos_ind_ch1: posCH1
+        pos_ind_ch1: pos_ind_ch1
+        pos_ind_ch2: pos_ind_ch2
+        pos_ind_ch3: pos_ind_ch3
+        pos_ind_ch4: pos_ind_ch4
 
         size_hint: None, None # ich muss erst hint auschalten samit size geht
         size: root.height, root.height
 
         PositionIndicator:
-            id: posCH1
+            id: pos_ind_ch1
+            center: self.parent.center
+            background_color: (1, 0, 0, .5)
+        PositionIndicator:
+            id: pos_ind_ch2
+            center: self.parent.center
+            background_color: (0, 1, 0, .5)
+        PositionIndicator:
+            id: pos_ind_ch3
+            center: self.parent.center
+            background_color: (0, 0, 1, .5)
+        PositionIndicator:
+            id: pos_ind_ch4
             center: self.parent.center
 
 
@@ -37,15 +57,18 @@
 
         Label:
             text:
-                "rechte Spalte"
+                "Select"
 
         Button:
-            text: "Button 3"
-            on_press: root.btn3()
+            text: "CH 3"
+            background_color: (0, 0, 1, .5)
+            on_press: root.btn3_press()
+            on_release: root.btn3_release()
 
         Button:
-            text: "Button 4"
-            on_press: root.btn4()
+            text: "CH 4"
+            on_press: root.btn4_press()
+            on_release: root.btn4_release()
 
 
 #### Wedgets

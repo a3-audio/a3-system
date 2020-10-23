@@ -5,6 +5,10 @@
 /Controller_Mixer/software/platformio.ini
 /Controller_Mixer/software/.pio
 /Controller_Motion/software/TouchOSC
+/Server/reaper/ambijockey.RPP-bak
+Server/reaper_mac
 **/env
 **/.DS_Store
 **/.vscode
+doc/Media/move
+Ambijockyl.code-workspace

@@ -1,12 +1,12 @@
 # Ambijockey
 
 Goal for this project is a Hardware Controller which enables everybody, who can use a dj-mixer, to perform 
-any kind of music LIVE in a 3d-Audio-Landscape. You should consider it as loopmachine for panning motions 
-in a 3d-Audio-Sphere. It includes audiostream analysis to create a reliable live beatclock, wich let the 
-user control step motions out of Cadences, bars, steps and bpm). 
+LIVE on a 3d-Audio-sphere (Ambisonic). You should consider it as loopmachine for panning motions. It 
+includes audiostream analysis to create a reliable live beatclock, wich let the user control step motions 
+out of bars, steps and bpm). 
 
 It consists of three elements:
-    - The Server which runs the audio and osc-routing-engine
+    - The Server which runs the audio and osc-routing-engine (live io-processing)
     - The Mixercontroller: it looks like a 4-channel dj-mixer but just handles osc
     - The Motioncontroller: the touchscreen records and shows actual position and width for all 4 stereo 
       channels at the same time. Also it has 4 store/recall buttons and some potis/encoders for motionmodes 

@@ -64,9 +64,22 @@ const int analogInput_3 = 2;            // hc4051 multiplexer
 const int analogInput_4 = 3;            // hc4051 multiplexer
 const int analogInput_5 = 4;            // hc4051 multiplexer
 const int selectPins[3] = {30, 31, 32}; // Multiplexer abc
-//////////////////////////////////////OSC Server//////////////////////////////
-///LED Dispatcher
+const int vuPin_1 = 8;
+const int vuPin_2 = 9;
+const int vuPin_3 = 10;
+const int vuPin_4 = 11;
+const int vuPin_5 = 12;
 
+// last sent states
+const int num_tracks = 5;
+const int num_pots = 5;
+
+int pots_sent[num_tracks][num_pots];
+int buttons_last[num_tracks];
+
+//////////////////////////////////////OSC Server//////////////////////////////
+
+///LED Dispatcher
 void dispatchAddress_1(OSCMessage &msg){
     if (msg.isFloat(0)){
         float val = msg.getFloat(0);
@@ -79,12 +92,7 @@ void dispatchAddress_1(OSCMessage &msg){
         }
     }
 };
-// last sent states
-const int num_tracks = 5;
-const int num_pots = 5;
 
-int pots_sent[num_tracks][num_pots];
-int buttons_last[num_tracks];
 ///////////////////////////////////////Setup///////////////////////////////////
 void setup() {
 
@@ -175,7 +183,8 @@ void loop(){
 
 //////////////////////////////Leds////////////////////////////////////
 
-// TODO the leds should be switched by "pfl" status from reaper:
+// TODO the leds should switch on by value 1 from osc-router if button 
+// is pressed. Otherwise the led should be off:
 //
 // if (/track/5/recv/1/volume = 0){
 //    digitalWrite(ledPin_1, LOW);

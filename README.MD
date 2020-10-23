@@ -1,7 +1,7 @@
 # Ambijockey
 
 Goal for this project is a Hardware Controller which enables everybody, who can use a dj-mixer, to perform 
-LIVE on a 3d-Audio-Landscape (Ambisonic). You should consider it as loopmachine for panning motions. It 
+LIVE on a 3d-Audio-sphere (Ambisonic). You should consider it as loopmachine for panning motions. It 
 includes audiostream analysis to create a reliable live beatclock, wich let the user control step motions 
 out of bars, steps and bpm). 
 

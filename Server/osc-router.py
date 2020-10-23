@@ -81,7 +81,7 @@ oscRouterPort = 9000
 
 # OSC-Clients
 ctrl_mixer = SimpleUDPClient('192.168.43.139', 8500)  # Set IP Adress
-ctrl_motion = SimpleUDPClient('192.168.178.50', 8600)  # Set IP Adress
+ctrl_motion = SimpleUDPClient('192.168.43.135', 8600)  # Set IP Adress
 reaper = SimpleUDPClient('127.0.0.1', 9001)
 iem_1 = SimpleUDPClient('127.0.0.1', 1337)
 iem_2 = SimpleUDPClient('127.0.0.1', 1338)

@@ -14,7 +14,7 @@ from kivy.properties import ObjectProperty
 from oscpy.server import OSCThreadServer
 from oscpy.server import ServerClass
 
-
+# TODO IP anpassen
 # Setup OSC
 osc = OSCThreadServer()
 sock = osc.listen(address='0.0.0.0', port=8600, default=True)

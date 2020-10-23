@@ -14,11 +14,13 @@
 
         Button:
             text: "CH 1"
+            background_color: (1, 0, 0, .5)
             on_press: root.btn1_press()
             on_release: root.btn1_release()
 
         Button:
             text: "CH 2"
+            background_color: (0, 1, 0, .5)
             on_press: root.btn2_press()
             on_release: root.btn2_release()
 
@@ -35,12 +37,15 @@
         PositionIndicator:
             id: pos_ind_ch1
             center: self.parent.center
+            background_color: (1, 0, 0, .5)
         PositionIndicator:
             id: pos_ind_ch2
             center: self.parent.center
+            background_color: (0, 1, 0, .5)
         PositionIndicator:
             id: pos_ind_ch3
             center: self.parent.center
+            background_color: (0, 0, 1, .5)
         PositionIndicator:
             id: pos_ind_ch4
             center: self.parent.center
@@ -56,6 +61,7 @@
 
         Button:
             text: "CH 3"
+            background_color: (0, 0, 1, .5)
             on_press: root.btn3_press()
             on_release: root.btn3_release()
 

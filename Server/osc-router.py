@@ -88,6 +88,15 @@ iem_2 = SimpleUDPClient('127.0.0.1', 1338)
 iem_3 = SimpleUDPClient('127.0.0.1', 1339)
 iem_4 = SimpleUDPClient('127.0.0.1', 1340)
 
+# reaper channelnumbers
+dj1_cb = "19"
+dj1_in = "20"
+dj2_cb = "28"
+dj2_in = "29"
+dj3_cb = "37"
+dj3_in = "38"
+dj4_cb = "46"
+dj4_in = "47"
 
 def ctrlMotionToIem_handler(address: str,
                             *osc_arguments: List[Any]) -> None:
@@ -242,7 +251,7 @@ def iemToCtrlMotion_handler(address: str,
 
 class CH_handler(object):
     """
-    Hier mit werden die eingehenden OSC-Messages auf die Server funtionen gemappt 
+    Hier mit werden die eingehenden OSC-Messages auf die Server funtionen gemappt
     """
 
     def __init__(self):
@@ -290,60 +299,60 @@ def poti_handler(address: str,
 
     if track == "1":
         if poti == "1":
-            reaper.send_message("/track/15/fxeq/hishelf/freq", value)
+            reaper.send_message("/track/" + dj1_in + "/fxeq/hishelf/freq", value)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0, 0.50])
-            reaper.send_message("/track/15/fxeq/hishelf/gain", val)
+            reaper.send_message("/track/" + dj1_in + "/fxeq/hishelf/gain", val)
         if poti == "3":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/15/fxeq/band/0/gain", val)
+            reaper.send_message("/track/" + dj1_in + "/fxeq/band/0/gain", val)
         if poti == "4":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/15/fxeq/loshelf/gain", val)
+            reaper.send_message("/track/" + dj1_in + "/fxeq/loshelf/gain", val)
         if poti == "5":
-            reaper.send_message("/track/14/volume", value)
+            reaper.send_message("/track/" + dj1_cb + "/volume", value)
     elif track == "2":
         if poti == "1":
-            reaper.send_message("/track/21/fxeq/hishelf/freq", value)
+            reaper.send_message("/track/" + dj2_in + "/fxeq/hishelf/freq", value)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0, 0.50])
-            reaper.send_message("/track/21/fxeq/hishelf/gain", val)
+            reaper.send_message("/track/" + dj2_in + "/fxeq/hishelf/gain", val)
         if poti == "3":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/21/fxeq/band/0/gain", val)
+            reaper.send_message("/track/" + dj2_in + "/fxeq/band/0/gain", val)
         if poti == "4":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/21/fxeq/loshelf/gain", val)
+            reaper.send_message("/track/" + dj2_in + "/fxeq/loshelf/gain", val)
         if poti == "5":
-            reaper.send_message("/track/20/volume", value)
+            reaper.send_message("/track/" + dj2_cb + "/volume", value)
     elif track == "3":
         if poti == "1":
-            reaper.send_message("/track/27/fxeq/hishelf/freq", value)
+            reaper.send_message("/track/" + dj3_in + "/fxeq/hishelf/freq", value)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0, 0.50])
-            reaper.send_message("/track/27/fxeq/hishelf/gain", val)
+            reaper.send_message("/track/" + dj3_in + "/fxeq/hishelf/gain", val)
         if poti == "3":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/27/fxeq/band/0/gain", val)
+            reaper.send_message("/track/" + dj3_in + "/fxeq/band/0/gain", val)
         if poti == "4":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/27/fxeq/loshelf/gain", val)
+            reaper.send_message("/track/" + dj3_in + "/fxeq/loshelf/gain", val)
         if poti == "5":
-            reaper.send_message("/track/26/volume", value)
+            reaper.send_message("/track/" + dj3_cb + "/volume", value)
     elif track == "4":
         if poti == "1":
-            reaper.send_message("/track/33/fxeq/hishelf/freq", value)
+            reaper.send_message("/track/" + dj4_in + "/fxeq/hishelf/freq", value)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0, 0.50])
-            reaper.send_message("/track/33/fxeq/hishelf/gain", val)
+            reaper.send_message("/track/" + dj4_in + "/fxeq/hishelf/gain", val)
         if poti == "3":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/33/fxeq/band/0/gain", val)
+            reaper.send_message("/track/" + dj4_in + "/fxeq/band/0/gain", val)
         if poti == "4":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/33/fxeq/loshelf/gain", val)
+            reaper.send_message("/track/" + dj4_in + "/fxeq/loshelf/gain", val)
         if poti == "5":
-            reaper.send_message("/track/32/volume", value)
+            reaper.send_message("/track/" + dj4_cb + "/volume", value)
     elif track == "5":
         if poti == "1":
             reaper.send_message("/master/volume", value)

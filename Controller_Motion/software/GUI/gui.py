@@ -129,19 +129,19 @@ class MotionDisplay(Widget):
                 self.pos_ind_ch1.center = touch.pos
                 # LocPos per osc senden
                 osc.send_message(
-                    b"/ambiJocky/motion/ch/1/pos/xyz", [x, y], osc_client_ip_addr, osc_server_port,)
+                    b"/ambiJocky/motion/ch/1/pos/xyz", [x, y], osc_client_ip_addr, osc_client_port,)
             if ch2_select:
                 self.pos_ind_ch2.center = touch.pos
                 osc.send_message(
-                    b"/ambiJocky/motion/ch/2/pos/xyz", [x, y], osc_client_ip_addr, osc_server_port,)
+                    b"/ambiJocky/motion/ch/2/pos/xyz", [x, y], osc_client_ip_addr, osc_client_port,)
             if ch3_select:
                 self.pos_ind_ch3.center = touch.pos
                 osc.send_message(
-                    b"/ambiJocky/motion/ch/3/pos/xyz", [x, y], osc_client_ip_addr, osc_server_port,)
+                    b"/ambiJocky/motion/ch/3/pos/xyz", [x, y], osc_client_ip_addr, osc_client_port,)
             if ch4_select:
                 self.pos_ind_ch4.center = touch.pos
                 osc.send_message(
-                    b"/ambiJocky/motion/ch/4/pos/xyz", [x, y], osc_client_ip_addr, osc_server_port,)
+                    b"/ambiJocky/motion/ch/4/pos/xyz", [x, y], osc_client_ip_addr, osc_client_port,)
 
     def on_touch_move(self, touch):
         """
@@ -163,19 +163,19 @@ class MotionDisplay(Widget):
                 self.pos_ind_ch1.center = touch.pos
                 # LocPos per osc senden
                 osc.send_message(
-                    b"/ambiJocky/motion/ch/1/pos/xyz", [x, y], osc_client_ip_addr, osc_server_port,)
+                    b"/ambiJocky/motion/ch/1/pos/xyz", [x, y], osc_client_ip_addr, osc_client_port,)
             if ch2_select:
                 self.pos_ind_ch2.center = touch.pos
                 osc.send_message(
-                    b"/ambiJocky/motion/ch/2/pos/xyz", [x, y], osc_client_ip_addr, osc_server_port,)
+                    b"/ambiJocky/motion/ch/2/pos/xyz", [x, y], osc_client_ip_addr, osc_client_port,)
             if ch3_select:
                 self.pos_ind_ch3.center = touch.pos
                 osc.send_message(
-                    b"/ambiJocky/motion/ch/3/pos/xyz", [x, y], osc_client_ip_addr, osc_server_port,)
+                    b"/ambiJocky/motion/ch/3/pos/xyz", [x, y], osc_client_ip_addr, osc_client_port,)
             if ch4_select:
                 self.pos_ind_ch4.center = touch.pos
                 osc.send_message(
-                    b"/ambiJocky/motion/ch/4/pos/xyz", [x, y], osc_client_ip_addr, osc_server_port,)
+                    b"/ambiJocky/motion/ch/4/pos/xyz", [x, y], osc_client_ip_addr, osc_client_port,)
 
 
 class PositionIndicator(Widget):

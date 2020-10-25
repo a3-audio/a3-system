@@ -89,14 +89,20 @@ iem_3 = SimpleUDPClient('127.0.0.1', 1339)
 iem_4 = SimpleUDPClient('127.0.0.1', 1340)
 
 # reaper channelnumbers
-dj1_cb = "19"
-dj1_in = "20"
-dj2_cb = "28"
-dj2_in = "29"
-dj3_cb = "37"
-dj3_in = "38"
-dj4_cb = "46"
-dj4_in = "47"
+masterbus = "1"  # mastervolume is controlled by /master/volume
+dj1_cb = "21"  # cb = channelbus
+dj1_in = "22"  # in = input
+dj2_cb = "30"
+dj2_in = "31"
+dj3_cb = "39"
+dj3_in = "40"
+dj4_cb = "48"
+dj4_in = "49"
+dj1_pfl = "13"
+dj2_pfl = "14"
+dj3_pfl = "15"
+dj4_pfl = "16"
+mainmixbus = "17"
 
 
 def ctrlMotionToIem_handler(address: str,
@@ -300,10 +306,10 @@ def poti_handler(address: str,
 
     if track == "1":
         if poti == "1":
-            reaper.send_message("/track/" + dj1_in +
-                                "/fxeq/hishelf/freq", value)
+            val = numpy.interp(value, [0, 1], [0.4, 0.5])
+            reaper.send_message("/track/" + dj1_in + "/gain", val)
         if poti == "2":
-            val = numpy.interp(value, [0, 1], [0, 0.50])
+            val = numpy.interp(value, [0, 1], [0.05, 0.50])
             reaper.send_message("/track/" + dj1_in + "/fxeq/hishelf/gain", val)
         if poti == "3":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
@@ -315,8 +321,8 @@ def poti_handler(address: str,
             reaper.send_message("/track/" + dj1_cb + "/volume", value)
     elif track == "2":
         if poti == "1":
-            reaper.send_message("/track/" + dj2_in +
-                                "/fxeq/hishelf/freq", value)
+            val = numpy.interp(value, [0, 1], [0.4, 0.5])
+            reaper.send_message("/track/" + dj2_in + "/gain", val)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0, 0.50])
             reaper.send_message("/track/" + dj2_in + "/fxeq/hishelf/gain", val)
@@ -330,8 +336,8 @@ def poti_handler(address: str,
             reaper.send_message("/track/" + dj2_cb + "/volume", value)
     elif track == "3":
         if poti == "1":
-            reaper.send_message("/track/" + dj3_in +
-                                "/fxeq/hishelf/freq", value)
+            val = numpy.interp(value, [0, 1], [0.4, 0.5])
+            reaper.send_message("/track/" + dj3_in + "/gain", val)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0, 0.50])
             reaper.send_message("/track/" + dj3_in + "/fxeq/hishelf/gain", val)
@@ -345,8 +351,8 @@ def poti_handler(address: str,
             reaper.send_message("/track/" + dj3_cb + "/volume", value)
     elif track == "4":
         if poti == "1":
-            reaper.send_message("/track/" + dj4_in +
-                                "/fxeq/hishelf/freq", value)
+            val = numpy.interp(value, [0, 1], [0.4, 0.5])
+            reaper.send_message("/track/" + dj4_in + "/gain", val)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0, 0.50])
             reaper.send_message("/track/" + dj4_in + "/fxeq/hishelf/gain", val)
@@ -363,13 +369,16 @@ def poti_handler(address: str,
             reaper.send_message("/master/volume", value)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0.01, 0.5])
-            reaper.send_message("/track/7/fxeq/hishelf/gain", val)
+            reaper.send_message("/track/" + masterbus +
+                                "/fxeq/hishelf/gain", val)
         if poti == "3":
             val = numpy.interp(value, [0, 1], [0.01, 0.5])
-            reaper.send_message("/track/7/fxeq/band/0/gain", val)
+            reaper.send_message("/track/" + masterbus +
+                                "/fxeq/band/0/gain", val)
         if poti == "4":
             val = numpy.interp(value, [0, 1], [0.01, 0.5])
-            reaper.send_message("/track/7/fxeq/loshelf/gain", val)
+            reaper.send_message("/track/" + masterbus +
+                                "/fxeq/loshelf/gain", val)
 
 
 def button_handler(address: str,
@@ -379,83 +388,43 @@ def button_handler(address: str,
 
     value = osc_arguments[0]
     if button == "1":
-        reaper.send_message("/track/2/volume", 0)
-        reaper.send_message("/track/18/send/1/volume", 1)  # dj1 m/s
-        reaper.send_message("/track/19/send/1/volume", 1)  # dj1 b-format
-        reaper.send_message("/track/24/send/1/volume", 0)  # dj2 m/s
-        reaper.send_message("/track/25/send/1/volume", 0)  # ..
-        reaper.send_message("/track/30/send/1/volume", 0)
-        reaper.send_message("/track/31/send/1/volume", 0)
-        reaper.send_message("/track/36/send/1/volume", 0)
-        reaper.send_message("/track/37/send/1/volume", 0)
+        reaper.send_message("/track/" + dj1_pfl + "/mute", 0)
+        reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
+        reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
+        reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
+        reaper.send_message("/track/" + mainmixbus + "/mute", 1)
         ctrl_mixer.send_message("/led/1", 1)
-        ctrl_mixer.send_message("/led/2", 0)
-        ctrl_mixer.send_message("/led/3", 0)
-        ctrl_mixer.send_message("/led/4", 0)
-        ctrl_mixer.send_message("/led/5", 0)
 
     if button == "2":
-        reaper.send_message("/track/2/volume", 0)
-        reaper.send_message("/track/18/send/1/volume", 0)  # dj1 m/s
-        reaper.send_message("/track/19/send/1/volume", 0)  # dj1 b-format
-        reaper.send_message("/track/24/send/1/volume", 1)  # dj2 ..
-        reaper.send_message("/track/25/send/1/volume", 1)  # ..
-        reaper.send_message("/track/30/send/1/volume", 0)
-        reaper.send_message("/track/31/send/1/volume", 0)
-        reaper.send_message("/track/36/send/1/volume", 0)
-        reaper.send_message("/track/37/send/1/volume", 0)
-        ctrl_mixer.send_message("/led/1", 0)
+        reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
+        reaper.send_message("/track/" + dj2_pfl + "/mute", 0)
+        reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
+        reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
+        reaper.send_message("/track/" + mainmixbus + "/mute", 1)
         ctrl_mixer.send_message("/led/2", 1)
-        ctrl_mixer.send_message("/led/3", 0)
-        ctrl_mixer.send_message("/led/4", 0)
-        ctrl_mixer.send_message("/led/5", 0)
 
     if button == "3":
-        reaper.send_message("/track/2/volume", 0)
-        reaper.send_message("/track/18/send/1/volume", 0)  # dj1 m/s
-        reaper.send_message("/track/19/send/1/volume", 0)  # dj1 b-format
-        reaper.send_message("/track/24/send/1/volume", 0)  # dj2 ..
-        reaper.send_message("/track/25/send/1/volume", 0)  # ..
-        reaper.send_message("/track/30/send/1/volume", 1)
-        reaper.send_message("/track/31/send/1/volume", 1)
-        reaper.send_message("/track/36/send/1/volume", 0)
-        reaper.send_message("/track/37/send/1/volume", 0)
-        ctrl_mixer.send_message("/led/1", 0)
-        ctrl_mixer.send_message("/led/2", 0)
+        reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
+        reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
+        reaper.send_message("/track/" + dj3_pfl + "/mute", 0)
+        reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
+        reaper.send_message("/track/" + mainmixbus + "/mute", 1)
         ctrl_mixer.send_message("/led/3", 1)
-        ctrl_mixer.send_message("/led/4", 0)
-        ctrl_mixer.send_message("/led/5", 0)
 
     if button == "4":
-        reaper.send_message("/track/2/volume", 0)
-        reaper.send_message("/track/18/send/1/volume", 0)  # dj1 m/s
-        reaper.send_message("/track/19/send/1/volume", 0)  # dj1 b-format
-        reaper.send_message("/track/24/send/1/volume", 0)  # dj2 ..
-        reaper.send_message("/track/25/send/1/volume", 0)  # ..
-        reaper.send_message("/track/30/send/1/volume", 0)
-        reaper.send_message("/track/31/send/1/volume", 0)
-        reaper.send_message("/track/36/send/1/volume", 1)
-        reaper.send_message("/track/37/send/1/volume", 1)
-        ctrl_mixer.send_message("/led/1", 0)
-        ctrl_mixer.send_message("/led/2", 0)
-        ctrl_mixer.send_message("/led/3", 0)
+        reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
+        reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
+        reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
+        reaper.send_message("/track/" + dj4_pfl + "/mute", 0)
+        reaper.send_message("/track/" + mainmixbus + "/mute", 1)
         ctrl_mixer.send_message("/led/4", 1)
-        ctrl_mixer.send_message("/led/5", 0)
 
     if button == "5":
-        reaper.send_message("/track/2/volume", 1)
-        reaper.send_message("/track/18/send/1/volume", 0)
-        reaper.send_message("/track/19/send/1/volume", 0)
-        reaper.send_message("/track/24/send/1/volume", 0)
-        reaper.send_message("/track/25/send/1/volume", 0)
-        reaper.send_message("/track/30/send/1/volume", 0)
-        reaper.send_message("/track/31/send/1/volume", 0)
-        reaper.send_message("/track/36/send/1/volume", 0)
-        reaper.send_message("/track/37/send/1/volume", 0)
-        ctrl_mixer.send_message("/led/1", 0)
-        ctrl_mixer.send_message("/led/2", 0)
-        ctrl_mixer.send_message("/led/3", 0)
-        ctrl_mixer.send_message("/led/4", 0)
+        reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
+        reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
+        reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
+        reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
+        reaper.send_message("/track/" + mainmixbus + "/mute", 0)
         ctrl_mixer.send_message("/led/5", 1)
 
 

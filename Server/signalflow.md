@@ -21,6 +21,11 @@ phonesbus (
     [1,2]       monobus(ph)         
     [1,2]       stereobus(ph)       
     [1,2]       binauralbus(ph)     
+    -           dj1-pfl
+    -           dj2-pfl
+    -           dj3-pfl
+    -           dj4-pfl
+    -           mainmixbus
 )
 
 reverbbus (

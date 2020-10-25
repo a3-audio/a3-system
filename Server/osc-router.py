@@ -81,7 +81,7 @@ oscRouterPort = 9000
 
 # OSC-Clients
 ctrl_mixer = SimpleUDPClient('192.168.43.139', 8500)  # Set IP Adress
-ctrl_motion = SimpleUDPClient('192.168.43.135', 8600)  # Set IP Adress
+ctrl_motion = SimpleUDPClient('192.168.178.50', 8600)  # Set IP Adress
 reaper = SimpleUDPClient('127.0.0.1', 9001)
 iem_1 = SimpleUDPClient('127.0.0.1', 1337)
 iem_2 = SimpleUDPClient('127.0.0.1', 1338)
@@ -97,6 +97,7 @@ dj3_cb = "37"
 dj3_in = "38"
 dj4_cb = "46"
 dj4_in = "47"
+
 
 def ctrlMotionToIem_handler(address: str,
                             *osc_arguments: List[Any]) -> None:
@@ -299,7 +300,8 @@ def poti_handler(address: str,
 
     if track == "1":
         if poti == "1":
-            reaper.send_message("/track/" + dj1_in + "/fxeq/hishelf/freq", value)
+            reaper.send_message("/track/" + dj1_in +
+                                "/fxeq/hishelf/freq", value)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0, 0.50])
             reaper.send_message("/track/" + dj1_in + "/fxeq/hishelf/gain", val)
@@ -313,7 +315,8 @@ def poti_handler(address: str,
             reaper.send_message("/track/" + dj1_cb + "/volume", value)
     elif track == "2":
         if poti == "1":
-            reaper.send_message("/track/" + dj2_in + "/fxeq/hishelf/freq", value)
+            reaper.send_message("/track/" + dj2_in +
+                                "/fxeq/hishelf/freq", value)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0, 0.50])
             reaper.send_message("/track/" + dj2_in + "/fxeq/hishelf/gain", val)
@@ -327,7 +330,8 @@ def poti_handler(address: str,
             reaper.send_message("/track/" + dj2_cb + "/volume", value)
     elif track == "3":
         if poti == "1":
-            reaper.send_message("/track/" + dj3_in + "/fxeq/hishelf/freq", value)
+            reaper.send_message("/track/" + dj3_in +
+                                "/fxeq/hishelf/freq", value)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0, 0.50])
             reaper.send_message("/track/" + dj3_in + "/fxeq/hishelf/gain", val)
@@ -341,7 +345,8 @@ def poti_handler(address: str,
             reaper.send_message("/track/" + dj3_cb + "/volume", value)
     elif track == "4":
         if poti == "1":
-            reaper.send_message("/track/" + dj4_in + "/fxeq/hishelf/freq", value)
+            reaper.send_message("/track/" + dj4_in +
+                                "/fxeq/hishelf/freq", value)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0, 0.50])
             reaper.send_message("/track/" + dj4_in + "/fxeq/hishelf/gain", val)

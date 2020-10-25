@@ -35,8 +35,9 @@
 #include <SPI.h>
 #include <NativeEthernet.h>
 #include <NativeEthernetUdp.h>
-#include <OSCBundle.h>
+// #include <OSCBundle.h>
 #include <OSCMessage.h>
+#include <MapFloat.h>
 /////////////////////////////Network Configuration////////////////////////
 
 EthernetUDP Udp;                                    // Create UDP message object
@@ -64,11 +65,11 @@ const int analogInput_3 = 2;            // hc4051 multiplexer
 const int analogInput_4 = 3;            // hc4051 multiplexer
 const int analogInput_5 = 4;            // hc4051 multiplexer
 const int selectPins[3] = {30, 31, 32}; // Multiplexer abc
-const int vuPin_1 = 8;
-const int vuPin_2 = 9;
-const int vuPin_3 = 10;
-const int vuPin_4 = 11;
-const int vuPin_5 = 12;
+const int vuPin_1 = 19;
+const int vuPin_2 = 20;
+const int vuPin_3 = 21;
+const int vuPin_4 = 22;
+const int vuPin_5 = 23;
 
 // last sent states
 const int num_tracks = 5;
@@ -79,19 +80,61 @@ int buttons_last[num_tracks];
 
 //////////////////////////////////////OSC Server//////////////////////////////
 
-///LED Dispatcher
-void dispatchAddress_1(OSCMessage &msg){
-    if (msg.isFloat(0)){
-        float val = msg.getFloat(0);
-            Serial.print(val);
-        if (val<=0){
-            digitalWrite(ledPin_1, LOW);
-        }
-        else if (val>=1){
-            digitalWrite(ledPin_1, HIGH);
-        }
-    }
-};
+void led_1(OSCMessage &msg) {
+    digitalWrite(ledPin_1, HIGH);
+    digitalWrite(ledPin_2, LOW);
+    digitalWrite(ledPin_3, LOW);
+    digitalWrite(ledPin_4, LOW);
+    digitalWrite(ledPin_5, LOW);
+}
+
+void led_2(OSCMessage &msg) {
+    digitalWrite(ledPin_1, LOW);
+    digitalWrite(ledPin_2, HIGH);
+    digitalWrite(ledPin_3, LOW);
+    digitalWrite(ledPin_4, LOW);
+    digitalWrite(ledPin_5, LOW);
+}
+
+void led_3(OSCMessage &msg) {
+    digitalWrite(ledPin_1, LOW);
+    digitalWrite(ledPin_2, LOW);
+    digitalWrite(ledPin_3, HIGH);
+    digitalWrite(ledPin_4, LOW);
+    digitalWrite(ledPin_5, LOW);
+}
+
+void led_4(OSCMessage &msg) {
+    digitalWrite(ledPin_1, LOW);
+    digitalWrite(ledPin_2, LOW);
+    digitalWrite(ledPin_3, LOW);
+    digitalWrite(ledPin_4, HIGH);
+    digitalWrite(ledPin_5, LOW);
+}
+
+void led_5(OSCMessage &msg) {
+    digitalWrite(ledPin_1, LOW);
+    digitalWrite(ledPin_2, LOW);
+    digitalWrite(ledPin_3, LOW);
+    digitalWrite(ledPin_4, LOW);
+    digitalWrite(ledPin_5, HIGH);
+}
+
+float vuState_1 = 0.0;
+float vuState_2 = 0.0;
+float vuState_3 = 0.0;
+float vuState_4 = 0.0;
+
+void vu_1(OSCMessage &msg) {
+    vuState_1 = mapFloat(msg.getFloat(0), 0.0, 1.0, 0.0, 1023.0);
+    analogWrite(vuPin_1, vuState_1);
+}
+
+void vu_2(OSCMessage &msg) {}
+void vu_3(OSCMessage &msg) {}
+void vu_4(OSCMessage &msg) {}
+void master(OSCMessage &msg) {}
+
 
 ///////////////////////////////////////Setup///////////////////////////////////
 void setup() {
@@ -108,7 +151,7 @@ void setup() {
         buttons_last[track] = 0;
     }
 
-    Serial.begin(9600);                   // starting Serial
+    Serial.begin(115200);                 // starting Serial
     Ethernet.begin(mac, ip);              // starting Ethernet
     Udp.begin(inPort);                    // starting UDP-Server
 
@@ -123,10 +166,15 @@ void setup() {
     pinMode(buttonPin_3, INPUT_PULLUP);   // Pushbutton
     pinMode(buttonPin_4, INPUT_PULLUP);   // Pushbutton
     pinMode(buttonPin_5, INPUT_PULLUP);   // Pushbutton
-} 
+    pinMode(vuPin_1, OUTPUT);             // VU-METER
+    pinMode(vuPin_2, OUTPUT);             // VU-METER
+    pinMode(vuPin_3, OUTPUT);             // VU-METER
+    pinMode(vuPin_4, OUTPUT);             // VU-METER
+    pinMode(vuPin_5, OUTPUT);             // VU-METER
+}
+
 ////////////////////////////////////////LOOP////////////////////////////////////
 void loop(){
-
     // hc4051 reading potis
     for (byte pot=0 ; pot <= 4; pot++)     
     {
@@ -191,38 +239,46 @@ void loop(){
 // } else HIGH
 //
 
-    //process received messages
     OSCMessage msg;
-        int size;
-            if ((size = Udp.parsePacket())>0){
-                //fill the msg with all of the available bytes
-                while(size--){
-                    msg.fill(Udp.read());
-                    msg.dispatch("/track/5/recv/1/volume", dispatchAddress_1);
-                }
-            }
+    int size = Udp.parsePacket();
 
-// TODO the vu-meters should be build in and should do something right...
-
-/*
-    void OSCReceive(){
-        OSCBundle   bundleIN;
-        OSCMessage  msgIN;
-        int size;
-        if( (size = Udp.parsePacket())>0) {
-            // if data begins with / it is a message
-            if (udpData[0]==47){
-                msgIN.fill(udpData,size);
-                if(!msgIN.hasError()){
-                    Serial.println("Receiving OSC Message...");
-                    msgIN.route("/track",showMessage);
-                    msgIN.route("/fx",showMessage);
-                    msgIN.route("/fxparam",showMessage);
-                }
-            }
+    if (size > 0) {
+        while (size--) {
+            msg.fill(Udp.read());
         }
+        if (!msg.hasError()) {
+            msg.dispatch("/led/1", led_1);
+        }
+        if (!msg.hasError()) {
+            msg.dispatch("/led/2", led_2);
+        }
+        if (!msg.hasError()) {
+            msg.dispatch("/led/3", led_3);
+        }
+        if (!msg.hasError()) {
+            msg.dispatch("/led/4", led_4);
+        }
+        if (!msg.hasError()) {
+            msg.dispatch("/led/5", led_5);
+        }
+        if (!msg.hasError()) {
+            msg.dispatch("/track/22/vu", vu_1);
+        }
+        if (!msg.hasError()) {
+            msg.dispatch("/track/31/vu", vu_2);
+        }
+        if (!msg.hasError()) {
+            msg.dispatch("/track/40/vu", vu_3);
+        }
+        if (!msg.hasError()) {
+            msg.dispatch("/track/49/vu", vu_4);
+        }
+        if (!msg.hasError()) {
+            msg.dispatch("/track/master", master);
+        }
+        
     }
-*/
+
 
 /*
   // Button 5

@@ -59,12 +59,6 @@ IEM COORDINATECONVERTER             CONTROLLER_MOTION
 /CoordinateConverter/4/xPos     >>  /ambiJocky/motion/ch/4/pos/xyz [0]
 /CoordinateConverter/4/yPos     >>  /ambiJocky/motion/ch/4/pos/xyz [1]
 
-REAPER                              CONTROLLER_MIXER
-/track/14/vu (VU-Meter)         >>  /vu/1
-/track/20/vu (VU-Meter)         >>  /vu/2
-/track/26/vu (VU-Meter)         >>  /vu/3
-/track/32/vu (VU-Meter)         >>  /vu/4
-/track/master/vu (VU-Meter)     >>  /vu/5
 """
 
 import argparse
@@ -305,7 +299,9 @@ def poti_handler(address: str,
 
     if track == "1":
         if poti == "1":
-            val = numpy.interp(value, [0, 1], [0.4, 0.5])
+            xp = [0, 0.03,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
+            fp = [0, 0.415, 0.42, 0.425, 0.435, 0.45,  0.465, 0.48,  0.49, 0.5]
+            val = numpy.interp(value, xp, fp)
             reaper.send_message("/track/" + dj1_in + "/gain", val)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0.05, 0.50])
@@ -423,6 +419,16 @@ def button_handler(address: str,
         reaper.send_message("/track/" + mainmixbus + "/mute", 0)
         ctrl_mixer.send_message("/led/5", 1)
 
+def vu_handler(address: str,
+                   *osc_arguments: List[Any]) -> None:
+    words = address.split("/")
+    vu = words[4]
+
+    value = osc_arguments[0]
+
+    if vu == dj1_in:
+        ctrl_mixer.send_message("/track/22/vu", value)
+        print(str(value))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -440,6 +446,7 @@ if __name__ == "__main__":
     dispatcher.map("/button/*", button_handler)
     dispatcher.map("/CoordinateConverter/*", iemToCtrlMotion_handler)
     dispatcher.map("/ambiJocky/motion/ch/*", ctrlMotionToIem_handler)
+    dispatcher.map("/reaper/vu/track/*", vu_handler)
 
     server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))

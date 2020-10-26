@@ -126,7 +126,7 @@ float vuState_3 = 0.0;
 float vuState_4 = 0.0;
 
 void vu_1(OSCMessage &msg) {
-    vuState_1 = mapFloat(msg.getFloat(0), 0.0, 1.0, 0.0, 1023.0);
+    vuState_1 = mapFloat(msg.getFloat(0), 0.0, 1.0, 0.0, 15.0);
     analogWrite(vuPin_1, vuState_1);
 }
 

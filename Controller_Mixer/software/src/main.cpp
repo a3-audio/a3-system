@@ -124,17 +124,28 @@ float vuState_1 = 0.0;
 float vuState_2 = 0.0;
 float vuState_3 = 0.0;
 float vuState_4 = 0.0;
+float vuState_5 = 0.0;
 
 void vu_1(OSCMessage &msg) {
-    vuState_1 = mapFloat(msg.getFloat(0), 0.0, 1.0, 0.0, 15.0);
+    vuState_1 = mapFloat(msg.getFloat(0), 0.0, 1.0, 0.0, 16.0);
     analogWrite(vuPin_1, vuState_1);
 }
-
-void vu_2(OSCMessage &msg) {}
-void vu_3(OSCMessage &msg) {}
-void vu_4(OSCMessage &msg) {}
-void master(OSCMessage &msg) {}
-
+void vu_2(OSCMessage &msg) {
+    vuState_2 = mapFloat(msg.getFloat(0), 0.0, 1.0, 0.0, 16.0);
+    analogWrite(vuPin_2, vuState_2);
+}
+void vu_3(OSCMessage &msg) {
+    vuState_3 = mapFloat(msg.getFloat(0), 0.0, 1.0, 0.0, 16.0);
+    analogWrite(vuPin_3, vuState_3);
+}
+void vu_4(OSCMessage &msg) {
+    vuState_4 = mapFloat(msg.getFloat(0), 0.0, 1.0, 0.0, 16.0);
+    analogWrite(vuPin_4, vuState_4);
+}
+void vu_5(OSCMessage &msg) {
+    vuState_5 = mapFloat(msg.getFloat(0), 0.0, 1.0, 0.0, 16.0);
+    analogWrite(vuPin_5, vuState_5);
+}
 
 ///////////////////////////////////////Setup///////////////////////////////////
 void setup() {
@@ -166,6 +177,8 @@ void setup() {
     pinMode(buttonPin_3, INPUT_PULLUP);   // Pushbutton
     pinMode(buttonPin_4, INPUT_PULLUP);   // Pushbutton
     pinMode(buttonPin_5, INPUT_PULLUP);   // Pushbutton
+
+// configure analog pins
     pinMode(vuPin_1, OUTPUT);             // VU-METER
     pinMode(vuPin_2, OUTPUT);             // VU-METER
     pinMode(vuPin_3, OUTPUT);             // VU-METER
@@ -262,19 +275,19 @@ void loop(){
             msg.dispatch("/led/5", led_5);
         }
         if (!msg.hasError()) {
-            msg.dispatch("/track/22/vu", vu_1);
+            msg.dispatch("/track/1/vu", vu_1);
         }
         if (!msg.hasError()) {
-            msg.dispatch("/track/31/vu", vu_2);
+            msg.dispatch("/track/2/vu", vu_2);
         }
         if (!msg.hasError()) {
-            msg.dispatch("/track/40/vu", vu_3);
+            msg.dispatch("/track/3/vu", vu_3);
         }
         if (!msg.hasError()) {
-            msg.dispatch("/track/49/vu", vu_4);
+            msg.dispatch("/track/4/vu", vu_4);
         }
         if (!msg.hasError()) {
-            msg.dispatch("/track/master", master);
+            msg.dispatch("/track/5/vu", vu_5);
         }
         
     }

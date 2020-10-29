@@ -83,20 +83,20 @@ iem_3 = SimpleUDPClient('127.0.0.1', 1339)
 iem_4 = SimpleUDPClient('127.0.0.1', 1340)
 
 # reaper channelnumbers
-masterbus = "1" # mastervolume is controlled by /master/volume
-dj1_cb = "21" # cb = channelbus
-dj1_in = "22" # in = input
-dj2_cb = "30"
-dj2_in = "31"
-dj3_cb = "39"
-dj3_in = "40"
-dj4_cb = "48"
-dj4_in = "49"
-dj1_pfl = "13"
-dj2_pfl = "14"
-dj3_pfl = "15"
-dj4_pfl = "16"
-mainmixbus = "17"
+masterbus = "6" # mastervolume is controlled by /master/volume
+dj1_cb = "26" # cb = channelbus
+dj1_in = "27" # in = input
+dj2_cb = "35"
+dj2_in = "36"
+dj3_cb = "44"
+dj3_in = "45"
+dj4_cb = "53"
+dj4_in = "54"
+dj1_pfl = "18"
+dj2_pfl = "19"
+dj3_pfl = "20"
+dj4_pfl = "21"
+mainmixbus = "22"
 
 def ctrlMotionToIem_handler(address: str,
                             *osc_arguments: List[Any]) -> None:
@@ -299,8 +299,8 @@ def poti_handler(address: str,
 
     if track == "1":
         if poti == "1":
-            xp = [0, 0.03,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
-            fp = [0, 0.415, 0.42, 0.425, 0.435, 0.45,  0.465, 0.48,  0.49, 0.5]
+            xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
+            fp = [0, 0.44, 0.465, 0.47, 0.475, 0.48,  0.485, 0.49,  0.495, 0.5]
             val = numpy.interp(value, xp, fp)
             reaper.send_message("/track/" + dj1_in + "/gain", val)
         if poti == "2":
@@ -316,7 +316,9 @@ def poti_handler(address: str,
             reaper.send_message("/track/" + dj1_cb + "/volume", value)
     elif track == "2":
         if poti == "1":
-            val = numpy.interp(value, [0, 1], [0.4, 0.5])
+            xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
+            fp = [0, 0.44, 0.465, 0.47, 0.475, 0.48,  0.485, 0.49,  0.495, 0.5]
+            val = numpy.interp(value, xp, fp)
             reaper.send_message("/track/" + dj2_in + "/gain", val)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0, 0.50])
@@ -331,7 +333,9 @@ def poti_handler(address: str,
             reaper.send_message("/track/" + dj2_cb + "/volume", value)
     elif track == "3":
         if poti == "1":
-            val = numpy.interp(value, [0, 1], [0.4, 0.5])
+            xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
+            fp = [0, 0.44, 0.465, 0.47, 0.475, 0.48,  0.485, 0.49,  0.495, 0.5]
+            val = numpy.interp(value, xp, fp)
             reaper.send_message("/track/" + dj3_in + "/gain", val)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0, 0.50])
@@ -346,7 +350,9 @@ def poti_handler(address: str,
             reaper.send_message("/track/" + dj3_cb + "/volume", value)
     elif track == "4":
         if poti == "1":
-            val = numpy.interp(value, [0, 1], [0.4, 0.5])
+            xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
+            fp = [0, 0.44, 0.465, 0.47, 0.475, 0.48,  0.485, 0.49,  0.495, 0.5]
+            val = numpy.interp(value, xp, fp)
             reaper.send_message("/track/" + dj4_in + "/gain", val)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0, 0.50])
@@ -380,55 +386,82 @@ def button_handler(address: str,
 
     value = osc_arguments[0]
     if button == "1":
+        ctrl_mixer.send_message("/led/1", 1)
         reaper.send_message("/track/" + dj1_pfl + "/mute", 0)
         reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
         reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
         reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
         reaper.send_message("/track/" + mainmixbus + "/mute", 1)
-        ctrl_mixer.send_message("/led/1", 1)
 
     if button == "2":
+        ctrl_mixer.send_message("/led/2", 1)
         reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
         reaper.send_message("/track/" + dj2_pfl + "/mute", 0)
         reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
         reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
         reaper.send_message("/track/" + mainmixbus + "/mute", 1)
-        ctrl_mixer.send_message("/led/2", 1)
 
     if button == "3":
+        ctrl_mixer.send_message("/led/3", 1)
         reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
         reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
         reaper.send_message("/track/" + dj3_pfl + "/mute", 0)
         reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
         reaper.send_message("/track/" + mainmixbus + "/mute", 1)
-        ctrl_mixer.send_message("/led/3", 1)
 
     if button == "4":
+        ctrl_mixer.send_message("/led/4", 1)
         reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
         reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
         reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
         reaper.send_message("/track/" + dj4_pfl + "/mute", 0)
         reaper.send_message("/track/" + mainmixbus + "/mute", 1)
-        ctrl_mixer.send_message("/led/4", 1)
 
     if button == "5":
+        ctrl_mixer.send_message("/led/5", 1)
         reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
         reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
         reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
         reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
         reaper.send_message("/track/" + mainmixbus + "/mute", 0)
-        ctrl_mixer.send_message("/led/5", 1)
 
 def vu_handler(address: str,
                    *osc_arguments: List[Any]) -> None:
     words = address.split("/")
-    vu = words[4]
+    vu = words[3]
 
     value = osc_arguments[0]
 
-    if vu == dj1_in:
-        ctrl_mixer.send_message("/track/22/vu", value)
-        print(str(value))
+    if vu == "1":
+        fp = [0, 0.05, 0.10, 0.15, 0.20, 0.40, 0.60, 0.65, 0.75, 0.90]
+        xp = [0, 0.25, 0.30, 0.37, 0.43, 0.50, 0.55, 0.58, 0.60, 0.64]
+        val = numpy.interp(value, xp, fp)
+        ctrl_mixer.send_message("/track/1/vu", val)
+        # print(str(value))
+    if vu == "2":
+        fp = [0, 0.05, 0.10, 0.15, 0.20, 0.40, 0.60, 0.65, 0.75, 0.90]
+        xp = [0, 0.25, 0.30, 0.37, 0.43, 0.50, 0.55, 0.58, 0.60, 0.64]
+        val = numpy.interp(value, xp, fp)
+        ctrl_mixer.send_message("/track/2/vu", val)
+        # print(str(value))
+    if vu == "3":
+        fp = [0, 0.05, 0.10, 0.15, 0.20, 0.40, 0.60, 0.65, 0.75, 0.90]
+        xp = [0, 0.25, 0.30, 0.37, 0.43, 0.50, 0.55, 0.58, 0.60, 0.64]
+        val = numpy.interp(value, xp, fp)
+        ctrl_mixer.send_message("/track/3/vu", val)
+        # print(str(value))
+    if vu == "4":
+        fp = [0, 0.05, 0.10, 0.15, 0.20, 0.40, 0.60, 0.65, 0.75, 0.90]
+        xp = [0, 0.25, 0.30, 0.37, 0.43, 0.50, 0.55, 0.58, 0.60, 0.64]
+        val = numpy.interp(value, xp, fp)
+        ctrl_mixer.send_message("/track/4/vu", val)
+        # print(str(value))
+    if vu == "5":
+        fp = [0, 0.05, 0.10, 0.15, 0.20, 0.40, 0.60, 0.65, 0.75, 0.90]
+        xp = [0, 0.25, 0.30, 0.37, 0.43, 0.50, 0.55, 0.58, 0.60, 0.64]
+        val = numpy.interp(value, xp, fp)
+        ctrl_mixer.send_message("/track/5/vu", val)
+        # print(str(value))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -446,7 +479,7 @@ if __name__ == "__main__":
     dispatcher.map("/button/*", button_handler)
     dispatcher.map("/CoordinateConverter/*", iemToCtrlMotion_handler)
     dispatcher.map("/ambiJocky/motion/ch/*", ctrlMotionToIem_handler)
-    dispatcher.map("/reaper/vu/track/*", vu_handler)
+    dispatcher.map("/reaper/vu/*", vu_handler)
 
     server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))

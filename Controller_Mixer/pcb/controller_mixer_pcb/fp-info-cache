@@ -1,729 +1,302 @@
-166587804969194
-Resistor_THT
-R_Array_SIP4
-4-pin Resistor SIP pack
-R
-0
-4
-4
-Resistor_THT
-R_Array_SIP5
-5-pin Resistor SIP pack
-R
-0
-5
-5
-Resistor_THT
-R_Array_SIP6
-6-pin Resistor SIP pack
-R
-0
-6
-6
-Resistor_THT
-R_Array_SIP7
-7-pin Resistor SIP pack
-R
-0
-7
-7
-Resistor_THT
-R_Array_SIP8
-8-pin Resistor SIP pack
-R
-0
-8
-8
-Resistor_THT
-R_Array_SIP9
-9-pin Resistor SIP pack
-R
-0
-9
-9
-Resistor_THT
-R_Array_SIP10
-10-pin Resistor SIP pack
-R
-0
-10
-10
-Resistor_THT
-R_Array_SIP11
-11-pin Resistor SIP pack
-R
-0
-11
-11
-Resistor_THT
-R_Array_SIP12
-12-pin Resistor SIP pack
-R
-0
-12
-12
-Resistor_THT
-R_Array_SIP13
-13-pin Resistor SIP pack
-R
+68877650132268
+Connector_USB
+USB3_A_Molex_48393-001
+USB 3.0, type A, right angle (http://www.molex.com/pdm_docs/sd/483930003_sd.pdf)
+USB 3.0 type A right angle
 0
 13
+10
+Connector_USB
+USB3_A_Plug_Wuerth_692112030100_Horizontal
+USB3 type A Plug, Horizontal, http://katalog.we-online.de/em/datasheet/692112030100.pdf
+usb A plug horizontal
+0
+11
+10
+Connector_USB
+USB_A_CNCTech_1001-011-01101_Horizontal
+USB type A Plug, Horizontal, http://cnctech.us/pdfs/1001-011-01101.pdf
+USB-A
+0
+6
+5
+Connector_USB
+USB_A_CONNFLY_DS1095-WNR0
+http://www.connfly.com/userfiles/image/UpLoadFile/File/2013/5/6/DS1095.pdf
+USB-A receptacle horizontal through-hole
+0
+6
+5
+Connector_USB
+USB_A_Molex_67643_Horizontal
+USB type A, Horizontal, https://www.molex.com/pdm_docs/sd/676433910_sd.pdf
+USB_A Female Connector receptacle
+0
+6
+5
+Connector_USB
+USB_A_Molex_105057_Vertical
+https://www.molex.com/pdm_docs/sd/1050570001_sd.pdf
+USB A Vertical
+0
+7
+5
+Connector_USB
+USB_A_Stewart_SS-52100-001_Horizontal
+USB A connector https://belfuse.com/resources/drawings/stewartconnector/dr-stw-ss-52100-001.pdf
+USB_A Female Connector receptacle
+0
+6
+5
+Connector_USB
+USB_A_Wuerth_614004134726_Horizontal
+USB A connector https://www.we-online.com/catalog/datasheet/614004134726.pdf
+USB_A Female Connector receptacle
+0
+8
+5
+Connector_USB
+USB_A_Wuerth_61400826021_Horizontal_Stacked
+Stacked USB A connector http://katalog.we-online.de/em/datasheet/61400826021.pdf
+Wuerth stacked USB_A
+0
+12
+9
+Connector_USB
+USB_B_Amphenol_MUSB-D511_Vertical_Rugged
+A,phenol MUSB_D511, USB B female connector, straight, rugged, https://www.amphenolcanada.com/ProductSearch/drawings/AC/MUSBD511XX.pdf
+USB_B_MUSB_Straight female connector straight rugged MUSB D511
+0
+6
+5
+Connector_USB
+USB_B_Lumberg_2411_02_Horizontal
+USB 2.0 receptacle type B, horizontal version, through-hole, https://downloads.lumberg.com/datenblaetter/en/2411_02.pdf
+USB B receptacle horizontal through-hole
+0
+6
+5
+Connector_USB
+USB_B_OST_USB-B1HSxx_Horizontal
+USB B receptacle, Horizontal, through-hole, http://www.on-shore.com/wp-content/uploads/2015/09/usb-b1hsxx.pdf
+USB-B receptacle horizontal through-hole
+0
+6
+5
+Connector_USB
+USB_B_TE_5787834_Vertical
+http://www.mouser.com/ds/2/418/NG_CD_5787834_A4-669110.pdf
+USB_B USB B vertical female connector
+0
+6
+5
+Connector_USB
+USB_C_Plug_JAE_DX07P024AJ1
+Universal Serial Bus (USB) Shielded I/O Plug, Type C, Right Angle, Surface Mount, https://www.jae.com/en/searchfilter/?topics_keyword=DX07P024AJ1&mainItemSelect=1
+USB Type-C Plug Edge Mount
+0
+30
+25
+Connector_USB
+USB_C_Plug_Molex_105444
+Universal Serial Bus (USB) Shielded I/O Plug, Type C, Right Angle, Surface Mount, http://www.molex.com/pdm_docs/sd/1054440001_sd.pdf
+USB Type-C Plug Edge Mount
+0
+24
+23
+Connector_USB
+USB_C_Receptacle_Amphenol_12401548E4-2A
+USB TYPE C, RA RCPT PCB, Hybrid, https://www.amphenolcanada.com/StockAvailabilityPrice.aspx?From=&PartNum=12401548E4%7e2A
+USB C Type-C Receptacle Hybrid
+0
+28
+25
+Connector_USB
+USB_C_Receptacle_Amphenol_12401548E4-2A_CircularHoles
+USB TYPE C, RA RCPT PCB, Hybrid, https://www.amphenolcanada.com/StockAvailabilityPrice.aspx?From=&PartNum=12401548E4%7e2A
+USB C Type-C Receptacle Hybrid
+0
+28
+25
+Connector_USB
+USB_C_Receptacle_Amphenol_12401610E4-2A
+USB TYPE C, RA RCPT PCB, SMT, https://www.amphenolcanada.com/StockAvailabilityPrice.aspx?From=&PartNum=12401610E4%7e2A
+USB C Type-C Receptacle SMD
+0
+28
+25
+Connector_USB
+USB_C_Receptacle_Amphenol_12401610E4-2A_CircularHoles
+USB TYPE C, RA RCPT PCB, SMT, https://www.amphenolcanada.com/StockAvailabilityPrice.aspx?From=&PartNum=12401610E4%7e2A
+USB C Type-C Receptacle SMD
+0
+28
+25
+Connector_USB
+USB_C_Receptacle_GCT_USB4085
+USB 2.0 Type C Receptacle, https://gct.co/Files/Drawings/USB4085.pdf
+USB Type-C Receptacle Through-hole Right angle
+0
+20
+17
+Connector_USB
+USB_C_Receptacle_HRO_TYPE-C-31-M-12
+USB Type-C receptacle for USB 2.0 and PD, http://www.krhro.com/uploads/soft/180320/1-1P320120243.pdf
+usb usb-c 2.0 pd
+0
+20
+17
+Connector_USB
+USB_C_Receptacle_JAE_DX07S024WJ1R350
+http://www.jae.com/z-en/pdf_download_exec.cfm?param=SJ117219.pdf
+USB C Type-C Receptacle SMD
+0
+30
+25
+Connector_USB
+USB_C_Receptacle_JAE_DX07S024WJ3R400
+USB TYPE C, VERT RCPT PCB, SMT, http://www.jae.com/z-en/pdf_download_exec.cfm?param=SJ117928.pdf
+USB C Type-C Receptacle SMD
+0
+28
+25
+Connector_USB
+USB_C_Receptacle_Palconn_UTC16-G
+http://www.palpilot.com/wp-content/uploads/2017/05/UTC027-GKN-OR-Rev-A.pdf
+USB C Type-C Receptacle USB2.0
+0
+20
+17
+Connector_USB
+USB_C_Receptacle_XKB_U262-16XN-4BVC11
+USB Type C, right-angle, SMT, https://datasheet.lcsc.com/szlcsc/1811141824_XKB-Enterprise-U262-161N-4BVC11_C319148.pdf
+USB C Type-C Receptacle SMD
+0
+20
+17
+Connector_USB
+USB_Micro-AB_Molex_47590-0001
+Micro USB AB receptable, right-angle inverted (https://www.molex.com/pdm_docs/sd/475900001_sd.pdf)
+Micro AB USB SMD
+0
+14
+6
+Connector_USB
+USB_Micro-B_Amphenol_10103594-0001LF_Horizontal
+Micro USB Type B 10103594-0001LF, http://cdn.amphenol-icc.com/media/wysiwyg/files/drawing/10103594.pdf
+USB USB_B USB_micro USB_OTG
+0
+17
+6
+Connector_USB
+USB_Micro-B_Amphenol_10104110_Horizontal
+USB Micro-B, horizontal, https://cdn.amphenol-icc.com/media/wysiwyg/files/drawing/10104110.pdf
+USB Micro B horizontal
+0
+9
+6
+Connector_USB
+USB_Micro-B_Amphenol_10118194_Horizontal
+USB Micro-B receptacle, horizontal, SMD, 10118194, https://cdn.amphenol-icc.com/media/wysiwyg/files/drawing/10118194.pdf
+USB Micro B horizontal SMD
+0
+17
+6
+Connector_USB
+USB_Micro-B_GCT_USB3076-30-A
+GCT Micro USB https://gct.co/files/drawings/usb3076.pdf
+Micro-USB SMD Typ-B GCT
+0
+11
+6
+Connector_USB
+USB_Micro-B_Molex-105017-0001
+http://www.molex.com/pdm_docs/sd/1050170001_sd.pdf
+Micro-USB SMD Typ-B
+0
 13
-Resistor_THT
-R_Array_SIP14
-14-pin Resistor SIP pack
-R
-0
-14
-14
-Resistor_THT
-R_Axial_DIN0204_L3.6mm_D1.6mm_P1.90mm_Vertical
-Resistor, Axial_DIN0204 series, Axial, Vertical, pin pitch=1.9mm, 0.167W, length*diameter=3.6*1.6mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0204 series Axial Vertical pin pitch 1.9mm 0.167W length 3.6mm diameter 1.6mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical
-Resistor, Axial_DIN0204 series, Axial, Vertical, pin pitch=2.54mm, 0.167W, length*diameter=3.6*1.6mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0204 series Axial Vertical pin pitch 2.54mm 0.167W length 3.6mm diameter 1.6mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal
-Resistor, Axial_DIN0204 series, Axial, Horizontal, pin pitch=5.08mm, 0.167W, length*diameter=3.6*1.6mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0204 series Axial Horizontal pin pitch 5.08mm 0.167W length 3.6mm diameter 1.6mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Vertical
-Resistor, Axial_DIN0204 series, Axial, Vertical, pin pitch=5.08mm, 0.167W, length*diameter=3.6*1.6mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0204 series Axial Vertical pin pitch 5.08mm 0.167W length 3.6mm diameter 1.6mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal
-Resistor, Axial_DIN0204 series, Axial, Horizontal, pin pitch=7.62mm, 0.167W, length*diameter=3.6*1.6mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0204 series Axial Horizontal pin pitch 7.62mm 0.167W length 3.6mm diameter 1.6mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical
-Resistor, Axial_DIN0207 series, Axial, Vertical, pin pitch=2.54mm, 0.25W = 1/4W, length*diameter=6.3*2.5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0207 series Axial Vertical pin pitch 2.54mm 0.25W = 1/4W length 6.3mm diameter 2.5mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0207_L6.3mm_D2.5mm_P5.08mm_Vertical
-Resistor, Axial_DIN0207 series, Axial, Vertical, pin pitch=5.08mm, 0.25W = 1/4W, length*diameter=6.3*2.5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0207 series Axial Vertical pin pitch 5.08mm 0.25W = 1/4W length 6.3mm diameter 2.5mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal
-Resistor, Axial_DIN0207 series, Axial, Horizontal, pin pitch=7.62mm, 0.25W = 1/4W, length*diameter=6.3*2.5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0207 series Axial Horizontal pin pitch 7.62mm 0.25W = 1/4W length 6.3mm diameter 2.5mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
-Resistor, Axial_DIN0207 series, Axial, Horizontal, pin pitch=10.16mm, 0.25W = 1/4W, length*diameter=6.3*2.5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0207 series Axial Horizontal pin pitch 10.16mm 0.25W = 1/4W length 6.3mm diameter 2.5mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0207_L6.3mm_D2.5mm_P15.24mm_Horizontal
-Resistor, Axial_DIN0207 series, Axial, Horizontal, pin pitch=15.24mm, 0.25W = 1/4W, length*diameter=6.3*2.5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0207 series Axial Horizontal pin pitch 15.24mm 0.25W = 1/4W length 6.3mm diameter 2.5mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0309_L9.0mm_D3.2mm_P2.54mm_Vertical
-Resistor, Axial_DIN0309 series, Axial, Vertical, pin pitch=2.54mm, 0.5W = 1/2W, length*diameter=9*3.2mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0309 series Axial Vertical pin pitch 2.54mm 0.5W = 1/2W length 9mm diameter 3.2mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0309_L9.0mm_D3.2mm_P5.08mm_Vertical
-Resistor, Axial_DIN0309 series, Axial, Vertical, pin pitch=5.08mm, 0.5W = 1/2W, length*diameter=9*3.2mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0309 series Axial Vertical pin pitch 5.08mm 0.5W = 1/2W length 9mm diameter 3.2mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal
-Resistor, Axial_DIN0309 series, Axial, Horizontal, pin pitch=12.7mm, 0.5W = 1/2W, length*diameter=9*3.2mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0309 series Axial Horizontal pin pitch 12.7mm 0.5W = 1/2W length 9mm diameter 3.2mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0309_L9.0mm_D3.2mm_P15.24mm_Horizontal
-Resistor, Axial_DIN0309 series, Axial, Horizontal, pin pitch=15.24mm, 0.5W = 1/2W, length*diameter=9*3.2mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0309 series Axial Horizontal pin pitch 15.24mm 0.5W = 1/2W length 9mm diameter 3.2mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0309_L9.0mm_D3.2mm_P20.32mm_Horizontal
-Resistor, Axial_DIN0309 series, Axial, Horizontal, pin pitch=20.32mm, 0.5W = 1/2W, length*diameter=9*3.2mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0309 series Axial Horizontal pin pitch 20.32mm 0.5W = 1/2W length 9mm diameter 3.2mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0309_L9.0mm_D3.2mm_P25.40mm_Horizontal
-Resistor, Axial_DIN0309 series, Axial, Horizontal, pin pitch=25.4mm, 0.5W = 1/2W, length*diameter=9*3.2mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0309 series Axial Horizontal pin pitch 25.4mm 0.5W = 1/2W length 9mm diameter 3.2mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0411_L9.9mm_D3.6mm_P5.08mm_Vertical
-Resistor, Axial_DIN0411 series, Axial, Vertical, pin pitch=5.08mm, 1W, length*diameter=9.9*3.6mm^2
-Resistor Axial_DIN0411 series Axial Vertical pin pitch 5.08mm 1W length 9.9mm diameter 3.6mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0411_L9.9mm_D3.6mm_P7.62mm_Vertical
-Resistor, Axial_DIN0411 series, Axial, Vertical, pin pitch=7.62mm, 1W, length*diameter=9.9*3.6mm^2
-Resistor Axial_DIN0411 series Axial Vertical pin pitch 7.62mm 1W length 9.9mm diameter 3.6mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal
-Resistor, Axial_DIN0411 series, Axial, Horizontal, pin pitch=12.7mm, 1W, length*diameter=9.9*3.6mm^2
-Resistor Axial_DIN0411 series Axial Horizontal pin pitch 12.7mm 1W length 9.9mm diameter 3.6mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal
-Resistor, Axial_DIN0411 series, Axial, Horizontal, pin pitch=15.24mm, 1W, length*diameter=9.9*3.6mm^2
-Resistor Axial_DIN0411 series Axial Horizontal pin pitch 15.24mm 1W length 9.9mm diameter 3.6mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0411_L9.9mm_D3.6mm_P20.32mm_Horizontal
-Resistor, Axial_DIN0411 series, Axial, Horizontal, pin pitch=20.32mm, 1W, length*diameter=9.9*3.6mm^2
-Resistor Axial_DIN0411 series Axial Horizontal pin pitch 20.32mm 1W length 9.9mm diameter 3.6mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0411_L9.9mm_D3.6mm_P25.40mm_Horizontal
-Resistor, Axial_DIN0411 series, Axial, Horizontal, pin pitch=25.4mm, 1W, length*diameter=9.9*3.6mm^2
-Resistor Axial_DIN0411 series Axial Horizontal pin pitch 25.4mm 1W length 9.9mm diameter 3.6mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0414_L11.9mm_D4.5mm_P5.08mm_Vertical
-Resistor, Axial_DIN0414 series, Axial, Vertical, pin pitch=5.08mm, 2W, length*diameter=11.9*4.5mm^2, http://www.vishay.com/docs/20128/wkxwrx.pdf
-Resistor Axial_DIN0414 series Axial Vertical pin pitch 5.08mm 2W length 11.9mm diameter 4.5mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0414_L11.9mm_D4.5mm_P7.62mm_Vertical
-Resistor, Axial_DIN0414 series, Axial, Vertical, pin pitch=7.62mm, 2W, length*diameter=11.9*4.5mm^2, http://www.vishay.com/docs/20128/wkxwrx.pdf
-Resistor Axial_DIN0414 series Axial Vertical pin pitch 7.62mm 2W length 11.9mm diameter 4.5mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0414_L11.9mm_D4.5mm_P15.24mm_Horizontal
-Resistor, Axial_DIN0414 series, Axial, Horizontal, pin pitch=15.24mm, 2W, length*diameter=11.9*4.5mm^2, http://www.vishay.com/docs/20128/wkxwrx.pdf
-Resistor Axial_DIN0414 series Axial Horizontal pin pitch 15.24mm 2W length 11.9mm diameter 4.5mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal
-Resistor, Axial_DIN0414 series, Axial, Horizontal, pin pitch=20.32mm, 2W, length*diameter=11.9*4.5mm^2, http://www.vishay.com/docs/20128/wkxwrx.pdf
-Resistor Axial_DIN0414 series Axial Horizontal pin pitch 20.32mm 2W length 11.9mm diameter 4.5mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0414_L11.9mm_D4.5mm_P25.40mm_Horizontal
-Resistor, Axial_DIN0414 series, Axial, Horizontal, pin pitch=25.4mm, 2W, length*diameter=11.9*4.5mm^2, http://www.vishay.com/docs/20128/wkxwrx.pdf
-Resistor Axial_DIN0414 series Axial Horizontal pin pitch 25.4mm 2W length 11.9mm diameter 4.5mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0516_L15.5mm_D5.0mm_P5.08mm_Vertical
-Resistor, Axial_DIN0516 series, Axial, Vertical, pin pitch=5.08mm, 2W, length*diameter=15.5*5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0516 series Axial Vertical pin pitch 5.08mm 2W length 15.5mm diameter 5mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0516_L15.5mm_D5.0mm_P7.62mm_Vertical
-Resistor, Axial_DIN0516 series, Axial, Vertical, pin pitch=7.62mm, 2W, length*diameter=15.5*5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0516 series Axial Vertical pin pitch 7.62mm 2W length 15.5mm diameter 5mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0516_L15.5mm_D5.0mm_P20.32mm_Horizontal
-Resistor, Axial_DIN0516 series, Axial, Horizontal, pin pitch=20.32mm, 2W, length*diameter=15.5*5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0516 series Axial Horizontal pin pitch 20.32mm 2W length 15.5mm diameter 5mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0516_L15.5mm_D5.0mm_P25.40mm_Horizontal
-Resistor, Axial_DIN0516 series, Axial, Horizontal, pin pitch=25.4mm, 2W, length*diameter=15.5*5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0516 series Axial Horizontal pin pitch 25.4mm 2W length 15.5mm diameter 5mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0516_L15.5mm_D5.0mm_P30.48mm_Horizontal
-Resistor, Axial_DIN0516 series, Axial, Horizontal, pin pitch=30.48mm, 2W, length*diameter=15.5*5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf
-Resistor Axial_DIN0516 series Axial Horizontal pin pitch 30.48mm 2W length 15.5mm diameter 5mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0614_L14.3mm_D5.7mm_P5.08mm_Vertical
-Resistor, Axial_DIN0614 series, Axial, Vertical, pin pitch=5.08mm, 1.5W, length*diameter=14.3*5.7mm^2
-Resistor Axial_DIN0614 series Axial Vertical pin pitch 5.08mm 1.5W length 14.3mm diameter 5.7mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0614_L14.3mm_D5.7mm_P7.62mm_Vertical
-Resistor, Axial_DIN0614 series, Axial, Vertical, pin pitch=7.62mm, 1.5W, length*diameter=14.3*5.7mm^2
-Resistor Axial_DIN0614 series Axial Vertical pin pitch 7.62mm 1.5W length 14.3mm diameter 5.7mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0614_L14.3mm_D5.7mm_P15.24mm_Horizontal
-Resistor, Axial_DIN0614 series, Axial, Horizontal, pin pitch=15.24mm, 1.5W, length*diameter=14.3*5.7mm^2
-Resistor Axial_DIN0614 series Axial Horizontal pin pitch 15.24mm 1.5W length 14.3mm diameter 5.7mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0614_L14.3mm_D5.7mm_P20.32mm_Horizontal
-Resistor, Axial_DIN0614 series, Axial, Horizontal, pin pitch=20.32mm, 1.5W, length*diameter=14.3*5.7mm^2
-Resistor Axial_DIN0614 series Axial Horizontal pin pitch 20.32mm 1.5W length 14.3mm diameter 5.7mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0614_L14.3mm_D5.7mm_P25.40mm_Horizontal
-Resistor, Axial_DIN0614 series, Axial, Horizontal, pin pitch=25.4mm, 1.5W, length*diameter=14.3*5.7mm^2
-Resistor Axial_DIN0614 series Axial Horizontal pin pitch 25.4mm 1.5W length 14.3mm diameter 5.7mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0617_L17.0mm_D6.0mm_P5.08mm_Vertical
-Resistor, Axial_DIN0617 series, Axial, Vertical, pin pitch=5.08mm, 2W, length*diameter=17*6mm^2, http://www.vishay.com/docs/20128/wkxwrx.pdf
-Resistor Axial_DIN0617 series Axial Vertical pin pitch 5.08mm 2W length 17mm diameter 6mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0617_L17.0mm_D6.0mm_P7.62mm_Vertical
-Resistor, Axial_DIN0617 series, Axial, Vertical, pin pitch=7.62mm, 2W, length*diameter=17*6mm^2, http://www.vishay.com/docs/20128/wkxwrx.pdf
-Resistor Axial_DIN0617 series Axial Vertical pin pitch 7.62mm 2W length 17mm diameter 6mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0617_L17.0mm_D6.0mm_P20.32mm_Horizontal
-Resistor, Axial_DIN0617 series, Axial, Horizontal, pin pitch=20.32mm, 2W, length*diameter=17*6mm^2, http://www.vishay.com/docs/20128/wkxwrx.pdf
-Resistor Axial_DIN0617 series Axial Horizontal pin pitch 20.32mm 2W length 17mm diameter 6mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0617_L17.0mm_D6.0mm_P25.40mm_Horizontal
-Resistor, Axial_DIN0617 series, Axial, Horizontal, pin pitch=25.4mm, 2W, length*diameter=17*6mm^2, http://www.vishay.com/docs/20128/wkxwrx.pdf
-Resistor Axial_DIN0617 series Axial Horizontal pin pitch 25.4mm 2W length 17mm diameter 6mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0617_L17.0mm_D6.0mm_P30.48mm_Horizontal
-Resistor, Axial_DIN0617 series, Axial, Horizontal, pin pitch=30.48mm, 2W, length*diameter=17*6mm^2, http://www.vishay.com/docs/20128/wkxwrx.pdf
-Resistor Axial_DIN0617 series Axial Horizontal pin pitch 30.48mm 2W length 17mm diameter 6mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0918_L18.0mm_D9.0mm_P7.62mm_Vertical
-Resistor, Axial_DIN0918 series, Axial, Vertical, pin pitch=7.62mm, 4W, length*diameter=18*9mm^2
-Resistor Axial_DIN0918 series Axial Vertical pin pitch 7.62mm 4W length 18mm diameter 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0918_L18.0mm_D9.0mm_P22.86mm_Horizontal
-Resistor, Axial_DIN0918 series, Axial, Horizontal, pin pitch=22.86mm, 4W, length*diameter=18*9mm^2
-Resistor Axial_DIN0918 series Axial Horizontal pin pitch 22.86mm 4W length 18mm diameter 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0918_L18.0mm_D9.0mm_P25.40mm_Horizontal
-Resistor, Axial_DIN0918 series, Axial, Horizontal, pin pitch=25.4mm, 4W, length*diameter=18*9mm^2
-Resistor Axial_DIN0918 series Axial Horizontal pin pitch 25.4mm 4W length 18mm diameter 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0918_L18.0mm_D9.0mm_P30.48mm_Horizontal
-Resistor, Axial_DIN0918 series, Axial, Horizontal, pin pitch=30.48mm, 4W, length*diameter=18*9mm^2
-Resistor Axial_DIN0918 series Axial Horizontal pin pitch 30.48mm 4W length 18mm diameter 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0922_L20.0mm_D9.0mm_P7.62mm_Vertical
-Resistor, Axial_DIN0922 series, Axial, Vertical, pin pitch=7.62mm, 5W, length*diameter=20*9mm^2, http://www.vishay.com/docs/20128/wkxwrx.pdf
-Resistor Axial_DIN0922 series Axial Vertical pin pitch 7.62mm 5W length 20mm diameter 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0922_L20.0mm_D9.0mm_P25.40mm_Horizontal
-Resistor, Axial_DIN0922 series, Axial, Horizontal, pin pitch=25.4mm, 5W, length*diameter=20*9mm^2, http://www.vishay.com/docs/20128/wkxwrx.pdf
-Resistor Axial_DIN0922 series Axial Horizontal pin pitch 25.4mm 5W length 20mm diameter 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_DIN0922_L20.0mm_D9.0mm_P30.48mm_Horizontal
-Resistor, Axial_DIN0922 series, Axial, Horizontal, pin pitch=30.48mm, 5W, length*diameter=20*9mm^2, http://www.vishay.com/docs/20128/wkxwrx.pdf
-Resistor Axial_DIN0922 series Axial Horizontal pin pitch 30.48mm 5W length 20mm diameter 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L20.0mm_W6.4mm_P5.08mm_Vertical
-Resistor, Axial_Power series, Axial, Vertical, pin pitch=5.08mm, 4W, length*width*height=20*6.4*6.4mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Axial Vertical pin pitch 5.08mm 4W length 20mm width 6.4mm height 6.4mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L20.0mm_W6.4mm_P7.62mm_Vertical
-Resistor, Axial_Power series, Axial, Vertical, pin pitch=7.62mm, 4W, length*width*height=20*6.4*6.4mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Axial Vertical pin pitch 7.62mm 4W length 20mm width 6.4mm height 6.4mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L20.0mm_W6.4mm_P22.40mm
-Resistor, Axial_Power series, Box, pin pitch=22.4mm, 4W, length*width*height=20*6.4*6.4mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 22.4mm 4W length 20mm width 6.4mm height 6.4mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L20.0mm_W6.4mm_P25.40mm
-Resistor, Axial_Power series, Box, pin pitch=25.4mm, 4W, length*width*height=20*6.4*6.4mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 25.4mm 4W length 20mm width 6.4mm height 6.4mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L20.0mm_W6.4mm_P30.48mm
-Resistor, Axial_Power series, Box, pin pitch=30.48mm, 4W, length*width*height=20*6.4*6.4mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 30.48mm 4W length 20mm width 6.4mm height 6.4mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L25.0mm_W6.4mm_P27.94mm
-Resistor, Axial_Power series, Box, pin pitch=27.94mm, 5W, length*width*height=25*6.4*6.4mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 27.94mm 5W length 25mm width 6.4mm height 6.4mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L25.0mm_W6.4mm_P30.48mm
-Resistor, Axial_Power series, Box, pin pitch=30.48mm, 5W, length*width*height=25*6.4*6.4mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 30.48mm 5W length 25mm width 6.4mm height 6.4mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L25.0mm_W9.0mm_P7.62mm_Vertical
-Resistor, Axial_Power series, Axial, Vertical, pin pitch=7.62mm, 7W, length*width*height=25*9*9mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Axial Vertical pin pitch 7.62mm 7W length 25mm width 9mm height 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L25.0mm_W9.0mm_P10.16mm_Vertical
-Resistor, Axial_Power series, Axial, Vertical, pin pitch=10.16mm, 7W, length*width*height=25*9*9mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Axial Vertical pin pitch 10.16mm 7W length 25mm width 9mm height 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L25.0mm_W9.0mm_P27.94mm
-Resistor, Axial_Power series, Box, pin pitch=27.94mm, 7W, length*width*height=25*9*9mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 27.94mm 7W length 25mm width 9mm height 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L25.0mm_W9.0mm_P30.48mm
-Resistor, Axial_Power series, Box, pin pitch=30.48mm, 7W, length*width*height=25*9*9mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 30.48mm 7W length 25mm width 9mm height 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L38.0mm_W6.4mm_P40.64mm
-Resistor, Axial_Power series, Box, pin pitch=40.64mm, 7W, length*width*height=38*6.4*6.4mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 40.64mm 7W length 38mm width 6.4mm height 6.4mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L38.0mm_W6.4mm_P45.72mm
-Resistor, Axial_Power series, Box, pin pitch=45.72mm, 7W, length*width*height=38*6.4*6.4mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 45.72mm 7W length 38mm width 6.4mm height 6.4mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L38.0mm_W9.0mm_P40.64mm
-Resistor, Axial_Power series, Box, pin pitch=40.64mm, 9W, length*width*height=38*9*9mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 40.64mm 9W length 38mm width 9mm height 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L38.0mm_W9.0mm_P45.72mm
-Resistor, Axial_Power series, Box, pin pitch=45.72mm, 9W, length*width*height=38*9*9mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 45.72mm 9W length 38mm width 9mm height 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L48.0mm_W12.5mm_P7.62mm_Vertical
-Resistor, Axial_Power series, Axial, Vertical, pin pitch=7.62mm, 15W, length*width*height=48*12.5*12.5mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Axial Vertical pin pitch 7.62mm 15W length 48mm width 12.5mm height 12.5mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L48.0mm_W12.5mm_P10.16mm_Vertical
-Resistor, Axial_Power series, Axial, Vertical, pin pitch=10.16mm, 15W, length*width*height=48*12.5*12.5mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Axial Vertical pin pitch 10.16mm 15W length 48mm width 12.5mm height 12.5mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L48.0mm_W12.5mm_P55.88mm
-Resistor, Axial_Power series, Box, pin pitch=55.88mm, 15W, length*width*height=48*12.5*12.5mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 55.88mm 15W length 48mm width 12.5mm height 12.5mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L48.0mm_W12.5mm_P60.96mm
-Resistor, Axial_Power series, Box, pin pitch=60.96mm, 15W, length*width*height=48*12.5*12.5mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 60.96mm 15W length 48mm width 12.5mm height 12.5mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L50.0mm_W9.0mm_P55.88mm
-Resistor, Axial_Power series, Box, pin pitch=55.88mm, 11W, length*width*height=50*9*9mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 55.88mm 11W length 50mm width 9mm height 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L50.0mm_W9.0mm_P60.96mm
-Resistor, Axial_Power series, Box, pin pitch=60.96mm, 11W, length*width*height=50*9*9mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 60.96mm 11W length 50mm width 9mm height 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L60.0mm_W14.0mm_P10.16mm_Vertical
-Resistor, Axial_Power series, Axial, Vertical, pin pitch=10.16mm, 25W, length*width*height=60*14*14mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Axial Vertical pin pitch 10.16mm 25W length 60mm width 14mm height 14mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L60.0mm_W14.0mm_P66.04mm
-Resistor, Axial_Power series, Box, pin pitch=66.04mm, 25W, length*width*height=60*14*14mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 66.04mm 25W length 60mm width 14mm height 14mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L60.0mm_W14.0mm_P71.12mm
-Resistor, Axial_Power series, Box, pin pitch=71.12mm, 25W, length*width*height=60*14*14mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 71.12mm 25W length 60mm width 14mm height 14mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L75.0mm_W9.0mm_P81.28mm
-Resistor, Axial_Power series, Box, pin pitch=81.28mm, 17W, length*width*height=75*9*9mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 81.28mm 17W length 75mm width 9mm height 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_Power_L75.0mm_W9.0mm_P86.36mm
-Resistor, Axial_Power series, Box, pin pitch=86.36mm, 17W, length*width*height=75*9*9mm^3, http://cdn-reichelt.de/documents/datenblatt/B400/5WAXIAL_9WAXIAL_11WAXIAL_17WAXIAL%23YAG.pdf
-Resistor Axial_Power series Box pin pitch 86.36mm 17W length 75mm width 9mm height 9mm
-0
-2
-2
-Resistor_THT
-R_Axial_Shunt_L22.2mm_W8.0mm_PS14.30mm_P25.40mm
-Resistor, Axial_Shunt series, Box, pin pitch=25.4mm, 3W, length*width*height=22.2*8*8mm^3, shunt pin pitch = 14.30mm, http://www.vishay.com/docs/30217/cpsl.pdf
-Resistor Axial_Shunt series Box pin pitch 25.4mm 3W length 22.2mm width 8mm height 8mm shunt pin pitch 14.30mm
-0
-4
-4
-Resistor_THT
-R_Axial_Shunt_L22.2mm_W9.5mm_PS14.30mm_P25.40mm
-Resistor, Axial_Shunt series, Box, pin pitch=25.4mm, 5W, length*width*height=22.2*9.5*9.5mm^3, shunt pin pitch = 14.30mm, http://www.vishay.com/docs/30217/cpsl.pdf
-Resistor Axial_Shunt series Box pin pitch 25.4mm 5W length 22.2mm width 9.5mm height 9.5mm shunt pin pitch 14.30mm
-0
-4
-4
-Resistor_THT
-R_Axial_Shunt_L35.3mm_W9.5mm_PS25.40mm_P38.10mm
-Resistor, Axial_Shunt series, Box, pin pitch=38.1mm, 7W, length*width*height=35.3*9.5*9.5mm^3, shunt pin pitch = 25.40mm, http://www.vishay.com/docs/30217/cpsl.pdf
-Resistor Axial_Shunt series Box pin pitch 38.1mm 7W length 35.3mm width 9.5mm height 9.5mm shunt pin pitch 25.40mm
-0
-4
-4
-Resistor_THT
-R_Axial_Shunt_L47.6mm_W9.5mm_PS34.93mm_P50.80mm
-Resistor, Axial_Shunt series, Box, pin pitch=50.8mm, 10W, length*width*height=47.6*9.5*9.5mm^3, shunt pin pitch = 34.93mm, http://www.vishay.com/docs/30217/cpsl.pdf
-Resistor Axial_Shunt series Box pin pitch 50.8mm 10W length 47.6mm width 9.5mm height 9.5mm shunt pin pitch 34.93mm
-0
-4
-4
-Resistor_THT
-R_Axial_Shunt_L47.6mm_W12.7mm_PS34.93mm_P50.80mm
-Resistor, Axial_Shunt series, Box, pin pitch=50.8mm, 15W, length*width*height=47.6*12.7*12.7mm^3, shunt pin pitch = 34.93mm, http://www.vishay.com/docs/30217/cpsl.pdf
-Resistor Axial_Shunt series Box pin pitch 50.8mm 15W length 47.6mm width 12.7mm height 12.7mm shunt pin pitch 34.93mm
-0
-4
-4
-Resistor_THT
-R_Bare_Metal_Element_L12.4mm_W4.8mm_P11.40mm
-Resistor, Bare_Metal_Element series, Bare Metal Strip/Wire, Horizontal, pin pitch=11.4mm, 1W, length*width=12.4*4.8mm^2, https://www.bourns.com/pdfs/PWR4412-2S.pdf
-Resistor Bare_Metal_Element series Bare Metal Strip Wire Horizontal pin pitch 11.4mm 1W length 12.4mm width 4.8mm 
-0
-2
-2
-Resistor_THT
-R_Bare_Metal_Element_L16.3mm_W4.8mm_P15.30mm
-Resistor, Bare_Metal_Element series, Bare Metal Strip/Wire, Horizontal, pin pitch=15.3mm, 3W, length*width=16.3*4.8mm^2, https://www.bourns.com/pdfs/PWR4412-2S.pdf
-Resistor Bare_Metal_Element series Bare Metal Strip Wire Horizontal pin pitch 15.3mm 3W length 16.3mm width 4.8mm 
-0
-2
-2
-Resistor_THT
-R_Bare_Metal_Element_L21.3mm_W4.8mm_P20.30mm
-Resistor, Bare_Metal_Element series, Bare Metal Strip/Wire, Horizontal, pin pitch=20.3mm, 5W, length*width=21.3*4.8mm^2, https://www.bourns.com/pdfs/PWR4412-2S.pdf
-Resistor Bare_Metal_Element series Bare Metal Strip Wire Horizontal pin pitch 20.3mm 5W length 21.3mm width 4.8mm 
-0
-2
-2
-Resistor_THT
-R_Box_L8.4mm_W2.5mm_P5.08mm
-Resistor, Box series, Radial, pin pitch=5.08mm, 0.5W = 1/2W, length*width=8.38*2.54mm^2, http://www.vishay.com/docs/60051/cns020.pdf
-Resistor Box series Radial pin pitch 5.08mm 0.5W = 1/2W length 8.38mm width 2.54mm
-0
-2
-2
-Resistor_THT
-R_Box_L13.0mm_W4.0mm_P9.00mm
-Resistor, Box series, Radial, pin pitch=9.00mm, 2W, length*width=13.0*4.0mm^2, http://www.produktinfo.conrad.com/datenblaetter/425000-449999/443860-da-01-de-METALLBAND_WIDERSTAND_0_1_OHM_5W_5Pr.pdf
-Resistor Box series Radial pin pitch 9.00mm 2W length 13.0mm width 4.0mm
-0
-2
-2
-Resistor_THT
-R_Box_L14.0mm_W5.0mm_P9.00mm
-Resistor, Box series, Radial, pin pitch=9.00mm, 5W, length*width=14.0*5.0mm^2, http://www.produktinfo.conrad.com/datenblaetter/425000-449999/443860-da-01-de-METALLBAND_WIDERSTAND_0_1_OHM_5W_5Pr.pdf
-Resistor Box series Radial pin pitch 9.00mm 5W length 14.0mm width 5.0mm
-0
-2
-2
-Resistor_THT
-R_Box_L26.0mm_W5.0mm_P20.00mm
-Resistor, Box series, Radial, pin pitch=20.00mm, 10W, length*width=26.0*5.0mm^2, http://www.produktinfo.conrad.com/datenblaetter/425000-449999/443860-da-01-de-METALLBAND_WIDERSTAND_0_1_OHM_5W_5Pr.pdf
-Resistor Box series Radial pin pitch 20.00mm 10W length 26.0mm width 5.0mm
-0
-2
-2
-Resistor_THT
-R_Radial_Power_L7.0mm_W8.0mm_Px2.40mm_Py2.30mm
-Resistor, Radial_Power series, Radial, pin pitch=2.40*2.30mm^2, 7W, length*width=7*8mm^2, http://www.vitrohm.com/content/files/vitrohm_series_kv_-_201601.pdf
-Resistor Radial_Power series Radial pin pitch 2.40*2.30mm^2 7W length 7mm width 8mm
-0
-2
-2
-Resistor_THT
-R_Radial_Power_L9.0mm_W10.0mm_Px2.70mm_Py2.30mm
-Resistor, Radial_Power series, Radial, pin pitch=2.70*2.30mm^2, 17W, length*width=9*10mm^2, http://www.vitrohm.com/content/files/vitrohm_series_kv_-_201601.pdf
-Resistor Radial_Power series Radial pin pitch 2.70*2.30mm^2 17W length 9mm width 10mm
-0
-2
-2
-Resistor_THT
-R_Radial_Power_L11.0mm_W7.0mm_P5.00mm
-Resistor, Radial_Power series, Radial, pin pitch=5.00mm, 2W, length*width=11.0*7.0mm^2, http://www.vishay.com/docs/30218/cpcx.pdf
-Resistor Radial_Power series Radial pin pitch 5.00mm 2W length 11.0mm width 7.0mm
-0
-2
-2
-Resistor_THT
-R_Radial_Power_L12.0mm_W8.0mm_P5.00mm
-Resistor, Radial_Power series, Radial, pin pitch=5.00mm, 3W, length*width=12.0*8.0mm^2, http://www.vishay.com/docs/30218/cpcx.pdf
-Resistor Radial_Power series Radial pin pitch 5.00mm 3W length 12.0mm width 8.0mm
-0
-2
-2
-Resistor_THT
-R_Radial_Power_L13.0mm_W9.0mm_P5.00mm
-Resistor, Radial_Power series, Radial, pin pitch=5.00mm, 7W, length*width=13.0*9.0mm^2, http://www.vishay.com/docs/30218/cpcx.pdf
-Resistor Radial_Power series Radial pin pitch 5.00mm 7W length 13.0mm width 9.0mm
-0
-2
-2
-Resistor_THT
-R_Radial_Power_L16.1mm_W9.0mm_P7.37mm
-Resistor, Radial_Power series, Radial, pin pitch=7.37mm, 10W, length*width=16.1*9mm^2, http://www.vishay.com/docs/30218/cpcx.pdf
-Resistor Radial_Power series Radial pin pitch 7.37mm 10W length 16.1mm width 9mm
-0
-2
-2
+6
+Connector_USB
+USB_Micro-B_Molex-105133-0001
+Molex Vertical Micro USB Typ-B (http://www.molex.com/pdm_docs/sd/1051330001_sd.pdf)
+Micro-USB SMD Typ-B Vertical
+0
+8
+6
+Connector_USB
+USB_Micro-B_Molex-105133-0031
+Molex Vertical Micro USB Typ-B (http://www.molex.com/pdm_docs/sd/1051330031_sd.pdf)
+Micro-USB SMD Typ-B Vertical
+0
+8
+6
+Connector_USB
+USB_Micro-B_Molex_47346-0001
+Micro USB B receptable with flange, bottom-mount, SMD, right-angle (http://www.molex.com/pdm_docs/sd/473460001_sd.pdf)
+Micro B USB SMD
+0
+11
+6
+Connector_USB
+USB_Micro-B_Wuerth_614105150721_Vertical
+USB Micro-B receptacle, through-hole, vertical, http://katalog.we-online.de/em/datasheet/614105150721.pdf
+usb micro receptacle vertical
+0
+7
+6
+Connector_USB
+USB_Micro-B_Wuerth_614105150721_Vertical_CircularHoles
+USB Micro-B receptacle, through-hole, vertical, http://katalog.we-online.de/em/datasheet/614105150721.pdf
+usb micro receptacle vertical
+0
+7
+6
+Connector_USB
+USB_Micro-B_Wuerth_629105150521
+USB Micro-B receptacle, http://www.mouser.com/ds/2/445/629105150521-469306.pdf
+usb micro receptacle
+0
+9
+6
+Connector_USB
+USB_Micro-B_Wuerth_629105150521_CircularHoles
+USB Micro-B receptacle, http://www.mouser.com/ds/2/445/629105150521-469306.pdf
+usb micro receptacle
+0
+9
+6
+Connector_USB
+USB_Mini-B_AdamTech_MUSB-B5-S-VT-TSMT-1_SMD_Vertical
+http://www.adam-tech.com/upload/MUSB-B5-S-VT-TSMT-1.pdf
+USB Mini-B
+0
+7
+6
+Connector_USB
+USB_Mini-B_Lumberg_2486_01_Horizontal
+USB Mini-B 5-pin SMD connector, http://downloads.lumberg.com/datenblaetter/en/2486_01.pdf
+USB USB_B USB_Mini connector
+0
+9
+6
+Connector_USB
+USB_Mini-B_Tensility_54-00023_Vertical
+http://www.tensility.com/pdffiles/54-00023.pdf
+usb mini receptacle vertical
+0
+7
+6
+Connector_USB
+USB_Mini-B_Tensility_54-00023_Vertical_CircularHoles
+http://www.tensility.com/pdffiles/54-00023.pdf
+usb mini receptacle vertical
+0
+7
+6
+Connector_USB
+USB_Mini-B_Wuerth_65100516121_Horizontal
+Mini USB 2.0 Type B SMT Horizontal 5 Contacts (https://katalog.we-online.de/em/datasheet/65100516121.pdf)
+Mini USB 2.0 Type B
+0
+9
+6

@@ -12,3 +12,9 @@ Server/reaper_mac
 **/.vscode
 doc/Media/move
 *.code-workspace
+**/.pio
+**/.vscode
+**/include
+**/lib
+**/test
+**/platformio.ini

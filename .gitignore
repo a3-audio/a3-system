@@ -11,4 +11,10 @@ Server/reaper_mac
 **/.DS_Store
 **/.vscode
 doc/Media/move
-Ambijockyl.code-workspace
+*.code-workspace
+**/.pio
+**/.vscode
+**/include
+**/lib
+**/test
+**/platformio.ini

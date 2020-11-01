@@ -1,13 +1,31 @@
+/*
+
+
+um es spaeter schon zu machen:
+
+Bounce pushbutton = Bounce(PIN_BUTTON_ENCODER, 10);
+pinMode(PIN_BUTTON_ENCODER, INPUT_PULLUP);
+  if (pushbutton.update())
+  {
+    if (pushbutton.fallingEdge())
+    {
+        // ...
+    }
+  }
+
+
+*/
+
 #include <Arduino.h>
 
 // Multiplexer In/Out line
-const byte muxIn1 = 20; //Butten Matrix
-const byte muxIn2 = 19; //Butten Matrix
+#define muxIn1 20 //Butten Matrix
+#define muxIn2 19 //Butten Matrix
 
 // Multiplexer address (s0/s1/s2)
-const byte s0 = 23; // low-order bit
-const byte s1 = 22;
-const byte s2 = 21; // high-order bit
+#define s0 23 // low-order bit
+#define s1 22
+#define s2 21 // high-order bit
 
 // multipexer adrress Bit
 bool addrBit0 = 0;
@@ -30,7 +48,7 @@ void btnMatrixInit()
 
 void muxRead()
 {
-  for (int i = 0; i < 8; i++)
+  for (byte i = 0; i < 8; i++)
   {
     addrBit0 = bitRead(i, 0);
     addrBit1 = bitRead(i, 1);
@@ -46,6 +64,7 @@ void muxRead()
   }
 }
 
+// MAIN
 void setup()
 {
   Serial.begin(115200);

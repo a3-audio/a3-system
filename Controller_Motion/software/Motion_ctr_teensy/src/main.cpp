@@ -64,26 +64,8 @@ void muxRead()
   }
 }
 
-// MAIN
-void setup()
+void sendBtnMatrix()
 {
-  Serial.begin(115200);
-  while (!Serial)
-  {
-    ; // wait for serial conaction
-  }
-  Serial.println("contoller conected");
-
-  pinMode(muxIn1, INPUT_PULLDOWN);
-  pinMode(muxIn2, INPUT_PULLDOWN);
-
-  btnMatrixInit();
-
-} // end of setup
-
-void loop()
-{
-  muxRead();
   for (byte i = 0; i < 16; i++)
   {
     if (btnMatrixNew[i] != btnMatrixOld[i])
@@ -95,4 +77,29 @@ void loop()
       btnMatrixOld[i] = btnMatrixNew[i];
     }
   }
+}
+
+// MAIN
+void setup()
+{
+  Serial.begin(115200);
+  while (!Serial)
+  {
+    ; // wait for serial conaction
+  }
+  Serial.println("#######################################");
+  Serial.println("          contoller conected");
+  Serial.println("#######################################");
+
+  pinMode(muxIn1, INPUT_PULLDOWN);
+  pinMode(muxIn2, INPUT_PULLDOWN);
+
+  btnMatrixInit();
+
+} // end of setup
+
+void loop()
+{
+  muxRead();
+  sendBtnMatrix();
 } // end of loop

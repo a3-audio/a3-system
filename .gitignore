@@ -18,3 +18,7 @@ doc/Media/move
 **/lib
 **/test
 **/platformio.ini
+Controller_Motion/Hardware/controller_motion_pcb/teensy.pretty
+Controller_Motion/Hardware/controller_motion_pcb/teensy_library-master
+Controller_Motion/Hardware/controller_motion_pcb/controller_motion_pcb.sch-bak
+Controller_Motion/Hardware/controller_motion_pcb/controller_motion_pcb.kicad_pcb-bak

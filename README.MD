@@ -32,6 +32,8 @@ It consists of three elements:
 
 ### Hardware
 
+Die Stecker die wie fur die Portis etc. wollen sind **JST XH 2.54mm**
+
 - [WS2811 NeoPixel LED Driver Chip](https://www.adafruit.com/product/1378)
 - [NeoPixel 5mm Through-Hole LED](https://www.adafruit.com/product/1938)
 - [OLED Butten](https://www.alibaba.com/product-detail/Lakeview-DSP-OLED-LCD-Display-Screen_60759925392.html?spm=a2700.details.deiletai6.3.74dd7a76xJLr4l)

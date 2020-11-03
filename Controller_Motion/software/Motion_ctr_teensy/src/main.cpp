@@ -107,22 +107,21 @@ void sendPoti()
 {
   for (byte i = 0; i < 8; i++)
   {
-      Serial.print("P");
+/*       Serial.print("P");
       Serial.print(i);
       Serial.print(":");
       Serial.print(potiNew[i]);
-      Serial.print(" ");
+      Serial.print(" "); */
 
- /*    if (potiOld[i] != potiOld[i])
+    if (abs(potiNew[i] - potiOld[i]) > 3)
     {
       Serial.print("P");
       Serial.print(i);
       Serial.print(":");
       Serial.println(potiNew[i]);
       potiOld[i] = potiNew[i];
-    } */
+    } 
   }
-  Serial.println("");
 }
 
 void readMux()

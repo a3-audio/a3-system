@@ -22,7 +22,7 @@ pinMode(PIN_BUTTON_ENCODER, INPUT_PULLUP);
 // Multiplexer In/Out Pin's
 #define muxInBtnMx1 20 //Butten Matrix
 #define muxInBtnMx2 19 //Butten Matrix
-#define muxInPot 18 //Poti in
+#define muxInPot 18    //Poti in
 
 // Multiplexer address Pin's (s0/s1/s2)
 #define s0 23 // low-order bit
@@ -78,7 +78,6 @@ void initBtnMatrix()
   }
 }
 
-
 void sendBtnMx()
 {
   for (byte i = 0; i < 16; i++)
@@ -96,6 +95,8 @@ void sendBtnMx()
 
 void initPoti()
 {
+  pinMode(muxInBtnMx1, INPUT_PULLDOWN);
+  pinMode(muxInBtnMx2, INPUT_PULLDOWN);
   for (byte i = 0; i < 8; i++)
   {
     potiNew[i] = 0;
@@ -107,12 +108,6 @@ void sendPoti()
 {
   for (byte i = 0; i < 8; i++)
   {
-/*       Serial.print("P");
-      Serial.print(i);
-      Serial.print(":");
-      Serial.print(potiNew[i]);
-      Serial.print(" "); */
-
     if (abs(potiNew[i] - potiOld[i]) > 3)
     {
       Serial.print("P");
@@ -120,7 +115,7 @@ void sendPoti()
       Serial.print(":");
       Serial.println(potiNew[i]);
       potiOld[i] = potiNew[i];
-    } 
+    }
   }
 }
 
@@ -140,7 +135,7 @@ void readMux()
     btnMxNew[i] = digitalRead(muxInBtnMx1);
     btnMxNew[i + 8] = digitalRead(muxInBtnMx2);
 
-    // read the Poti's 
+    // read the Poti's
     potiNew[i] = analogRead(muxInPot);
   }
 }
@@ -195,9 +190,6 @@ void setup()
   Serial.println("#######################################");
   Serial.println("          contoller conected");
   Serial.println("#######################################");
-
-  pinMode(muxInBtnMx1, INPUT_PULLDOWN);
-  pinMode(muxInBtnMx2, INPUT_PULLDOWN);
 
   initBtnMatrix();
   initPoti();

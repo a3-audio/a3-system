@@ -27,8 +27,6 @@ It consists of three elements:
     - farbe
     - OSC-adressen eintragen
   - documentieren
-  - keypad dirver anpassen
-  - encoder auf alle kanäle erwitern
 
 ### Hardware
 

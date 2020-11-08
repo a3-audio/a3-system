@@ -2,8 +2,13 @@
 Der Erste versuch ein richtiges App für meinen Py zu schreiben
 
 
+TODO - es muss noch die bedinung eingebaut werden wann der OSC-recorder auf nimt. sprich der Record Buten.
 
+TODO - Doco mentieren
 
+TODO - Uebersetze nach englisch
+
+TODO - Positions indikatoren individuelle farben zuweisen > geht nicht ueber main.kv
 """
 
 # Imports

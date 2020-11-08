@@ -14,6 +14,16 @@ from kivy.properties import ObjectProperty
 from oscpy.server import OSCThreadServer
 from oscpy.server import ServerClass
 
+# for osc recorder
+import sys
+import time
+import liblo
+from osc_recorder import CaptureOSCServer
+
+# Setup osc_recorder
+osc_rec_port = 9000
+osc_rec_cachfile = "oscRecCach"
+osc_rec_server = CaptureOSCServer(osc_rec_port)
 
 # Setup OSC
 # TODO IP anpassen
@@ -26,7 +36,7 @@ osc = OSCThreadServer()
 sock = osc.listen(address='0.0.0.0', port=osc_server_port, default=True)
 
 # global var
-ch1_select = False
+ch1_select = True  # TODO nur zum testen in real False und btn1 fixen
 ch2_select = False
 ch3_select = False
 ch4_select = False
@@ -39,7 +49,7 @@ class Container(BoxLayout):
 
     def btn1_press(self):
         global ch1_select
-        ch1_select = True
+        # ch1_select = True #TODO muss wieder aus komentiert werden
         print("butten 1")
 
     def btn2_press(self):
@@ -130,6 +140,10 @@ class MotionDisplay(Widget):
                 # LocPos per osc senden
                 osc.send_message(
                     b"/ambiJocky/motion/ch/1/pos/xyz", [x, y], osc_client_ip_addr, osc_client_port,)
+
+                # test Bewegung Recorden
+                osc_rec_server.start()
+
             if ch2_select:
                 self.pos_ind_ch2.center = touch.pos
                 osc.send_message(
@@ -176,6 +190,15 @@ class MotionDisplay(Widget):
                 self.pos_ind_ch4.center = touch.pos
                 osc.send_message(
                     b"/ambiJocky/motion/ch/4/pos/xyz", [x, y], osc_client_ip_addr, osc_client_port,)
+
+     # test record OSC
+    def on_touch_up(self, touch):
+        if self.collide_point(*touch.pos):
+            if ch1_select:
+                time_series_bundle = osc_rec_server.get_time_series()
+                time_series_bundle.to_json(osc_rec_cachfile + ".json")
+                osc_rec_server.free()
+                print("UP")
 
 
 class PositionIndicator(Widget):

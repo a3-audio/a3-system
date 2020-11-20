@@ -75,7 +75,7 @@ oscRouterPort = 9000
 
 # OSC-Clients
 ctrl_mixer = SimpleUDPClient('192.168.43.139', 8500)  # Set IP Adress
-ctrl_motion = SimpleUDPClient('192.168.43.135', 8600)  # Set IP Adress
+ctrl_motion = SimpleUDPClient('192.168.178.50', 8600)  # Set IP Adress
 reaper = SimpleUDPClient('127.0.0.1', 9001)
 iem_1 = SimpleUDPClient('127.0.0.1', 1337)
 iem_2 = SimpleUDPClient('127.0.0.1', 1338)
@@ -83,9 +83,9 @@ iem_3 = SimpleUDPClient('127.0.0.1', 1339)
 iem_4 = SimpleUDPClient('127.0.0.1', 1340)
 
 # reaper channelnumbers
-masterbus = "6" # mastervolume is controlled by /master/volume
-dj1_cb = "26" # cb = channelbus
-dj1_in = "27" # in = input
+masterbus = "6"  # mastervolume is controlled by /master/volume
+dj1_cb = "26"  # cb = channelbus
+dj1_in = "27"  # in = input
 dj2_cb = "35"
 dj2_in = "36"
 dj3_cb = "44"
@@ -97,6 +97,7 @@ dj2_pfl = "19"
 dj3_pfl = "20"
 dj4_pfl = "21"
 mainmixbus = "22"
+
 
 def ctrlMotionToIem_handler(address: str,
                             *osc_arguments: List[Any]) -> None:
@@ -370,13 +371,16 @@ def poti_handler(address: str,
             reaper.send_message("/master/volume", value)
         if poti == "2":
             val = numpy.interp(value, [0, 1], [0.01, 0.5])
-            reaper.send_message("/track/" + masterbus + "/fxeq/hishelf/gain", val)
+            reaper.send_message("/track/" + masterbus +
+                                "/fxeq/hishelf/gain", val)
         if poti == "3":
             val = numpy.interp(value, [0, 1], [0.01, 0.5])
-            reaper.send_message("/track/" + masterbus + "/fxeq/band/0/gain", val)
+            reaper.send_message("/track/" + masterbus +
+                                "/fxeq/band/0/gain", val)
         if poti == "4":
             val = numpy.interp(value, [0, 1], [0.01, 0.5])
-            reaper.send_message("/track/" + masterbus + "/fxeq/loshelf/gain", val)
+            reaper.send_message("/track/" + masterbus +
+                                "/fxeq/loshelf/gain", val)
 
 
 def button_handler(address: str,
@@ -425,8 +429,9 @@ def button_handler(address: str,
         reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
         reaper.send_message("/track/" + mainmixbus + "/mute", 0)
 
+
 def vu_handler(address: str,
-                   *osc_arguments: List[Any]) -> None:
+               *osc_arguments: List[Any]) -> None:
     words = address.split("/")
     vu = words[3]
 
@@ -462,6 +467,7 @@ def vu_handler(address: str,
         val = numpy.interp(value, xp, fp)
         ctrl_mixer.send_message("/track/5/vu", val)
         # print(str(value))
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

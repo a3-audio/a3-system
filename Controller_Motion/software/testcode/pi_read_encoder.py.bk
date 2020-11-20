@@ -1,0 +1,64 @@
+#!/usr/bin/python3
+"""
+Wie kann man rotary encoder am Pi einlesen
+
+"""
+import sys
+import time
+
+from gpiozero import Button
+from signal import pause
+
+class encoder(Button):
+  def __init__(self, pin_a, pin_b):
+    self.pin_a = pin_a
+    self.pin_b = pin_b
+
+
+
+
+#### setup ####
+a1 = Button(14)
+b1 = Button(15)
+a2 = Button(23)
+b2 = Button(24)
+a3 = Button(25)
+b3 = Button(12)
+a4 = Button(16)
+b4 = Button(20)
+
+def printA1():
+  print("a1")
+
+def printB1():
+  print("b1")
+
+def printA2():
+  print("a2")
+
+def printB2():
+  print("b2")
+
+def printA3():
+  print("a3")
+
+def printB3():
+  print("b3")
+
+def printA4():
+  print("a4")
+
+def printB4():
+  print("b4")
+
+a1.when_pressed = printA1
+b1.when_pressed = printB1
+a2.when_pressed = printA2
+b2.when_pressed = printB2
+a3.when_pressed = printA3
+b3.when_pressed = printB3
+a4.when_pressed = printA4
+b4.when_pressed = printB4
+
+
+pause()

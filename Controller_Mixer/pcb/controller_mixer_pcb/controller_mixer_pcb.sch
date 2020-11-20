@@ -241,23 +241,23 @@ $EndComp
 $Comp
 L Connector:Conn_01x03_Male T+|GND|R-1
 U 1 1 5FABE9C0
-P 5400 850
-F 0 "T+|GND|R-1" V 5462 994 50  0000 L CNN
-F 1 "Conn_01x03_Male" V 5553 994 50  0000 L CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 5400 850 50  0001 C CNN
-F 3 "~" H 5400 850 50  0001 C CNN
-	1    5400 850 
+P 8250 1450
+F 0 "T+|GND|R-1" V 8312 1594 50  0000 L CNN
+F 1 "Conn_01x03_Male" V 8403 1594 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 8250 1450 50  0001 C CNN
+F 3 "~" H 8250 1450 50  0001 C CNN
+	1    8250 1450
 	0    1    1    0   
 $EndComp
 $Comp
 L Connector:Conn_01x03_Male R+|LED|T-1
 U 1 1 5FAC1385
-P 5700 850
-F 0 "R+|LED|T-1" V 5762 994 50  0000 L CNN
-F 1 "Conn_01x03_Male" V 5853 994 50  0000 L CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 5700 850 50  0001 C CNN
-F 3 "~" H 5700 850 50  0001 C CNN
-	1    5700 850 
+P 8550 1450
+F 0 "R+|LED|T-1" V 8612 1594 50  0000 L CNN
+F 1 "Conn_01x03_Male" V 8703 1594 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 8550 1450 50  0001 C CNN
+F 3 "~" H 8550 1450 50  0001 C CNN
+	1    8550 1450
 	0    1    1    0   
 $EndComp
 Wire Wire Line
@@ -1010,8 +1010,6 @@ Wire Wire Line
 Connection ~ 1200 1750
 Wire Wire Line
 	1200 1750 1200 1850
-Wire Wire Line
-	1200 1750 1200 1850
 Connection ~ 1200 1850
 Wire Wire Line
 	1200 1850 1200 1950
@@ -1033,4 +1031,111 @@ Wire Wire Line
 Connection ~ 1200 2450
 Wire Wire Line
 	1200 2450 1200 2550
+$Comp
+L Connector:RJ45_Amphenol_RJMG1BD3B8K1ANR J13
+U 1 1 5F9D8B7C
+P 9850 2700
+F 0 "J13" H 9850 3425 50  0000 C CNN
+F 1 "RJ45_Amphenol_RJMG1BD3B8K1ANR" H 9850 3334 50  0000 C CNN
+F 2 "Connector_RJ:RJ45_Amphenol_RJMG1BD3B8K1ANR" H 9850 3400 50  0001 C CNN
+F 3 "https://www.amphenolcanada.com/ProductSearch/Drawings/AC/RJMG1BD3B8K1ANR.PDF" H 9850 3500 50  0001 C CNN
+	1    9850 2700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5500 1050 5500 1700
+Wire Wire Line
+	5500 1700 8350 1700
+Wire Wire Line
+	8350 1700 8350 1650
+Wire Wire Line
+	8350 1700 8350 2200
+Wire Wire Line
+	8350 2200 8950 2200
+Connection ~ 8350 1700
+Wire Wire Line
+	5600 1050 5600 1750
+Wire Wire Line
+	5600 1750 8450 1750
+Wire Wire Line
+	8450 1750 8450 1650
+Wire Wire Line
+	8450 1750 8450 2400
+Wire Wire Line
+	8450 2400 8950 2400
+Connection ~ 8450 1750
+Wire Wire Line
+	5400 1050 5400 1800
+Wire Wire Line
+	5400 1800 8250 1800
+Wire Wire Line
+	8250 1800 8250 1650
+Wire Wire Line
+	8250 3400 8800 3400
+Connection ~ 8250 1800
+Wire Wire Line
+	8950 3000 8250 3000
+Connection ~ 8250 3000
+Wire Wire Line
+	8250 3000 8250 3400
+Wire Wire Line
+	5300 1050 5300 1900
+Wire Wire Line
+	5300 1900 8150 1900
+Wire Wire Line
+	8150 1900 8150 1650
+Wire Wire Line
+	8150 1900 8150 2700
+Wire Wire Line
+	8150 2700 8950 2700
+Connection ~ 8150 1900
+Wire Wire Line
+	8250 1800 8250 3000
+Wire Wire Line
+	5700 1050 5700 1950
+Wire Wire Line
+	5700 1950 8550 1950
+Wire Wire Line
+	8550 1950 8550 1650
+Wire Wire Line
+	8550 1950 8550 2900
+Wire Wire Line
+	8550 2900 8950 2900
+Connection ~ 8550 1950
+Wire Wire Line
+	5800 1050 5800 2050
+Wire Wire Line
+	5800 2050 8650 2050
+Wire Wire Line
+	8650 2050 8650 1650
+Wire Wire Line
+	8650 2050 8650 2500
+Wire Wire Line
+	8650 2500 8950 2500
+Connection ~ 8650 2050
+$Comp
+L Device:CP1_Small C1
+U 1 1 5FB5EC34
+P 8800 3200
+F 0 "C1" H 8891 3246 50  0000 L CNN
+F 1 "CP1_Small" H 8891 3155 50  0000 L CNN
+F 2 "Capacitor_THT:CP_Axial_L10.0mm_D4.5mm_P15.00mm_Horizontal" H 8800 3200 50  0001 C CNN
+F 3 "~" H 8800 3200 50  0001 C CNN
+	1    8800 3200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8950 2300 8800 2300
+Wire Wire Line
+	8800 2300 8800 2600
+Wire Wire Line
+	8950 2600 8800 2600
+Connection ~ 8800 2600
+Wire Wire Line
+	8800 2600 8800 3100
+Wire Wire Line
+	8800 3300 8800 3400
+Connection ~ 8800 3400
+Wire Wire Line
+	8800 3400 9850 3400
 $EndSCHEMATC

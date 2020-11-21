@@ -41,8 +41,8 @@
         v              v             v              v
 -------------------------------------------------------------
 | MODE:   MONO | MODE:   STER | MODE:   VBAP | MODE:   AMBI |
-| WIDTH:  20°  | WIDTH:  20°  | WIDTH:  20°  | WIDTH:  20°  |
-| REVERB: 30%  | REVERB: 30%  | REVERB: 30%  | REVERB: 30%  |    
+| WIDTH:  -    | WIDTH:  30°  | WIDTH:  20°  | WIDTH:  30°  |
+| REVERB: -    | REVERB: 30%  | REVERB: 30%  | REVERB: 30%  |    
 | BPM:    128  | BPM:    128  | BPM:    128  | BPM:    128  |
 | BEAT:   1/4  | BEAT:   1/4  | BEAT:   1/4  | BEAT:   1/4  |
 | BARS:   4    | BARS:   4    | BARS:   4    | BARS:   4    |    

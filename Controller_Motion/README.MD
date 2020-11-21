@@ -128,17 +128,17 @@
 - Button Shortpress: Play Motion from Presetfile
 
 # OSC
- 
+``` 
 ## TRANSMIT
-- /ambijockey/ch/1-4/mode/ [0-3] (Mono, Stereo, VBAP, Ambisonic)
-- /ambijockey/ch/1-4/motion/ xy [0-1]
-- /ambijockey/ch/1-4/width/ [0-1]
-- /ambijockey/ch/1-4/reverb/ [0-1]
+/ambijockey/ch/1-4/mode/ [0-3] (Mono, Stereo, VBAP, Ambisonic)
+/ambijockey/ch/1-4/motion/ xy [0-1]
+/ambijockey/ch/1-4/width/ [0-1]
+/ambijockey/ch/1-4/reverb/ [0-1]
 
-- /ambijockey/master/speakerCount/n/ [1-24]
-- /ambijockey/master/speakerPos/n/azimuth [-180-180]
---  /ambijockey/master/speakerPos/n/Radius [m]
+/ambijockey/master/speakerCount/n/ [1-24]
+/ambijockey/master/speakerPos/n/azimuth [-180-180]
+/ambijockey/master/speakerPos/n/Radius [m]
 
 # RECEIVE
 /ambijockey/ch/1-4/motion/ xy [0-1]
-
+```

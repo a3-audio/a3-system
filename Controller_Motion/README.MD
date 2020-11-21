@@ -5,6 +5,7 @@
 - R = Poti for Reverb
 - B = Button to Rec and play Motion-Presets
 
+```
 -----------------
 | E | E | E | E |
 -----------------
@@ -29,10 +30,10 @@
 -----------------
 | B | B | B | B |
 -----------------
-
+```
 
 ## Touchdisplay
-
+```
 ---------------------------------------------------
 |   ENC CH1  |  ENC CH2  |  ENC CH3  |  ENC CH4   |
 |-----------.----------.---.------------.----------
@@ -52,7 +53,7 @@
 | ch4 Wide | .       sp5             sp4        . |
 | ch4 Rev  |  .......ch1.............ch1........  |
 |--------------------------------------------------
-
+```
 - Speakersymbol at Speakerposition with Outputnumber
 - Sourceposition with thin lines to corresponding Encoder (Sources getting different colors)
 
@@ -79,7 +80,7 @@
 ### Level 2
 - Encoder 1 Turn: Select Preset
 - Encoder 1 Push: Load selected Preset
-
+```
 ---------------------------------------------------
 |   ENC CH1  |  ENC CH2  |  ENC CH3  |  ENC CH4   |
 |--------------------------------------------------
@@ -101,7 +102,7 @@
 |      SAVE & EXIT       |     DISCARD & EXIT     | <- LEVEL 3 IS ALWAYS TOUCHABLE   
 |                        |                        |
 ---------------------------------------------------
-
+```
 ## Global
 - Button Longpress: Store Cache to Presetfile
 - Button Shortpress: Plays Motion from Presetfile

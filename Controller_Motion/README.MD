@@ -97,14 +97,12 @@
 - Encoder 1 Turn: Select Preset
 - Encoder 1 Push: Load selected Preset
 ```
----------------------------------------------------
-|   ENC CH1  |  ENC CH2  |  ENC CH3  |  ENC CH4   |
 |--------------------------------------------------
 |   OUTPUTS  |  SELECTED |  AZIMUTH  |  RADIUS    | <- LEVEL 1
 |   5        |  1        |  -30°     |  7.5m      |
 |--------------------------------------------------
-|   PRESETSELECTION                               |
-|   5 CHANNEL CIRCLE WITH RADIUS 3m               |
+|                  PRESETSELECTION                |
+|           5 CHANNEL CIRCLE WITH RADIUS 3m       |
 |                                                 |
 |                    sp2                          |
 |                                                 | <- LEVEL 2

@@ -139,6 +139,6 @@
 /ambijockey/master/speakerPos/n/azimuth [-180-180]
 /ambijockey/master/speakerPos/n/Radius [m]
 
-### RECEIVE
+## RECEIVE
 /ambijockey/ch/1-4/motion/ xy [0-1]
 ```

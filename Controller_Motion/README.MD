@@ -104,12 +104,12 @@
 |                  PRESETSELECTION                |
 |           5 CHANNEL CIRCLE WITH RADIUS 3m       |
 |                                                 |
-|                    sp2                          |
+|                       sp1                       |
 |                                                 | <- LEVEL 2
-|           sp1               sp3                 |
+|              sp0               sp3              |
 |                                                 |
 |                                                 |
-|               sp5      sp4                      |
+|                  sp4      sp4                   |
 |                                                 |
 |--------------------------------------------------
 |                        |                        |

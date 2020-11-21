@@ -6,22 +6,21 @@
 - B = Button to Rec and play Motion-Presets
 
 ```
------------------
+_________________
 | E | E | E | E |
 -----------------
------------------
+_________________
 |               |
 |               |
 | TOUCHDISLPAY  |
 |               |
 |               |
 -----------------
------------------
+_________________
 | W | W | W | W |
------------------
+_________________
 | R | R | R | R |
------------------
------------------
+_________________
 | B | B | B | B |
 -----------------
 | B | B | B | B |
@@ -105,5 +104,5 @@
 ```
 ## Global
 - Button Longpress: Store Cache to Presetfile
-- Button Shortpress: Plays Motion from Presetfile
+- Button Shortpress: Play Motion from Presetfile
 

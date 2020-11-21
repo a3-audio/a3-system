@@ -1,34 +1,32 @@
 # Motion Controller
 
-- E = Encoder
-- W = Poti for Width
-- R = Poti for Reverb
-- B = Button to Rec and play Motion-Presets
-
 ```
+ CH1 CH2 CH3 CH4
+  |   |   |   |
+  v   v   v   v
 -----------------
-| E | E | E | E |
+| E | E | E | E | <- ENCODER
 -----------------
 -----------------
 |               |
 |               |
-| TOUCHDISLPAY  |
+| TOUCHDISLPAY  | <- FANCY VISUALISATION OF CHANNELMOVEMENT
 |               |
 |               |
 -----------------
 -----------------
-| W | W | W | W |
+| W | W | W | W | <- POTIS FOR WIDTH
 -----------------
-| R | R | R | R |
+| R | R | R | R | <- POTIS FOR REVERB
 -----------------
 -----------------
-| B | B | B | B |
------------------
-| B | B | B | B |
------------------
-| B | B | B | B |
------------------
-| B | B | B | B |
+| B | B | B | B | <- BUTTONS TO REC AND PLAY MOTION-PRESETS
+-----------------    |
+| B | B | B | B | <--|
+-----------------    |
+| B | B | B | B | <--|
+-----------------    |
+| B | B | B | B | <--|
 -----------------
 ```
 

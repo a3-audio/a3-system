@@ -30,6 +30,7 @@ s.queryAllNodes;
 // NUMBER OF SPEAKERS =
 
 ~speaker = 5;
+~order = 3;
 
 // GENERATING AUDIO-BUSSES
 ~null = Bus.audio(s, 8);
@@ -153,7 +154,7 @@ SynthDef.new(\masterSynth, {
 //	monoMix = SplayAz.ar(~speaker, [mono], 1, 1, ~speaker, 0, 1, false);
 //	monoMix = Array.fill(~speaker, mono);
 //	stereoMix = Array.fill(~speaker, {stereo});
-//	mainMix = Mix.new([monoMix, stereoMix]);
+	mainMix = Mix.new([mono, stereo]);
 
 	Out.ar(~masterBusSub, sub);
 	Out.ar(~masterBus, mono);
@@ -174,7 +175,7 @@ SynthDef.new(\ambisonicSynth, {
 // MasterStereoSynth
 SynthDef.new(\stereoSynth, {
 	var stereoSplay, ch,
-	spread = 0,
+	spread = 0.1,
 	width = ~speaker,
 	amp = 1;
 	ch = InBus.ar(~chMasterBus, 2, 2, 4);
@@ -184,8 +185,9 @@ SynthDef.new(\stereoSynth, {
 
 // MasterMonoSynth
 SynthDef.new(\monoSynth, {
-	var sum, mix, ch, amp;
-	amp = 1;
+	arg amp;
+	var sum, mix, ch;
+	amp = 0.5;
 	ch = InBus.ar(~chMasterBus, 1, 1, 1);
 	ch = ch * amp;
 	mix = Array.fill(~speaker, ch);
@@ -194,9 +196,11 @@ SynthDef.new(\monoSynth, {
 
 // MasterSubSynth
 SynthDef.new(\subSynth, {
+	arg amp;
 	var mix, ch;
+	amp = 0.5;
 	ch = InBus.ar(~chMasterBus, 1, 0, 0);
-	mix = Mix.new([ch]);
+	mix = ch * amp;
 	Out.ar(~masterSubBus, mix);
 }).add;
 
@@ -276,6 +280,7 @@ SynthDef.new(\chAmbisonicSynth, {
 	arg source, dest;
 	var sig;
 	sig = In.ar(source, 2);
+
 	Out.ar(dest, sig);
 }).add;
 
@@ -283,7 +288,7 @@ SynthDef.new(\chAmbisonicSynth, {
 SynthDef.new(\chStereoSynth, {
 	arg source, dest, amp;
 	var sig;
-	amp = 1.0;
+	amp = 0.5;
 	sig = In.ar(source, 2);
 	sig = sig * amp;
 	Out.ar(dest, sig);
@@ -291,8 +296,8 @@ SynthDef.new(\chStereoSynth, {
 
 // MonoSynth
 SynthDef.new(\chMonoSynth, {
-	arg source, dest, amp;
-	var sig;
+	arg source, dest;
+	var sig, amp;
 	amp = 0.5;
 	sig = In.ar(source, 2);
 	sig = Mix.new(sig);
@@ -302,8 +307,8 @@ SynthDef.new(\chMonoSynth, {
 
 // SubSynth
 SynthDef.new(\chSubSynth, {
-	arg source, dest, amp;
-	var sig;
+	arg source, dest;
+	var sig, amp;
 	amp = 0.5;
 	sig = In.ar(source, 2);
 	sig = Mix.new(sig);
@@ -330,10 +335,11 @@ s.freeAll;
 ~masterMono = Synth.new(\monoSynth, [], ~masterMonoGrp);
 
 ~ch1Master = Synth.new(\chMasterSynth, [\inMono, ~ch1MonoBus, \inSub, ~ch1SubBus, \inStereo, ~ch1StereoBus, \inAmbisonic, ~ch1AmbisonicBus], ~chMasterGrp);
-//~ch1Ambisonic = Synth.new(\chAmbisonicSynth, [\source, ~ch1InputBus, \dest, ~ch1AmbisonicBus], ~ambisonicGrp);
-~ch1Stereo = Synth.new(\chStereoSynth, [\source, ~ch1InputBus, \dest, ~ch1StereoBus], ~stereoGrp);
-//~ch1Mono = Synth.new(\chMonoSynth, [\source, ~ch1InputBus, \dest, ~ch1MonoBus, \amp, 0.5], ~monoGrp);
-//~ch1Sub = Synth.new(\chSubSynth, [\source, ~ch1InputBus, \dest, ~ch1SubBus, \amp, 0.5], ~subGrp);
+
+~ch1Ambisonic = Synth.new(\chAmbisonicSynth, [\source, ~ch1InputBus, \dest, ~ch1AmbisonicBus], ~ambisonicGrp);
+//~ch1Stereo = Synth.new(\chStereoSynth, [\source, ~ch1InputBus, \dest, ~ch1StereoBus], ~stereoGrp);
+//~ch1Mono = Synth.new(\chMonoSynth, [\source, ~ch1InputBus, \dest, ~ch1MonoBus], ~monoGrp);
+//~ch1Sub = Synth.new(\chSubSynth, [\source, ~ch1InputBus, \dest, ~ch1SubBus,], ~subGrp);
 ~ch1Input = Synth.new(\inputSynth, [\source, 8, \dest, ~ch1InputBus, \amp, 1], ~inputGrp);
 
 //~output;
@@ -366,8 +372,8 @@ t.queryAllNodes;
 t.options.numAudioBusChannels;
 t.options.numOutputBusChannels;
 t.options.numInputBusChannels;
-t.quit;
+s.quit;
 t.freeAll;
 
-Quarks.install("https://github.com/florian-grond/SC-HOA");
+//Quarks.install("https://github.com/florian-grond/SC-HOA");
 Quarks.gui;

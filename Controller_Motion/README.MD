@@ -105,7 +105,7 @@
 ```
 |--------------------------------------------------
 |   OUTPUTS  |  SELECTED |  AZIMUTH  |  RADIUS    | <- LEVEL 1
-|   5        |  1        |  -30°     |  7.5m      |
+|   5        |  sp0      |  -80°     |  4.5m      |
 |--------------------------------------------------
 |                  PRESETSELECTION                |
 |           5 CHANNEL CIRCLE WITH RADIUS 3m       |

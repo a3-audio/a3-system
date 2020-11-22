@@ -1,4 +1,6 @@
-# Motion Controller
+# MOTION CONTROLLER
+
+## HARDWARE LAYOUT
 
 ```
  CH1 CH2 CH3 CH4
@@ -34,7 +36,10 @@
 -----------------
 ```
 
-## Touchdisplay
+## PLAYMODE
+
+### TOUCHDISPLAY CONTENT IN PLAY MODE
+
 ```
        ch1            ch2           ch3            ch4
         |              |             |              |
@@ -77,41 +82,45 @@
 |------------------------------------------------------------
 ```
 
-- Speakersymbol at Speakerposition with Outputnumber
-- Sourceposition with thin lines to corresponding Encoder (Sources getting different colors)
+- There should be a Speakersymbol at Speakerposition with Outputnumber inside (the placeholder is "sp")
+- The Sourceposition of each channel is connected with thin lines to corresponding Infospace. Also those 
+  are colorcoded.
 
-## Playmode (per Channel)
-- Encoder Turn: Changes Mode (Mono, Stereo, VBAP, Ambisonic)
-- Encder Push: Enables Channel Editmode
+### ENCODER FUNCTIONS IN PLAYMODE
+- Encoder (1-4) Turn: Changes Mode (Mono, Stereo, VBAP, Ambisonic)
+- Encder (1-4) Push: Enables RUNTIME-EDIT
 
-## Channel Editmode (per Channel)
+#### RUNTIME-EDIT
 - Encoder Turn: change lenght of Recordloop
+- Encorder Push: Disables RUNTIME-EDIT
 - Touchdisplay onTouch: Records Motion to cachefile
 - Touchdisplay onRelease: Plays Motion from cachefile
+- Buttonmatrix long Press: Stores Motion to PAD
 
 
-## GLOBAL EDITMODE (PUSH ENCODER 1 TWICE TO ENTER) 
+## EDITMODE (PUSH ENCODER 1 TWICE TO ENTER) 
 The Global Editmode is multi-layered named "LEVELS". Toggle through them with Encoder 1: Push.
 On some Pages you may choose Presets. Prebuild Presets are writeprotected. You should load 
 prebuild Presets, customize them and store them as Userpreset after.
 
-    Kinds:
-    - Speakerlayout
-    - Padfunctions
-    - Buttonmatrix
+Kinds:
+- Speakerlayout
+- Padfunctions
+- Buttonmatrix
 
-    ### Level 1 (Select Speakerlayout-Preset)
-    - Encoder 4 Turn: Select Preset
-    - Encoder 4 Push: Load Preset
+### Level 1 (Select Speakerlayout-Preset)
+- Encoder 4 Turn: Select Preset
+- Encoder 4 Push: Load Preset
 
-    ### Level 2 (Edit Speakerlayout)
-    - Encoder 1 Turn: Set Number of ouputs (speaker)
-    - Encoder 2 Turn: Select output
-    - Encoder 3 Turn: Set Azimuth for selected output
-    - Encoder 4 Turn: Set Radius for selected output
+### Level 2 (Edit Speakerlayout)
+- Encoder 1 Turn: Set Number of ouputs (speaker)
+- Encoder 2 Turn: Select output
+- Encoder 3 Turn: Set Azimuth for selected output
+- Encoder 4 Turn: Set Radius for selected output
 
-    ### TOUCHBUTTONS
-    - STORE: Presetselection overlay
+### TOUCHBUTTONS
+- STORE: Presetselection overlay
+
 
 ```
 |------------------------------------------------

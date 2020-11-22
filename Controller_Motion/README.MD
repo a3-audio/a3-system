@@ -46,33 +46,33 @@
 | BPM:    128  | BPM:    128  | BPM:    128  | BPM:    128  |
 | BEAT:   1/4  | BEAT:   1/4  | BEAT:   1/4  | BEAT:   1/4  |
 | BARS:   4    | BARS:   4    | BARS:   4    | BARS:   4    |    
-|-.--------------.-------------------------.---.-------------
-| .              .           ch1...........|...|.......     |          
-| .              .           sp2           .   .       .    |
-| .               .    __----ch2----__     .   .        .   |
-| .                .  L       .       R    .   .         .  |
-| .                 ..........             .   .         .  |
-| .                                        .   .         .  |
-| .                                        .   .         .  |
-| .                                       .    .         .  |
-| .sp1                                   .     .      sp3.  |
-| -ch1                                  .      .      ch1-  |
-| .                .....................       .         .  |
-| .      R      .                              .      L  .  |
-| .       |    .                               .      |  .  |
-| .        |  .                                .     |   .  |
-| .       ch3.                                 .    |    .  |
-| .        |                                   ....ch4   .  |
-| .         |                                       |    .  |
-| .          L                                     |     .  |
-| .                                               |     .   |
-| .                                               R     .   |
-| .                                                     .   |
-| .                                                     .   |
-| .                                                     .   |
-| .                                                     .   |
-|  .          sp5                         sp4          .    |
-|   ..........ch1.........................ch1..........     |
+|-.----------.------------.--------------.----------.--------
+| .           .............|.ch1         .          .       |          
+| .                         .sp2         .          .       |
+| .                    __----ch2----__   .          .       |
+| .                   L               R  .          .       |
+| .                                      .          .       |
+| .                                     ..          .       |
+| .                                  ...            .       |
+| .                               ...               .       |
+| .sp1                         ...                  .  sp3  |
+| -ch1                      ...                     .  ch1- |
+| .                      ...                        .     . |
+| .      R            ...                           . L   . |
+| .       |        ...                              . |   . |
+| .        |    ...                                 .|    . |
+| .       ch3...                                    |     . |
+| .        |                                       ch4    . |
+| .         |                                       |     . |
+| .          L                                     |      . |
+| .                                               |       . |
+| .                                               R       . |
+| .                                                       . |
+| .                                                       . |
+| .                                                       . |
+| .                                                       . |
+|  .          sp5                         sp4            .  |
+|   ..........ch1.........................ch1............   |
 |                                                           |
 |------------------------------------------------------------
 ```
@@ -94,21 +94,23 @@
 - Encoder 4 Push: Exit Global Editmode (do you want to save Setup?)
     - There are some common prebuild Setups (write protected)
     - And some userpresets (writable)
-### Level 1
-- Encoder 1 Turn: Set Number of ouputs (speaker)
-- Encoder 2 Turn: Select output
-- Encoder 3 Turn: Set Azimuth for selected output
-- Encoder 4 Turn: Set Radius for selected output
-### Level 2
-- Encoder 1 Turn: Select Preset
-- Encoder 1 Push: Load selected Preset
+
+    ### Level 1
+    - Encoder 1 Turn: Set Number of ouputs (speaker)
+    - Encoder 2 Turn: Select output
+    - Encoder 3 Turn: Set Azimuth for selected output
+    - Encoder 4 Turn: Set Radius for selected output
+
+    ### Level 2
+    - Encoder 1 Turn: Select Preset
+    - Encoder 1 Push: Load selected Preset
 ```
 |--------------------------------------------------
 |   OUTPUTS  |  SELECTED |  AZIMUTH  |  RADIUS    | <- LEVEL 1
 |   5        |  sp0      |  -80°     |  4.5m      |
 |--------------------------------------------------
-|                  PRESETSELECTION                |
-|           5 CHANNEL CIRCLE WITH RADIUS 3m       |
+|                 PRESETSELECTION                 |
+|         5 CHANNEL CIRCLE WITH RADIUS 3m         |
 |                                                 |
 |                       sp1                       |
 |                                                 | <- LEVEL 2

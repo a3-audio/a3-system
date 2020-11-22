@@ -39,6 +39,10 @@
 ## PLAYMODE
 
 ### TOUCHDISPLAY CONTENT IN PLAY MODE
+Placeholder for a Speakersymbol with Outputnumber inside is "sp". Also the Position of 
+each stereosource is connected with thin lines to corresponding Infospace. Also those 
+are colorcoded (I would prefer straight connections, could be possible if they are 
+colored).
 
 ```
        ch1            ch2           ch3            ch4
@@ -82,9 +86,6 @@
 |------------------------------------------------------------
 ```
 
-- There should be a Speakersymbol at Speakerposition with Outputnumber inside (the placeholder is "sp")
-- The Sourceposition of each channel is connected with thin lines to corresponding Infospace. Also those 
-  are colorcoded.
 
 ### ENCODER FUNCTIONS IN PLAYMODE
 - Encoder (1-4) Turn: Changes Mode (Mono, Stereo, VBAP, Ambisonic)

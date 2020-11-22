@@ -86,8 +86,9 @@ are colorcoded and should go straight.
 ### ENCODER FUNCTIONS IN PLAYMODE
 - Encoder (1-4) Turn: Changes Mode (Mono, Stereo, VBAP, Ambisonic)
 - Encder (1-4) Push: Enables RUNTIME-EDIT
+- Encoder 1 Push twice: Enter GLOBAL EDITMODE
 
-#### RUNTIME-EDIT
+### RUNTIME-EDIT
 - Encoder Turn: change lenght of Recordloop
 - Encorder Push: Disables RUNTIME-EDIT
 - Touchdisplay onTouch: Records Motion to cachefile
@@ -100,11 +101,11 @@ The Global Editmode is multi-layered in "LEVELS". Toggle through them with Encod
 
 On some Pages you will select writeprotected factorypresets. Edit them and store as userpreset after.
 
-#### LEVEL 1 - PRESET SELECT FOR SPEAKERLAYOUT
+### LEVEL 1 - PRESET SELECT FOR SPEAKERLAYOUT
 - Encoder 1 Turn: Select Preset
 - Encoder 1 Push: Load Preset
 
-#### LEVEL 2 - EDIT SPEAKERLAYOUT
+### LEVEL 2 - EDIT SPEAKERLAYOUT
 - Encoder 1 Turn: Set Number of outputs
 - Encoder 2 Turn: Select output
 - Encoder 3 Turn: Set Azimuth for selected output
@@ -170,7 +171,7 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 |-----------------------------------------------|
 ```
 
-#### LEVEL 3 - PRESETBANK SELECT - FOR BUTTONMATRIX (BUTTON COUNTERPART ON THE SCREEN IS CALLED "PAD")
+### LEVEL 3 - PRESETBANK SELECT - FOR BUTTONMATRIX (BUTTON COUNTERPART ON THE SCREEN IS CALLED "PAD")
 - Encoder 1 Turn: Select Presetbank (loads patterns to all BUTTONS)
 - Encoder 1 Push: Load selected Presetbank to BUTTONMATRIX
 - Display Button: Enter PADSELECT overlay for touched PAD
@@ -203,7 +204,7 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 --------------------------------------------------|
 ```
 
-### LEVEL 3 - PRESET SELECT OVERLAY - FOR BUTTONS 
+#### LEVEL 3 - PRESET SELECT OVERLAY - FOR BUTTONS 
 - Encoder 1 Turn: Select BUTTONPATCH
 - Encoder 1 Push: Load BUTTONPATCH
 
@@ -239,9 +240,9 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 - Buttonmatrix Longpress: Store Cache to Presetfile
 - Buttonmatrix Shortpress: Play Motion from Presetfile
 
-# OSC
+## OSC
 ``` 
-## TRANSMIT
+# TRANSMIT
 /ambijockey/moc/ch/1-4/mode/ [0-3] (Mono, Stereo, VBAP, Ambisonic)
 /ambijockey/moc/ch/1-4/motion/ xy [0-1]
 /ambijockey/moc/ch/1-4/width/ [0-1]
@@ -251,7 +252,7 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 /ambijockey/moc/master/speakerPos/n/azimuth [-180-180]
 /ambijockey/moc/master/speakerPos/n/Radius [m]
 
-## RECEIVE
+# RECEIVE
 /ambijockey/moc/ch/1-4/motion/ xy [0-1]
 /ambijockey/moc/ch/1-4/signal/ [0-1]
 /ambijockey/moc/ch/1-4/bpm/ [80-180]

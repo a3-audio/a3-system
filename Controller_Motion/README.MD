@@ -76,6 +76,7 @@
 |                                                           |
 |------------------------------------------------------------
 ```
+
 - Speakersymbol at Speakerposition with Outputnumber
 - Sourceposition with thin lines to corresponding Encoder (Sources getting different colors)
 
@@ -90,8 +91,7 @@
 - Touchdisplay onRelease: Plays Motion from cachefile
 
 ## Global Editmode
-- Encoder 1 Push: Enter next Level
-- Encoder 4 Push: Exit Global Editmode (do you want to save Setup?)
+- Encoder 1 Push: Toggle Editmode Level
     - There are some common prebuild Setups (write protected)
     - And some userpresets (writable)
 
@@ -101,30 +101,116 @@
     - Encoder 3 Turn: Set Azimuth for selected output
     - Encoder 4 Turn: Set Radius for selected output
 
-    ### Level 2
-    - Encoder 1 Turn: Select Preset
-    - Encoder 1 Push: Load selected Preset
 ```
 |--------------------------------------------------
-|   OUTPUTS  |  SELECTED |  AZIMUTH  |  RADIUS    | <- LEVEL 1
-|   5        |  sp0      |  -80°     |  4.5m      |
+|   OUTPUTS  |  SELECTED |  AZIMUTH  |  RADIUS    | 
+|   5        |  sp1      |  -80°     |  4.5m      |
 |--------------------------------------------------
-|                 PRESETSELECTION                 |
-|         5 CHANNEL CIRCLE WITH RADIUS 3m         |
 |                                                 |
-|                       sp1                       |
-|                                                 | <- LEVEL 2
-|              sp0               sp3              |
+|          _____        sp2                       |
+|          |sp1|                    sp3           |
+|          -----                                  |
+|                                                 | <- VISUALISATION OF SPEAKERSETUP
 |                                                 |
+|                                                 |  
+|                 sp5        sp4                  |
 |                                                 |
-|                  sp4      sp4                   |
 |                                                 |
 |--------------------------------------------------
 |                        |                        |
-|      SAVE & EXIT       |     DISCARD & EXIT     | <- LEVEL 3 IS ALWAYS TOUCHABLE   
+|      SAVE & EXIT       |     DISCARD & EXIT     |                                  
+|                        |                        |
+---------------------------------------------------
+
+```
+    ### Level 2
+    - Encoder 1 Turn: Select Speakerlayout-Preset
+    - Encoder 1 Push: Load selected Speakerlayout-Preset
+
+```
+|--------------------------------------------------
+| SPEAKERLAYOUT PRESETSELECTION                   |  
+| 5 CHANNEL CIRCLE WITH RADIUS 3m                 |
+|--------------------------------------------------
+|                                                 |
+|                       sp2                       |
+|            sp1                   sp3            |
+|                                                 |
+|                                                 | <- PREVIEW SPEAKERLAYOUT
+|                                                 |
+|                                                 |
+|                                                 |
+|                 sp5        sp4                  |
+|                                                 |
+|--------------------------------------------------
+|                        |                        |
+|      SAVE & EXIT       |     DISCARD & EXIT     |                                  
 |                        |                        |
 ---------------------------------------------------
 ```
+
+    ### Level 3
+    - Encoder 1 Turn: Select Buttonmatrix-Preset (This Preset loads patterns for all PADS)
+    - Encoder 1 Push: Load selected Buttonmatrix-Preset
+    - Touchdisplay touch PAD: PAD-Selection overlay (To change pattern for a single PAD)
+
+```
+|--------------------------------------------------
+| BUTTONMATRIX PRESETSELECTION                    |  
+| USERSPACE 1                                     |
+|--------------------------------------------------
+|           |            |            |           |
+| 1/4 left  |    ...     |    ...     |    ...    |
+|           |            |            |           |
+|--------------------------------------------------
+|           |            |            |           |
+| 1/4 right |    ...     |    ...     |    ...    |
+|           |            |            |           |
+|--------------------------------------------------
+|           |            |            |           | <- PREVIEW SPEAKERLAYOUT
+| 1/8 rand  |    ...     |    ...     |    ...    |
+|           |            |            |           |
+|--------------------------------------------------
+|           |            |            |           |
+| 1/16 left |    ...     |    ...     |    ...    |
+|           |            |            |           |
+|--------------------------------------------------
+|                        |                        |
+|      SAVE & EXIT       |     DISCARD & EXIT     |                                  
+|                        |                        |
+---------------------------------------------------
+```
+
+    ### PAD-Selection overlay 
+    - Encoder 1 Turn: Select PAD-Patch
+
+```
+|--------------------------------------------------
+| BUTTONMATRIX PRESETSELECTION                    |  
+| USERSPACE 1                                     |
+|--------------------------------------------------
+|           |            |            |           |
+| 1/4 left  |    ...     |    ...     |    ...    |
+|           |            |            |           |
+|--------------------------------------------------
+|           |            |            |           |
+| 1/4 |-------------------------------------|.    |
+|     |             1/4 left                |     |
+|-----| selected -> 1/4 RIGHT               |------ <- PAD-SELECTION OVERLAY
+|     |             1/8 random              |     |                           
+| 1/8 |--------------------------------------.    |
+|           |            |            |           |
+|--------------------------------------------------
+|           |            |            |           |
+| 1/16 left |    ...     |    ...     |    ...    |
+|           |            |            |           |
+|--------------------------------------------------
+|                        |                        |
+|      SAVE & EXIT       |     DISCARD & EXIT     |                                  
+|                        |                        |
+---------------------------------------------------
+```
+
 ## Global
 - Button Longpress: Store Cache to Presetfile
 - Button Shortpress: Play Motion from Presetfile

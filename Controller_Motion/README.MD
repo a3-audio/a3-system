@@ -25,9 +25,9 @@
 |---------------|
 | B | B | B | B | <- BUTTONS TO REC AND PLAY MOTION-PRESETS
 |---------------|    |
-| B | B | B | B | <--|
-|---------------|    |
-| B | B | B | B | <--|
+| B | B | B | B | <--|                        
+|---------------|    |                THE
+| B | B | B | B | <--|            BUTTONMATRIX 
 |---------------|    |
 | B | B | B | B | <--|
 |---------------|
@@ -98,11 +98,25 @@ are colorcoded and should go straight.
 ## GLOBAL EDITMODE (PUSH ENCODER 1 TWICE TO ENTER) 
 The Global Editmode is multi-layered in "LEVELS". Toggle through them with Encoder 1: DOUBLE-Push.
 
-On some Pages you may choose writeprotected factorypresets. You should load them, make your 
-changes and store them as userpreset after.
-
+On some Pages you will select writeprotected factorypresets. Edit them and store as userpreset after.
 
 ### LEVEL 1/2 SPEAKERLAYOUT PRESET SELECTION AND EDIT
+#### Level 1 (Select Speakerlayout-Preset)
+- Encoder 1 Turn: Select Preset
+- Encoder 1 Push: Load Preset
+
+#### Level 2 (Edit Speakerlayout)
+- Encoder 1 Turn: Set Number of ouputs (speaker)
+- Encoder 2 Turn: Select output
+- Encoder 3 Turn: Set Azimuth for selected output
+- Encoder 4 Turn: Set Radius for selected output
+
+#### TOUCHBUTTONS
+- STORE: "PRESETSELECTION OVERLAY"
+- ACTIVATE: Loads current Speakerlayout into the Audioengine
+- DISCARD: Recalls the current Preset into editor
+- Exit: Asks "do you want so save?" [yes, dismiss]
+
 ```
 |-----------------------------------------------|
 | SPEAKERLAYOUT PRESETSELECTION                 | <- LEVEL 1 
@@ -124,25 +138,10 @@ changes and store them as userpreset after.
 |-----------------------------------------------|
 |-----------------------------------------------|
 |          |           |            |           |
-|  STORE   | ACTIVATE  |  DISCARD   |   EXIT    |                                  
+|  STORE   | ACTIVATE  |  DISCARD   |   EXIT    | <- TOUCHBUTTONS                                  
 |          |           |            |           |
 ------------------------------------------------|
 ```
-### Level 1 (Select Speakerlayout-Preset)
-- Encoder 1 Turn: Select Preset
-- Encoder 1 Push: Load Preset
-
-### Level 2 (Edit Speakerlayout)
-- Encoder 1 Turn: Set Number of ouputs (speaker)
-- Encoder 2 Turn: Select output
-- Encoder 3 Turn: Set Azimuth for selected output
-- Encoder 4 Turn: Set Radius for selected output
-
-### TOUCHBUTTONS
-- STORE: PRESETSELECTION OVERLAY
-- ACTIVATE: Loads current Speakerlayout into the Audioengine
-- DISCARD: Recalls the current Preset into editor
-- Exit: Asks "do you want so save?" [yes, dismiss]
 
 #### PRESETSELECTION OVERLAY
 - Encoder 1 Turn: select userbank
@@ -169,15 +168,15 @@ changes and store them as userpreset after.
 |-----------------------------------------------|
 |-----------------------------------------------|
 |          |           |            |           |
-|  STORE   | ACTIVATE  |  DISCARD   |   EXIT    |                                  
+|  STORE   | ACTIVATE  |  DISCARD   |   EXIT    | <- TOUCHBUTTONS                                 
 |          |           |            |           |
 |-----------------------------------------------|
 ```
 
-    ### Level 3
-    - Encoder 1 Turn: Select Buttonmatrix-Preset (This Preset loads patterns for all PADS)
-    - Encoder 1 Push: Load selected Buttonmatrix-Preset
-    - Touchdisplay touch PAD: PAD-Selection overlay (To change pattern for a single PAD)
+### Level 3
+- Encoder 1 Turn: Select Buttonmatrix-Preset (This Preset loads patterns for all PADS)
+- Encoder 1 Push: Load selected Buttonmatrix-Preset to BUTTONMATRIX
+- Display, Touch PAD: Enter PAD-Selection overlay
 
 ```
 |-------------------------------------------------|
@@ -207,8 +206,8 @@ changes and store them as userpreset after.
 --------------------------------------------------|
 ```
 
-    ### PAD-Selection overlay 
-    - Encoder 1 Turn: Select PAD-Patch
+### PAD-Selection overlay 
+- Encoder 1 Turn: Select PAD-Patch
 
 ```
 |-------------------------------------------------|
@@ -239,8 +238,8 @@ changes and store them as userpreset after.
 ```
 
 ## Global
-- Button Longpress: Store Cache to Presetfile
-- Button Shortpress: Play Motion from Presetfile
+- Buttonmatrix Longpress: Store Cache to Presetfile
+- Buttonmatrix Shortpress: Play Motion from Presetfile
 
 # OSC
 ``` 

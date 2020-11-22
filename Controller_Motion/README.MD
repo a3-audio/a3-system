@@ -120,7 +120,7 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 ```
 |-----------------------------------------------|
 | SPEAKERLAYOUT PRESETSELECTION                 | <- LEVEL 1 
-| 5 CHANNEL CIRCLE WITH RADIUS 3m               |
+| 5 CHANNEL CIRCLE WITH RADIUS 4.5m             |
 |-----------------------------------------------|
 | OUTPUTS  |  SELECTED |  AZIMUTH  |  RADIUS    | <- LEVEL 2
 | 5        |  sp1      |  -80°     |  4.5m      |
@@ -150,7 +150,7 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 ```
 |-----------------------------------------------|
 | SPEAKERLAYOUT PRESETSELECTION                 | <- LEVEL 1 
-| 5 CHANNEL CIRCLE WITH RADIUS 3m               |
+| 5 CHANNEL CIRCLE WITH RADIUS 4.5m             |
 |-----------------------------------------------|
 | OUTPUTS  |  SELECTED |  AZIMUTH  |  RADIUS    | <- LEVEL 2
 | 5        |  sp1      |  -80°     |  4.5m      |

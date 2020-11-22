@@ -1,5 +1,7 @@
 # MOTION CONTROLLER
 
+OSC TRANSMITTER AND PATTERNSAMPLER FOR THE VERY SPECIAL PURPOSE OF 3-DIMENSIONAL AUDIO MOTION.
+
 ## HARDWARE LAYOUT
 
 ```
@@ -26,8 +28,8 @@
 | B | B | B | B | <- BUTTONS TO REC AND PLAY MOTION-PRESETS
 |---------------|    |
 | B | B | B | B | <--|                        
-|---------------|    |                THE
-| B | B | B | B | <--|            BUTTONMATRIX 
+|---------------|    |                 THE
+| B | B | B | B | <--|            BUTTON-MATRIX 
 |---------------|    |
 | B | B | B | B | <--|
 |---------------|
@@ -35,10 +37,24 @@
 
 ## PLAYMODE
 
-### TOUCHDISPLAY CONTENT IN PLAY MODE
-Placeholder for a Speakersymbol with Outputnumber inside is "sp". Also the Position of 
-each stereosource is connected with thin lines to corresponding Infospace. Those lines 
-are colorcoded and should go straight.
+### PLAYMODE: TOUCHDISPLAY CONTENT
+
+- INFOFIELD: COLORS - 4 channels, 4 infofield areas, 4 different colors
+- INFOFIELD: MODE - The Stereosource will be converted to Mono, Stereo, VBAP or Ambisonic
+- INFOFIELD: WIDTH - How wide your sources spread in the sphere (exept monomode)
+- INFOFIELD: REVERB - An Ambisonic Reverb reflects from all directions (except monomode)
+- INFOFIELD: BPM - Calculated BPM for each Track, cool to run musicious motionpatterns
+- INFOFIELD: BEAT - Map motionpatterns on estimated BPM
+- INFOFIELD: BARS - Lenght of motionsequenz
+
+- EAGLEVIEW: SP - The speakerposition
+- EAGLEVIEW: CH - The channelposition (channels are colorcoded)
+- EAGLEVIEW: LR - The width of a stereosource
+- EAGLEVIEW: .. - These thin colored lines connecting straight to corresponding infofield
+
+- SYSTEMVIEW: RCV - This device OSC input
+- SYSTEMVIEW: SND - This device OSC output
+- SYSTEMVIEW: BPM - Master BPM
 
 ```
        ch1            ch2           ch3            ch4
@@ -47,7 +63,7 @@ are colorcoded and should go straight.
 |-----------------------------------------------------------|
 | MODE:   MONO | MODE:   STER | MODE:   VBAP | MODE:   AMBI |
 | WIDTH:  -    | WIDTH:  30°  | WIDTH:  20°  | WIDTH:  30°  |
-| REVERB: -    | REVERB: 30%  | REVERB: 30%  | REVERB: 30%  |    
+| REVERB: -    | REVERB: 30%  | REVERB: 30%  | REVERB: 30%  | <- INFOFIELD
 | BPM:    128  | BPM:    128  | BPM:    128  | BPM:    128  |
 | BEAT:   1/4  | BEAT:   1/4  | BEAT:   1/4  | BEAT:   1/4  |
 | BARS:   4    | BARS:   4    | BARS:   4    | BARS:   4    |    
@@ -64,10 +80,10 @@ are colorcoded and should go straight.
 | -ch1                      ...                     .  ch1- |
 | .                      ...                        .     . |
 | .      R            ...                           . L   . |
-| .       |        ...                              . |   . |
-| .        |    ...                                 .|    . |
-| .       ch3...                                    |     . |
-| .        |                                       ch4    . |
+| .       |        ...                              . |   . | <- EAGLEVIEW: CURRENT SOUNDFIELD
+| .        |    ...                                 .|    . |    
+| .       ch3...                                    |     . |    
+| .        |                                       ch4    . |    
 | .         |                                       |     . |
 | .          L                                     |      . |
 | .                                               |       . |
@@ -78,46 +94,47 @@ are colorcoded and should go straight.
 | .                                                       . |
 |  .          sp5                         sp4            .  |
 |   ..........ch1.........................ch1............   |
-|                                                           |
+|                                                           |    
+|-----------------------------------------------------------|    
+| RCV:192.168.178.125:1234|SND:192.168.178.126:1232|BPM:128 | <- SYSTEMVIEW
 |-----------------------------------------------------------|
 ```
 
-
-### ENCODER FUNCTIONS IN PLAYMODE
+### PLAYMODE: ENCODER FUNCTIONS
 - Encoder (1-4) Turn: Changes Mode (Mono, Stereo, VBAP, Ambisonic)
-- Encder (1-4) Push: Enables RUNTIME-EDIT
-- Encoder 1 Push twice: Enter GLOBAL EDITMODE
+- Encoder (1-4) Push: Enables RUNTIME-EDIT
+- Encoder 1 Push twice: Enter EDITMODE
 
-### RUNTIME-EDIT
-- Encoder Turn: change lenght of Recordloop
+### PLAYMODE: RUNTIME-EDIT
+- Encoder Turn: Change lenght of Recordloop
 - Encorder Push: Disables RUNTIME-EDIT
 - Touchdisplay onTouch: Records Motion to cachefile
 - Touchdisplay onRelease: Plays Motion from cachefile
 - Buttonmatrix long Press: Stores Motion to PAD
 
 
-## GLOBAL EDITMODE (PUSH ENCODER 1 TWICE TO ENTER) 
+## EDITMODE: GLOBAL SETUP
 The Global Editmode is multi-layered in "LEVELS". Toggle through them with Encoder 1: DOUBLE-Push.
 
 On some Pages you will select writeprotected factorypresets. Edit them and store as userpreset after.
 
-### LEVEL 1 - PRESET SELECT FOR SPEAKERLAYOUT
+### EDITMODE: LEVEL 1 - PRESET SELECT FOR SPEAKERLAYOUT
 - Encoder 1 Turn: Select Preset
 - Encoder 1 Push: Load Preset
 
-### LEVEL 2 - EDIT SPEAKERLAYOUT
+### EDITMODE: LEVEL 2 - EDIT SPEAKERLAYOUT
 - Encoder 1 Turn: Set Number of outputs
 - Encoder 2 Turn: Select output
 - Encoder 3 Turn: Set Azimuth for selected output
 - Encoder 4 Turn: Set Radius for selected output
-- Display Button STORE: PRESETSELECT OVERLAY
+- Display Button STORE: Enter SPEAKERPRESET OVERLAY
 - Display Button ACTIVATE: Loads current Speakerlayout into the Audioengine
 - Display Button DISCARD: Recalls the current Preset into editor
-- Display Button Exit: Asks "do you want so save?" [yes, dismiss]
+- Display Button Exit: Returns to PLAYMODE and asks "do you want so save?" [yes, dismiss]
 
 ```
 |-----------------------------------------------|
-| SPEAKERLAYOUT PRESETSELECTION                 | <- LEVEL 1 
+| SPEAKERLAYOUT                                 | <- LEVEL 1 
 | 5 CHANNEL CIRCLE WITH RADIUS 4.5m             |
 |-----------------------------------------------|
 | OUTPUTS  |  SELECTED |  AZIMUTH  |  RADIUS    | <- LEVEL 2
@@ -141,13 +158,13 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 ------------------------------------------------|
 ```
 
-#### LEVEL 2 - PRESET SELECT OVERLAY - TO SAVE SPEAKERLAYOUT
+### EDITMODE: LEVEL 2 - SPEAKERLAYOUT - PRESET SELECT - OVERLAY
 - Encoder 1 Turn: select userbank
-- Encoder 1 push: overwrites userbank and asks for a new Name
+- Encoder 1 push: overwrite userbank, enter presetname
 
 ```
 |-----------------------------------------------|
-| SPEAKERLAYOUT PRESETSELECTION                 | <- LEVEL 1 
+| SPEAKERLAYOUT                                 | <- LEVEL 1 
 | 5 CHANNEL CIRCLE WITH RADIUS 4.5m             |
 |-----------------------------------------------|
 | OUTPUTS  |  SELECTED |  AZIMUTH  |  RADIUS    | <- LEVEL 2
@@ -171,14 +188,14 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 |-----------------------------------------------|
 ```
 
-### LEVEL 3 - PRESETBANK SELECT - FOR BUTTONMATRIX (BUTTON COUNTERPART ON THE SCREEN IS CALLED "PAD")
+### EDITMODE: LEVEL 3 - BUTTONMATRIX - LAYOUT SELECT
 - Encoder 1 Turn: Select Presetbank (loads patterns to all BUTTONS)
 - Encoder 1 Push: Load selected Presetbank to BUTTONMATRIX
-- Display Button: Enter PADSELECT overlay for touched PAD
+- Display Button: Enter Buttonpattern Editmode (BPE)
 
 ```
 |-------------------------------------------------|
-| BUTTONMATRIX PRESETSELECT                       | <- LEVEL 3
+| BUTTONMATRIX LAYOUT                             | <- LEVEL 3
 | USERSPACE 1                                     |
 |-------------------------------------------------|
 |           |            |            |           |
@@ -194,7 +211,7 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 |           |            |            |           |
 |-------------------------------------------------|
 |           |            |            |           |
-| 1/16 left |    ...     |    ...     |    ...    |
+| 1/16 diag |    ...     |    ...     |    ...    |
 |           |            |            |           |
 |-------------------------------------------------|
 |-------------------------------------------------|
@@ -204,13 +221,13 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 --------------------------------------------------|
 ```
 
-#### LEVEL 3 - PRESET SELECT OVERLAY - FOR BUTTONS 
-- Encoder 1 Turn: Select BUTTONPATCH
-- Encoder 1 Push: Load BUTTONPATCH
+### EDITMODE: LEVEL 3 - BUTTONMATRIX - PATTERN SELECT - OVERLAY
+- Encoder 1 Turn: Select Buttonpattern
+- Encoder 1 Push: Load Buttonpattern
 
 ```
 |-------------------------------------------------|
-| BUTTONMATRIX PRESETSELECTION                    |  <- LEVEL 3
+| BUTTONMATRIX LAYOUT                             |  <- LEVEL 3
 | USERSPACE 1                                     |
 |-------------------------------------------------|
 |           |            |            |           |

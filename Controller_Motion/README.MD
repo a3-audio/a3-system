@@ -100,11 +100,11 @@ The Global Editmode is multi-layered in "LEVELS". Toggle through them with Encod
 
 On some Pages you will select writeprotected factorypresets. Edit them and store as userpreset after.
 
-#### LEVEL 1 PRESET SELECT FOR SPEAKERLAYOUT
+#### LEVEL 1 - PRESET SELECT FOR SPEAKERLAYOUT
 - Encoder 1 Turn: Select Preset
 - Encoder 1 Push: Load Preset
 
-#### LEVEL 2 EDIT SPEAKERLAYOUT
+#### LEVEL 2 - EDIT SPEAKERLAYOUT
 - Encoder 1 Turn: Set Number of outputs
 - Encoder 2 Turn: Select output
 - Encoder 3 Turn: Set Azimuth for selected output
@@ -140,7 +140,7 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 ------------------------------------------------|
 ```
 
-#### PRESETSELECT OVERLAY TO SAVE SPEAKERLAYOUT
+#### LEVEL 2 - PRESET SELECT OVERLAY - TO SAVE SPEAKERLAYOUT
 - Encoder 1 Turn: select userbank
 - Encoder 1 push: overwrites userbank and asks for a new Name
 
@@ -170,9 +170,9 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 |-----------------------------------------------|
 ```
 
-### LEVEL 3 PRESET SELECT FOR BUTTONMATRIX (BUTTON COUNTERPART ON THE SCREEN IS CALLED "PAD")
-- Encoder 1 Turn: Select Buttonmatrix-Preset (This Preset loads patterns for all BUTTONS)
-- Encoder 1 Push: Load selected Buttonmatrix-Preset to BUTTONMATRIX
+#### LEVEL 3 - PRESETBANK SELECT - FOR BUTTONMATRIX (BUTTON COUNTERPART ON THE SCREEN IS CALLED "PAD")
+- Encoder 1 Turn: Select Presetbank (loads patterns to all BUTTONS)
+- Encoder 1 Push: Load selected Presetbank to BUTTONMATRIX
 - Display Button: Enter PADSELECT overlay for touched PAD
 
 ```
@@ -203,7 +203,7 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 --------------------------------------------------|
 ```
 
-### PRESET SELECT OVERLAY FOR BUTTONS 
+### LEVEL 3 - PRESET SELECT OVERLAY - FOR BUTTONS 
 - Encoder 1 Turn: Select BUTTONPATCH
 - Encoder 1 Push: Load BUTTONPATCH
 
@@ -235,7 +235,7 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 --------------------------------------------------|
 ```
 
-## Global
+## GLOBAL STUFF
 - Buttonmatrix Longpress: Store Cache to Presetfile
 - Buttonmatrix Shortpress: Play Motion from Presetfile
 

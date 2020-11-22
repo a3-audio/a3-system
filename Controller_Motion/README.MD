@@ -37,24 +37,8 @@ OSC TRANSMITTER AND PATTERNSAMPLER FOR THE VERY SPECIAL PURPOSE OF 3-DIMENSIONAL
 
 ## PLAYMODE
 
-### PLAYMODE: TOUCHDISPLAY CONTENT
-
-- INFOFIELD: COLORS - 4 channels, 4 infofield areas, 4 different colors
-- INFOFIELD: MODE - The Stereosource will be converted to Mono, Stereo, VBAP or Ambisonic
-- INFOFIELD: WIDTH - How wide your sources spread in the sphere (exept monomode)
-- INFOFIELD: REVERB - An Ambisonic Reverb reflects from all directions (except monomode)
-- INFOFIELD: BPM - Calculated BPM for each Track, cool to run musicious motionpatterns
-- INFOFIELD: BEAT - Map motionpatterns on estimated BPM
-- INFOFIELD: BARS - Lenght of motionsequenz
-
-- EAGLEVIEW: SP - The speakerposition
-- EAGLEVIEW: CH - The channelposition (channels are colorcoded)
-- EAGLEVIEW: LR - The width of a stereosource
-- EAGLEVIEW: .. - These thin colored lines connecting straight to corresponding infofield
-
-- SYSTEMVIEW: RCV - This device OSC input
-- SYSTEMVIEW: SND - This device OSC output
-- SYSTEMVIEW: BPM - Master BPM
+The touchscreen displays a lot of information but it makes all sense in order to have all 
+control and information on one fingertip.
 
 ```
        ch1            ch2           ch3            ch4
@@ -98,6 +82,25 @@ OSC TRANSMITTER AND PATTERNSAMPLER FOR THE VERY SPECIAL PURPOSE OF 3-DIMENSIONAL
 |-----------------------------------------------------------|    
 | RCV:192.168.178.125:1234|SND:192.168.178.126:1232|BPM:128 | <- SYSTEMVIEW
 |-----------------------------------------------------------|
+
+### PLAYMODE: TOUCHDISPLAY CONTENT
+
+- INFOFIELD: COLORS - 4 channels, 4 infofield areas, 4 different colors
+- INFOFIELD: MODE - The Stereosource will be converted to Mono, Stereo, VBAP or Ambisonic
+- INFOFIELD: WIDTH - How wide your sources spread in the sphere (exept monomode)
+- INFOFIELD: REVERB - An Ambisonic Reverb reflects from all directions (except monomode)
+- INFOFIELD: BPM - Calculated BPM for each Track, cool to run musicious motionpatterns
+- INFOFIELD: BEAT - Map motionpatterns on estimated BPM
+- INFOFIELD: BARS - Lenght of motionsequenz
+
+- EAGLEVIEW: SP - The speakerposition
+- EAGLEVIEW: CH - The channelposition (channels are colorcoded)
+- EAGLEVIEW: LR - The width of a stereosource
+- EAGLEVIEW: .. - These thin colored lines connecting straight to corresponding infofield
+
+- SYSTEMVIEW: RCV - This device OSC input
+- SYSTEMVIEW: SND - This device OSC output
+- SYSTEMVIEW: BPM - Master BPM
 ```
 
 ### PLAYMODE: ENCODER FUNCTIONS
@@ -114,23 +117,29 @@ OSC TRANSMITTER AND PATTERNSAMPLER FOR THE VERY SPECIAL PURPOSE OF 3-DIMENSIONAL
 
 
 ## EDITMODE: GLOBAL SETUP
-The Global Editmode is multi-layered in "LEVELS". Toggle through them with Encoder 1: DOUBLE-Push.
+The Global Setup is multi-layered in "LEVELS". Toggle through with
+Encoder 1-4: DOUBLE-Push. 
 
-On some Pages you will select writeprotected factorypresets. Edit them and store as userpreset after.
+The Levels are:
+- LEVEL 1: PRESET SPEAKERLAYOUT
+- LEVEL 2: EDIT SPEAKERLAYOUT
+- LEVEL 3: PRESET BUTTONMATRIX
 
-### EDITMODE: LEVEL 1 - PRESET SELECT FOR SPEAKERLAYOUT
+BUTTONMATRIX: You can store your moves in patternpresets or presetbanks
+
+Note: Factorypresets are writeprotected but you can edit and store them as userpreset.
+
+
+### EDITMODE: LEVEL 1 - SPEAKERLAYOUT - PRESET SELECT
 - Encoder 1 Turn: Select Preset
 - Encoder 1 Push: Load Preset
 
-### EDITMODE: LEVEL 2 - EDIT SPEAKERLAYOUT
+### EDITMODE: LEVEL 2 - SPEAKERLAYOUT - EDIT
 - Encoder 1 Turn: Set Number of outputs
 - Encoder 2 Turn: Select output
 - Encoder 3 Turn: Set Azimuth for selected output
 - Encoder 4 Turn: Set Radius for selected output
-- Display Button STORE: Enter SPEAKERPRESET OVERLAY
-- Display Button ACTIVATE: Loads current Speakerlayout into the Audioengine
-- Display Button DISCARD: Recalls the current Preset into editor
-- Display Button Exit: Returns to PLAYMODE and asks "do you want so save?" [yes, dismiss]
+
 
 ```
 |-----------------------------------------------|
@@ -157,6 +166,12 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 |          |           |            |           |
 ------------------------------------------------|
 ```
+
+### EDITMODE: LEVEL 1/2 - EDIT SPEAKERLAYOUT
+- Display Button STORE: Enter SPEAKERPRESET OVERLAY
+- Display Button ACTIVATE: Loads current Speakerlayout into the Audioengine
+- Display Button DISCARD: Recalls the current Preset into editor
+- Display Button Exit: Returns to PLAYMODE and asks "do you want so save?" [yes, dismiss]
 
 ### EDITMODE: LEVEL 2 - SPEAKERLAYOUT - PRESET SELECT - OVERLAY
 - Encoder 1 Turn: select userbank
@@ -189,39 +204,40 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 ```
 
 ### EDITMODE: LEVEL 3 - BUTTONMATRIX - LAYOUT SELECT
-- Encoder 1 Turn: Select Presetbank (loads patterns to all BUTTONS)
-- Encoder 1 Push: Load selected Presetbank to BUTTONMATRIX
-- Display Button: Enter Buttonpattern Editmode (BPE)
+- Encoder 1 Turn: Buttonmatrix Layout - Select Presetbank
+- Encoder 1 Push: Load selected Presetbank to editor
+- Display Button: Pattern - Enter BUTTONPATTERN EDITMODE
+- Display Button: 
 
 ```
-|-------------------------------------------------|
-| BUTTONMATRIX LAYOUT                             | <- LEVEL 3
-| USERSPACE 1                                     |
-|-------------------------------------------------|
-|           |            |            |           |
-| 1/4 left  |    ...     |    ...     |    ...    |
-|           |            |            |           |
-|-------------------------------------------------|
-|           |            |            |           |
-| 1/4 right |    ...     |    ...     |    ...    |
-|           |            |            |           |
-|-------------------------------------------------| <- PREVIEW BUTTONMATRIXLAYOUT
-|           |            |            |           | 
-| 1/8 rand  |    ...     |    ...     |    ...    |
-|           |            |            |           |
-|-------------------------------------------------|
-|           |            |            |           |
-| 1/16 diag |    ...     |    ...     |    ...    |
-|           |            |            |           |
-|-------------------------------------------------|
-|-------------------------------------------------|
-|           |            |            |           |
-|   SAVE    |    LOAD    |  DISCARD   |   EXIT    |                                  
-|           |            |            |           |
---------------------------------------------------|
+|-----------------------------------------------|
+| BUTTONMATRIX LAYOUT                           | <- LEVEL 3
+| Presetbank: user                              |
+|-----------------------------------------------|
+|           |           |           |           |
+|  pattern  |  pattern  |  pattern  |  pattern  |
+|           |           |           |           |
+|-----------------------------------------------|
+|           |           |           |           |
+| 1/4 right |  pattern  |  pattern  |  pattern  |
+|           |           |           |           |
+|-----------------------------------------------| <- PREVIEW BUTTONMATRIXLAYOUT
+|           |           |           |           | 
+| 1/8 rand  |  pattern  |  pattern  |  pattern  |
+|           |           |           |           |
+|-----------------------------------------------|
+|           |           |           |           |
+| 1/16 diag |  pattern  |  pattern  |  pattern  |
+|           |           |           |           |
+|-----------------------------------------------|
+|-----------------------------------------------|
+|           |           |           |           |
+|   SAVE    |    LOAD   |  DISCARD  |   EXIT    |                                  
+|           |           |           |           |
+------------------------------------------------|
 ```
 
-### EDITMODE: LEVEL 3 - BUTTONMATRIX - PATTERN SELECT - OVERLAY
+### EDITMODE: LEVEL 3 - BUTTONPATTERN EDITMODE - OVERLAY
 - Encoder 1 Turn: Select Buttonpattern
 - Encoder 1 Push: Load Buttonpattern
 

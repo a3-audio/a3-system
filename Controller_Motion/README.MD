@@ -126,9 +126,9 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 | 5        |  sp1      |  -80°     |  4.5m      |
 |-----------------------------------------------|
 |                                               |
-|        _____        sp2                       |
+|                     sp2                       |
 |        |sp1|                    sp3           |
-|        -----                                  |
+|                                               |
 |                                               | <- VISUALISATION OF SPEAKERSETUP
 |                                               |
 |                                               |  

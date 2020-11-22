@@ -91,62 +91,80 @@
 - Touchdisplay onRelease: Plays Motion from cachefile
 
 ## Global Editmode
-- Encoder 1 Push: Toggle Editmode Level
-    - There are some common prebuild Setups (write protected)
-    - And some userpresets (writable)
+- Encoder 1 Push: Toggle Editmode LEVEL
+- You can load, customize and store Presets on unlimited userbanks. 
+  There are some prebuild (writeprotected) Presetbanks for:
+    - Speakerlayout
+    - Padfunctions
+    - Buttonmatrix
 
-    ### Level 1
+    ### Level 1 (Select Speakerlayout-Preset)
+    - Encoder 4 Turn: Select Preset
+    - Encoder 4 Push: Load Preset
+
+    ### Level 2 (Edit Speakerlayout)
     - Encoder 1 Turn: Set Number of ouputs (speaker)
     - Encoder 2 Turn: Select output
     - Encoder 3 Turn: Set Azimuth for selected output
     - Encoder 4 Turn: Set Radius for selected output
 
-```
-|--------------------------------------------------
-|   OUTPUTS  |  SELECTED |  AZIMUTH  |  RADIUS    | 
-|   5        |  sp1      |  -80°     |  4.5m      |
-|--------------------------------------------------
-|                                                 |
-|          _____        sp2                       |
-|          |sp1|                    sp3           |
-|          -----                                  |
-|                                                 | <- VISUALISATION OF SPEAKERSETUP
-|                                                 |
-|                                                 |  
-|                 sp5        sp4                  |
-|                                                 |
-|                                                 |
-|--------------------------------------------------
-|                        |                        |
-|      SAVE & EXIT       |     DISCARD & EXIT     |                                  
-|                        |                        |
----------------------------------------------------
+    ### TOUCHBUTTONS
+    - STORE: Presetselection overlay
 
 ```
-    ### Level 2
-    - Encoder 1 Turn: Select Speakerlayout-Preset
-    - Encoder 1 Push: Load selected Speakerlayout-Preset
+|------------------------------------------------
+| SPEAKERLAYOUT PRESETSELECTION                 | <- LEVEL 1 
+| 5 CHANNEL CIRCLE WITH RADIUS 3m               |
+|------------------------------------------------
+| OUTPUTS  |  SELECTED |  AZIMUTH  |  RADIUS    | <- LEVEL 2
+| 5        |  sp1      |  -80°     |  4.5m      |
+|------------------------------------------------
+|                                               |
+|        _____        sp2                       |
+|        |sp1|                    sp3           |
+|        -----                                  |
+|                                               | <- VISUALISATION OF SPEAKERSETUP
+|                                               |
+|                                               |  
+|               sp5        sp4                  |
+|                                               |
+|                                               |
+|-----------------------------------------------|
+|-----------------------------------------------|
+|          |           |            |           |
+|  STORE   | ACTIVATE  |  DISCARD   |   EXIT    |                                  
+|          |           |            |           |
+-------------------------------------------------
+```
+
+    ### PRESETSELECTION OVERLAY
+    - Encoder 4 Turn: select userbank
+    - Encoder 4 push: overwrites userbank (Ask for new Name)
 
 ```
-|--------------------------------------------------
-| SPEAKERLAYOUT PRESETSELECTION                   |  
-| 5 CHANNEL CIRCLE WITH RADIUS 3m                 |
-|--------------------------------------------------
-|                                                 |
-|                       sp2                       |
-|            sp1                   sp3            |
-|                                                 |
-|                                                 | <- PREVIEW SPEAKERLAYOUT
-|                                                 |
-|                                                 |
-|                                                 |
-|                 sp5        sp4                  |
-|                                                 |
-|--------------------------------------------------
-|                        |                        |
-|      SAVE & EXIT       |     DISCARD & EXIT     |                                  
-|                        |                        |
----------------------------------------------------
+|------------------------------------------------
+| SPEAKERLAYOUT PRESETSELECTION                 | <- LEVEL 1 
+| 5 CHANNEL CIRCLE WITH RADIUS 3m               |
+|------------------------------------------------
+| OUTPUTS  |  SELECTED |  AZIMUTH  |  RADIUS    | <- LEVEL 2
+| 5        |  sp1      |  -80°     |  4.5m      |
+|------------------------------------------------
+|                                               |
+|                     sp2                       |
+|    |-------------------------------------|    |
+|    |             Userbank 1              |    |
+|    | selected -> USERBANK 2              |    | <- PRESET TO OVERWRITE 
+|    |             Userbank 3              |    |
+|    |--------------------------------------    |  
+|               sp5        sp4                  |
+|                                               |
+|                                               |
+|-----------------------------------------------|
+|-----------------------------------------------|
+|          |           |            |           |
+|  STORE   | ACTIVATE  |  DISCARD   |   EXIT    |                                  
+|          |           |            |           |
+-------------------------------------------------
 ```
 
     ### Level 3
@@ -155,60 +173,62 @@
     - Touchdisplay touch PAD: PAD-Selection overlay (To change pattern for a single PAD)
 
 ```
-|--------------------------------------------------
-| BUTTONMATRIX PRESETSELECTION                    |  
+|-------------------------------------------------|
+| BUTTONMATRIX PRESETSELECTION                    | <- LEVEL 3
 | USERSPACE 1                                     |
-|--------------------------------------------------
+|-------------------------------------------------|
 |           |            |            |           |
 | 1/4 left  |    ...     |    ...     |    ...    |
 |           |            |            |           |
-|--------------------------------------------------
+|-------------------------------------------------|
 |           |            |            |           |
 | 1/4 right |    ...     |    ...     |    ...    |
 |           |            |            |           |
-|--------------------------------------------------
-|           |            |            |           | <- PREVIEW SPEAKERLAYOUT
+|-------------------------------------------------| <- PREVIEW BUTTONMATRIXLAYOUT
+|           |            |            |           | 
 | 1/8 rand  |    ...     |    ...     |    ...    |
 |           |            |            |           |
-|--------------------------------------------------
+|-------------------------------------------------|
 |           |            |            |           |
 | 1/16 left |    ...     |    ...     |    ...    |
 |           |            |            |           |
-|--------------------------------------------------
-|                        |                        |
-|      SAVE & EXIT       |     DISCARD & EXIT     |                                  
-|                        |                        |
----------------------------------------------------
+|-------------------------------------------------|
+|-------------------------------------------------|
+|           |            |            |           |
+|   SAVE    |    LOAD    |  DISCARD   |   EXIT    |                                  
+|           |            |            |           |
+--------------------------------------------------|
 ```
 
     ### PAD-Selection overlay 
     - Encoder 1 Turn: Select PAD-Patch
 
 ```
-|--------------------------------------------------
-| BUTTONMATRIX PRESETSELECTION                    |  
+|-------------------------------------------------|
+| BUTTONMATRIX PRESETSELECTION                    |  <- LEVEL 3
 | USERSPACE 1                                     |
-|--------------------------------------------------
+|-------------------------------------------------|
 |           |            |            |           |
 | 1/4 left  |    ...     |    ...     |    ...    |
 |           |            |            |           |
-|--------------------------------------------------
+|-------------------------------------------------|
 |           |            |            |           |
 | 1/4 |-------------------------------------|.    |
 |     |             1/4 left                |     |
-|-----| selected -> 1/4 RIGHT               |------ <- PAD-SELECTION OVERLAY
+|-----| selected -> 1/4 RIGHT               |-----| <- PAD-SELECTION OVERLAY
 |     |             1/8 random              |     |                           
 | 1/8 |--------------------------------------.    |
 |           |            |            |           |
-|--------------------------------------------------
+|-------------------------------------------------|
 |           |            |            |           |
 | 1/16 left |    ...     |    ...     |    ...    |
 |           |            |            |           |
-|--------------------------------------------------
+|-------------------------------------------------|
+|-------------------------------------------------|
 |                        |                        |
 |      SAVE & EXIT       |     DISCARD & EXIT     |                                  
 |                        |                        |
----------------------------------------------------
+--------------------------------------------------|
 ```
 
 ## Global

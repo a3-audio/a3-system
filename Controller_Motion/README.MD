@@ -82,15 +82,15 @@
 
 ## Playmode (per Channel)
 - Encoder Turn: Changes Mode (Mono, Stereo, VBAP, Ambisonic)
-- Encder Push (once): Enables Channel Editmode
-- Encoder Push (twice): Enables Global Editmode
+- Encder Push: Enables Channel Editmode
 
 ## Channel Editmode (per Channel)
 - Encoder Turn: change lenght of Recordloop
 - Touchdisplay onTouch: Records Motion to cachefile
 - Touchdisplay onRelease: Plays Motion from cachefile
 
-## Global Editmode
+
+## GLOBAL EDITMODE (PUSH ENCODER 1 TWICE TO ENTER) 
 - Encoder 1 Push: Toggle Editmode LEVEL
 - You can load, customize and store Presets on unlimited userbanks. 
   There are some prebuild (writeprotected) Presetbanks for:

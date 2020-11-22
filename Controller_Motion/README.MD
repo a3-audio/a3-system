@@ -91,9 +91,11 @@
 
 
 ## GLOBAL EDITMODE (PUSH ENCODER 1 TWICE TO ENTER) 
-- Encoder 1 Push: Toggle Editmode LEVEL
-- You can load, customize and store Presets on unlimited userbanks. 
-  There are some prebuild (writeprotected) Presetbanks for:
+The Global Editmode is multi-layered named "LEVELS". Toggle through them with Encoder 1: Push.
+On some Pages you may choose Presets. Prebuild Presets are writeprotected. You should load 
+prebuild Presets, customize them and store them as Userpreset after.
+
+    Kinds:
     - Speakerlayout
     - Padfunctions
     - Buttonmatrix

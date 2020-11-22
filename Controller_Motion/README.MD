@@ -100,22 +100,19 @@ The Global Editmode is multi-layered in "LEVELS". Toggle through them with Encod
 
 On some Pages you will select writeprotected factorypresets. Edit them and store as userpreset after.
 
-### LEVEL 1/2 SPEAKERLAYOUT PRESET SELECTION AND EDIT
-#### Level 1 (Select Speakerlayout-Preset)
+#### LEVEL 1 PRESET SELECT FOR SPEAKERLAYOUT
 - Encoder 1 Turn: Select Preset
 - Encoder 1 Push: Load Preset
 
-#### Level 2 (Edit Speakerlayout)
-- Encoder 1 Turn: Set Number of ouputs (speaker)
+#### LEVEL 2 EDIT SPEAKERLAYOUT
+- Encoder 1 Turn: Set Number of outputs
 - Encoder 2 Turn: Select output
 - Encoder 3 Turn: Set Azimuth for selected output
 - Encoder 4 Turn: Set Radius for selected output
-
-#### TOUCHBUTTONS
-- STORE: "PRESETSELECTION OVERLAY"
-- ACTIVATE: Loads current Speakerlayout into the Audioengine
-- DISCARD: Recalls the current Preset into editor
-- Exit: Asks "do you want so save?" [yes, dismiss]
+- Display Button STORE: PRESETSELECT OVERLAY
+- Display Button ACTIVATE: Loads current Speakerlayout into the Audioengine
+- Display Button DISCARD: Recalls the current Preset into editor
+- Display Button Exit: Asks "do you want so save?" [yes, dismiss]
 
 ```
 |-----------------------------------------------|
@@ -143,9 +140,9 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 ------------------------------------------------|
 ```
 
-#### PRESETSELECTION OVERLAY
+#### PRESETSELECT OVERLAY TO SAVE SPEAKERLAYOUT
 - Encoder 1 Turn: select userbank
-- Encoder 1 push: overwrites userbank (Ask for new Name)
+- Encoder 1 push: overwrites userbank and asks for a new Name
 
 ```
 |-----------------------------------------------|
@@ -158,9 +155,9 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 |                                               |
 |                     sp2                       |
 |    |-------------------------------------|    |
-|    |             Userbank 1              |    |
-|    | selected -> USERBANK 2              |    | <- PRESET TO OVERWRITE 
-|    |             Userbank 3              |    |
+|    |             Burning Man 2021        |    |
+|    | selected -> Garbicz 2019            |    | <- PRESET TO OVERWRITE 
+|    |             Gardelegen 2018         |    |
 |    |--------------------------------------    |  
 |               sp5        sp4                  |
 |                                               |
@@ -173,14 +170,14 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 |-----------------------------------------------|
 ```
 
-### Level 3
-- Encoder 1 Turn: Select Buttonmatrix-Preset (This Preset loads patterns for all PADS)
+### LEVEL 3 PRESET SELECT FOR BUTTONMATRIX (BUTTON COUNTERPART ON THE SCREEN IS CALLED "PAD")
+- Encoder 1 Turn: Select Buttonmatrix-Preset (This Preset loads patterns for all BUTTONS)
 - Encoder 1 Push: Load selected Buttonmatrix-Preset to BUTTONMATRIX
-- Display, Touch PAD: Enter PAD-Selection overlay
+- Display Button: Enter PADSELECT overlay for touched PAD
 
 ```
 |-------------------------------------------------|
-| BUTTONMATRIX PRESETSELECTION                    | <- LEVEL 3
+| BUTTONMATRIX PRESETSELECT                       | <- LEVEL 3
 | USERSPACE 1                                     |
 |-------------------------------------------------|
 |           |            |            |           |
@@ -206,8 +203,9 @@ On some Pages you will select writeprotected factorypresets. Edit them and store
 --------------------------------------------------|
 ```
 
-### PAD-Selection overlay 
-- Encoder 1 Turn: Select PAD-Patch
+### PRESET SELECT OVERLAY FOR BUTTONS 
+- Encoder 1 Turn: Select BUTTONPATCH
+- Encoder 1 Push: Load BUTTONPATCH
 
 ```
 |-------------------------------------------------|

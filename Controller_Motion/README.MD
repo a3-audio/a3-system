@@ -40,9 +40,8 @@
 
 ### TOUCHDISPLAY CONTENT IN PLAY MODE
 Placeholder for a Speakersymbol with Outputnumber inside is "sp". Also the Position of 
-each stereosource is connected with thin lines to corresponding Infospace. Also those 
-are colorcoded (I would prefer straight connections, could be possible if they are 
-colored).
+each stereosource is connected with thin lines to corresponding Infospace. Those lines 
+are colorcoded and should go straight.
 
 ```
        ch1            ch2           ch3            ch4
@@ -99,30 +98,14 @@ colored).
 - Buttonmatrix long Press: Stores Motion to PAD
 
 
-## EDITMODE (PUSH ENCODER 1 TWICE TO ENTER) 
-The Global Editmode is multi-layered named "LEVELS". Toggle through them with Encoder 1: Push.
-On some Pages you may choose Presets. Prebuild Presets are writeprotected. You should load 
-prebuild Presets, customize them and store them as Userpreset after.
+## GLOBAL EDITMODE (PUSH ENCODER 1 TWICE TO ENTER) 
+The Global Editmode is multi-layered in "LEVELS". Toggle through them with Encoder 1: DOUBLE-Push.
 
-Kinds:
-- Speakerlayout
-- Padfunctions
-- Buttonmatrix
-
-### Level 1 (Select Speakerlayout-Preset)
-- Encoder 4 Turn: Select Preset
-- Encoder 4 Push: Load Preset
-
-### Level 2 (Edit Speakerlayout)
-- Encoder 1 Turn: Set Number of ouputs (speaker)
-- Encoder 2 Turn: Select output
-- Encoder 3 Turn: Set Azimuth for selected output
-- Encoder 4 Turn: Set Radius for selected output
-
-### TOUCHBUTTONS
-- STORE: Presetselection overlay
+On some Pages you may choose writeprotected factorypresets. You should load them, make your 
+changes and store them as userpreset after.
 
 
+### LEVEL 1/2 SPEAKERLAYOUT PRESET SELECTION AND EDIT
 ```
 |------------------------------------------------
 | SPEAKERLAYOUT PRESETSELECTION                 | <- LEVEL 1 
@@ -148,10 +131,25 @@ Kinds:
 |          |           |            |           |
 -------------------------------------------------
 ```
+### Level 1 (Select Speakerlayout-Preset)
+- Encoder 1 Turn: Select Preset
+- Encoder 1 Push: Load Preset
 
-    ### PRESETSELECTION OVERLAY
-    - Encoder 4 Turn: select userbank
-    - Encoder 4 push: overwrites userbank (Ask for new Name)
+### Level 2 (Edit Speakerlayout)
+- Encoder 1 Turn: Set Number of ouputs (speaker)
+- Encoder 2 Turn: Select output
+- Encoder 3 Turn: Set Azimuth for selected output
+- Encoder 4 Turn: Set Radius for selected output
+
+### TOUCHBUTTONS
+- STORE: PRESETSELECTION OVERLAY
+- ACTIVATE: Loads current Speakerlayout into the Audioengine
+- DISCARD: Recalls the current Preset into editor
+- Exit: Asks "do you want so save?" [yes, dismiss]
+
+#### PRESETSELECTION OVERLAY
+- Encoder 1 Turn: select userbank
+- Encoder 1 push: overwrites userbank (Ask for new Name)
 
 ```
 |------------------------------------------------

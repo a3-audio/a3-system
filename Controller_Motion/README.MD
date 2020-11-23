@@ -117,36 +117,38 @@ TOUCHDISPLAY CONTENT
 ```
 
 ## EDITMODE: MAIN-SETUP
-The Global Setup is multi-layered in "LEVELS". Toggle through with
-Encoder 1-4: DOUBLE-Push. 
+The Global Setup is multi-layered in "LEVELS". 
+Toggle with Encoder 1-3: DOUBLE-Push. 
 
 The Levels are:
-- LEVEL 1: PRESET SPEAKERLAYOUT
-- LEVEL 2: EDIT SPEAKERLAYOUT
-- LEVEL 3: PRESET BUTTONMATRIX
+- LEVEL 1: SPEAKERLAYOUT SELECT
+- LEVEL 2: SPEAKERLAYOUT EDIT
+- LEVEL 3: STORE TO BUTTONMATRIX
 
-BUTTONMATRIX: You can store your moves in patternpresets or presetbanks
-
-Note: Factorypresets are writeprotected but you can edit and store them as userpreset.
-
-
-### EDITMODE: LEVEL 1 - SPEAKERLAYOUT - PRESET SELECT
-- Encoder 1 Turn: Select Preset
-- Encoder 1 Push: Load Preset
-
-### EDITMODE: LEVEL 2 - SPEAKERLAYOUT - EDIT
-- Encoder 1 Turn: Set Number of outputs
-- Encoder 2 Turn: Select output
-- Encoder 3 Turn: Set Azimuth for selected output
-- Encoder 4 Turn: Set Radius for selected output
+Note: You can store your moves in patternpresets or presetbanks. Factorypresets 
+are writeprotected but you can edit and store them as userpreset.
 
 
 ```
+A common workflow, starting from PLAYMODE:
+- Encoder 1: Double Push - enter EDITMODE LEVEL 1
+- Encoder 1: Turn - To select a speakerlayout
+- Encoder 1: Push - To edit the layout
+- Encoder 2: Double Push - enter EDITMODE LEVEL 2
+- Encoder 1: Turn - Adjust number of speaker outputs
+- Encoder 2: Turn - Select speaker 1
+- Encoder 3: Turn - Adjust Azimuth of speaker 1(-180°, 180°)
+- Encoder 4: Turn - Adjust Distanz of speaker 2
+- Repeat the last 3 steps for all your speaker
+- Display Button SAVE: Save your speakerlayout
+- Display Button ENABLE: Upload your setup to audioengine
+- Display Button EXIT: Exit to PLAYMODE
+
 |-----------------------------------------------|
 | SPEAKERLAYOUT                                 | <- LEVEL 1 
 | 5 CHANNEL CIRCLE WITH RADIUS 4.5m             |
 |-----------------------------------------------|
-| OUTPUTS  |  SELECTED |  AZIMUTH  |  RADIUS    | <- LEVEL 2
+| OUTPUTS  |  SELECT   |  AZIMUTH  |  RADIUS    | <- LEVEL 2
 | 5        |  sp1      |  -80°     |  4.5m      |
 |-----------------------------------------------|
 |                                               |
@@ -162,34 +164,42 @@ Note: Factorypresets are writeprotected but you can edit and store them as userp
 |-----------------------------------------------|
 |-----------------------------------------------|
 |          |           |            |           |
-|  STORE   | ACTIVATE  |  DISCARD   |   EXIT    | <- TOUCHBUTTONS                                  
+|   SAVE   |  DISCARD  |   ENABLE   |   EXIT    | <- TOUCHBUTTONS                                  
 |          |           |            |           |
 ------------------------------------------------|
-```
 
-### EDITMODE: LEVEL 1/2 - EDIT SPEAKERLAYOUT
-- Display Button STORE: Enter SPEAKERPRESET OVERLAY
-- Display Button ACTIVATE: Loads current Speakerlayout into the Audioengine
-- Display Button DISCARD: Recalls the current Preset into editor
-- Display Button Exit: Returns to PLAYMODE and asks "do you want so save?" [yes, dismiss]
+LEVEL 1 - SPEAKERLAYOUT - PRESET SELECT
+- Encoder 1 Turn: Select Preset
+- Encoder 1 Push: Load Preset - SELECT popup
 
-### EDITMODE: LEVEL 2 - SPEAKERLAYOUT - PRESET SELECT - OVERLAY
-- Encoder 1 Turn: select userbank
-- Encoder 1 push: overwrite userbank, enter presetname
+LEVEL 2 - SPEAKERLAYOUT - EDIT
+- Encoder 1 Turn: Set Number of outputs
+- Encoder 2 Turn: Select output
+- Encoder 3 Turn: Set Azimuth for selected output
+- Encoder 4 Turn: Set Radius for selected output
 
-```
+LEVEL 1+2 - SPEAKERLAYOUT - FINISH
+- Display Button SAVE: SAVE TO .. popup
+- Display Button DISCARD: Discard unsaved changes
+- Display Button ENABLE: Upload current Speakerlayout to Audioengine
+- Display Button EXIT: Return to PLAYMODE and open dialog "save changes?" [yes, dismiss]
+
+SPEAKERLAYOUT - SELECT and SAVE TO.. - POPUP
+- Encoder 1 Turn: select
+- Encoder 1 push: enter selection
+
 |-----------------------------------------------|
-| SPEAKERLAYOUT                                 | <- LEVEL 1 
+| SPEAKERLAYOUT                                 |              
 | 5 CHANNEL CIRCLE WITH RADIUS 4.5m             |
 |-----------------------------------------------|
-| OUTPUTS  |  SELECTED |  AZIMUTH  |  RADIUS    | <- LEVEL 2
+| OUTPUTS  |  SELECT   |  AZIMUTH  |  RADIUS    |             
 | 5        |  sp1      |  -80°     |  4.5m      |
 |-----------------------------------------------|
 |                                               |
 |                     sp2                       |
 |    |-------------------------------------|    |
 |    |             Burning Man 2021        |    |
-|    | selected -> Garbicz 2019            |    | <- PRESET TO OVERWRITE 
+|    | selected -> Garbicz 2019            |    |                        
 |    |             Gardelegen 2018         |    |
 |    |--------------------------------------    |  
 |               sp5        sp4                  |
@@ -198,7 +208,7 @@ Note: Factorypresets are writeprotected but you can edit and store them as userp
 |-----------------------------------------------|
 |-----------------------------------------------|
 |          |           |            |           |
-|  STORE   | ACTIVATE  |  DISCARD   |   EXIT    | <- TOUCHBUTTONS                                 
+|   SAVE   |  DISCARD  |   ENABLE   |   EXIT    |                                                 
 |          |           |            |           |
 |-----------------------------------------------|
 ```

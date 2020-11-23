@@ -316,7 +316,7 @@ BUTTONMATRIX - SELECT and SAVE TO.. - POPUP
 
 # RECEIVE
 /ambijockey/moc/ch/1-4/motion/ xy [0-1]
-/ambijockey/moc/ch/1-4/signal/ [0-1]
+/ambijockey/moc/ch/1-4/vu/ [0-1]
 /ambijockey/moc/ch/1-4/bpm/ [80-180]
 /ambijockey/moc/master/bpm/ [80-180]
 ```

@@ -123,11 +123,10 @@ Toggle with Encoder 1-3: DOUBLE-Push.
 The Levels are:
 - LEVEL 1: SPEAKERLAYOUT SELECT
 - LEVEL 2: SPEAKERLAYOUT EDIT
-- LEVEL 3: STORE TO BUTTONMATRIX
+- LEVEL 3: BUTTONMATRIX 
 
-Note: You can store your moves in patternpresets or presetbanks. Factorypresets 
-are writeprotected but you can edit and store them as userpreset.
-
+Note: Factorypresets are writeprotected but you can edit and store them as userpreset.
+You can store motions in pattern and pattern in strips and patternbanks. 
 
 ```
 A common workflow, starting from PLAYMODE:
@@ -143,7 +142,9 @@ A common workflow, starting from PLAYMODE:
 - Display Button SAVE: Save your speakerlayout
 - Display Button ENABLE: Upload your setup to audioengine
 - Display Button EXIT: Exit to PLAYMODE
+```
 
+```
 |-----------------------------------------------|
 | SPEAKERLAYOUT                                 | <- LEVEL 1 
 | 5 CHANNEL CIRCLE WITH RADIUS 4.5m             |
@@ -180,10 +181,13 @@ LEVEL 2 - SPEAKERLAYOUT - EDIT
 
 LEVEL 1+2 - SPEAKERLAYOUT - FINISH
 - Display Button SAVE: SAVE TO .. popup
-- Display Button DISCARD: Discard unsaved changes
+- Display Button DISCARD: Discard changes
 - Display Button ENABLE: Upload current Speakerlayout to Audioengine
 - Display Button EXIT: Return to PLAYMODE and open dialog "save changes?" [yes, dismiss]
+```
 
+
+```
 SPEAKERLAYOUT - SELECT and SAVE TO.. - POPUP
 - Encoder 1 Turn: select
 - Encoder 1 push: enter selection
@@ -199,7 +203,7 @@ SPEAKERLAYOUT - SELECT and SAVE TO.. - POPUP
 |                     sp2                       |
 |    |-------------------------------------|    |
 |    |             Burning Man 2021        |    |
-|    | selected -> Garbicz 2019            |    |                        
+|    | selected -> GARBICZ 2019            |    |                        
 |    |             Gardelegen 2018         |    |
 |    |--------------------------------------    |  
 |               sp5        sp4                  |
@@ -214,15 +218,28 @@ SPEAKERLAYOUT - SELECT and SAVE TO.. - POPUP
 ```
 
 ### EDITMODE: LEVEL 3 - BUTTONMATRIX - LAYOUT SELECT
-- Encoder 1 Turn: Buttonmatrix Layout - Select Presetbank
-- Encoder 1 Push: Load selected Presetbank to editor
-- Display Button: Pattern - Enter BUTTONPATTERN EDITMODE
-- Display Button: 
+
+```
+A common Workflow starting from PLAYMODE:
+- Encoder 3 Double Push: Enter EDITMODE - Level 3
+- Encoder 1 Turn: Select presetbank
+- Encoder 1 Push: Edit selected presetbank 
+- Encoder 2 Turn: Select strip
+- Display Button ROW 1-4: Load selected strip
+- Encoder 3 Turn: Select pattern
+- Display Button PATTERN: Load selected pattern
+- Display Button SAVE: SAVE TO .. popup
+- Display Button DISCARD: Discard changes
+- Display Button ENABLE: Load current Layout to Buttonmatrix
+- Display Button EXIT: Return to PLAYMODE and open dialog "save changes?" [yes, dismiss]
+```
 
 ```
 |-----------------------------------------------|
-| BUTTONMATRIX LAYOUT                           | <- LEVEL 3
+| BUTTONMATRIX PRESET BANK/ROW/PATTERN          | <- LEVEL 3
 | Presetbank: user                              |
+|-----------------------------------------------|
+|   ROW 1   |   ROW 2   |   ROW 3   |   ROW 4   |
 |-----------------------------------------------|
 |           |           |           |           |
 |  pattern  |  pattern  |  pattern  |  pattern  |
@@ -247,14 +264,16 @@ SPEAKERLAYOUT - SELECT and SAVE TO.. - POPUP
 ------------------------------------------------|
 ```
 
-### EDITMODE: LEVEL 3 - BUTTONPATTERN EDITMODE - OVERLAY
+```
+BUTTONMATRIX - SELECT and SAVE TO.. - POPUP
 - Encoder 1 Turn: Select Buttonpattern
 - Encoder 1 Push: Load Buttonpattern
 
-```
 |-------------------------------------------------|
 | BUTTONMATRIX LAYOUT                             |  <- LEVEL 3
 | USERSPACE 1                                     |
+|-------------------------------------------------|
+|   ROW 1   |   ROW 2    |   ROW 3    |   ROW 4   |
 |-------------------------------------------------|
 |           |            |            |           |
 | 1/4 left  |    ...     |    ...     |    ...    |
@@ -280,8 +299,6 @@ SPEAKERLAYOUT - SELECT and SAVE TO.. - POPUP
 ```
 
 ## GLOBAL STUFF
-- Buttonmatrix Longpress: Store Cache to Presetfile
-- Buttonmatrix Shortpress: Play Motion from Presetfile
 - Poti 1-4 Reverb
 - Poti 1-4 Width
 

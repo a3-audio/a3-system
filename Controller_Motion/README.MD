@@ -25,7 +25,7 @@ OSC TRANSMITTER AND PATTERNSAMPLER FOR THE VERY SPECIAL PURPOSE OF 3-DIMENSIONAL
 |---------------|
 | R | R | R | R | <- POTIS FOR REVERB
 |---------------|
-| B | B | B | B | <- BUTTONS TO REC AND PLAY MOTION-PRESETS
+| B | B | B | B | <- BUTTONS TO REC AND PLAY MOTION-PATTERNS
 |---------------|    |
 | B | B | B | B | <--|                        
 |---------------|    |                 THE
@@ -36,19 +36,30 @@ OSC TRANSMITTER AND PATTERNSAMPLER FOR THE VERY SPECIAL PURPOSE OF 3-DIMENSIONAL
 ```
 
 ## PLAYMODE
+The touchscreen displays a lot of information but it makes sense in order 
+to control and see all information on one fingertip.
 
-The touchscreen displays a lot of information but it makes all sense in order to have all 
-control and information on one fingertip.
+### PLAYMODE: ENCODER FUNCTIONS
+- Encoder (1-4) Turn: Set audioconversion to Mono, Stereo, VBAP or Ambisonic for this channel
+- Encoder (1-4) Push: Enable RUNTIME-EDIT Mode for this channel
+- Encoder 1 and 2 Push together: Enter MAIN-EDITMODE
+
+### PLAYMODE: RUNTIME-EDIT
+- Encoder Turn: Change length of Recordloop for this channel
+- Touchdisplay onTouch: Records Motion to cachefile
+- Touchdisplay onRelease: Plays Motion from cachefile
+- Buttonmatrix long Press: Stores cachefile to BUTTON
+- Encorder Push: Disables RUNTIME-EDIT
 
 ```
-       ch1            ch2           ch3            ch4
-        |              |             |              |
-        v              v             v              v
-|-----------------------------------------------------------|
-| MODE:   MONO | MODE:   STER | MODE:   VBAP | MODE:   AMBI |
-| WIDTH:  -    | WIDTH:  30°  | WIDTH:  20°  | WIDTH:  30°  |
-| REVERB: -    | REVERB: 30%  | REVERB: 30%  | REVERB: 30%  | <- INFOFIELD
+       ch1            ch2           ch3            ch4                
+        |              |             |              |                 
+        v              v             v              v                 
+|-----------------------------------------------------------|         
+| MODE:   MONO | MODE:   STER | MODE:   VBAP | MODE:   AMBI |         
 | BPM:    128  | BPM:    128  | BPM:    128  | BPM:    128  |
+| WIDTH:  -    | WIDTH:  30°  | WIDTH:  20°  | WIDTH:  30°  |         
+| REVERB: -    | REVERB: 30%  | REVERB: 30%  | REVERB: 30%  | <- INFOFIELD
 | BEAT:   1/4  | BEAT:   1/4  | BEAT:   1/4  | BEAT:   1/4  |
 | BARS:   4    | BARS:   4    | BARS:   4    | BARS:   4    |    
 |-.----------.------------.--------------.----------.-------|
@@ -79,11 +90,13 @@ control and information on one fingertip.
 |  .          sp5                         sp4            .  |
 |   ..........ch1.........................ch1............   |
 |                                                           |    
+||1-------2-------3-------4-------5-------6-------7-------| | <- RUNTIME-EDIT: PATTERNLENGTH   
+||->->->->->->->->->                                      | | <- RUNTIME-EDIT: PATTERNPROGRESS
 |-----------------------------------------------------------|    
 | RCV:192.168.178.125:1234|SND:192.168.178.126:1232|BPM:128 | <- SYSTEMVIEW
 |-----------------------------------------------------------|
 
-### PLAYMODE: TOUCHDISPLAY CONTENT
+TOUCHDISPLAY CONTENT
 
 - INFOFIELD: COLORS - 4 channels, 4 infofield areas, 4 different colors
 - INFOFIELD: MODE - The Stereosource will be converted to Mono, Stereo, VBAP or Ambisonic
@@ -103,20 +116,7 @@ control and information on one fingertip.
 - SYSTEMVIEW: BPM - Master BPM
 ```
 
-### PLAYMODE: ENCODER FUNCTIONS
-- Encoder (1-4) Turn: Changes Mode (Mono, Stereo, VBAP, Ambisonic)
-- Encoder (1-4) Push: Enables RUNTIME-EDIT
-- Encoder 1 Push twice: Enter EDITMODE
-
-### PLAYMODE: RUNTIME-EDIT
-- Encoder Turn: Change lenght of Recordloop
-- Encorder Push: Disables RUNTIME-EDIT
-- Touchdisplay onTouch: Records Motion to cachefile
-- Touchdisplay onRelease: Plays Motion from cachefile
-- Buttonmatrix long Press: Stores Motion to PAD
-
-
-## EDITMODE: GLOBAL SETUP
+## EDITMODE: MAIN-SETUP
 The Global Setup is multi-layered in "LEVELS". Toggle through with
 Encoder 1-4: DOUBLE-Push. 
 
@@ -272,6 +272,8 @@ Note: Factorypresets are writeprotected but you can edit and store them as userp
 ## GLOBAL STUFF
 - Buttonmatrix Longpress: Store Cache to Presetfile
 - Buttonmatrix Shortpress: Play Motion from Presetfile
+- Poti 1-4 Reverb
+- Poti 1-4 Width
 
 ## OSC
 ``` 

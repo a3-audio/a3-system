@@ -162,15 +162,15 @@ TOUCHDISPLAY LEGEND:
 ```
 
 ## SETUPMODE
-Enter with Encoder 1-4: Double-Push. 
+Encoder 1-4: Double-Push. 
 
 ### SPEAKERSETUP: SELECT PRESET
-Enter with Encoder 1: Double-Push
+Encoder 1: Double-Push
 - Encoder 1 Turn: Select Preset - SELECT overlay
 - Encoder 1 Push: Load Preset 
 
 ### SPEAKERSETUP: EDIT PRESET
-Enter with Encoder 2: Double-Push
+Encoder 2: Double-Push
 - Encoder 1 Turn: Set Number of outputs
 - Encoder 2 Turn: Select output
 - Encoder 3 Turn: Set Azimuth for selected output
@@ -250,12 +250,12 @@ A common workflow, starting from PLAYMODE:
 ```
 
 ### HEADPHONESETUP
-From PLAYMODE Enter with Encoder 3: Double-Push
+Encoder 3: Double-Push
 - Encoder 1 Turn: Select preset - SELECT overlay
 - Encoder 1 Push: Enable preset
 
 ### PATTERNEDITOR: LAYOUT SELECT / EDIT
-From PLAYMODE Enter with Encoder 4: Double-Push
+Encoder 4: Double-Push
 - Encoder 1 Turn: Select BANK preset - SELECT overlay
 - Encoder 1 Push: Load BANK preset to editor
 - Encoder 2 Turn: Select ROW preset - SELECT Overlay

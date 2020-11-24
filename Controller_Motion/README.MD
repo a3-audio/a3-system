@@ -1,9 +1,44 @@
 # MOTION CONTROLLER
 
-OSC TRANSMITTER AND PATTERNSAMPLER FOR THE VERY SPECIAL PURPOSE OF 3-DIMENSIONAL AUDIO MOTION.
+OSC TRANSMITTER AND PATTERNSAMPLER FOR 3-DIMENSIONAL AUDIO MOTION.
+
+## OVERVIEW:
+
+PLAYMODE
+    - PLAY
+    - RUNTIME-EDIT
+        - Audio conversion mode (Mono, Stereo, VBAP, Ambisonic)
+        - BPM
+        - Width
+        - Reverb
+        - Beat: musical rhythm notation (1/4, 1/8, 3/4...)
+        - Bars: length of patternloop
+    - STOP
+
+SETUPMODE
+    - SPEAKERSETUP
+        - Select Preset
+        - Edit Preset
+            - Number of loudspeakers
+            - Select loudspeaker
+            - Adjust position: azimuth, distance, elevation
+        - Save and load, ask to enter new name or overwrite
+    - HEADPHONESETUP
+        - Headphone sounds more realistic with fitting hrtf filtercurve
+        - Select and load Preset
+    - PATTERNEDITOR
+        - Select bank
+        - Edit bank: touch a row or pattern to open "select -> Save -> bank/row/pattern dialog""
+        - Save /bank/row/pattern
+        - Load selection to buttonmatrix
+    - OPTIONS
+        - Brightness
+        - IP-Address, PORT this device
+        - IP-Address, PORT to receiver
+        - Export settings to usb
+
 
 ## HARDWARE LAYOUT
-
 ```
  CH1 CH2 CH3 CH4
   |   |   |   |
@@ -35,60 +70,70 @@ OSC TRANSMITTER AND PATTERNSAMPLER FOR THE VERY SPECIAL PURPOSE OF 3-DIMENSIONAL
 |---------------|
 ```
 
+
 ## PLAYMODE
 The touchscreen displays a lot of information but it makes sense in order 
 to control and see all information on one fingertip.
 
-### PLAYMODE: ENCODER FUNCTIONS
-- Encoder (1-4) Turn: Set audioconversion to Mono, Stereo, VBAP or Ambisonic for this channel
-- Encoder (1-4) Push: Enable RUNTIME-EDIT Mode for this channel
-- Encoder 1 and 2 Push together: Enter MAIN-EDITMODE
+### PLAYMODE: PLAY
+- Encoder 1-4 Push: Enable RUNTIME-EDIT Mode for this channel
+- Encoder 1-4 Double Push: Enter Setup Page 1-4
+- Buttonmatrix Push: play pattern
+- Buttonmatrix Double Push: toggle repeat 
 
 ### PLAYMODE: RUNTIME-EDIT
-- Encoder Turn: Change length of Recordloop for this channel
+- Encoder - Push: Toggle options, Turn: Adjust setting
+    - MODE: mono, stereo, vbap, ambisonic
+    - BEAT: 1/4, 1/8, 1/16, 2/3, ... 
+    - BARS: length of patternloop
+    - WIDTH: Spread stereo
+    - REVERB: Adjust reverblevel
 - Touchdisplay onTouch: Records Motion to cachefile
 - Touchdisplay onRelease: Plays Motion from cachefile
-- Buttonmatrix long Press: Stores cachefile to BUTTON
-- Encorder Push: Disables RUNTIME-EDIT
+- Buttonmatrix long press: Stores cachefile to BUTTON
+- Encorder Double Push: Exit to PLAYMODE
+
+### PLAYMODE: STOP
+- Somewhere should be a resetbutton, or steady scenes in patterns?
 
 ```
-       ch1            ch2           ch3            ch4                
+       ch1            ch2           ch3            ch4        <- INFOFIELDS        
         |              |             |              |                 
         v              v             v              v                 
 |-----------------------------------------------------------|         
 | MODE:   MONO | MODE:   STER | MODE:   VBAP | MODE:   AMBI |         
-| BPM:    128  | BPM:    128  | BPM:    128  | BPM:    128  |
-| WIDTH:  -    | WIDTH:  30°  | WIDTH:  20°  | WIDTH:  30°  |         
-| REVERB: -    | REVERB: 30%  | REVERB: 30%  | REVERB: 30%  | <- INFOFIELD
 | BEAT:   1/4  | BEAT:   1/4  | BEAT:   1/4  | BEAT:   1/4  |
 | BARS:   4    | BARS:   4    | BARS:   4    | BARS:   4    |    
-|-.----------.------------.--------------.----------.-------|
-| .           .............|.ch1         .          .       |          
-| .                         .sp2         .          .       |
-| .                    __----ch2----__   .          .       |
-| .                   L               R  .          .       |
-| .                                      .          .       |
-| .                                     ..          .       |
-| .                                  ...            .       |
-| .                               ...               .       |
-| .sp1                         ...                  .  sp3  |
-| -ch1                      ...                     .  ch1- |
-| .                      ...                        .     . |
-| .      R            ...                           . L   . |
-| .       |        ...                              . |   . | <- EAGLEVIEW: CURRENT SOUNDFIELD
-| .        |    ...                                 .|    . |    
-| .       ch3...                                    |     . |    
-| .        |                                       ch4    . |    
-| .         |                                       |     . |
-| .          L                                     |      . |
-| .                                               |       . |
-| .                                               R       . |
-| .                                                       . |
-| .                                                       . |
-| .                                                       . |
-| .                                                       . |
-|  .          sp5                         sp4            .  |
-|   ..........ch1.........................ch1............   |
+| WIDTH:  -    | WIDTH:  30°  | WIDTH:  20°  | WIDTH:  30°  |         
+| REVERB: -    | REVERB: 30%  | REVERB: 30%  | REVERB: 30%  | 
+| BPM:    128  | BPM:    128  | BPM:    128  | BPM:    128  |
+|-----------------------------------------------------------|
+|                            ch1                            |          
+|                            sp2                            |
+|                      __----ch2----__                      |
+|                     L               R                     |
+|                                                           |
+|                                                           |
+|                                                           |
+|                                                           |
+|  sp1                                                 sp3  |
+|  ch1                                                 ch1  |
+|                                                           |
+|        R                                            L     |
+|         |                                           |     | <- EAGLEVIEW: CURRENT SOUNDFIELD
+|          |                                         |      |    
+|         ch3                                       |       |    
+|          |                                       ch4      |    
+|           |                                       |       |
+|            L                                     |        |
+|                                                 |         |
+|                                                 R         |
+|                                                           |
+|                                                           |
+|                                                           |
+|                                                           |
+|             sp5                         sp4               |
+|             ch1                         ch1               |
 |                                                           |    
 ||1-------2-------3-------4-------5-------6-------7-------| | <- RUNTIME-EDIT: PATTERNLENGTH   
 ||->->->->->->->->->                                      | | <- RUNTIME-EDIT: PATTERNPROGRESS
@@ -96,8 +141,7 @@ to control and see all information on one fingertip.
 | RCV:192.168.178.125:1234|SND:192.168.178.126:1232|BPM:128 | <- SYSTEMVIEW
 |-----------------------------------------------------------|
 
-TOUCHDISPLAY CONTENT
-
+TOUCHDISPLAY LEGEND:
 - INFOFIELD: COLORS - 4 channels, 4 infofield areas, 4 different colors
 - INFOFIELD: MODE - The Stereosource will be converted to Mono, Stereo, VBAP or Ambisonic
 - INFOFIELD: WIDTH - How wide your sources spread in the sphere (exept monomode)
@@ -116,40 +160,30 @@ TOUCHDISPLAY CONTENT
 - SYSTEMVIEW: BPM - Master BPM
 ```
 
-## EDITMODE: MAIN-SETUP
-The Global Setup is multi-layered in "LEVELS". 
+## SETUPMODE
 Toggle with Encoder 1-3: DOUBLE-Push. 
 
-The Levels are:
-- LEVEL 1: SPEAKERLAYOUT SELECT
-- LEVEL 2: SPEAKERLAYOUT EDIT
-- LEVEL 3: BUTTONMATRIX 
+### SPEAKERSETUP: SELECT PRESET
+- Encoder 1 Turn: Select Preset - SELECT overlay
+- Encoder 1 Push: Load Preset 
 
-Note: Factorypresets are writeprotected but you can edit and store them as userpreset.
-You can store motions in pattern and pattern in strips and patternbanks. 
+### SPEAKERSETUP: EDIT PRESET
+- Encoder 1 Turn: Set Number of outputs
+- Encoder 2 Turn: Select output
+- Encoder 3 Turn: Set Azimuth for selected output
+- Encoder 4 Turn: Set Distance for selected output
 
-```
-A common workflow, starting from PLAYMODE:
-- Encoder 1: Double Push - enter EDITMODE LEVEL 1
-- Encoder 1: Turn - To select a speakerlayout
-- Encoder 1: Push - To edit the layout
-- Encoder 2: Double Push - enter EDITMODE LEVEL 2
-- Encoder 1: Turn - Adjust number of speaker outputs
-- Encoder 2: Turn - Select speaker 1
-- Encoder 3: Turn - Adjust Azimuth of speaker 1(-180°, 180°)
-- Encoder 4: Turn - Adjust Distanz of speaker 2
-- Repeat the last 3 steps for all your speaker
-- Display Button SAVE: Save your speakerlayout
-- Display Button ENABLE: Upload your setup to audioengine
-- Display Button EXIT: Exit to PLAYMODE
-```
-
+### SPEAKERSETUP: SAVE AND LOAD
+- Display Button SAVE: SAVE TO .. overlay
+- Display Button DISCARD: Discard changes
+- Display Button ENABLE: Upload Speakerlayout to Audioengine
+- Display Button EXIT: Return to PLAYMODE and open dialog "save changes?" [yes, dismiss]
 ```
 |-----------------------------------------------|
-| SPEAKERLAYOUT                                 | <- LEVEL 1 
-| 5 CHANNEL CIRCLE WITH RADIUS 4.5m             |
+| SPEAKERSETUP                                  | <- SPEAKERSETUP: SELECT PRESET
+| 5 CHANNEL CIRCLE WITH DISTANCE 4.5m           |
 |-----------------------------------------------|
-| OUTPUTS  |  SELECT   |  AZIMUTH  |  RADIUS    | <- LEVEL 2
+| OUTPUTS  |  SELECT   |  AZIMUTH  |  DISTANCE  | <- SPEAKERSETUP: EDIT PRESET
 | 5        |  sp1      |  -80°     |  4.5m      |
 |-----------------------------------------------|
 |                                               |
@@ -165,38 +199,19 @@ A common workflow, starting from PLAYMODE:
 |-----------------------------------------------|
 |-----------------------------------------------|
 |          |           |            |           |
-|   SAVE   |  DISCARD  |   ENABLE   |   EXIT    | <- TOUCHBUTTONS                                  
+|   SAVE   |  DISCARD  |   ENABLE   |   EXIT    | <- SPEAKERSETUP: SAVE AND LOAD                   
 |          |           |            |           |
 ------------------------------------------------|
 
-LEVEL 1 - SPEAKERLAYOUT - PRESET SELECT
-- Encoder 1 Turn: Select Preset
-- Encoder 1 Push: Load Preset - SELECT popup
-
-LEVEL 2 - SPEAKERLAYOUT - EDIT
-- Encoder 1 Turn: Set Number of outputs
-- Encoder 2 Turn: Select output
-- Encoder 3 Turn: Set Azimuth for selected output
-- Encoder 4 Turn: Set Radius for selected output
-
-LEVEL 1+2 - SPEAKERLAYOUT - FINISH
-- Display Button SAVE: SAVE TO .. popup
-- Display Button DISCARD: Discard changes
-- Display Button ENABLE: Upload current Speakerlayout to Audioengine
-- Display Button EXIT: Return to PLAYMODE and open dialog "save changes?" [yes, dismiss]
-```
-
-
-```
-SPEAKERLAYOUT - SELECT and SAVE TO.. - POPUP
+SELECT and SAVE TO.. - OVERLAY
 - Encoder 1 Turn: select
 - Encoder 1 push: enter selection
 
 |-----------------------------------------------|
-| SPEAKERLAYOUT                                 |              
-| 5 CHANNEL CIRCLE WITH RADIUS 4.5m             |
+| SPEAKERSETUP                                  |
+| 5 CHANNEL CIRCLE WITH DISTANCE 4.5m           |
 |-----------------------------------------------|
-| OUTPUTS  |  SELECT   |  AZIMUTH  |  RADIUS    |             
+| OUTPUTS  |  SELECT   |  AZIMUTH  |  DISTANCE  |             
 | 5        |  sp1      |  -80°     |  4.5m      |
 |-----------------------------------------------|
 |                                               |
@@ -215,57 +230,74 @@ SPEAKERLAYOUT - SELECT and SAVE TO.. - POPUP
 |   SAVE   |  DISCARD  |   ENABLE   |   EXIT    |                                                 
 |          |           |            |           |
 |-----------------------------------------------|
+
+A common workflow, starting from PLAYMODE:
+- Encoder 1: Double Push - enter SPEAKERSETUP
+- Encoder 1: Turn - Select speakerlayout
+- Encoder 1: Push - Edit speakerlayout
+- Encoder 2: Double Push - enter SETUPMODE LEVEL 2
+- Encoder 1: Turn - Adjust number of speaker outputs
+- Encoder 2: Turn - Select speaker 1
+- Encoder 3: Turn - Adjust Azimuth of speaker 1(-180°, 180°)
+- Encoder 4: Turn - Adjust Distanz of speaker 2
+- Repeat the last 3 steps for all your speaker
+- Display Button SAVE: Save your speakerlayout
+- Display Button ENABLE: Upload your setup to audioengine
+- Display Button EXIT: Exit to PLAYMODE
 ```
 
-### EDITMODE: LEVEL 3 - BUTTONMATRIX - LAYOUT SELECT
+### HEADPHONESETUP
+From PLAYMODE Double push Encoder 2 to enter this menu.
+    - Encoder 1 Turn: Select preset - SELECT overlay
+    - Encoder 1 Push: Enable preset
 
-```
-A common Workflow starting from PLAYMODE:
-- Encoder 3 Double Push: Enter EDITMODE - Level 3
-- Encoder 1 Turn: Select presetbank
-- Encoder 1 Push: Edit selected presetbank 
-- Encoder 2 Turn: Select strip
-- Display Button ROW 1-4: Load selected strip
-- Encoder 3 Turn: Select pattern
-- Display Button PATTERN: Load selected pattern
-- Display Button SAVE: SAVE TO .. popup
-- Display Button DISCARD: Discard changes
-- Display Button ENABLE: Load current Layout to Buttonmatrix
-- Display Button EXIT: Return to PLAYMODE and open dialog "save changes?" [yes, dismiss]
-```
+### PATTERNEDITOR: LAYOUT SELECT / EDIT
+From PLAYMODE Double push Encoder 3 to enter this menu.
+    - Encoder 1 Turn: Select BANK preset - SELECT overlay
+    - Encoder 1 Push: Load BANK preset to editor
+    - Encoder 2 Turn: Select ROW preset - SELECT Overlay
+        - Encoder 1-4 Push: Load ROW to BANK
+        - Encoder 1-4 Hold: Load ROW on BUTTONMATRIX
+    - Display Button PATTERN: Select PATTERN preset - SELECT overlay
+        - Encoder 1 Turn: Select PATTERN preset
+        - Encoder 1 Push: Load PATTERN preset to PATTERN
+
+### PATTERNEDITOR: SAVE AND LOAD
+    - Display Button SAVE: SAVE TO .. overlay
+    - Display Button DISCARD: Discard changes
+    - Display Button ENABLE: Upload patternlayout to audioengine
+    - Display Button EXIT: Return to PLAYMODE and open dialog "save changes?" [yes, dismiss]
 
 ```
 |-----------------------------------------------|
-| BUTTONMATRIX PRESET BANK/ROW/PATTERN          | <- LEVEL 3
+| PRESET BANK/ROW/PATTERN                       | <- LEVEL 3
 | Presetbank: user                              |
 |-----------------------------------------------|
-|   ROW 1   |   ROW 2   |   ROW 3   |   ROW 4   |
+|   ROW 1   |   ROW 2   |   ROW 3   |   ROW 4   | <- 
 |-----------------------------------------------|
 |           |           |           |           |
-|  pattern  |  pattern  |  pattern  |  pattern  |
+|  PATTERN  |  PATTERN  |  PATTERN  |  PATTERN  |
 |           |           |           |           |
 |-----------------------------------------------|
 |           |           |           |           |
-| 1/4 right |  pattern  |  pattern  |  pattern  |
+| 1/4 right |  PATTERN  |  PATTERN  |  PATTERN  |
 |           |           |           |           |
 |-----------------------------------------------| <- PREVIEW BUTTONMATRIXLAYOUT
 |           |           |           |           | 
-| 1/8 rand  |  pattern  |  pattern  |  pattern  |
+| 1/8 rand  |  PATTERN  |  PATTERN  |  PATTERN  |
 |           |           |           |           |
 |-----------------------------------------------|
 |           |           |           |           |
-| 1/16 diag |  pattern  |  pattern  |  pattern  |
+| 1/16 diag |  PATTERN  |  PATTERN  |  PATTERN  |
 |           |           |           |           |
 |-----------------------------------------------|
 |-----------------------------------------------|
 |           |           |           |           |
-|   SAVE    |    LOAD   |  DISCARD  |   EXIT    |                                  
+|   SAVE    |  DISCARD  |  ENABLE   |   EXIT    |                                  
 |           |           |           |           |
 ------------------------------------------------|
-```
 
-```
-BUTTONMATRIX - SELECT and SAVE TO.. - POPUP
+SELECT and SAVE TO.. - OVERLAY
 - Encoder 1 Turn: Select Buttonpattern
 - Encoder 1 Push: Load Buttonpattern
 
@@ -296,11 +328,64 @@ BUTTONMATRIX - SELECT and SAVE TO.. - POPUP
 |      SAVE & EXIT       |     DISCARD & EXIT     |                                  
 |                        |                        |
 --------------------------------------------------|
+
+PATTERNEDITOR BACKEND:
+Example - Userfolder "smooth" contains 4 folders. 
+
+If folder smooth contains a .ini file and subfolders, its a bank.
+If it contains .ini file and .ptn files, its a row.
+
+└── glitter
+└── smooth
+    ├── smooth.ini
+    ├── Antropofagia
+    │   ├── layout.ini
+    │   ├── drop.ptn
+    │   ├── intro.ptn
+    │   ├── steady.ptn
+    │   └── woof.ptn
+    ├── Kaluma
+    │   ├── layout.ini
+    │   ├── drop.ptn
+    │   ├── intro.ptn
+    │   ├── steady.ptn
+    │   └── woof.ptn
+    ├── LostMemory
+    │   ├── layout.ini
+    │   ├── drop.ptn
+    │   ├── intro.ptn
+    │   ├── steady.ptn
+    │   └── woof.ptn
+    └── SixthSense
+        ├── layout.ini
+        ├── drop.ptn
+        ├── intro.ptn
+        ├── steady.ptn
+        └── woof.ptn
+
+
+A common Workflow starting from PLAYMODE:
+- Encoder 3 Double push: Enter PATTERNEDITOR
+- Encoder 1 Turn: Select presetbank
+- Encoder 1 Push: Edit selected presetbank 
+- Encoder 2 Turn: Select strip
+- Display Button ROW 1-4: Load selected strip
+- Encoder 3 Turn: Select pattern
+- Display Button PATTERN: Load selected PATTERN
+- Display Button SAVE: SAVE TO .. popup
+- Display Button DISCARD: Discard changes
+- Display Button ENABLE: Load current Layout to Buttonmatrix
+- Display Button EXIT: Return to PLAYMODE and open dialog "save changes?" [yes, dismiss]
+
+Note: Factorypresets are writeprotected but you can edit and store them as userpreset.
+You can store motions in pattern, pattern in rows and rows in banks banks.
 ```
 
-## GLOBAL STUFF
-- Poti 1-4 Reverb
-- Poti 1-4 Width
+### OPTIONS
+    - Brightness
+    - IP-Address and Port Motioncontroller
+    - IP-Address and Port audioengine
+    - Export settings to usb
 
 ## OSC
 ``` 
@@ -310,9 +395,9 @@ BUTTONMATRIX - SELECT and SAVE TO.. - POPUP
 /ambijockey/moc/ch/1-4/width/ [0-1]
 /ambijockey/moc/ch/1-4/reverb/ [0-1]
 
-/ambijockey/moc/master/speakerCount/n/ [1-24]
-/ambijockey/moc/master/speakerPos/n/azimuth [-180-180]
-/ambijockey/moc/master/speakerPos/n/Radius [m]
+/ambijockey/moc/speakersetup/n [1-24]
+/ambijockey/moc/speakersetup/n/azimuth [-180-180]
+/ambijockey/moc/speakersetup/n/Distance [m]
 
 # RECEIVE
 /ambijockey/moc/ch/1-4/motion/ xy [0-1]

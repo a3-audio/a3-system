@@ -5,37 +5,37 @@ OSC TRANSMITTER AND PATTERNSAMPLER FOR 3-DIMENSIONAL AUDIO MOTION.
 ## OVERVIEW:
 
 PLAYMODE
-    - PLAY
-    - RUNTIME-EDIT
-        - Audio conversion mode (Mono, Stereo, VBAP, Ambisonic)
-        - BPM
-        - Width
-        - Reverb
-        - Beat: musical rhythm notation (1/4, 1/8, 3/4...)
-        - Bars: length of patternloop
-    - STOP
+- PLAY
+- RUNTIME-EDIT
+    - Audio conversion mode (Mono, Stereo, VBAP, Ambisonic)
+    - BPM
+    - Width
+    - Reverb
+    - Beat: musical rhythm notation (1/4, 1/8, 3/4...)
+    - Bars: length of patternloop
+- STOP
 
 SETUPMODE
-    - SPEAKERSETUP
-        - Select Preset
-        - Edit Preset
-            - Number of loudspeakers
-            - Select loudspeaker
-            - Adjust position: azimuth, distance, elevation
-        - Save and load, ask to enter new name or overwrite
-    - HEADPHONESETUP
-        - Headphone sounds more realistic with fitting hrtf filtercurve
-        - Select and load Preset
-    - PATTERNEDITOR
-        - Select bank
-        - Edit bank: touch a row or pattern to open "select -> Save -> bank/row/pattern dialog""
-        - Save /bank/row/pattern
-        - Load selection to buttonmatrix
-    - OPTIONS
-        - Brightness
-        - IP-Address, PORT this device
-        - IP-Address, PORT to receiver
-        - Export settings to usb
+- SPEAKERSETUP
+    - Select Preset
+    - Edit Preset
+        - Number of loudspeakers
+        - Select loudspeaker
+        - Adjust position: azimuth, distance, elevation
+    - Save and load, ask to enter new name or overwrite
+- HEADPHONESETUP
+    - Headphone sounds more realistic with fitting hrtf filtercurve
+    - Select and load Preset
+- PATTERNEDITOR
+    - Select bank
+    - Edit bank: touch a row or pattern to open "select -> Save -> bank/row/pattern dialog""
+    - Save /bank/row/pattern
+    - Load selection to buttonmatrix
+- OPTIONS
+    - Brightness
+    - IP-Address, PORT this device
+    - IP-Address, PORT to receiver
+    - Export settings to usb
 
 
 ## HARDWARE LAYOUT
@@ -161,13 +161,15 @@ TOUCHDISPLAY LEGEND:
 ```
 
 ## SETUPMODE
-Toggle with Encoder 1-3: DOUBLE-Push. 
+Enter with Encoder 1-4: Double-Push. 
 
 ### SPEAKERSETUP: SELECT PRESET
+Enter with Encoder 1: Double-Push
 - Encoder 1 Turn: Select Preset - SELECT overlay
 - Encoder 1 Push: Load Preset 
 
 ### SPEAKERSETUP: EDIT PRESET
+Enter with Encoder 2: Double-Push
 - Encoder 1 Turn: Set Number of outputs
 - Encoder 2 Turn: Select output
 - Encoder 3 Turn: Set Azimuth for selected output
@@ -247,26 +249,26 @@ A common workflow, starting from PLAYMODE:
 ```
 
 ### HEADPHONESETUP
-From PLAYMODE Double push Encoder 2 to enter this menu.
-    - Encoder 1 Turn: Select preset - SELECT overlay
-    - Encoder 1 Push: Enable preset
+From PLAYMODE Enter with Encoder 3: Double-Push
+- Encoder 1 Turn: Select preset - SELECT overlay
+- Encoder 1 Push: Enable preset
 
 ### PATTERNEDITOR: LAYOUT SELECT / EDIT
-From PLAYMODE Double push Encoder 3 to enter this menu.
-    - Encoder 1 Turn: Select BANK preset - SELECT overlay
-    - Encoder 1 Push: Load BANK preset to editor
-    - Encoder 2 Turn: Select ROW preset - SELECT Overlay
-        - Encoder 1-4 Push: Load ROW to BANK
-        - Encoder 1-4 Hold: Load ROW on BUTTONMATRIX
-    - Display Button PATTERN: Select PATTERN preset - SELECT overlay
-        - Encoder 1 Turn: Select PATTERN preset
-        - Encoder 1 Push: Load PATTERN preset to PATTERN
+From PLAYMODE Enter with Encoder 4: Double-Push
+- Encoder 1 Turn: Select BANK preset - SELECT overlay
+- Encoder 1 Push: Load BANK preset to editor
+- Encoder 2 Turn: Select ROW preset - SELECT Overlay
+    - Encoder 1-4 Push: Load ROW to BANK
+    - Encoder 1-4 Hold: Load ROW on BUTTONMATRIX
+- Display Button PATTERN: Select PATTERN preset - SELECT overlay
+    - Encoder 1 Turn: Select PATTERN preset
+    - Encoder 1 Push: Load PATTERN preset to PATTERN
 
 ### PATTERNEDITOR: SAVE AND LOAD
-    - Display Button SAVE: SAVE TO .. overlay
-    - Display Button DISCARD: Discard changes
-    - Display Button ENABLE: Upload patternlayout to audioengine
-    - Display Button EXIT: Return to PLAYMODE and open dialog "save changes?" [yes, dismiss]
+- Display Button SAVE: SAVE TO .. overlay
+- Display Button DISCARD: Discard changes
+- Display Button ENABLE: Upload patternlayout to audioengine
+- Display Button EXIT: Return to PLAYMODE and open dialog "save changes?" [yes, dismiss]
 
 ```
 |-----------------------------------------------|
@@ -330,7 +332,7 @@ SELECT and SAVE TO.. - OVERLAY
 --------------------------------------------------|
 
 PATTERNEDITOR BACKEND:
-Example - Userfolder "smooth" contains 4 folders. 
+Example - Presetbank "smooth" 
 
 If folder smooth contains a .ini file and subfolders, its a bank.
 If it contains .ini file and .ptn files, its a row.
@@ -363,7 +365,6 @@ If it contains .ini file and .ptn files, its a row.
         ├── steady.ptn
         └── woof.ptn
 
-
 A common Workflow starting from PLAYMODE:
 - Encoder 3 Double push: Enter PATTERNEDITOR
 - Encoder 1 Turn: Select presetbank
@@ -382,10 +383,10 @@ You can store motions in pattern, pattern in rows and rows in banks banks.
 ```
 
 ### OPTIONS
-    - Brightness
-    - IP-Address and Port Motioncontroller
-    - IP-Address and Port audioengine
-    - Export settings to usb
+- Brightness
+- IP-Address and Port Motioncontroller
+- IP-Address and Port audioengine
+- Export settings to usb
 
 ## OSC
 ``` 

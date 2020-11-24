@@ -82,7 +82,8 @@ to control and see all information on one fingertip.
 - Buttonmatrix Double Push: toggle repeat 
 
 ### PLAYMODE: RUNTIME-EDIT
-- Encoder - Push: Toggle options, Turn: Adjust setting
+- Encoder - Push: Toggle through INFOFIELD-options
+- Encoder - Turn: Adjust option
     - MODE: mono, stereo, vbap, ambisonic
     - BEAT: 1/4, 1/8, 1/16, 2/3, ... 
     - BARS: length of patternloop
@@ -333,6 +334,14 @@ SELECT and SAVE TO.. - OVERLAY
 
 PATTERNEDITOR BACKEND:
 Example - Presetbank "smooth" 
+
+Stored informations:
+- Bankname
+- Banklayout
+- Rownames
+- Rowlayouts
+- Patternnames
+- Patternconfig
 
 If folder smooth contains a .ini file and subfolders, its a bank.
 If it contains .ini file and .ptn files, its a row.

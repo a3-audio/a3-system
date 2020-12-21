@@ -158,7 +158,6 @@ void readMux()
 
 void initBtnEncoder()
 {
-  // btnMatrix init
   for (byte i = 0; i < 3; i++)
   {
     btnEncoderNew[i] = 0;

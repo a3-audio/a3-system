@@ -158,7 +158,7 @@ void readMux()
 
 void initBtnEncoder()
 {
-  for (byte i = 0; i < 3; i++)
+  for (byte i = 0; i < 4; i++)
   {
     btnEncoderNew[i] = 0;
     btnEncoderOld[i] = 0;
@@ -167,7 +167,7 @@ void initBtnEncoder()
 
 void sendBtnEncoder()
 {
-  for (byte i = 0; i < 3; i++)
+  for (byte i = 0; i < 4; i++)
   {
     if (btnEncoderNew[i] != btnEncoderOld[i])
     {

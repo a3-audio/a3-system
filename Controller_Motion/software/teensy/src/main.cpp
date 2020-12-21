@@ -24,7 +24,7 @@ pinMode(PIN_BUTTON_ENCODER, INPUT_PULLUP);
 #define muxInBtnMx1 20 //Butten Matrix
 #define muxInBtnMx2 19 //Butten Matrix
 #define muxInPot 18    //Poti in
-#define muxInBtnEncoder 10    //Encoder Buttons in
+#define muxInBtnEncoder 8 //Encoder Buttons in
 
 // Multiplexer address Pin's (s0/s1/s2)
 #define s0 23 // low-order bit
@@ -42,7 +42,7 @@ pinMode(PIN_BUTTON_ENCODER, INPUT_PULLUP);
 #define enc3_CLK 7
 
 // NeoPixel
-#define npxl_pin 32
+#define npxl_pin 9
 #define npxl_leds 16
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(npxl_leds, npxl_pin, NEO_GRB + NEO_KHZ800);
 
@@ -225,7 +225,6 @@ void pixels()
   for(int i=0;i<npxl_leds;i++){
     strip.setPixelColor(i, strip.Color(255,255,255)); // Moderately bright green color.
     strip.show(); // This sends the updated pixel color to the hardware.
-    delay(500); // Delay for a period of time (in milliseconds).
   }
 }
 

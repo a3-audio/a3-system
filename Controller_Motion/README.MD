@@ -71,31 +71,9 @@ SETUPMODE
 ```
 
 
-## PLAYMODE
+## DISPLAY LAYOUT
 The touchscreen displays a lot of information but it makes sense in order 
 to control and see all information on one fingertip.
-
-### PLAYMODE: PLAY
-- Encoder 1-4 Push: Enable RUNTIME-EDIT Mode for this channel
-- Encoder 1-4 Double Push: Enter Setup Page 1-4
-- Buttonmatrix Push: play pattern
-- Buttonmatrix Double Push: toggle repeat 
-
-### PLAYMODE: RUNTIME-EDIT
-- Encoder - Push: Toggle through INFOFIELD-options
-- Encoder - Turn: Adjust option
-    - MODE: mono, stereo, vbap, ambisonic
-    - BEAT: 1/4, 1/8, 1/16, 2/3, ... 
-    - BARS: length of patternloop
-    - WIDTH: Spread stereo
-    - REVERB: Adjust reverblevel
-- Touchdisplay onTouch: Records Motion to cachefile
-- Touchdisplay onRelease: Plays Motion from cachefile
-- Buttonmatrix long press: Stores cachefile to BUTTON
-- Encorder Double Push: Exit to PLAYMODE
-
-### PLAYMODE: STOP
-- Somewhere should be a resetbutton, or steady scenes in patterns?
 
 ```
        ch1            ch2           ch3            ch4        <- INFOFIELDS        
@@ -160,6 +138,31 @@ TOUCHDISPLAY LEGEND:
 - SYSTEMVIEW: SND - This device OSC output
 - SYSTEMVIEW: BPM - Master BPM
 ```
+## PLAYMODE
+- Encoder 1-4: Push
+
+### PLAYMODE: PLAY
+- Encoder 1-4 Push: Toggle RUNTIME-EDIT Mode for this channel
+- Encoder 1-4 Double Push: Enter Setup Page 1-4
+- Buttonmatrix Push: play pattern
+- Buttonmatrix Double Push: toggle repeat 
+
+### PLAYMODE: RUNTIME-EDIT
+- Encoder - Push: Toggle through INFOFIELD-options
+- Encoder - Turn: Adjust option
+    - MODE: mono, stereo, vbap, ambisonic
+    - BEAT: 1/4, 1/8, 1/16, 2/3, ... 
+    - BARS: length of patternloop
+    - WIDTH: Spread stereo
+    - REVERB: Adjust reverblevel
+- Touchdisplay onTouch: Records Motion to cachefile
+- Touchdisplay onRelease: Plays Motion from cachefile
+- Buttonmatrix long press: Stores cachefile to BUTTON
+- Encorder Double Push: Exit to PLAYMODE
+
+### PLAYMODE: STOP
+- Somewhere should be a resetbutton, or steady scenes in patterns?
+
 
 ## SETUPMODE
 Encoder 1-4: Double-Push. 

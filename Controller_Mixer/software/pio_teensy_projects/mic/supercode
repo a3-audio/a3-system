@@ -1,0 +1,179 @@
+[Back]
+
+// OSC  test code
+
+#include <Bounce.h>
+#include <Encoder.h>
+#include <SPI.h>
+#include <Ethernet.h>
+#include <EthernetUdp.h>
+#include <OSCBundle.h>
+
+// ***** BUTTONS *****
+#define BUTTON_ONE_PIN 20
+#define BUTTON_TWO_PIN 21
+
+int             debounceTime=5;
+Bounce          buttonOne = Bounce(BUTTON_ONE_PIN,debounceTime);
+Bounce          buttonTwo = Bounce(BUTTON_TWO_PIN,debounceTime);
+elapsedMicros   sinceButtonCheck;                                   // timer for button check
+unsigned int    buttonCheckInterval=1000;                           // interval in microseconds for checking buttons
+// ***** END BUTTONS *****
+
+// ***** ENCODERS *****
+Encoder encoderOne(18,19);
+Encoder encoderTwo(22,23);
+long    currentEncoderOneValue=0;
+long    currentEncoderTwoValue=0;
+
+// you can find this written on the board of some Arduino Ethernets or shields; I couldn't find it but it does not matter :-)
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; 
+
+//ports
+const unsigned int serverPort  = 8000;     // Reaper Out port
+const unsigned int destPort    = 9000;     // Reaper IN port
+
+//Create UDP message object
+EthernetUDP Udp;
+
+//the Teensy's IP
+IPAddress ip(192, 168, 178, 177);
+//destination IP
+IPAddress outIp(192,168,178,38);
+
+void setup(){
+  Serial.begin(115200); 
+  Serial.println("OSC test");
+
+  pinMode(BUTTON_ONE_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_TWO_PIN, INPUT_PULLUP);
+  //setup ethernet part
+  Ethernet.begin(mac,ip);
+  Udp.begin(serverPort);
+}
+
+void loop(){
+  //process received messages
+  OSCMsgReceive();
+  //OSCBundleReceive();
+  
+  // check elapsedMicros and millis timers
+  if (sinceButtonCheck >=buttonCheckInterval) {
+    sinceButtonCheck = sinceButtonCheck - buttonCheckInterval;
+    handleButtons();
+    handleEncoders();
+  }  
+} 
+void OSCBundleReceive(){
+  OSCBundle bundleIN;
+  int size;
+  if( (size = Udp.parsePacket())>0) {
+    while(size--) bundleIN.fill(Udp.read());
+    if(!bundleIN.hasError()) {
+      bundleIN.route("/track", showMessage);
+      bundleIN.route("/fx", showMessage);
+      bundleIN.route("/fxparam", showMessage);
+    }
+  }  
+}
+void OSCMsgReceive(){
+  OSCMessage msgIN;
+  int size; 
+  char str[32];   
+  if((size = Udp.parsePacket())>0){
+    while(size--)
+      msgIN.fill(Udp.read());
+    if(!msgIN.hasError()){
+      Serial.println("Receiving OSC Message...");
+      msgIN.route("/track",showMessage);
+
+    msgIN.getAddress(str);
+    Serial.print("Adres = : ");
+    Serial.println(str);
+    }
+  }
+}
+
+void showMessage(OSCMessage &msg, int addrOffset){
+  char adresStr[48];    
+  msg.getAddress(adresStr);
+  Serial.print(adresStr);
+  Serial.print("\t\t");
+  if (msg.isInt(0)){        
+    Serial.print("Int     = : ");
+    Serial.println(msg.getInt(0));
+  } 
+  else if(msg.isFloat(0)){       
+    Serial.print("Float   = : ");
+    Serial.println(msg.getFloat(0));
+  } 
+  else if(msg.isBoolean(0)){       
+    Serial.print("Boolean = : ");
+    Serial.println(msg.isBoolean(0));
+  }
+  else if(msg.isString(0)){   
+    char str[48]    ;
+    msg.getString(0,str,48);
+    Serial.print("String  = : ");
+    Serial.println(str);
+  }
+}
+
+void handleButtons(){
+  if (buttonOne.update()) {
+    if (buttonOne.fallingEdge()) {
+     Serial.println("Button One pushed");
+       
+     OSCMessage msgOUT("/device/track/-");
+     msgOUT.add(1.0);
+    Udp.beginPacket(outIp, destPort);
+    msgOUT.send(Udp); // send the bytes
+    Udp.endPacket(); // mark the end of the OSC Packet
+    msgOUT.empty(); // free space occupied by message
+    }
+  }
+  if (buttonTwo.update()) {
+    if (buttonTwo.fallingEdge()) {
+     Serial.println("Button Two pushed");
+     OSCMessage msgOUT("/device/track/+");
+     msgOUT.add(1.0);
+    Udp.beginPacket(outIp, destPort);
+    msgOUT.send(Udp); // send the bytes
+    Udp.endPacket(); // mark the end of the OSC Packet
+    msgOUT.empty(); // free space occupied by message
+    }
+  }
+}
+
+void handleEncoders(){
+  // long for new encoder value
+  long newEncoderValue = 0;
+  // Encoder One
+  newEncoderValue=encoderOne.read();
+  if (newEncoderValue!=currentEncoderOneValue){
+    currentEncoderOneValue=newEncoderValue;
+    Serial.println(currentEncoderOneValue);
+  }
+  // Encoder Two
+  newEncoderValue=encoderTwo.read();
+  if (newEncoderValue!=currentEncoderTwoValue){
+    currentEncoderTwoValue=newEncoderValue;
+    Serial.println(currentEncoderTwoValue);
+  }
+}
+
+void funcValue(OSCMessage &msg, int addrOffset ){
+
+  int value = msg.getFloat(0);
+  OSCMessage msgOUT("/Fader/Value");
+
+  Serial.print("Value = : ");
+  Serial.println(value);
+
+  msgOUT.add(value);
+
+  Udp.beginPacket(Udp.remoteIP(), destPort);
+  msgOUT.send(Udp); // send the bytes
+  Udp.endPacket(); // mark the end of the OSC Packet
+  msgOUT.empty(); // free space occupied by message
+}

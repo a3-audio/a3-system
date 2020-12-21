@@ -1,0 +1,38 @@
+{
+  "name": "minar-platform",
+  "version": "1.1.0",
+  "description": "Platform API for MINAR.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ARMmbed/minar-platform.git"
+  },
+  "homepage": "https://github.com/ARMmbed/minar-platform",
+  "bugs": {
+    "url": "http://github.com/ARMmbed/minar-platform/issues",
+    "email": "project@hostname.com"
+  },
+  "author": "James Crosby <James.Crosby@arm.com>",
+  "licenses": [
+    {
+      "url": "https://spdx.org/licenses/Apache-2.0",
+      "type": "Apache-2.0"
+    }
+  ],
+  "dependencies": {},
+  "targetDependencies": {
+    "mbed": {
+      "minar-platform-mbed": "^1.0.0",
+      "cmsis-core": "^1.0.0"
+    },
+    "posix": {
+      "minar-platform-posix": "*"
+    }
+  },
+  "keywords": [
+    "mbed",
+    "mbed-official"
+  ]
+}

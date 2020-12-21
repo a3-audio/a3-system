@@ -1,0 +1,4 @@
+yotta_*
+.yotta.json
+*.tar.gz
+build/

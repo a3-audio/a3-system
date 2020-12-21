@@ -24,7 +24,7 @@ pinMode(PIN_BUTTON_ENCODER, INPUT_PULLUP);
 #define muxInBtnMx1 20 //Butten Matrix
 #define muxInBtnMx2 19 //Butten Matrix
 #define muxInPot 18    //Poti in
-#define muxInEnc 10    //Encoder Buttons in
+#define muxInBtnEncoder 10    //Encoder Buttons in
 
 // Multiplexer address Pin's (s0/s1/s2)
 #define s0 23 // low-order bit
@@ -58,6 +58,10 @@ bool btnMxOld[16];
 // poti arry
 int potiNew[8];
 int potiOld[8];
+
+// BtnEncoder
+bool btnEncoderNew[8];
+bool btnEncoderOld[8];
 
 // Encoder def
 Encoder enc0(enc0_DT, enc0_CLK);
@@ -99,6 +103,8 @@ void sendBtnMx()
     }
   }
 }
+
+
 
 void initPoti()
 {
@@ -142,8 +148,36 @@ void readMux()
     btnMxNew[i] = digitalRead(muxInBtnMx1);
     btnMxNew[i + 8] = digitalRead(muxInBtnMx2);
 
+    // read Butten Encoder
+    btnEncoderNew[i] = digitalRead(muxInBtnEncoder);
+
     // read the Poti's
     potiNew[i] = analogRead(muxInPot);
+  }
+}
+
+void initBtnEncoder()
+{
+  // btnMatrix init
+  for (byte i = 0; i < 3; i++)
+  {
+    btnEncoderNew[i] = 0;
+    btnEncoderOld[i] = 0;
+  }
+}
+
+void sendBtnEncoder()
+{
+  for (byte i = 0; i < 3; i++)
+  {
+    if (btnEncoderNew[i] != btnEncoderOld[i])
+    {
+      Serial.print("EB");
+      Serial.print(i);
+      Serial.print(":");
+      Serial.println(btnEncoderNew[i]);
+      btnEncoderOld[i] = btnEncoderNew[i];
+    }
   }
 }
 
@@ -208,6 +242,7 @@ void setup()
   Serial.println("#######################################");
 
   initBtnMatrix();
+  initBtnEncoder();
   initPoti();
 
   strip.begin();
@@ -219,6 +254,7 @@ void loop()
   readMux();
   readEncoder();
   sendBtnMx();
+  sendBtnEncoder();
   sendEncoder();
   sendPoti();
   pixels();

@@ -24,6 +24,7 @@ pinMode(PIN_BUTTON_ENCODER, INPUT_PULLUP);
 #define muxInBtnMx1 20 //Butten Matrix
 #define muxInBtnMx2 19 //Butten Matrix
 #define muxInPot 18    //Poti in
+#define muxInEnc 10    //Encoder Buttons in
 
 // Multiplexer address Pin's (s0/s1/s2)
 #define s0 23 // low-order bit

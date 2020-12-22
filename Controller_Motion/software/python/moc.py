@@ -40,7 +40,7 @@ Button_14 = 0
 Button_15 = 0
 Button_16 = 0
 
-# Nanopixel
+# Neopixel ws2812B
 pix_1 = 0
 pix_2 = 0
 pix_3 = 0

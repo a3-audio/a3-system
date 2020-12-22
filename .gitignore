@@ -12,3 +12,7 @@ Controller_Motion/Hardware/controller_motion_pcb/teensy.pretty
 Controller_Motion/Hardware/controller_motion_pcb/teensy_library-master
 Controller_Motion/Hardware/controller_motion_pcb/controller_motion_pcb.sch-bak
 Controller_Motion/Hardware/controller_motion_pcb/controller_motion_pcb.kicad_pcb-bak
+/Controller_Motion/software/teensy/include
+/Controller_Motion/software/teensy/lib
+/Controller_Motion/software/teensy/platformio.ini
+/Controller_Motion/software/teensy/test

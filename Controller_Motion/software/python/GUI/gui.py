@@ -121,8 +121,8 @@ class MotionDisplay(Widget):
             #print("pos: {}".format(loc_pos))
 
             # LocPos normalalisieren
-            x = loc_pos[0] / self.width
-            y = loc_pos[1] / self.height
+            x = loc_pos[1] / self.width
+            y = loc_pos[0] / self.height
 
             if ch1_select:
                 # den PositionIndicator auf die aktuelle Position setzte
@@ -155,8 +155,8 @@ class MotionDisplay(Widget):
             #print("pos: {}".format(loc_pos))
 
             # LocPos normalalisieren
-            x = loc_pos[0] / self.width
-            y = loc_pos[1] / self.height
+            x = loc_pos[1] / self.width
+            y = loc_pos[0] / self.height
 
             if ch1_select:
                 # den PositionIndicator auf die aktuelle Position setzte

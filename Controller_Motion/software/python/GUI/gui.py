@@ -17,9 +17,9 @@ from oscpy.server import ServerClass
 
 # Setup OSC
 # TODO IP anpassen
-osc_client_ip_addr = "127.0.0.1"
+osc_client_ip_addr = "192.168.43.142"
 osc_client_port = 9000
-osc_server_port = 8000
+osc_server_port = 8600
 
 # OSC init
 osc = OSCThreadServer()

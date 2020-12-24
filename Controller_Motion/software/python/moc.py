@@ -1,73 +1,85 @@
+#!/usr/bin/python
+import serial
+import numpy
+from pythonosc.udp_client import SimpleUDPClient
 
-# potis
-width_1 = 0
-width_2 = 0
-width_3 = 0
-width_4 = 0
+# OSC-Clients
+osc_router = SimpleUDPClient('192.168.43.142', 9000)
 
-reverb_1 = 0
-reverb_2 = 0
-reverb_3 = 0
-reverb_4 = 0
+if __name__ == '__main__':
+    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+    ser.flush()
+    while True:
+        if ser.in_waiting > 0:
+            line = ser.readline().decode('utf-8').rstrip()
+            words = line.split(":")
+            identifier = words[0]
+            value = words[1]
+            if identifier == "P0":
+                 osc_router.send_message("/ambijockey/moc/ch/1/width/", numpy.interp(value, [0, 1023], [0, 1]))
+            if identifier == "P1":
+                 osc_router.send_message("/ambijockey/moc/ch/2/width", numpy.interp(value, [0, 1023], [0, 1]))
+            if identifier == "P2":
+                 osc_router.send_message("/ambijockey/moc/ch/3/width/", numpy.interp(value, [0, 1023], [0, 1]))
+            if identifier == "P3":
+                 osc_router.send_message("/ambijockey/moc/ch/4/width/", numpy.interp(value, [0, 1023], [0, 1]))
+            if identifier == "P4":
+                 osc_router.send_message("/ambijockey/moc/ch/1/reverb/", numpy.interp(value, [0, 1023], [0, 1]))
+            if identifier == "P5":
+                 osc_router.send_message("/ambijockey/moc/ch/2/reverb/", numpy.interp(value, [0, 1023], [0, 1]))
+            if identifier == "P6":
+                 osc_router.send_message("/ambijockey/moc/ch/3/reverb/", numpy.interp(value, [0, 1023], [0, 1]))
+            if identifier == "P7":
+                 osc_router.send_message("/ambijockey/moc/ch/4/reverb/", numpy.interp(value, [0, 1023], [0, 1]))
 
-# Encoder
-encoder_1 = 0
-encoder_2 = 0
-encoder_3 = 0
-encoder_4 = 0
+            if identifier == "Enc0":
+                 osc_router.send_message("/ambijockey/moc/Enc/0/", numpy.interp(value, [0, 1023], [0, 1]))
+            if identifier == "Enc1":
+                 osc_router.send_message("/ambijockey/moc/Enc/1/", numpy.interp(value, [0, 1023], [0, 1]))
+            if identifier == "Enc2":
+                 osc_router.send_message("/ambijockey/moc/Enc/2/", numpy.interp(value, [0, 1023], [0, 1]))
+            if identifier == "Enc3":
+                 osc_router.send_message("/ambijockey/moc/Enc/3/", numpy.interp(value, [0, 1023], [0, 1]))
 
-# Encoder Buttons
-encoderBtn_1 = 0
-encoderBtn_2 = 0
-encoderBtn_3 = 0
-encoderBtn_4 = 0
-
-# Buttonmatrix
-Button_1 = 0
-Button_2 = 0
-Button_3 = 0
-Button_4 = 0
-Button_5 = 0
-Button_6 = 0
-Button_7 = 0
-Button_8 = 0
-Button_9 = 0
-Button_10 = 0
-Button_11 = 0
-Button_12 = 0
-Button_13 = 0
-Button_14 = 0
-Button_15 = 0
-Button_16 = 0
-
-# Neopixel ws2812B
-pix_1 = 0
-pix_2 = 0
-pix_3 = 0
-pix_4 = 0
-pix_5 = 0
-pix_6 = 0
-pix_7 = 0
-pix_8 = 0
-pix_9 = 0
-pix_10 = 0
-pix_11 = 0
-pix_12 = 0
-pix_13 = 0
-pix_14 = 0
-pix_15 = 0
-pix_16 = 0
-
-# Touchscreen
-inTouch_xy = 0, 0
-
-def set_Record_Length()
-def record_touch_to_File()
-def play_from_File(play, pause)
-
-def set_Width()
-def set_Reverb()
-def set_mode(mono, stereo, ambisonic)
-
-
+            if identifier == "EB0":
+                 osc_router.send_message("/ambijockey/moc/EB/0/", numpy.interp(value, [0, 1023], [0, 1]))
+            if identifier == "EB1":
+                 osc_router.send_message("/ambijockey/moc/EB/1/", numpy.interp(value, [0, 1023], [0, 1]))
+            if identifier == "EB2":
+                 osc_router.send_message("/ambijockey/moc/EB/2/", numpy.interp(value, [0, 1023], [0, 1]))
+            if identifier == "EB3":
+                 osc_router.send_message("/ambijockey/moc/EB/3/", numpy.interp(value, [0, 1023], [0, 1]))
+                
+            if identifier == "B0":
+                 osc_router.send_message("/ambijockey/moc/B/4/0/", value)
+            if identifier == "B1":
+                 osc_router.send_message("/ambijockey/moc/B/3/0/", value)
+            if identifier == "B2":
+                 osc_router.send_message("/ambijockey/moc/B/2/0/", value)
+            if identifier == "B3":
+                 osc_router.send_message("/ambijockey/moc/B/1/0/", value)
+            if identifier == "B4":
+                 osc_router.send_message("/ambijockey/moc/B/4/1/", value)
+            if identifier == "B5":
+                 osc_router.send_message("/ambijockey/moc/B/3/1/", value)
+            if identifier == "B6":
+                 osc_router.send_message("/ambijockey/moc/B/2/1/", value)
+            if identifier == "B7":
+                 osc_router.send_message("/ambijockey/moc/B/1/1/", value)
+            if identifier == "B8":
+                 osc_router.send_message("/ambijockey/moc/B/4/2/", value)
+            if identifier == "B9":
+                 osc_router.send_message("/ambijockey/moc/B/3/2/", value)
+            if identifier == "B10":
+                 osc_router.send_message("/ambijockey/moc/B/2/2/", value)
+            if identifier == "B11":
+                 osc_router.send_message("/ambijockey/moc/B/1/2/", value)
+            if identifier == "B12":
+                 osc_router.send_message("/ambijockey/moc/B/4/3/", value)
+            if identifier == "B13":
+                 osc_router.send_message("/ambijockey/moc/B/3/3/", value)
+            if identifier == "B14":
+                 osc_router.send_message("/ambijockey/moc/B/2/3/", value)
+            if identifier == "B15":
+                 osc_router.send_message("/ambijockey/moc/B/1/3/", value)
 

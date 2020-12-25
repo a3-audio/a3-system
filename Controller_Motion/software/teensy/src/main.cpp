@@ -221,9 +221,18 @@ void sendEncoder()
 
 void pixels()  
 {
-  for(int i=0;i<npxl_leds;i++){
-    strip.setPixelColor(i, strip.Color(255,255,255)); // Moderately bright green color.
-    strip.show(); // This sends the updated pixel color to the hardware.
+//  for(int i=0;i<npxl_leds;i++){
+//    strip.setPixelColor(i, strip.Color(255,255,255)); // Moderately bright green color.
+//    strip.show(); // This sends the updated pixel color to the hardware.
+//  }
+
+  if (Serial.available()) {
+    String command = Serial.readStringUntil('\n');
+    Serial.println("mocT Received command: " + command);
+    if(command.startsWith("L1")) {
+      strip.setPixelColor(1, strip.Color(255,255,0));
+      strip.show(); // This sends the updated pixel color to the hardware.
+    }
   }
 }
 

@@ -6,8 +6,12 @@ from pythonosc.udp_client import SimpleUDPClient
 # OSC-Clients
 osc_router = SimpleUDPClient('192.168.43.142', 9000)
 
+def sendData(data):
+    data += "\r\n"
+    ser.write(data.encode())
+
 if __name__ == '__main__':
-    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+    ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
     ser.flush()
     while True:
         if ser.in_waiting > 0:
@@ -52,6 +56,7 @@ if __name__ == '__main__':
                 
             if identifier == "B0":
                  osc_router.send_message("/ambijockey/moc/B/4/0/", value)
+                 sendData("L1")
             if identifier == "B1":
                  osc_router.send_message("/ambijockey/moc/B/3/0/", value)
             if identifier == "B2":

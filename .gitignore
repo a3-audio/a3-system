@@ -7,7 +7,6 @@ Server/reaper_mac
 **/.vscode
 doc/Media/move
 *.code-workspace
-**/.vscode
 Controller_Motion/Hardware/controller_motion_pcb/teensy.pretty
 Controller_Motion/Hardware/controller_motion_pcb/teensy_library-master
 Controller_Motion/Hardware/controller_motion_pcb/controller_motion_pcb.sch-bak

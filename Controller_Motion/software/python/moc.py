@@ -1,7 +1,12 @@
 #!/usr/bin/python
-import serial
+"""
+Das ist unser script um die comunikation zwischen teensy und GUI herzystellen.
+
+"""
+
+import serial # pySerial https://pyserial.readthedocs.io/
 import numpy
-from pythonosc.udp_client import SimpleUDPClient
+from pythonosc.udp_client import SimpleUDPClient 
 
 # OSC-Clients
 osc_router = SimpleUDPClient('192.168.43.142', 9000)
@@ -16,9 +21,12 @@ if __name__ == '__main__':
     while True:
         if ser.in_waiting > 0:
             line = ser.readline().decode('utf-8').rstrip()
+
             words = line.split(":")
             identifier = words[0]
             value = words[1]
+
+          # Porty
             if identifier == "P0":
                  osc_router.send_message("/ambijockey/moc/ch/1/width/", numpy.interp(value, [0, 1023], [0, 1]))
             if identifier == "P1":
@@ -36,6 +44,7 @@ if __name__ == '__main__':
             if identifier == "P7":
                  osc_router.send_message("/ambijockey/moc/ch/4/reverb/", numpy.interp(value, [0, 1023], [0, 1]))
 
+          # Encoder 
             if identifier == "Enc0":
                  osc_router.send_message("/ambijockey/moc/Enc/0/", numpy.interp(value, [0, 1023], [0, 1]))
             if identifier == "Enc1":
@@ -45,6 +54,7 @@ if __name__ == '__main__':
             if identifier == "Enc3":
                  osc_router.send_message("/ambijockey/moc/Enc/3/", numpy.interp(value, [0, 1023], [0, 1]))
 
+          # Encoder Buttens
             if identifier == "EB0":
                  osc_router.send_message("/ambijockey/moc/EB/0/", numpy.interp(value, [0, 1023], [0, 1]))
             if identifier == "EB1":
@@ -53,7 +63,8 @@ if __name__ == '__main__':
                  osc_router.send_message("/ambijockey/moc/EB/2/", numpy.interp(value, [0, 1023], [0, 1]))
             if identifier == "EB3":
                  osc_router.send_message("/ambijockey/moc/EB/3/", numpy.interp(value, [0, 1023], [0, 1]))
-                
+
+          # Butten Matrix    
             if identifier == "B0":
                  osc_router.send_message("/ambijockey/moc/B/4/0/", value)
                  sendData("L1")

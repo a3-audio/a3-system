@@ -5,25 +5,6 @@
     orientation: 'vertical'
     spacing: 10
 
-# Linke Spalte
-    BoxLayout:
-        orientation: "horizontal"
-        Label:
-            text:
-                "Select"
-
-        Button:
-            text: "CH 1"
-            background_color: (1, 0, 0, .5)
-            on_press: root.btn1_press()
-            on_release: root.btn1_release()
-
-        Button:
-            text: "CH 2"
-            background_color: (0, 1, 0, .5)
-            on_press: root.btn2_press()
-            on_release: root.btn2_release()
-
 # mein Weidget
     MotionDisplay:
         pos_ind_ch1: pos_ind_ch1
@@ -56,19 +37,17 @@
         orientation: "horizontal"
 
         Label:
-            text:
-                "Select"
+            text: "CH 1"
 
-        Button:
+        Label:
+            text: "CH 2"
+
+        Label:
             text: "CH 3"
-            background_color: (0, 0, 1, .5)
-            on_press: root.btn3_press()
-            on_release: root.btn3_release()
 
-        Button:
+        Label:
             text: "CH 4"
-            on_press: root.btn4_press()
-            on_release: root.btn4_release()
+
 
 
 #### Wedgets

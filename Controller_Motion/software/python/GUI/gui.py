@@ -26,7 +26,7 @@ osc = OSCThreadServer()
 sock = osc.listen(address='0.0.0.0', port=osc_server_port, default=True)
 
 # global var
-ch1_select = False
+ch1_select = True # TDOD Muss wieder aud False gesetzt werden um, wenn sie seletion ueber den contoler funktioniert. 
 ch2_select = False
 ch3_select = False
 ch4_select = False
@@ -36,43 +36,6 @@ class Container(BoxLayout):
     """
     docstring
     """
-
-    def btn1_press(self):
-        global ch1_select
-        ch1_select = True
-        print("butten 1")
-
-    def btn2_press(self):
-        global ch2_select
-        ch2_select = True
-        print("butten 2")
-
-    def btn3_press(self):
-        global ch3_select
-        ch3_select = True
-        print("butten 3")
-
-    def btn4_press(self):
-        global ch4_select
-        ch4_select = True
-        print("butten 4")
-
-    def btn1_release(self):
-        global ch1_select
-        ch1_select = False
-        print("btn1 = False")
-
-    def btn2_release(self):
-        global ch2_select
-        ch2_select = False
-
-    def btn3_release(self):
-        global ch3_select
-        ch3_select = False
-
-    def btn4_release(self):
-        global ch4_select
-        ch4_select = False
 
 
 # Das Bewegungs anzeiger Widget
@@ -164,6 +127,7 @@ class MotionDisplay(Widget):
                 # LocPos per osc senden
                 osc.send_message(
                     b"/ambiJocky/motion/ch/1/pos/xyz", [x, y], osc_client_ip_addr, osc_client_port,)
+                print("Ch1pos: {}".format([x,y]))
             if ch2_select:
                 self.pos_ind_ch2.center = touch.pos
                 osc.send_message(

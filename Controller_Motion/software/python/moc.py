@@ -89,7 +89,7 @@ if __name__ == '__main__':
             if identifier == "B0":
                 osc_router.send_message("/ambijockey/moc/B/4/0/", value)
                 osc_gui.send_message("/ambijockey/moc/B/4/0/", value)
-                sendData("L1")
+#                sendData("L1")
             if identifier == "B1":
                 osc_router.send_message("/ambijockey/moc/B/3/0/", value)
                 osc_gui.send_message("/ambijockey/moc/B/3/0/", value)

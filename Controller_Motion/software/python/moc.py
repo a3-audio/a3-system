@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import serial
 import numpy
+import time
 from pythonosc.udp_client import SimpleUDPClient
 
 # OSC-Clients
@@ -56,7 +57,7 @@ if __name__ == '__main__':
                 
             if identifier == "B0":
                  osc_router.send_message("/ambijockey/moc/B/4/0/", value)
-                 sendData("L1")
+#                 sendData("L1")
             if identifier == "B1":
                  osc_router.send_message("/ambijockey/moc/B/3/0/", value)
             if identifier == "B2":
@@ -87,4 +88,4 @@ if __name__ == '__main__':
                  osc_router.send_message("/ambijockey/moc/B/2/3/", value)
             if identifier == "B15":
                  osc_router.send_message("/ambijockey/moc/B/1/3/", value)
-
+        time.sleep(0.01)

@@ -88,14 +88,9 @@ if __name__ == '__main__':
 
           # Butten Matrix
             if identifier == "B0":
-<<<<<<< HEAD
-                 osc_router.send_message("/ambijockey/moc/B/4/0/", value)
-#                 sendData("L1")
-=======
                 osc_router.send_message("/ambijockey/moc/B/4/0/", value)
                 osc_gui.send_message("/ambijockey/moc/B/4/0/", value)
 #                sendData("L1")
->>>>>>> 1706f251fa876606e466696972a758ceb9501a5e
             if identifier == "B1":
                 osc_router.send_message("/ambijockey/moc/B/3/0/", value)
                 osc_gui.send_message("/ambijockey/moc/B/3/0/", value)
@@ -139,12 +134,7 @@ if __name__ == '__main__':
                 osc_router.send_message("/ambijockey/moc/B/2/3/", value)
                 osc_gui.send_message("/ambijockey/moc/B/2/3/", value)
             if identifier == "B15":
-<<<<<<< HEAD
-                 osc_router.send_message("/ambijockey/moc/B/1/3/", value)
-        time.sleep(0.01)
-=======
                 osc_router.send_message("/ambijockey/moc/B/1/3/", value)
                 osc_gui.send_message("/ambijockey/moc/B/1/3/", value)
 
 
->>>>>>> 1706f251fa876606e466696972a758ceb9501a5e

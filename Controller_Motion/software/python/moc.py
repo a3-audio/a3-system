@@ -7,7 +7,7 @@ Das ist unser script um die comunikation zwischen teensy und GUI herzystellen.
 import serial  # pySerial https://pyserial.readthedocs.io/
 import numpy
 from pythonosc.udp_client import SimpleUDPClient
-from time import sleep
+
 
 # OSC-Clients
 osc_router = SimpleUDPClient('192.168.43.142', 9000)
@@ -136,4 +136,4 @@ if __name__ == '__main__':
                 osc_router.send_message("/ambijockey/moc/B/1/3/", value)
                 osc_gui.send_message("/ambijockey/moc/B/1/3/", value)
 
-        # sleep(1/60)
+

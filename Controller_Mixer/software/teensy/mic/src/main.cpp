@@ -158,11 +158,14 @@ void loop(){
             // send osc when difference larger than noise on
             // last bits
             if(abs(difference) > 6) {
-                char strAddress[64];
-                sprintf(strAddress, "T:%d:P:%d:%d", track+1, pot+1, analog);
                 pots_sent[track][pot] = analog;
-                Serial.print("strAddress");
-                Serial.print(strAddress);
+                Serial.print("T");
+                Serial.print(":");
+                Serial.print(track+1);
+                Serial.print(":");
+                Serial.print("P");
+                Serial.print(":");
+                Serial.print(pot+1);
             }
         }
     } 

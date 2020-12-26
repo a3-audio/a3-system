@@ -1,4 +1,52 @@
+//////////////////////////////// OSC ROTARY MIXER /////////////////////////////////
+//
+// osc rotary mixer as it says is a piece of hardware which looks like a 4-channel
+// dj-mixer with a mastersection.
+//
+// This is the firmware for the builtin Teensy 4.1. It uses NativeEthernet and 5x 
+// hc4051 analog multiplexer. Each multiplexer is reserved for one channelstrip.
+// 
+// osc-data sending to Server:
+//
+// - /track/1-4/gain/
+// - /track/1-4/hi/
+// - /track/1-4/mid/
+// - /track/1-4/lo/
+// - /track/1-4/vol/
+// - /track/1-4/pfl-button/
+// - /master/1-4/hi/
+// - /master/1-4/mid/
+// - /master/1-4/lo/
+// - /master/1-4/vol/
+// - /master/1-4/pfl-button/
+//
+// osc-data receiving from Sever:
+//
+// - /led/1-5/
+// - /vu/1-4/
+//
+// 25 x potis float 0-1
+//  5 x buttons bool
+//  5 x leds pfl status bool
+//  4 x vu-meter
+// 
+///////////////////////////////////Libraries///////////////////////////////
 #include <Arduino.h>
+#include <SPI.h>
+#include <NativeEthernet.h>
+#include <NativeEthernetUdp.h>
+// #include <OSCBundle.h>
+#include <OSCMessage.h>
+#include <MapFloat.h>
+/////////////////////////////Network Configuration////////////////////////
+
+EthernetUDP Udp;                                    // Create UDP message object
+byte mac[] = {0x04, 0xE9, 0xE5, 0x0C, 0x28, 0xB5};  // teensy's MAC Adress
+IPAddress ip(192, 168, 43, 139);                    // teensy's IP
+const unsigned int inPort  = 8500;                  // Listen port teensy
+
+IPAddress outIp(192, 168, 43, 141);                 // destination IP
+const unsigned int outPort = 9000;                  // Send port teensy
 
 ////////////////////////////////Assigning Pins/////////////////////////////
 const int ledPin_1 = 41;
@@ -6,20 +54,17 @@ const int ledPin_2 = 40;
 const int ledPin_3 = 39;
 const int ledPin_4 = 38;
 const int ledPin_5 = 27;
-
 const int buttonPin_1 = 37;
 const int buttonPin_2 = 36;
 const int buttonPin_3 = 35;
 const int buttonPin_4 = 34;
 const int buttonPin_5 = 33;
-
-const int analogInput_1 = 0;            // hc4051 multiplexer ch1
-const int analogInput_2 = 1;            // hc4051 multiplexer ch2
-const int analogInput_3 = 2;            // hc4051 multiplexer ch3
-const int analogInput_4 = 3;            // hc4051 multiplexer ch4
-const int analogInput_5 = 4;            // hc4051 multiplexer master
+const int analogInput_1 = 0;            // hc4051 multiplexer
+const int analogInput_2 = 1;            // hc4051 multiplexer
+const int analogInput_3 = 2;            // hc4051 multiplexer
+const int analogInput_4 = 3;            // hc4051 multiplexer
+const int analogInput_5 = 4;            // hc4051 multiplexer
 const int selectPins[3] = {30, 31, 32}; // Multiplexer abc
-
 const int vuPin_1 = 19;
 const int vuPin_2 = 20;
 const int vuPin_3 = 21;
@@ -34,7 +79,7 @@ int pots_sent[num_tracks][num_pots];
 int buttons_last[num_tracks];
 
 //////////////////////////////////////OSC Server//////////////////////////////
-/*
+
 void led_1(OSCMessage &msg) {
     digitalWrite(ledPin_1, HIGH);
     digitalWrite(ledPin_2, LOW);
@@ -81,7 +126,6 @@ float vuState_3 = 0.0;
 float vuState_4 = 0.0;
 float vuState_5 = 0.0;
 
-
 void vu_1(OSCMessage &msg) {
     vuState_1 = mapFloat(msg.getFloat(0), 0.0, 1.0, 0.0, 16.0);
     analogWrite(vuPin_1, vuState_1);
@@ -102,7 +146,7 @@ void vu_5(OSCMessage &msg) {
     vuState_5 = mapFloat(msg.getFloat(0), 0.0, 1.0, 0.0, 16.0);
     analogWrite(vuPin_5, vuState_5);
 }
-*/
+
 ///////////////////////////////////////Setup///////////////////////////////////
 void setup() {
 
@@ -119,6 +163,8 @@ void setup() {
     }
 
     Serial.begin(115200);                 // starting Serial
+    Ethernet.begin(mac, ip);              // starting Ethernet
+    Udp.begin(inPort);                    // starting UDP-Server
 
 // Configurei digital pins
     pinMode(ledPin_1, OUTPUT);            // LED
@@ -151,18 +197,26 @@ void loop(){
         }
         delayMicroseconds(50);
         // filter analog inputs
-        for (int track=0 ; track < 4; track++) {
+        for (int track=0 ; track < 5; track++) {
             int analog = analogRead(track);
             int difference = pots_sent[track][pot] - analog;
 
             // send osc when difference larger than noise on
             // last bits
             if(abs(difference) > 6) {
-                char strAddress[64];
-                sprintf(strAddress, "T:%d:P:%d:%d", track+1, pot+1, analog);
                 pots_sent[track][pot] = analog;
-                Serial.print("strAddress");
-                Serial.print(strAddress);
+
+                char strAddress[64];
+                sprintf(strAddress, "/track/%d/poti/%d", track+1, pot+1);
+
+                float sendValue = float(analog) / 1023.f;
+
+                OSCMessage message(strAddress);
+                message.add(sendValue);
+
+                Udp.beginPacket(outIp, outPort);
+                message.send(Udp);
+                Udp.endPacket(); 
             }
         }
     } 
@@ -174,9 +228,15 @@ void loop(){
 
         // on rising edge send toggle
         if(digital == 1 && buttons_last[track] == 0) {
-            Serial.print("B");
-            Serial.print(":");
-            Serial.print(track+1);
+            char strAddress[64];
+            sprintf(strAddress, "/button/%d", track+1);
+
+            OSCMessage message(strAddress);
+            message.add(1.f);
+
+            Udp.beginPacket(outIp, outPort);
+            message.send(Udp);
+            Udp.endPacket(); 
         }
 
         buttons_last[track] = digital;
@@ -191,7 +251,7 @@ void loop(){
 //    digitalWrite(ledPin_1, LOW);
 // } else HIGH
 //
-/*
+
     OSCMessage msg;
     int size = Udp.parsePacket();
 
@@ -231,7 +291,7 @@ void loop(){
         }
         
     }
-*/
+
 
 /*
   // Button 5

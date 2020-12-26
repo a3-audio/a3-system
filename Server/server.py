@@ -330,7 +330,8 @@ def poti_handler(address: str,
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
             reaper.send_message("/track/" + dj1_in + "/fxeq/loshelf/gain", val)
         if poti == "volume":
-            reaper.send_message("/track/" + dj1_cb + "/volume", value)
+            val = numpy.interp(value, [0, 1], [0.01, 1])
+            reaper.send_message("/track/" + dj1_cb + "/volume", val)
     elif track == "2":
         if poti == "gain":
             xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
@@ -347,7 +348,8 @@ def poti_handler(address: str,
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
             reaper.send_message("/track/" + dj2_in + "/fxeq/loshelf/gain", val)
         if poti == "volume":
-            reaper.send_message("/track/" + dj2_cb + "/volume", value)
+            val = numpy.interp(value, [0, 1], [0.01, 1])
+            reaper.send_message("/track/" + dj2_cb + "/volume", val)
     elif track == "3":
         if poti == "gain":
             xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
@@ -364,7 +366,8 @@ def poti_handler(address: str,
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
             reaper.send_message("/track/" + dj3_in + "/fxeq/loshelf/gain", val)
         if poti == "volume":
-            reaper.send_message("/track/" + dj3_cb + "/volume", value)
+            val = numpy.interp(value, [0, 1], [0.01, 1])
+            reaper.send_message("/track/" + dj3_cb + "/volume", val)
     elif track == "4":
         if poti == "gain":
             xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
@@ -381,7 +384,8 @@ def poti_handler(address: str,
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
             reaper.send_message("/track/" + dj4_in + "/fxeq/loshelf/gain", val)
         if poti == "volume":
-            reaper.send_message("/track/" + dj4_cb + "/volume", value)
+            val = numpy.interp(value, [0, 1], [0.01, 1])
+            reaper.send_message("/track/" + dj4_cb + "/volume", val)
     elif track == "master":
         if poti == "volume":
             val = numpy.interp(value, [0, 1], [0.01, 1])

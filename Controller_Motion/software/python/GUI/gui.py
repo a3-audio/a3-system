@@ -72,6 +72,11 @@ class MotionDisplay(Widget):
         self.pos_ind_ch4.center = self.to_parent(
             values[0]*self.width, values[1]*self.height, True)
 
+    # osc von moc.py
+    @osc.address_method(b'/ambijockey/moc/B/1/0/')
+    def recB1(self, *values):
+        print(values)
+
     def on_touch_down(self, touch):
         """
         docstring

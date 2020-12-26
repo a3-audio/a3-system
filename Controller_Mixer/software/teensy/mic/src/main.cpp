@@ -151,7 +151,7 @@ void loop(){
         }
         delayMicroseconds(50);
         // filter analog inputs
-        for (int track=0 ; track < 4; track++) {
+        for (int track=0 ; track < 5; track++) {
             int analog = analogRead(track);
             int difference = pots_sent[track][pot] - analog;
 
@@ -159,6 +159,7 @@ void loop(){
             // last bits
             if(abs(difference) > 6) {
                 pots_sent[track][pot] = analog;
+                float sendValue = float(analog) / 1023.f;
                 Serial.print("T");
                 Serial.print(":");
                 Serial.print(track+1);
@@ -166,6 +167,8 @@ void loop(){
                 Serial.print("P");
                 Serial.print(":");
                 Serial.print(pot+1);
+                Serial.print(":");
+                Serial.println(sendValue);
             }
         }
     } 
@@ -177,13 +180,60 @@ void loop(){
 
         // on rising edge send toggle
         if(digital == 1 && buttons_last[track] == 0) {
-            Serial.print("B");
+            Serial.print("T");
             Serial.print(":");
             Serial.print(track+1);
+            Serial.print(":");
+            Serial.print("B");
+            Serial.print(":");
+            Serial.print("0");
+            Serial.print(":");
+            Serial.println("0");
         }
 
         buttons_last[track] = digital;
     }
+
+    if (Serial.available()) {
+      String command = Serial.readStringUntil('\n');
+      if(command.startsWith("L1")) {
+        digitalWrite(ledPin_1, HIGH);
+        digitalWrite(ledPin_2, LOW);
+        digitalWrite(ledPin_3, LOW);
+        digitalWrite(ledPin_4, LOW);
+        digitalWrite(ledPin_5, LOW);
+      }
+      if(command.startsWith("L2")) {
+        digitalWrite(ledPin_1, LOW);
+        digitalWrite(ledPin_2, HIGH);
+        digitalWrite(ledPin_3, LOW);
+        digitalWrite(ledPin_4, LOW);
+        digitalWrite(ledPin_5, LOW);
+      }
+      if(command.startsWith("L3")) {
+        digitalWrite(ledPin_1, LOW);
+        digitalWrite(ledPin_2, LOW);
+        digitalWrite(ledPin_3, HIGH);
+        digitalWrite(ledPin_4, LOW);
+        digitalWrite(ledPin_5, LOW);
+      }
+      if(command.startsWith("L4")) {
+        digitalWrite(ledPin_1, LOW);
+        digitalWrite(ledPin_2, LOW);
+        digitalWrite(ledPin_3, LOW);
+        digitalWrite(ledPin_4, HIGH);
+        digitalWrite(ledPin_5, LOW);
+      }
+      if(command.startsWith("L5")) {
+        digitalWrite(ledPin_1, LOW);
+        digitalWrite(ledPin_2, LOW);
+        digitalWrite(ledPin_3, LOW);
+        digitalWrite(ledPin_4, LOW);
+        digitalWrite(ledPin_5, HIGH);
+      }
+    }
+}
+
 
 //////////////////////////////Leds////////////////////////////////////
 
@@ -253,4 +303,4 @@ void loop(){
   x_5 = 1;
   }
 */
-}
+

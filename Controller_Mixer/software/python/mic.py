@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """
-The script communicates between MixerControllerTeensy and server.py 
+The script communicates between MixerControllerTeensy and server.py
 
 """
 
@@ -11,7 +11,7 @@ from pythonosc.udp_client import SimpleUDPClient
 
 
 # OSC-Clients
-osc_router = SimpleUDPClient('192.168.43.142', 9000)
+osc_router = SimpleUDPClient('127.0.0.1', 9000)
 
 
 def sendData(data):
@@ -27,115 +27,85 @@ if __name__ == '__main__':
             line = ser.readline().decode('utf-8').rstrip()
 
             words = line.split(":")
-            identifier = words[0]
-            value = words[1]
+            track = words[1]
+            mode = words[2]
+            potNr = words[3]
+            value = words[4]
 
-          # Porty
-            if identifier == "P0":
-                print("p1 " + value)
-                osc_router.send_message(
-                    "/ambijockey/mic/ch/1/gain/", numpy.interp(value, [0, 1023], [0, 1]))
-            if identifier == "P1":
-                osc_router.send_message(
-                    "/ambijockey/moc/ch/2/width", numpy.interp(value, [0, 1023], [0, 1]))
-            if identifier == "P2":
-                osc_router.send_message(
-                    "/ambijockey/moc/ch/3/width/", numpy.interp(value, [0, 1023], [0, 1]))
-            if identifier == "P3":
-                osc_router.send_message(
-                    "/ambijockey/moc/ch/4/width/", numpy.interp(value, [0, 1023], [0, 1]))
-            if identifier == "P4":
-                osc_router.send_message(
-                    "/ambijockey/moc/ch/1/reverb/", numpy.interp(value, [0, 1023], [0, 1]))
-            if identifier == "P5":
-                osc_router.send_message(
-                    "/ambijockey/moc/ch/2/reverb/", numpy.interp(value, [0, 1023], [0, 1]))
-            if identifier == "P6":
-                osc_router.send_message(
-                    "/ambijockey/moc/ch/3/reverb/", numpy.interp(value, [0, 1023], [0, 1]))
-            if identifier == "P7":
-                osc_router.send_message(
-                    "/ambijockey/moc/ch/4/reverb/", numpy.interp(value, [0, 1023], [0, 1]))
 
-          # Encoder
-            if identifier == "Enc0":
-                osc_router.send_message(
-                    "/ambijockey/moc/Enc/0/", numpy.interp(value, [0, 1023], [0, 1]))
-            if identifier == "Enc1":
-                osc_router.send_message(
-                    "/ambijockey/moc/Enc/1/", numpy.interp(value, [0, 1023], [0, 1]))
-            if identifier == "Enc2":
-                osc_router.send_message(
-                    "/ambijockey/moc/Enc/2/", numpy.interp(value, [0, 1023], [0, 1]))
-            if identifier == "Enc3":
-                osc_router.send_message(
-                    "/ambijockey/moc/Enc/3/", numpy.interp(value, [0, 1023], [0, 1]))
+          # Buttons
+            if mode == "B":
+                if track == "1":
+                    osc_router.send_message("/ambijockey/mic/ch/1/pfl/", value)
+                    sendData("L1")
+                if track == "2":
+                    osc_router.send_message("/ambijockey/mic/ch/2/pfl/", value)
+                    sendData("L2")
+                if track == "3":
+                    osc_router.send_message("/ambijockey/mic/ch/3/pfl/", value)
+                    sendData("L3")
+                if track == "4":
+                    osc_router.send_message("/ambijockey/mic/ch/4/pfl/", value)
+                    sendData("L4")
+                if track == "5":
+                    osc_router.send_message("/ambijockey/mic/ch/master/pfl/", value)
+                    sendData("L5")
+          # Potis
+            if mode == "P":
+                if track == "1":
+                    if potNr == "1":
+                        osc_router.send_message("/ambijockey/mic/ch/1/gain/", value)
+                    if potNr == "2":
+                        osc_router.send_message("/ambijockey/mic/ch/1/hi/", value)
+                    if potNr == "3":
+                        osc_router.send_message("/ambijockey/mic/ch/1/mid/", value)
+                    if potNr == "4":
+                        osc_router.send_message("/ambijockey/mic/ch/1/lo/", value)
+                    if potNr == "5":
+                        osc_router.send_message("/ambijockey/mic/ch/1/volume/", value)
+                if track == "2":
+                    if potNr == "1":
+                        osc_router.send_message("/ambijockey/mic/ch/2/gain/", value)
+                    if potNr == "2":
+                        osc_router.send_message("/ambijockey/mic/ch/2/hi/", value)
+                    if potNr == "3":
+                        osc_router.send_message("/ambijockey/mic/ch/2/mid/", value)
+                    if potNr == "4":
+                        osc_router.send_message("/ambijockey/mic/ch/2/lo/", value)
+                    if potNr == "5":
+                        osc_router.send_message("/ambijockey/mic/ch/2/volume/", value)
+                if track == "3":
+                    if potNr == "1":
+                        osc_router.send_message("/ambijockey/mic/ch/3/gain/", value)
+                    if potNr == "2":
+                        osc_router.send_message("/ambijockey/mic/ch/3/hi/", value)
+                    if potNr == "3":
+                        osc_router.send_message("/ambijockey/mic/ch/3/mid/", value)
+                    if potNr == "4":
+                        osc_router.send_message("/ambijockey/mic/ch/3/lo/", value)
+                    if potNr == "5":
+                        osc_router.send_message("/ambijockey/mic/ch/3/volume/", value)
+                if track == "4":
+                    if potNr == "1":
+                        osc_router.send_message("/ambijockey/mic/ch/4/gain/", value)
+                    if potNr == "2":
+                        osc_router.send_message("/ambijockey/mic/ch/4/hi/", value)
+                    if potNr == "3":
+                        osc_router.send_message("/ambijockey/mic/ch/4/mid/", value)
+                    if potNr == "4":
+                        osc_router.send_message("/ambijockey/mic/ch/4/lo/", value)
+                    if potNr == "5":
+                        osc_router.send_message("/ambijockey/mic/ch/4/volume/", value)
+                if track == "5":
+                    if potNr == "1":
+                        osc_router.send_message("/ambijockey/mic/ch/master/volume/", value)
+                    if potNr == "2":
+                        osc_router.send_message("/ambijockey/mic/ch/master/hi/", value)
+                    if potNr == "3":
+                        osc_router.send_message("/ambijockey/mic/ch/master/mid/", value)
+                    if potNr == "4":
+                        osc_router.send_message("/ambijockey/mic/ch/master/lo/", value)
 
-          # Encoder Buttens
-            if identifier == "EB0":
-                osc_router.send_message(
-                    "/ambijockey/moc/EB/0/", numpy.interp(value, [0, 1023], [0, 1]))
-            if identifier == "EB1":
-                osc_router.send_message(
-                    "/ambijockey/moc/EB/1/", numpy.interp(value, [0, 1023], [0, 1]))
-            if identifier == "EB2":
-                osc_router.send_message(
-                    "/ambijockey/moc/EB/2/", numpy.interp(value, [0, 1023], [0, 1]))
-            if identifier == "EB3":
-                osc_router.send_message(
-                    "/ambijockey/moc/EB/3/", numpy.interp(value, [0, 1023], [0, 1]))
-
-          # Butten Matrix
-            if identifier == "B0":
-                osc_router.send_message("/ambijockey/moc/B/4/0/", value)
-                osc_gui.send_message("/ambijockey/moc/B/4/0/", value)
-#                sendData("L1")
-            if identifier == "B1":
-                osc_router.send_message("/ambijockey/moc/B/3/0/", value)
-                osc_gui.send_message("/ambijockey/moc/B/3/0/", value)
-            if identifier == "B2":
-                osc_router.send_message("/ambijockey/moc/B/2/0/", value)
-                osc_gui.send_message("/ambijockey/moc/B/2/0/", value)
-            if identifier == "B3":
-                osc_router.send_message("/ambijockey/moc/B/1/0/", value)
-                osc_gui.send_message("/ambijockey/moc/B/1/0/", value)
-            if identifier == "B4":
-                osc_router.send_message("/ambijockey/moc/B/4/1/", value)
-                osc_gui.send_message("/ambijockey/moc/B/4/1/", value)
-            if identifier == "B5":
-                osc_router.send_message("/ambijockey/moc/B/3/1/", value)
-                osc_gui.send_message("/ambijockey/moc/B/3/1/", value)
-            if identifier == "B6":
-                osc_router.send_message("/ambijockey/moc/B/2/1/", value)
-                osc_gui.send_message("/ambijockey/moc/B/2/1/", value)
-            if identifier == "B7":
-                osc_router.send_message("/ambijockey/moc/B/1/1/", value)
-                osc_gui.send_message("/ambijockey/moc/B/1/1/", value)
-            if identifier == "B8":
-                osc_router.send_message("/ambijockey/moc/B/4/2/", value)
-                osc_gui.send_message("/ambijockey/moc/B/4/2/", value)
-            if identifier == "B9":
-                osc_router.send_message("/ambijockey/moc/B/3/2/", value)
-                osc_gui.send_message("/ambijockey/moc/B/3/2/", value)
-            if identifier == "B10":
-                osc_router.send_message("/ambijockey/moc/B/2/2/", value)
-                osc_gui.send_message("/ambijockey/moc/B/2/2/", value)
-            if identifier == "B11":
-                osc_router.send_message("/ambijockey/moc/B/1/2/", value)
-                osc_gui.send_message("/ambijockey/moc/B/1/2/", value)
-            if identifier == "B12":
-                osc_router.send_message("/ambijockey/moc/B/4/3/", value)
-                osc_gui.send_message("/ambijockey/moc/B/4/3/", value)
-            if identifier == "B13":
-                osc_router.send_message("/ambijockey/moc/B/3/3/", value)
-                osc_gui.send_message("/ambijockey/moc/B/3/3/", value)
-            if identifier == "B14":
-                osc_router.send_message("/ambijockey/moc/B/2/3/", value)
-                osc_gui.send_message("/ambijockey/moc/B/2/3/", value)
-            if identifier == "B15":
-                osc_router.send_message("/ambijockey/moc/B/1/3/", value)
-                osc_gui.send_message("/ambijockey/moc/B/1/3/", value)
-            
         time.sleep(0.001)
 
 

@@ -137,4 +137,4 @@ if __name__ == '__main__':
                 osc_router.send_message("/ambijockey/moc/B/1/3/", value)
                 osc_gui.send_message("/ambijockey/moc/B/1/3/", value)
 
-
+        time.sleep(0.001)

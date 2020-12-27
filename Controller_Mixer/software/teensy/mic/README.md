@@ -12,7 +12,7 @@ pio boards teensy
 Initialize Project:
 mkdir path_to_the_new_directory
 cd path_to_the_new_directory
-pio project init --board uno --board nodemcuv2 --board teensy31
+pio project init --board teensy41
 
 run project:
 pio run --target upload

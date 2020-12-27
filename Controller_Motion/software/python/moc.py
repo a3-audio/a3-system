@@ -102,22 +102,23 @@ if __name__ == '__main__':
                 osc_router.send_message(
                     "/ambijockey/moc/EB/0/", numpy.interp(value, [0, 1023], [0, 1]))
                 osc_gui.send_message(
-                    "/ambijockey/moc/EB/0/", numpy.interp(value, [0, 1023], [0, 1]))
+                    "/ambijockey/moc/EB/0/", numpy.interp(value, [0,1], [1,0]))
+                print(value)
             if identifier == "EB1":
                 osc_router.send_message(
                     "/ambijockey/moc/EB/1/", numpy.interp(value, [0, 1023], [0, 1]))
                 osc_gui.send_message(
-                    "/ambijockey/moc/EB/1/", numpy.interp(value, [0, 1023], [0, 1]))
+                    "/ambijockey/moc/EB/1/",  numpy.interp(value, [0,1], [1,0]))
             if identifier == "EB2":
                 osc_router.send_message(
                     "/ambijockey/moc/EB/2/", numpy.interp(value, [0, 1023], [0, 1]))
                 osc_gui.send_message(
-                    "/ambijockey/moc/EB/2/", numpy.interp(value, [0, 1023], [0, 1]))
+                    "/ambijockey/moc/EB/2/",  numpy.interp(value, [0,1], [1,0]))
             if identifier == "EB3":
                 osc_router.send_message(
                     "/ambijockey/moc/EB/3/", numpy.interp(value, [0, 1023], [0, 1]))
                 osc_gui.send_message(
-                    "/ambijockey/moc/EB/3/", numpy.interp(value, [0, 1023], [0, 1]))
+                    "/ambijockey/moc/EB/3/", numpy.interp(value, [0,1], [1,0]))
 
           # Butten Matrix
             if identifier == "B0":

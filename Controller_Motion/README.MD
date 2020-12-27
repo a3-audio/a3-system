@@ -81,7 +81,7 @@ to control and see all information on one fingertip.
         v              v             v              v                 
 |-----------------------------------------------------------|         
 | WIDTH:  -    | WIDTH:  30°  | WIDTH:  20°  | WIDTH:  30°  |         
-| REVERB: -    | REVERB: 30%  | REVERB: 30%  | REVERB: 30%  | 
+| SIDE: -      | SIDE: +30dB  | SIDE: +30dB  | SIDE: 30+dB  | 
 |-----------------------------------------------------------|
 |                            ch1                            |          
 |                            sp2                            |
@@ -112,9 +112,8 @@ to control and see all information on one fingertip.
 |                                                           |    
 |-----------------------------------------------------------|         
 | MODE:   MONO | MODE:   STER | MODE:   VBAP | MODE:   AMBI |         
-| BEAT:   1/4  | BEAT:   1/4  | BEAT:   1/4  | BEAT:   1/4  |
-| BARS:   4    | BARS:   4    | BARS:   4    | BARS:   4    |    
-| BPM:    128  | BPM:    128  | BPM:    128  | BPM:    128  |
+| LENGTH: 34   | LENGTH: 34   | LENGTH: 34   | LENGTH: 34   |
+| LOOP:   ONE  | LOOP:   ONE  | LOOP:   ONE  | LOOP:   ONE  |    
 |-----------------------------------------------------------|    
 | RCV:192.168.178.125:1234|SND:192.168.178.126:1232|BPM:128 | <- SYSTEMVIEW
 |-----------------------------------------------------------|

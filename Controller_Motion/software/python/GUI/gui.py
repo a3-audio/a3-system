@@ -26,7 +26,7 @@ osc = OSCThreadServer()
 sock = osc.listen(address='0.0.0.0', port=osc_server_port, default=True)
 
 # global var
-ch1_select = True # TDOD Muss wieder aud False gesetzt werden um, wenn sie seletion ueber den contoler funktioniert. 
+ch1_select = False 
 ch2_select = False
 ch3_select = False
 ch4_select = False
@@ -73,15 +73,28 @@ class MotionDisplay(Widget):
             values[0]*self.width, values[1]*self.height, True)
 
     # osc von moc.py
-    @osc.address_method(b'/ambijockey/moc/B/1/0/')
-    def recB1(self, *values):
-        print(values)
+    @osc.address_method(b'/ambijockey/moc/EB/0/')
+    def selectB1(self, *values):
+        global ch1_select
+        ch1_select = values[0]
+    @osc.address_method(b'/ambijockey/moc/EB/1/')
+    def selectB2(self, *values):
+        global ch2_select
+        ch2_select = values[0]
+    @osc.address_method(b'/ambijockey/moc/EB/2/')
+    def selectB3(self, *values):
+        global ch3_select
+        ch3_select = values[0]
+    @osc.address_method(b'/ambijockey/moc/EB/3/')
+    def selectB4(self, *values):
+        global ch4_select
+        ch4_select = values[0]
 
     def on_touch_down(self, touch):
         """
         docstring
         """
-        # beschreäönkung auf dieses Widget
+        # beschreänkung auf dieses Widget
         if self.collide_point(*touch.pos):
 
             # in locale Widget coordinate umrechenen
@@ -115,7 +128,7 @@ class MotionDisplay(Widget):
         """
         docstring
         """
-        # beschreäönkung auf dieses Widget
+        # beschreänkung auf dieses Widget
         if self.collide_point(*touch.pos):
 
             # in locale Widget coordinate umrechenen

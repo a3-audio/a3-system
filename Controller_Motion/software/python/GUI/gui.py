@@ -11,8 +11,15 @@ from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
+from kivy.config import Config
+
 from oscpy.server import OSCThreadServer
 from oscpy.server import ServerClass
+
+#setup Window
+Config.set('graphics', 'width', '600')
+Config.set('graphics', 'height', '1024')
+
 
 
 # Setup OSC
@@ -48,6 +55,8 @@ class MotionDisplay(Widget):
     pos_ind_ch2 = ObjectProperty(None)
     pos_ind_ch3 = ObjectProperty(None)
     pos_ind_ch4 = ObjectProperty(None)
+    
+    
 
     @osc.address_method(b'/ambiJocky/motion/ch/1/pos/xyz')
     def osc_in_ch1(self, *values):

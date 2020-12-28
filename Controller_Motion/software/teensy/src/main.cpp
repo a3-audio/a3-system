@@ -231,51 +231,66 @@ void pixels()
     if(command.startsWith("L1")) {
       strip.setPixelColor(0, strip.Color(255,255,255));
       strip.show(); // This sends the updated pixel color to the hardware.
+    }
     if(command.startsWith("L2")) {
       strip.setPixelColor(1, strip.Color(255,255,255));
-      strip.show(); // This sends the updated pixel color to the hardware.
+      strip.show();
+    }
     if(command.startsWith("L3")) {
       strip.setPixelColor(2, strip.Color(255,255,255));
-      strip.show(); // This sends the updated pixel color to the hardware.
+      strip.show();
+    }
     if(command.startsWith("L4")) {
       strip.setPixelColor(3, strip.Color(255,255,255));
-      strip.show(); // This sends the updated pixel color to the hardware.
+      strip.show();
+    }
     if(command.startsWith("L5")) {
       strip.setPixelColor(4, strip.Color(255,255,255));
-      strip.show(); // This sends the updated pixel color to the hardware.
+      strip.show();
+    }
     if(command.startsWith("L6")) {
       strip.setPixelColor(5, strip.Color(255,255,255));
-      strip.show(); // This sends the updated pixel color to the hardware.
+      strip.show();
+    }
     if(command.startsWith("L7")) {
       strip.setPixelColor(6, strip.Color(255,255,255));
-      strip.show(); // This sends the updated pixel color to the hardware.
+      strip.show();
+    }
     if(command.startsWith("L8")) {
       strip.setPixelColor(7, strip.Color(255,255,255));
-      strip.show(); // This sends the updated pixel color to the hardware.
+      strip.show();
+    }
     if(command.startsWith("L9")) {
       strip.setPixelColor(8, strip.Color(255,255,255));
-      strip.show(); // This sends the updated pixel color to the hardware.
+      strip.show();
+    }
     if(command.startsWith("L10")) {
       strip.setPixelColor(9, strip.Color(255,255,255));
-      strip.show(); // This sends the updated pixel color to the hardware.
+      strip.show();
+    }
     if(command.startsWith("L11")) {
       strip.setPixelColor(10, strip.Color(255,255,255));
-      strip.show(); // This sends the updated pixel color to the hardware.
+      strip.show();
+    }
     if(command.startsWith("L12")) {
       strip.setPixelColor(11, strip.Color(255,255,255));
-      strip.show(); // This sends the updated pixel color to the hardware.
+      strip.show();
+    }
     if(command.startsWith("L13")) {
       strip.setPixelColor(12, strip.Color(255,255,255));
-      strip.show(); // This sends the updated pixel color to the hardware.
+      strip.show();
+    }
     if(command.startsWith("L14")) {
       strip.setPixelColor(13, strip.Color(255,255,255));
-      strip.show(); // This sends the updated pixel color to the hardware.
+      strip.show();
+    }
     if(command.startsWith("L15")) {
       strip.setPixelColor(14, strip.Color(255,255,255));
-      strip.show(); // This sends the updated pixel color to the hardware.
+      strip.show();
+    }
     if(command.startsWith("L16")) {
       strip.setPixelColor(15, strip.Color(255,255,255));
-      strip.show(); // This sends the updated pixel color to the hardware.
+      strip.show();
     }
   }
 }

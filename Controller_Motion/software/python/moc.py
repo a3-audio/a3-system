@@ -124,51 +124,66 @@ if __name__ == '__main__':
             if identifier == "B0":
                 osc_router.send_message("/ambijockey/moc/B/4/0/", value)
                 osc_gui.send_message("/ambijockey/moc/B/4/0/", value)
-#                sendData("L1")
+                sendData("L1")
             if identifier == "B1":
                 osc_router.send_message("/ambijockey/moc/B/3/0/", value)
                 osc_gui.send_message("/ambijockey/moc/B/3/0/", value)
+                sendData("L2")
             if identifier == "B2":
                 osc_router.send_message("/ambijockey/moc/B/2/0/", value)
                 osc_gui.send_message("/ambijockey/moc/B/2/0/", value)
+                sendData("L4")
             if identifier == "B3":
                 osc_router.send_message("/ambijockey/moc/B/1/0/", value)
                 osc_gui.send_message("/ambijockey/moc/B/1/0/", value)
+                sendData("L1")
             if identifier == "B4":
                 osc_router.send_message("/ambijockey/moc/B/4/1/", value)
                 osc_gui.send_message("/ambijockey/moc/B/4/1/", value)
+                sendData("L15")
             if identifier == "B5":
                 osc_router.send_message("/ambijockey/moc/B/3/1/", value)
                 osc_gui.send_message("/ambijockey/moc/B/3/1/", value)
+                sendData("L9")
             if identifier == "B6":
                 osc_router.send_message("/ambijockey/moc/B/2/1/", value)
                 osc_gui.send_message("/ambijockey/moc/B/2/1/", value)
+                sendData("L3")
             if identifier == "B7":
                 osc_router.send_message("/ambijockey/moc/B/1/1/", value)
                 osc_gui.send_message("/ambijockey/moc/B/1/1/", value)
+                sendData("L2")
             if identifier == "B8":
                 osc_router.send_message("/ambijockey/moc/B/4/2/", value)
                 osc_gui.send_message("/ambijockey/moc/B/4/2/", value)
+                sendData("L14")
             if identifier == "B9":
                 osc_router.send_message("/ambijockey/moc/B/3/2/", value)
                 osc_gui.send_message("/ambijockey/moc/B/3/2/", value)
+                sendData("L10")
             if identifier == "B10":
                 osc_router.send_message("/ambijockey/moc/B/2/2/", value)
                 osc_gui.send_message("/ambijockey/moc/B/2/2/", value)
+                sendData("L1")
             if identifier == "B11":
                 osc_router.send_message("/ambijockey/moc/B/1/2/", value)
                 osc_gui.send_message("/ambijockey/moc/B/1/2/", value)
+                sendData("L1")
             if identifier == "B12":
                 osc_router.send_message("/ambijockey/moc/B/4/3/", value)
                 osc_gui.send_message("/ambijockey/moc/B/4/3/", value)
+                sendData("L1")
             if identifier == "B13":
                 osc_router.send_message("/ambijockey/moc/B/3/3/", value)
                 osc_gui.send_message("/ambijockey/moc/B/3/3/", value)
+                sendData("L1")
             if identifier == "B14":
                 osc_router.send_message("/ambijockey/moc/B/2/3/", value)
                 osc_gui.send_message("/ambijockey/moc/B/2/3/", value)
+                sendData("L1")
             if identifier == "B15":
                 osc_router.send_message("/ambijockey/moc/B/1/3/", value)
                 osc_gui.send_message("/ambijockey/moc/B/1/3/", value)
+                sendData("L1")
 
         time.sleep(0.001)

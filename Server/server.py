@@ -16,32 +16,37 @@ destinations:
 SOURCE                          >>  DESTINATION
 ----------------------------------------------------------------------
 CONTROLLER_MIXER POTIS              REAPER
-/track/1/1 (Channel 1 gain)     >>  /track/15/ie/gain
-/track/1/2 (Channel 1 hi)       >>  /track/15/fxeq/hishelf/gain
-/track/1/3 (Channel 1 mid)      >>  /track/15/fxeq/band/0/gain
-/track/1/4 (Channel 1 low)      >>  /track/15/fxeq/loshelf/gain
-/track/1/5 (Channel 1 volume)   >>  /track/14/volume
-
-... same for track 2-4
+/ambijockey/mic/ch/1-4/gain         (Channel 1 gain)     >>  /track/15/ie/gain
+/ambijockey/mic/ch/1-4/hi           (Channel 1 hi)       >>  /track/15/fxeq/hishelf/gain
+/ambijockey/mic/ch/1-4/mid          (Channel 1 mid)      >>  /track/15/fxeq/band/0/gain
+/ambijockey/mic/ch/1-4/lo           (Channel 1 low)      >>  /track/15/fxeq/loshelf/gain
+/ambijockey/mic/ch/1-4/volume       (Channel 1 volume)   >>  /track/14/volume
 
 CONTROLLER_MIXER POTIS              REAPER
-/track/5/1 (Master volume)      >>  /master/volume
-/track/5/2 (Master hi)          >>  /track/7/fxeq/hishelf/gain
-/track/5/3 (Master mid)         >>  /track/7/fxeq/band/0/gain
-/track/5/4 (Master low)         >>  /track/7/fxeq/loshelf/gain
+/ambijockey/mic/mater/volume        (Master volume)      >>  /master/volume
+/ambijockey/mic/mater/hi            (Master hi)          >>  /track/7/fxeq/hishelf/gain
+/ambijockey/mic/mater/mid           (Master mid)         >>  /track/7/fxeq/band/0/gain
+/ambijockey/mic/mater/lo            (Master low)         >>  /track/7/fxeq/loshelf/gain
 
 CONTROLLER_MIXER BUTTONS            REAPER
-/button/1 (Channel 1 pfl)       >>  Sets vol=1 for stereo and binaural headphone send.
-/button/2 (Channel 2 pfl)           Also it sets vol 0 for every other headphone send.
-/button/3 (Channel 3 pfl)           send the value to Controller_Mixer /led/*
-/button/4 (Channel 4 pfl)
-/button/5 (Master pfl)
+/ambijockey/mic/ch/1-4/pfl          (Channel 1 pfl)
+/bmbijockey/mic/ch/master/pfl
 
 CONTROLLER_MOTION                   IEM COORDINATECONVERTER HOSTET BY REAPER
 /ambiJocky/motion/ch/1/pos/xyz        >>  /CoordinateConverter/1/xPos
 /ambiJocky/motion/ch/2/pos/xyz            /CoordinateConverter/1/yPos
 /ambiJocky/motion/ch/3/pos/xyz            /CoordinateConverter/1/zPos
 /ambiJocky/motion/ch/4/pos/xyz            ... same for 2-4
+
+/ambijockey/moc/ch/1-4/width/ [0-1]
+/ambijockey/moc/ch/1-4/reverb/ [0-1]
+/ambijockey/moc/ch/1-4/mode/ [0-3] (Mono, Stereo, VBAP, Ambisonic)
+
+# RECEIVE
+/ambijockey/moc/ch/1-4/motion/ xy [0-1]
+/ambijockey/moc/ch/1-4/vu/ [0-1]
+/ambijockey/moc/ch/1-4/bpm/ [80-180]
+/ambijockey/moc/master/bpm/ [80-180]
 
 TODO rename ctrlMotion/track/1/radius to /ambiJocky/motion/ch/1/stereo/width
 /ctrlMotion/track/1/radius      >>  /CoordinateConverter/1/radius
@@ -75,7 +80,7 @@ oscRouterPort = 9000
 
 # OSC-Clients
 ctrl_mixer = SimpleUDPClient('192.168.43.139', 8500)  # Set IP Adress
-ctrl_motion = SimpleUDPClient('192.168.178.50', 8600)  # Set IP Adress
+ctrl_motion = SimpleUDPClient('192.168.178.108', 8700)  # Set IP Adress
 reaper = SimpleUDPClient('127.0.0.1', 9001)
 iem_1 = SimpleUDPClient('127.0.0.1', 1337)
 iem_2 = SimpleUDPClient('127.0.0.1', 1338)
@@ -103,7 +108,7 @@ def ctrlMotionToIem_handler(address: str,
                             *osc_arguments: List[Any]) -> None:
     words = address.split("/")
     track = words[4]
-    param = words[6]
+    param = words[5]
 
     # print(words)
     #value = osc_arguments
@@ -116,9 +121,12 @@ def ctrlMotionToIem_handler(address: str,
             iem_1.send_message("/CoordinateConverter/yPos",
                                numpy.interp(osc_arguments[0], [0, 1], [1, -1]))
             # iem_1.send_message("/CoordinateConverter/zPos", osc_arguments[2])
-        match_radius = re.match(param, "radius")
+        match_radius = re.match(param, "width")
         if match_radius:
             iem_1.send_message("/CoordinateConverter/radius", osc_arguments[0])
+        match_reverb = re.match(param, "reverb")
+        if match_reverb:
+            reaper.send_message("/track/" + dj1_in + "/fx/2/fxparam/1/value", osc_arguments[0])
 
     if track == "2":
         match_xyz = re.match(param, "xyz")
@@ -128,9 +136,12 @@ def ctrlMotionToIem_handler(address: str,
             iem_2.send_message("/CoordinateConverter/yPos",
                                numpy.interp(osc_arguments[0], [0, 1], [1, -1]))
             # iem_2.send_message("/CoordinateConverter/zPos", osc_arguments[2])
-        match_radius = re.match(param, "radius")
+        match_radius = re.match(param, "width")
         if match_radius:
             iem_2.send_message("/CoordinateConverter/radius", osc_arguments[0])
+        match_reverb = re.match(param, "reverb")
+        if match_reverb:
+            reaper.send_message("/track/" + dj2_in + "/fx/2/fxparam/1/value", osc_arguments[0])
 
     if track == "3":
         match_xyz = re.match(param, "xyz")
@@ -140,9 +151,12 @@ def ctrlMotionToIem_handler(address: str,
             iem_3.send_message("/CoordinateConverter/yPos",
                                numpy.interp(osc_arguments[0], [0, 1], [1, -1]))
             # iem_3.send_message("/CoordinateConverter/zPos", osc_arguments[2])
-        match_radius = re.match(param, "radius")
+        match_radius = re.match(param, "width")
         if match_radius:
             iem_3.send_message("/CoordinateConverter/radius", osc_arguments[0])
+        match_reverb = re.match(param, "reverb")
+        if match_reverb:
+            reaper.send_message("/track/" + dj3_in + "/fx/2/fxparam/1/value", osc_arguments[0])
 
     if track == "4":
         match_xyz = re.match(param, "xyz")
@@ -152,9 +166,12 @@ def ctrlMotionToIem_handler(address: str,
             iem_4.send_message("/CoordinateConverter/yPos",
                                numpy.interp(osc_arguments[0], [0, 1], [1, -1]))
             # iem_4.send_message("/CoordinateConverter/zPos", osc_arguments[2])
-        match_radius = re.match(param, "radius")
+        match_radius = re.match(param, "width")
         if match_radius:
             iem_4.send_message("/CoordinateConverter/radius", osc_arguments[0])
+        match_reverb = re.match(param, "reverb")
+        if match_reverb:
+            reaper.send_message("/track/" + dj4_in + "/fx/2/fxparam/1/value", osc_arguments[0])
 
 
 val_send_ch1_xyz = [0, 0, 0]
@@ -288,146 +305,144 @@ class CH_handler(object):
             elif ctr_function[0] == "pos_t":
                 pass
 
-
 def poti_handler(address: str,
                  *osc_arguments: List[Any]) -> None:
     words = address.split("/")
-    track = words[2]
-    poti = words[4]
+    track = words[4]
+    poti = words[5]
 
     value = osc_arguments[0]
     print(track + "." + poti + " : " + str(value))
 
     if track == "1":
-        if poti == "1":
+        if poti == "gain":
             xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
             fp = [0, 0.44, 0.465, 0.47, 0.475, 0.48,  0.485, 0.49,  0.495, 0.5]
             val = numpy.interp(value, xp, fp)
             reaper.send_message("/track/" + dj1_in + "/gain", val)
-        if poti == "2":
+        if poti == "hi":
             val = numpy.interp(value, [0, 1], [0.05, 0.50])
             reaper.send_message("/track/" + dj1_in + "/fxeq/hishelf/gain", val)
-        if poti == "3":
+        if poti == "mid":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
             reaper.send_message("/track/" + dj1_in + "/fxeq/band/0/gain", val)
-        if poti == "4":
+        if poti == "lo":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
             reaper.send_message("/track/" + dj1_in + "/fxeq/loshelf/gain", val)
-        if poti == "5":
-            reaper.send_message("/track/" + dj1_cb + "/volume", value)
+        if poti == "volume":
+            val = numpy.interp(value, [0, 1], [0.01, 1])
+            reaper.send_message("/track/" + dj1_cb + "/volume", val)
     elif track == "2":
-        if poti == "1":
+        if poti == "gain":
             xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
             fp = [0, 0.44, 0.465, 0.47, 0.475, 0.48,  0.485, 0.49,  0.495, 0.5]
             val = numpy.interp(value, xp, fp)
             reaper.send_message("/track/" + dj2_in + "/gain", val)
-        if poti == "2":
+        if poti == "hi":
             val = numpy.interp(value, [0, 1], [0, 0.50])
             reaper.send_message("/track/" + dj2_in + "/fxeq/hishelf/gain", val)
-        if poti == "3":
+        if poti == "mid":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
             reaper.send_message("/track/" + dj2_in + "/fxeq/band/0/gain", val)
-        if poti == "4":
+        if poti == "lo":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
             reaper.send_message("/track/" + dj2_in + "/fxeq/loshelf/gain", val)
-        if poti == "5":
-            reaper.send_message("/track/" + dj2_cb + "/volume", value)
+        if poti == "volume":
+            val = numpy.interp(value, [0, 1], [0.01, 1])
+            reaper.send_message("/track/" + dj2_cb + "/volume", val)
     elif track == "3":
-        if poti == "1":
+        if poti == "gain":
             xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
             fp = [0, 0.44, 0.465, 0.47, 0.475, 0.48,  0.485, 0.49,  0.495, 0.5]
             val = numpy.interp(value, xp, fp)
             reaper.send_message("/track/" + dj3_in + "/gain", val)
-        if poti == "2":
+        if poti == "hi":
             val = numpy.interp(value, [0, 1], [0, 0.50])
             reaper.send_message("/track/" + dj3_in + "/fxeq/hishelf/gain", val)
-        if poti == "3":
+        if poti == "mid":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
             reaper.send_message("/track/" + dj3_in + "/fxeq/band/0/gain", val)
-        if poti == "4":
+        if poti == "lo":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
             reaper.send_message("/track/" + dj3_in + "/fxeq/loshelf/gain", val)
-        if poti == "5":
-            reaper.send_message("/track/" + dj3_cb + "/volume", value)
+        if poti == "volume":
+            val = numpy.interp(value, [0, 1], [0.01, 1])
+            reaper.send_message("/track/" + dj3_cb + "/volume", val)
     elif track == "4":
-        if poti == "1":
+        if poti == "gain":
             xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
             fp = [0, 0.44, 0.465, 0.47, 0.475, 0.48,  0.485, 0.49,  0.495, 0.5]
             val = numpy.interp(value, xp, fp)
             reaper.send_message("/track/" + dj4_in + "/gain", val)
-        if poti == "2":
+        if poti == "hi":
             val = numpy.interp(value, [0, 1], [0, 0.50])
             reaper.send_message("/track/" + dj4_in + "/fxeq/hishelf/gain", val)
-        if poti == "3":
+        if poti == "mid":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
             reaper.send_message("/track/" + dj4_in + "/fxeq/band/0/gain", val)
-        if poti == "4":
+        if poti == "lo":
             val = numpy.interp(value, [0, 1], [0.01, 0.50])
             reaper.send_message("/track/" + dj4_in + "/fxeq/loshelf/gain", val)
-        if poti == "5":
-            reaper.send_message("/track/" + dj4_cb + "/volume", value)
-    elif track == "5":
-        if poti == "1":
-            reaper.send_message("/master/volume", value)
-        if poti == "2":
+        if poti == "volume":
+            val = numpy.interp(value, [0, 1], [0.01, 1])
+            reaper.send_message("/track/" + dj4_cb + "/volume", val)
+    elif track == "master":
+        if poti == "volume":
+            val = numpy.interp(value, [0, 1], [0.01, 1])
+            reaper.send_message("/master/volume", val)
+        if poti == "hi":
             val = numpy.interp(value, [0, 1], [0.01, 0.5])
-            reaper.send_message("/track/" + masterbus +
-                                "/fxeq/hishelf/gain", val)
-        if poti == "3":
+            reaper.send_message("/track/" + masterbus + "/fxeq/hishelf/gain", val)
+        if poti == "mid":
             val = numpy.interp(value, [0, 1], [0.01, 0.5])
-            reaper.send_message("/track/" + masterbus +
-                                "/fxeq/band/0/gain", val)
-        if poti == "4":
+            reaper.send_message("/track/" + masterbus + "/fxeq/band/0/gain", val)
+        if poti == "lo":
             val = numpy.interp(value, [0, 1], [0.01, 0.5])
-            reaper.send_message("/track/" + masterbus +
-                                "/fxeq/loshelf/gain", val)
+            reaper.send_message("/track/" + masterbus + "/fxeq/loshelf/gain", val)
 
 
 def button_handler(address: str,
                    *osc_arguments: List[Any]) -> None:
     words = address.split("/")
-    button = words[2]
+    button = words[4]
+    mode = words[5]
 
     value = osc_arguments[0]
-    if button == "1":
-        ctrl_mixer.send_message("/led/1", 1)
-        reaper.send_message("/track/" + dj1_pfl + "/mute", 0)
-        reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
-        reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
-        reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
-        reaper.send_message("/track/" + mainmixbus + "/mute", 1)
+    if mode == "pfl":
+        if button == "1":
+            reaper.send_message("/track/" + dj1_pfl + "/mute", 0)
+            reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
+            reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
+            reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
+            reaper.send_message("/track/" + mainmixbus + "/mute", 1)
 
-    if button == "2":
-        ctrl_mixer.send_message("/led/2", 1)
-        reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
-        reaper.send_message("/track/" + dj2_pfl + "/mute", 0)
-        reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
-        reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
-        reaper.send_message("/track/" + mainmixbus + "/mute", 1)
+        if button == "2":
+            reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
+            reaper.send_message("/track/" + dj2_pfl + "/mute", 0)
+            reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
+            reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
+            reaper.send_message("/track/" + mainmixbus + "/mute", 1)
 
-    if button == "3":
-        ctrl_mixer.send_message("/led/3", 1)
-        reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
-        reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
-        reaper.send_message("/track/" + dj3_pfl + "/mute", 0)
-        reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
-        reaper.send_message("/track/" + mainmixbus + "/mute", 1)
+        if button == "3":
+            reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
+            reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
+            reaper.send_message("/track/" + dj3_pfl + "/mute", 0)
+            reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
+            reaper.send_message("/track/" + mainmixbus + "/mute", 1)
 
-    if button == "4":
-        ctrl_mixer.send_message("/led/4", 1)
-        reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
-        reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
-        reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
-        reaper.send_message("/track/" + dj4_pfl + "/mute", 0)
-        reaper.send_message("/track/" + mainmixbus + "/mute", 1)
+        if button == "4":
+            reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
+            reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
+            reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
+            reaper.send_message("/track/" + dj4_pfl + "/mute", 0)
+            reaper.send_message("/track/" + mainmixbus + "/mute", 1)
 
-    if button == "5":
-        ctrl_mixer.send_message("/led/5", 1)
-        reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
-        reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
-        reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
-        reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
-        reaper.send_message("/track/" + mainmixbus + "/mute", 0)
+        if button == "master":
+            reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
+            reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
+            reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
+            reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
+            reaper.send_message("/track/" + mainmixbus + "/mute", 0)
 
 
 def vu_handler(address: str,
@@ -481,11 +496,14 @@ if __name__ == "__main__":
     ch1 = CH_handler()
 
     # Mixer-Controller
-    dispatcher.map("/track/*", poti_handler)
-    dispatcher.map("/button/*", button_handler)
+    dispatcher.map("/ambijockey/mic/ch/*", poti_handler)
+    dispatcher.map("/ambijockey/mic/ch/*", button_handler)
+    dispatcher.map("/reaper/vu/*", vu_handler)
+
+    # Motion-Controller
     dispatcher.map("/CoordinateConverter/*", iemToCtrlMotion_handler)
     dispatcher.map("/ambiJocky/motion/ch/*", ctrlMotionToIem_handler)
-    dispatcher.map("/reaper/vu/*", vu_handler)
+    dispatcher.map("/ambijockey/moc/ch/*", ctrlMotionToIem_handler)
 
     server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))

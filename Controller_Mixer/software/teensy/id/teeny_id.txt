@@ -1,0 +1,7 @@
+USB Serialnumber: 7968530 
+Array Serialnumber: 00-0C-28-B5 
+String Serialnumber: 00-0c-28-b5
+Array MAC Address: 04:E9:E5:0C:28:B5 
+String MAC Address: 04:e9:e5:0c:28:b5
+UID 64-bit: 67-7F-05-2F-36-20-89-D2
+UID 64-bit: 67-7f-05-2f-36-20-89-d2

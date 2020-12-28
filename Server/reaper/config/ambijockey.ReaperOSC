@@ -25,6 +25,7 @@ DEVICE_TRACK_COUNT 65
 
 MASTER_VOLUME n/master/volume s/master/volume/str
 TRACK_VOLUME n/track/volume n/track/@/volume
+#TRACK_VOLUME s/track/volume/str s/track/@/volume/str
 TRACK_MUTE b/track/mute b/track/@/mute t/track/mute/toggle t/track/@/mute/toggle
 
 FX_EQ_LOSHELF_GAIN n/fxeq/loshelf/gain n/track/@/fxeq/loshelf/gain
@@ -32,3 +33,4 @@ FX_EQ_BAND_GAIN n/fxeq/band/@/gain n/track/@/fxeq/band/@/gain
 FX_EQ_HISHELF_GAIN n/fxeq/hishelf/gain n/track/@/fxeq/hishelf/gain
 
 FX_PARAM_VALUE n/fxparam/@/value n/fx/@/fxparam/@/value n/track/@/fx/@/fxparam/@/value
+TRACK_SEND_VOLUME n/track/send/@/volume n/track/@/send/@/volume

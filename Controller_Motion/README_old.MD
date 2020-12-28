@@ -80,8 +80,12 @@ to control and see all information on one fingertip.
         |              |             |              |                 
         v              v             v              v                 
 |-----------------------------------------------------------|         
+| MODE:   MONO | MODE:   STER | MODE:   VBAP | MODE:   AMBI |         
+| BEAT:   1/4  | BEAT:   1/4  | BEAT:   1/4  | BEAT:   1/4  |
+| BARS:   4    | BARS:   4    | BARS:   4    | BARS:   4    |    
 | WIDTH:  -    | WIDTH:  30°  | WIDTH:  20°  | WIDTH:  30°  |         
-| SIDE: -      | SIDE: +30dB  | SIDE: +30dB  | SIDE: 30+dB  | 
+| REVERB: -    | REVERB: 30%  | REVERB: 30%  | REVERB: 30%  | 
+| BPM:    128  | BPM:    128  | BPM:    128  | BPM:    128  |
 |-----------------------------------------------------------|
 |                            ch1                            |          
 |                            sp2                            |
@@ -110,10 +114,8 @@ to control and see all information on one fingertip.
 |             sp5                         sp4               |
 |             ch1                         ch1               |
 |                                                           |    
-|-----------------------------------------------------------|         
-| MODE:   MONO | MODE:   STER | MODE:   VBAP | MODE:   AMBI |         
-| LENGTH: 34   | LENGTH: 34   | LENGTH: 34   | LENGTH: 34   |
-| LOOP:   ONE  | LOOP:   ONE  | LOOP:   ONE  | LOOP:   ONE  |    
+||1-------2-------3-------4-------5-------6-------7-------| | <- RUNTIME-EDIT: PATTERNLENGTH   
+||->->->->->->->->->                                      | | <- RUNTIME-EDIT: PATTERNPROGRESS
 |-----------------------------------------------------------|    
 | RCV:192.168.178.125:1234|SND:192.168.178.126:1232|BPM:128 | <- SYSTEMVIEW
 |-----------------------------------------------------------|
@@ -142,7 +144,7 @@ TOUCHDISPLAY LEGEND:
 ### PLAYMODE: PLAY
 - Encoder 1-4 Push: Toggle RUNTIME-EDIT Mode for this channel
 - Encoder 1-4 Double Push: Enter Setup Page 1-4
-- Buttonmatrix Push: play/pause pattern
+- Buttonmatrix Push: play pattern
 - Buttonmatrix Double Push: toggle repeat 
 
 ### PLAYMODE: RUNTIME-EDIT
@@ -157,6 +159,10 @@ TOUCHDISPLAY LEGEND:
 - Touchdisplay onRelease: Plays Motion from cachefile
 - Buttonmatrix long press: Stores cachefile to BUTTON
 - Encorder Double Push: Exit to PLAYMODE
+
+### PLAYMODE: STOP
+- Somewhere should be a resetbutton, or steady scenes in patterns?
+
 
 ## SETUPMODE
 Encoder 1-4: Double-Push. 

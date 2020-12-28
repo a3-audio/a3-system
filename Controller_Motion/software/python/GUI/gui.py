@@ -17,16 +17,16 @@ from oscpy.server import ServerClass
 
 # Setup OSC
 # TODO IP anpassen
-osc_client_ip_addr = "127.0.0.1"
+osc_client_ip_addr = "192.168.43.142"
 osc_client_port = 9000
-osc_server_port = 8000
+osc_server_port = 8600
 
 # OSC init
 osc = OSCThreadServer()
 sock = osc.listen(address='0.0.0.0', port=osc_server_port, default=True)
 
 # global var
-ch1_select = False
+ch1_select = False 
 ch2_select = False
 ch3_select = False
 ch4_select = False
@@ -36,43 +36,6 @@ class Container(BoxLayout):
     """
     docstring
     """
-
-    def btn1_press(self):
-        global ch1_select
-        ch1_select = True
-        print("butten 1")
-
-    def btn2_press(self):
-        global ch2_select
-        ch2_select = True
-        print("butten 2")
-
-    def btn3_press(self):
-        global ch3_select
-        ch3_select = True
-        print("butten 3")
-
-    def btn4_press(self):
-        global ch4_select
-        ch4_select = True
-        print("butten 4")
-
-    def btn1_release(self):
-        global ch1_select
-        ch1_select = False
-        print("btn1 = False")
-
-    def btn2_release(self):
-        global ch2_select
-        ch2_select = False
-
-    def btn3_release(self):
-        global ch3_select
-        ch3_select = False
-
-    def btn4_release(self):
-        global ch4_select
-        ch4_select = False
 
 
 # Das Bewegungs anzeiger Widget
@@ -109,11 +72,29 @@ class MotionDisplay(Widget):
         self.pos_ind_ch4.center = self.to_parent(
             values[0]*self.width, values[1]*self.height, True)
 
+    # osc von moc.py
+    @osc.address_method(b'/ambijockey/moc/EB/0/')
+    def selectB1(self, *values):
+        global ch1_select
+        ch1_select = values[0]
+    @osc.address_method(b'/ambijockey/moc/EB/1/')
+    def selectB2(self, *values):
+        global ch2_select
+        ch2_select = values[0]
+    @osc.address_method(b'/ambijockey/moc/EB/2/')
+    def selectB3(self, *values):
+        global ch3_select
+        ch3_select = values[0]
+    @osc.address_method(b'/ambijockey/moc/EB/3/')
+    def selectB4(self, *values):
+        global ch4_select
+        ch4_select = values[0]
+
     def on_touch_down(self, touch):
         """
         docstring
         """
-        # beschreäönkung auf dieses Widget
+        # beschreänkung auf dieses Widget
         if self.collide_point(*touch.pos):
 
             # in locale Widget coordinate umrechenen
@@ -121,8 +102,8 @@ class MotionDisplay(Widget):
             #print("pos: {}".format(loc_pos))
 
             # LocPos normalalisieren
-            x = loc_pos[0] / self.width
-            y = loc_pos[1] / self.height
+            x = loc_pos[1] / self.width
+            y = loc_pos[0] / self.height
 
             if ch1_select:
                 # den PositionIndicator auf die aktuelle Position setzte
@@ -147,7 +128,7 @@ class MotionDisplay(Widget):
         """
         docstring
         """
-        # beschreäönkung auf dieses Widget
+        # beschreänkung auf dieses Widget
         if self.collide_point(*touch.pos):
 
             # in locale Widget coordinate umrechenen
@@ -155,8 +136,8 @@ class MotionDisplay(Widget):
             #print("pos: {}".format(loc_pos))
 
             # LocPos normalalisieren
-            x = loc_pos[0] / self.width
-            y = loc_pos[1] / self.height
+            x = loc_pos[1] / self.width
+            y = loc_pos[0] / self.height
 
             if ch1_select:
                 # den PositionIndicator auf die aktuelle Position setzte
@@ -164,6 +145,7 @@ class MotionDisplay(Widget):
                 # LocPos per osc senden
                 osc.send_message(
                     b"/ambiJocky/motion/ch/1/pos/xyz", [x, y], osc_client_ip_addr, osc_client_port,)
+                print("Ch1pos: {}".format([x,y]))
             if ch2_select:
                 self.pos_ind_ch2.center = touch.pos
                 osc.send_message(

@@ -1,27 +1,34 @@
 (
+~speaker = 5;
+~order = 3;
+~hoaNumChannels = (~order+1).pow(2);
+Server.supernova;
 ServerOptions.new;
-t = Server(\local, NetAddr("127.0.0.1", 9001));
+t = Server(\mic, NetAddr("127.0.0.1", 9001));
 Server.local = Server.default;
 t = Server.local.options; // Get the local server's options
 t.numInputBusChannels = 8;
 t.numOutputBusChannels = 8;
 t.numAudioBusChannels = 2048 * 8;
 t.blockSize = 512;
-t.numWireBufs = 1024 * 16;
+//t.numWireBufs = 1024 * ~hoaNumChannels;
 t.memSize = 2.pow(18);
-t.sampleRate = 44100;
-//t.scope;
-//s.makeWindow;
-s.plotTree;
-s.meter;
+t.sampleRate = 48000;
 s.boot
 )
 
+//s.supernova=2;
+
+t.scope;
+s.makeWindow;
+s.plotTree;
+s.meter;
+Quarks.gui;
 s.quit;
 s.freeAll;
 s.reboot;
 s.queryAllNodes;
-
+s.sync;
 (
 // OUTPUTMAPPING TO HARDWARE IS:
 // PHONES = 1+2
@@ -29,75 +36,73 @@ s.queryAllNodes;
 // SUBWOOFER = 4
 // NUMBER OF SPEAKERS =
 
-~speaker = 5;
-~order = 3;
 
-// GENERATING AUDIO-BUSSES
+//s.scope(5); // let's use 5 as we play back via ITU 5.0
+
+
+// DECLARE AUDIO-BUSSES
 ~null = Bus.audio(s, 8);
 ~outputBus = Bus.audio(s, 3 + ~speaker);
-~outputSubBus = Bus.audio(s, 16);
-~masterBusSub = Bus.audio(s, 1);
+~outputSubBus = Bus.audio(s, ~hoaNumChannels);
+~mainSub = Bus.audio(s, 1);
 ~masterBus = Bus.audio(s, 40);
-~masterAmbisonicBus = Bus.audio(s, 16);
-~masterReverbBus = Bus.audio(s, 16);
+~masterAmbisonicBus = Bus.audio(s, ~hoaNumChannels);
+~masterReverbBus = Bus.audio(s, ~hoaNumChannels);
 ~masterStereoBus = Bus.audio(s, ~speaker);
 ~masterSubBus = Bus.audio(s, 1);
 ~masterMonoBus = Bus.audio(s, ~speaker);
 
 ~phonesBus = Bus.audio(s, 2);
-~phonesAmbisonicBus = Bus.audio(s, 16);
+~phonesAmbisonicBus = Bus.audio(s, ~hoaNumChannels);
 ~phonesStereoBus = Bus.audio(s, 2);
 ~phonesMonoBus = Bus.audio(s, 2);
-~phonesReverbBus = Bus.audio(s, 16);
+~phonesReverbBus = Bus.audio(s, ~hoaNumChannels);
 
-~chMasterBus = Bus.audio(s, 40);
+~chMasterBus = Bus.audio(s, 8+(2*~hoaNumChannels));
 
-~ch1MasterBus = Bus.audio(s, 40);
-~ch1AmbisonicBus = Bus.audio(s, 16);
+~ch1MasterBus = Bus.audio(s, 8+(2*~hoaNumChannels));
+~ch1AmbisonicBus = Bus.audio(s, ~hoaNumChannels);
 ~ch1StereoBus = Bus.audio(s, 2);
 ~ch1SubBus = Bus.audio(s, 1);
 ~ch1MonoBus = Bus.audio(s, 1);
 ~ch1InputBus = Bus.audio(s, 2);
 
 ~ch2MasterBus = Bus.audio(s, 40);
-~ch2AmbisonicBus = Bus.audio(s, 16);
+~ch2AmbisonicBus = Bus.audio(s, ~hoaNumChannels);
 ~ch2StereoBus = Bus.audio(s, 2);
 ~ch2SubBus = Bus.audio(s, 1);
 ~ch2MonoBus = Bus.audio(s, 1);
 ~ch2InputBus = Bus.audio(s, 2);
 
 ~ch3MasterBus = Bus.audio(s, 40);
-~ch3AmbisonicBus = Bus.audio(s, 16);
+~ch3AmbisonicBus = Bus.audio(s, ~hoaNumChannels);
 ~ch3StereoBus = Bus.audio(s, 2);
 ~ch3SubBus = Bus.audio(s, 1);
 ~ch3MonoBus = Bus.audio(s, 1);
 ~ch3InputBus = Bus.audio(s, 2);
 
 ~ch4MasterBus = Bus.audio(s, 40);
-~ch4AmbisonicBus = Bus.audio(s, 16);
+~ch4AmbisonicBus = Bus.audio(s, ~hoaNumChannels);
 ~ch4StereoBus = Bus.audio(s, 2);
 ~ch4SubBus = Bus.audio(s, 1);
 ~ch4MonoBus = Bus.audio(s, 1);
 ~ch4InputBus = Bus.audio(s, 2);
 
-// GENERATING GROUPS - HELP: ORDER OF EXECUTION
+// DECLARE PROCESSGROUPS - HELP: ORDER OF EXECUTION
 ~outputGrp = Group.new(s);
 ~masterGrp = Group.new(s);
 ~masterAmbisonicGroup = Group.new(s);
 ~masterStereoGrp = Group.new(s);
 ~masterSubGrp = Group.new(s);
 ~masterMonoGrp = Group.new(s);
-
 ~phonesGrp = Group.new(s);
-
 ~reverbGrp = Group.new(s);
 ~reverbChannelGrp = Group.new(s);
-
 ~chMasterGrp = Group.new(s);
 ~ambisonicGrp = Group.new(s);
 ~stereoGrp = Group.new(s);
-~subGrp = Group.new(s);
 ~monoGrp = Group.new(s);
+~subGrp = Group.new(s);
 ~inputGrp = Group.new(s);
 
 //OSC-Adresses
@@ -126,53 +131,57 @@ s.queryAllNodes;
 ~val_master_mid = 1;
 ~val_master_lo = 1;
 ~val_master_pfl = 1;
+)
+// GENERATING BUSSES
 
-// GENERATING SYNTHS FOR AUDIO-PROCESSING
-
-// OutputSynth
+// MAINBUS
 SynthDef.new(\outputSynth, {
 	var amp, phones, mono, sub, main;
 	//phones =
 	//mono =
 	//sub = In.ar(~outputSubBus, 1);
-	sub = In.ar(~masterBusSub, 1);
+	sub = In.ar(~mainSub, 1);
 	main = In.ar(~masterBus, ~speaker);
 	Out.ar(2, sub);
 	Out.ar(3, main);
 }).add;
-
-// MasterSynth
+HOAAmbiDecoderHelper
+// MASTERBUS
 SynthDef.new(\masterSynth, {
 	arg amp;
 	var mainMix, mono, monoMix, monoSingle, sub, stereo, stereoMix, ambisonic, reverb, out;
 	amp = 1;
 	sub = In.ar(~masterSubBus, 1);
 	mono = In.ar(~masterMonoBus, ~speaker);
-	stereo = In.ar(~masterStereoBus, 2);
+	stereo = In.ar(~masterStereoBus, ~speaker);
 	ambisonic = In.ar(~masterAmbisonicBus, ~speaker);
 
 //	monoMix = SplayAz.ar(~speaker, [mono], 1, 1, ~speaker, 0, 1, false);
 //	monoMix = Array.fill(~speaker, mono);
 //	stereoMix = Array.fill(~speaker, {stereo});
-	mainMix = Mix.new([mono, stereo]);
+	mainMix = Mix.new([mono, stereo, ambisonic]);
 
-	Out.ar(~masterBusSub, sub);
-	Out.ar(~masterBus, mono);
+	Out.ar(~mainSub, sub);
+	//Out.ar(~masterBus, mono);
+	Out.ar(~masterBus, mainMix);
 	//sub = sub * amp;
 	//Out.ar(~outputSubBus, sub);
 	//monoSingle = Mix.new(mono);
 	//Out.ar(~outputMonoBus, monoSingle);
 }).add;
-
-// MasterAmbisonicSynth
+(
+(
+// AMBISONIC BUS
 SynthDef.new(\ambisonicSynth, {
 	var mix, ch;
-	ch = InBus.ar(~chMasterBus, 16, 4, 20);
-	mix = Mix.new([ch]);
+	ch = InBus.ar(~chMasterBus, ~hoaNumChannels, 4, 20);
+	mix = HOADec5_0.ar(~order, ch, 1, 0, 400, 0);
 	Out.ar(~masterAmbisonicBus, mix);
 }).add;
-
-// MasterStereoSynth
+)
+)
+(
+// STEREO BUS
 SynthDef.new(\stereoSynth, {
 	var stereoSplay, ch,
 	spread = 0.1,
@@ -180,38 +189,38 @@ SynthDef.new(\stereoSynth, {
 	amp = 1;
 	ch = InBus.ar(~chMasterBus, 2, 2, 4);
 	stereoSplay = SplayAz.ar(~speaker, ch, spread: spread, level: amp, width: width, center: 0, orientation:  0.5, levelComp: true);
-	Out.ar(~masterBus, stereoSplay);
+	Out.ar(~masterStereoBus, stereoSplay);
 }).add;
 
-// MasterMonoSynth
+// MONO BUS
 SynthDef.new(\monoSynth, {
 	arg amp;
 	var sum, mix, ch;
-	amp = 0.5;
+	amp = 1;
 	ch = InBus.ar(~chMasterBus, 1, 1, 1);
 	ch = ch * amp;
 	mix = Array.fill(~speaker, ch);
 	Out.ar(~masterMonoBus, mix);
 }).add;
 
-// MasterSubSynth
+// SUBWOOFER BUS
 SynthDef.new(\subSynth, {
 	arg amp;
 	var mix, ch;
-	amp = 0.5;
+	amp = 1;
 	ch = InBus.ar(~chMasterBus, 1, 0, 0);
 	mix = ch * amp;
 	Out.ar(~masterSubBus, mix);
 }).add;
-
+)
 /*
 // PhonesSynth
 SynthDef.new(\phonesSynth, {
 	var amp, mono, stereo, ambisonic, ch, reverb;
 	mono = InBus.ar(~phonesMonoBus, 1, 0, 1);
 	stereo = InBus.ar(~phonesStereoBus, 2, 0, 2);
-	ambisonic = InBus.ar(~masterAmbisonicBus, 16, 0, 16);
-	reverb = InBus.ar(~phonesrReverbBus, 16, 15, 32);
+	ambisonic = InBus.ar(~masterAmbisonicBus, ~hoaNumChannels, 0, ~hoaNumChannels);
+	reverb = InBus.ar(~phonesrReverbBus, ~hoaNumChannels, 15, 32);
 	Out.ar(~phonesBus, mono);
 }).add;
 
@@ -232,7 +241,7 @@ SynthDef.new(\stereoSynth, {
 // PhonesAmbisonicSynth
 SynthDef.new(\ambisonicSynth, {
 	var ch1;
-	ch1 = InBus.ar(~ch1MasterBus, 16, 4);
+	ch1 = InBus.ar(~ch1MasterBus, ~hoaNumChannels, 4);
 	Out.ar(~phonesAmbisonicBus, ch1);
 }).add;
 
@@ -261,62 +270,74 @@ SynthDef.new(\stereoSynth, {
 }).add;
 */
 
-
-// ChannelMasterSynth
+(
+// CHANNEL BUS
 SynthDef.new(\chMasterSynth, {
 	arg mix, inMono, inSub, inStereo, inAmbisonic, amp;
 	var phones, mono, sub, stereo, ambisonic, sig;
-	mono = In.ar(inMono, 1);
 	sub = In.ar(inSub, 1);
+	mono = In.ar(inMono, 1);
 	stereo = In.ar(inStereo, 2);
 	ambisonic = In.ar(inAmbisonic, 16);
 	//sig =  sig * amp;
 	//mix = Array.with(sub, mono);
-	Out.ar(~chMasterBus, [sub, mono, stereo]);
+	Out.ar(~chMasterBus, [sub, mono, stereo, ambisonic] * amp);
+	//Out.ar(~chMasterBus, ambisonic);
 }).add;
 
-// AmbisonicSynth
+// AMBISONIC ENCODER CHANNEL
 SynthDef.new(\chAmbisonicSynth, {
-	arg source, dest;
-	var sig;
+	arg source, dest, amp,
+	azL = -1.5,
+	azR = 1.5,
+	elev = 0,
+	gain = -0.5;
+	var sig, enc, encL, encR, encMix, inL, inR;
 	sig = In.ar(source, 2);
-
-	Out.ar(dest, sig);
+	sig = sig * amp;
+	inL = Balance2.ar(sig, sig, pos: -1, level: 1.0);
+	inL = Mix.new(inL);
+	inR = Balance2.ar(sig, sig, pos: 1, level: 1.0);
+	inR = Mix.new(inR);
+	encL = HOAEncoder.ar(~order, inL, az: azL, elev: elev, gain: gain, plane_spherical: 0, radius: 2, speaker_radius: 1.07);
+	encR = HOAEncoder.ar(~order, inR, az: azR, elev: elev, gain: gain, plane_spherical: 0, radius: 2, speaker_radius: 1.07);
+	encMix = Mix.new(encL, encR);
+	Out.ar(dest, encMix);
 }).add;
 
-// StereoSynth
+// STEREO CHANNEL
 SynthDef.new(\chStereoSynth, {
 	arg source, dest, amp;
-	var sig;
-	amp = 0.5;
+	var sig, gain;
+	gain = 0.5;
 	sig = In.ar(source, 2);
-	sig = sig * amp;
+	sig = sig * gain * amp;
 	Out.ar(dest, sig);
 }).add;
 
-// MonoSynth
+// MONO CHANNEL
 SynthDef.new(\chMonoSynth, {
-	arg source, dest;
-	var sig, amp;
-	amp = 0.5;
+	arg source, dest, amp;
+	var sig, gain;
+	gain = 0.5;
 	sig = In.ar(source, 2);
 	sig = Mix.new(sig);
-	sig = sig * amp;
+	sig = sig * gain * amp;
 	Out.ar(dest, sig);
 }).add;
 
-// SubSynth
+// SUBWOOFER CHANNEL
 SynthDef.new(\chSubSynth, {
-	arg source, dest;
-	var sig, amp;
-	amp = 0.5;
+	arg source, dest, amp;
+	var sig, gain;
+	gain = 0.5;
 	sig = In.ar(source, 2);
 	sig = Mix.new(sig);
-	sig = sig * amp;
+	sig = sig * amp * gain;
 	Out.ar(dest, sig);
 }).add;
 
-// InputSynth
+// INPUT CHANNEL
 SynthDef.new(\inputSynth, {
 	arg source, dest, amp;
 	var sig;
@@ -326,20 +347,22 @@ SynthDef.new(\inputSynth, {
 }).add;
 )
 s.freeAll;
+Quarks.gui;
+Platform.userExtensionDir;
 (
 ~output = Synth.new(\outputSynth, [\amp, 1], ~outputGrp);
 ~master = Synth.new(\masterSynth, [\amp, 1], ~masterGrp);
 ~masterAmbisonic = Synth.new(\ambisonicSynth, [], ~masterAmbisonicGroup);
 ~masterStereo = Synth.new(\stereoSynth, [], ~masterStereoGrp);
-~masterSub = Synth.new(\subSynth, [], ~masterSubGrp);
 ~masterMono = Synth.new(\monoSynth, [], ~masterMonoGrp);
+~masterSub = Synth.new(\subSynth, [], ~masterSubGrp);
 
-~ch1Master = Synth.new(\chMasterSynth, [\inMono, ~ch1MonoBus, \inSub, ~ch1SubBus, \inStereo, ~ch1StereoBus, \inAmbisonic, ~ch1AmbisonicBus], ~chMasterGrp);
+~ch1Master = Synth.new(\chMasterSynth, [\inMono, ~ch1MonoBus, \inSub, ~ch1SubBus, \inStereo, ~ch1StereoBus, \inAmbisonic, ~ch1AmbisonicBus, \amp, 1], ~chMasterGrp);
 
-~ch1Ambisonic = Synth.new(\chAmbisonicSynth, [\source, ~ch1InputBus, \dest, ~ch1AmbisonicBus], ~ambisonicGrp);
-//~ch1Stereo = Synth.new(\chStereoSynth, [\source, ~ch1InputBus, \dest, ~ch1StereoBus], ~stereoGrp);
-//~ch1Mono = Synth.new(\chMonoSynth, [\source, ~ch1InputBus, \dest, ~ch1MonoBus], ~monoGrp);
-//~ch1Sub = Synth.new(\chSubSynth, [\source, ~ch1InputBus, \dest, ~ch1SubBus,], ~subGrp);
+~ch1Ambisonic = Synth.new(\chAmbisonicSynth, [\source, ~ch1InputBus, \dest, ~ch1AmbisonicBus, \amp, 0], ~ambisonicGrp);
+~ch1Stereo = Synth.new(\chStereoSynth, [\source, ~ch1InputBus, \dest, ~ch1StereoBus, \amp, 1], ~stereoGrp);
+~ch1Mono = Synth.new(\chMonoSynth, [\source, ~ch1InputBus, \dest, ~ch1MonoBus, \amp, 0], ~monoGrp);
+~ch1Sub = Synth.new(\chSubSynth, [\source, ~ch1InputBus, \dest, ~ch1SubBus, \amp, 0], ~subGrp);
 ~ch1Input = Synth.new(\inputSynth, [\source, 8, \dest, ~ch1InputBus, \amp, 1], ~inputGrp);
 
 //~output;
@@ -373,7 +396,7 @@ t.options.numAudioBusChannels;
 t.options.numOutputBusChannels;
 t.options.numInputBusChannels;
 s.quit;
-t.freeAll;
+s.freeAll;
 
 //Quarks.install("https://github.com/florian-grond/SC-HOA");
 Quarks.gui;

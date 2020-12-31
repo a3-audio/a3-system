@@ -33,76 +33,6 @@ const int num_pots = 5;
 int pots_sent[num_tracks][num_pots];
 int buttons_last[num_tracks];
 
-//////////////////////////////////////OSC Server//////////////////////////////
-/*
-void led_1(OSCMessage &msg) {
-    digitalWrite(ledPin_1, HIGH);
-    digitalWrite(ledPin_2, LOW);
-    digitalWrite(ledPin_3, LOW);
-    digitalWrite(ledPin_4, LOW);
-    digitalWrite(ledPin_5, LOW);
-}
-
-void led_2(OSCMessage &msg) {
-    digitalWrite(ledPin_1, LOW);
-    digitalWrite(ledPin_2, HIGH);
-    digitalWrite(ledPin_3, LOW);
-    digitalWrite(ledPin_4, LOW);
-    digitalWrite(ledPin_5, LOW);
-}
-
-void led_3(OSCMessage &msg) {
-    digitalWrite(ledPin_1, LOW);
-    digitalWrite(ledPin_2, LOW);
-    digitalWrite(ledPin_3, HIGH);
-    digitalWrite(ledPin_4, LOW);
-    digitalWrite(ledPin_5, LOW);
-}
-
-void led_4(OSCMessage &msg) {
-    digitalWrite(ledPin_1, LOW);
-    digitalWrite(ledPin_2, LOW);
-    digitalWrite(ledPin_3, LOW);
-    digitalWrite(ledPin_4, HIGH);
-    digitalWrite(ledPin_5, LOW);
-}
-
-void led_5(OSCMessage &msg) {
-    digitalWrite(ledPin_1, LOW);
-    digitalWrite(ledPin_2, LOW);
-    digitalWrite(ledPin_3, LOW);
-    digitalWrite(ledPin_4, LOW);
-    digitalWrite(ledPin_5, HIGH);
-}
-
-float vuState_1 = 0.0;
-float vuState_2 = 0.0;
-float vuState_3 = 0.0;
-float vuState_4 = 0.0;
-float vuState_5 = 0.0;
-
-
-void vu_1(OSCMessage &msg) {
-    vuState_1 = mapFloat(msg.getFloat(0), 0.0, 1.0, 0.0, 16.0);
-    analogWrite(vuPin_1, vuState_1);
-}
-void vu_2(OSCMessage &msg) {
-    vuState_2 = mapFloat(msg.getFloat(0), 0.0, 1.0, 0.0, 16.0);
-    analogWrite(vuPin_2, vuState_2);
-}
-void vu_3(OSCMessage &msg) {
-    vuState_3 = mapFloat(msg.getFloat(0), 0.0, 1.0, 0.0, 16.0);
-    analogWrite(vuPin_3, vuState_3);
-}
-void vu_4(OSCMessage &msg) {
-    vuState_4 = mapFloat(msg.getFloat(0), 0.0, 1.0, 0.0, 16.0);
-    analogWrite(vuPin_4, vuState_4);
-}
-void vu_5(OSCMessage &msg) {
-    vuState_5 = mapFloat(msg.getFloat(0), 0.0, 1.0, 0.0, 16.0);
-    analogWrite(vuPin_5, vuState_5);
-}
-*/
 ///////////////////////////////////////Setup///////////////////////////////////
 void setup() {
 
@@ -233,58 +163,6 @@ void loop(){
       }
     }
 }
-
-
-//////////////////////////////Leds////////////////////////////////////
-
-// TODO the leds should switch on by value 1 from osc-router if button 
-// is pressed. Otherwise the led should be off:
-//
-// if (/track/5/recv/1/volume = 0){
-//    digitalWrite(ledPin_1, LOW);
-// } else HIGH
-//
-/*
-    OSCMessage msg;
-    int size = Udp.parsePacket();
-
-    if (size > 0) {
-        while (size--) {
-            msg.fill(Udp.read());
-        }
-        if (!msg.hasError()) {
-            msg.dispatch("/led/1", led_1);
-        }
-        if (!msg.hasError()) {
-            msg.dispatch("/led/2", led_2);
-        }
-        if (!msg.hasError()) {
-            msg.dispatch("/led/3", led_3);
-        }
-        if (!msg.hasError()) {
-            msg.dispatch("/led/4", led_4);
-        }
-        if (!msg.hasError()) {
-            msg.dispatch("/led/5", led_5);
-        }
-        if (!msg.hasError()) {
-            msg.dispatch("/track/1/vu", vu_1);
-        }
-        if (!msg.hasError()) {
-            msg.dispatch("/track/2/vu", vu_2);
-        }
-        if (!msg.hasError()) {
-            msg.dispatch("/track/3/vu", vu_3);
-        }
-        if (!msg.hasError()) {
-            msg.dispatch("/track/4/vu", vu_4);
-        }
-        if (!msg.hasError()) {
-            msg.dispatch("/track/5/vu", vu_5);
-        }
-        
-    }
-*/
 
 /*
   // Button 5

@@ -80,7 +80,7 @@ oscRouterPort = 9000
 
 # OSC-Clients
 ctrl_mixer = SimpleUDPClient('192.168.43.139', 8500)  # Set IP Adress
-ctrl_motion = SimpleUDPClient('192.168.178.108', 8700)  # Set IP Adress
+ctrl_motion = SimpleUDPClient('192.168.43.112', 8700)  # Set IP Adress
 reaper = SimpleUDPClient('127.0.0.1', 9001)
 iem_1 = SimpleUDPClient('127.0.0.1', 1337)
 iem_2 = SimpleUDPClient('127.0.0.1', 1338)
@@ -121,11 +121,9 @@ def ctrlMotionToIem_handler(address: str,
             iem_1.send_message("/CoordinateConverter/yPos",
                                numpy.interp(osc_arguments[0], [0, 1], [1, -1]))
             # iem_1.send_message("/CoordinateConverter/zPos", osc_arguments[2])
-        match_radius = re.match(param, "width")
-        if match_radius:
+        if param == "width":
             iem_1.send_message("/CoordinateConverter/radius", osc_arguments[0])
-        match_reverb = re.match(param, "reverb")
-        if match_reverb:
+        if param == "reverb":
             reaper.send_message("/track/" + dj1_in + "/fx/2/fxparam/1/value", osc_arguments[0])
 
     if track == "2":
@@ -136,11 +134,9 @@ def ctrlMotionToIem_handler(address: str,
             iem_2.send_message("/CoordinateConverter/yPos",
                                numpy.interp(osc_arguments[0], [0, 1], [1, -1]))
             # iem_2.send_message("/CoordinateConverter/zPos", osc_arguments[2])
-        match_radius = re.match(param, "width")
-        if match_radius:
+        if param == "width":
             iem_2.send_message("/CoordinateConverter/radius", osc_arguments[0])
-        match_reverb = re.match(param, "reverb")
-        if match_reverb:
+        if param == "reverb":
             reaper.send_message("/track/" + dj2_in + "/fx/2/fxparam/1/value", osc_arguments[0])
 
     if track == "3":
@@ -151,11 +147,9 @@ def ctrlMotionToIem_handler(address: str,
             iem_3.send_message("/CoordinateConverter/yPos",
                                numpy.interp(osc_arguments[0], [0, 1], [1, -1]))
             # iem_3.send_message("/CoordinateConverter/zPos", osc_arguments[2])
-        match_radius = re.match(param, "width")
-        if match_radius:
+        if param == "width":
             iem_3.send_message("/CoordinateConverter/radius", osc_arguments[0])
-        match_reverb = re.match(param, "reverb")
-        if match_reverb:
+        if param == "reverb":
             reaper.send_message("/track/" + dj3_in + "/fx/2/fxparam/1/value", osc_arguments[0])
 
     if track == "4":
@@ -166,11 +160,9 @@ def ctrlMotionToIem_handler(address: str,
             iem_4.send_message("/CoordinateConverter/yPos",
                                numpy.interp(osc_arguments[0], [0, 1], [1, -1]))
             # iem_4.send_message("/CoordinateConverter/zPos", osc_arguments[2])
-        match_radius = re.match(param, "width")
-        if match_radius:
+        if param == "width":
             iem_4.send_message("/CoordinateConverter/radius", osc_arguments[0])
-        match_reverb = re.match(param, "reverb")
-        if match_reverb:
+        if param == "reverb":
             reaper.send_message("/track/" + dj4_in + "/fx/2/fxparam/1/value", osc_arguments[0])
 
 
@@ -204,8 +196,7 @@ def iemToCtrlMotion_handler(address: str,
             ctrl_motion.send_message(
                 "/ambiJocky/motion/ch/1/pos/xyz", val_send_ch1_xyz)
 
-        match_radius = re.match(param, "radius")
-        if match_radius:
+        if param == "radius":
             ctrl_motion.send_message(
                 "/ctrlMotion/track/1/width", osc_arguments[0])
 
@@ -223,8 +214,7 @@ def iemToCtrlMotion_handler(address: str,
             ctrl_motion.send_message(
                 "/ambiJocky/motion/ch/2/pos/xyz", val_send_ch2_xyz)
 
-        match_radius = re.match(param, "radius")
-        if match_radius:
+        if param == "radius":
             ctrl_motion.send_message(
                 "/ctrlMotion/track/2/width", osc_arguments[0])
 
@@ -242,8 +232,7 @@ def iemToCtrlMotion_handler(address: str,
             ctrl_motion.send_message(
                 "/ambiJocky/motion/ch/3/pos/xyz", val_send_ch3_xyz)
 
-        match_radius = re.match(param, "radius")
-        if match_radius:
+        if param == "radius":
             ctrl_motion.send_message(
                 "/ctrlMotion/track/3/width", osc_arguments[0])
 
@@ -261,8 +250,7 @@ def iemToCtrlMotion_handler(address: str,
             ctrl_motion.send_message(
                 "/ambiJocky/motion/ch/4/pos/xyz", val_send_ch4_xyz)
 
-        match_radius = re.match(param, "radius")
-        if match_radius:
+        if param == "radius":
             ctrl_motion.send_message(
                 "/ctrlMotion/track/4/width", osc_arguments[0])
 
@@ -501,7 +489,7 @@ if __name__ == "__main__":
     dispatcher.map("/reaper/vu/*", vu_handler)
 
     # Motion-Controller
-    dispatcher.map("/CoordinateConverter/*", iemToCtrlMotion_handler)
+    # dispatcher.map("/CoordinateConverter/*", iemToCtrlMotion_handler)
     dispatcher.map("/ambiJocky/motion/ch/*", ctrlMotionToIem_handler)
     dispatcher.map("/ambijockey/moc/ch/*", ctrlMotionToIem_handler)
 

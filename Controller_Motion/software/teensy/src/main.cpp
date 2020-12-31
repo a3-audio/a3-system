@@ -295,16 +295,40 @@ void pixels()
   }
 }
 
+void pixels1(){
+  if (Serial.available()) {
+    String command = Serial.readStringUntil(',');
+    if(command.startsWith("L")) {
+      String pixNum  = Serial.readStringUntil(',');
+      String red = Serial.readStringUntil(',');
+      String green = Serial.readStringUntil(',');
+      String blue  = Serial.readStringUntil('\n');
+
+      int pixNum1 = pixNum.toInt();
+      int red1 = red.toInt();
+      int green1 = green.toInt();
+      int blue1 = blue.toInt();
+
+      Serial.print(pixNum1 + red1 + green1 + blue1);
+      
+      strip.clear();
+      strip.setPixelColor(pixNum1, strip.Color(red1,green1,blue1));
+      strip.show(); // This sends the updated pixel color to the hardware.
+    }
+  }
+}
+
 // MAIN
 void setup()
 {
   Serial.begin(115200);
+  Serial.setTimeout(10);
   while (!Serial)
   {
     ; // wait for serial conaction
   }
   Serial.println("#######################################");
-  Serial.println("          contoller conected");
+  Serial.println("          controller connected");
   Serial.println("#######################################");
 
   initBtnMatrix();
@@ -323,6 +347,6 @@ void loop()
   sendBtnEncoder();
   sendEncoder();
   sendPoti();
-  pixels();
+  pixels1();
   
 } // end of loop

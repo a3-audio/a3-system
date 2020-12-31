@@ -11,7 +11,7 @@ from pythonosc.udp_client import SimpleUDPClient
 
 
 # OSC-Clients
-osc_router = SimpleUDPClient('192.168.43.142', 9000)
+osc_router = SimpleUDPClient('192.168.43.148', 9000)
 osc_gui = SimpleUDPClient('127.0.0.1', 8600)
 
 
@@ -119,7 +119,22 @@ if __name__ == '__main__':
                 osc_gui.send_message(
                     "/ambijockey/moc/EB/3/", numpy.interp(value, [0,1], [1,0]))
 
-          # Button Matrix
+          # Button Matrix - Button to led matrix
+          #
+          # -------------------------
+          # | B3  | B2  | B1  | B0  |  
+          # | L15 | L8  | L7  | L0  |
+          # ------------------------- 
+          # | B7  | B6  | B5  | B4  |
+          # | L14 | L9  | L6  | L1  |
+          # ------------------------- 
+          # | B11 | B10 | B9  | B8  |
+          # | L13 | L10 | L5  | L2  |
+          # -------------------------
+          # | B15 | B14 | B13 | B1  |
+          # | L12 | L11 | L4  | L3  |
+          # -------------------------
+
             if identifier == "B0":
                 osc_router.send_message("/ambijockey/moc/B/4/0/", value)
                 osc_gui.send_message("/ambijockey/moc/B/4/0/", value)

@@ -1,0 +1,23 @@
+{
+    "border": "normal",
+    "current_border_width": 2,
+    "floating": "user_off",
+    "geometry": {
+       "height": 1045,
+       "width": 1532,
+       "x": 0,
+       "y": 16
+    },
+    "marks": [],
+    "name": "Mixer",
+    "percent": 1,
+    "swallows": [
+       {
+       "class": "^REAPER$",
+       "instance": "^REAPER$",
+       "title": "^Mixer$"
+       }
+    ],
+    "type": "con"
+}
+

@@ -1,0 +1,9 @@
+[Unit]
+Description=AAA-Server Service
+
+[Service]
+RemainAfterExit=yes
+ExecStart=/home/aaa/ambijockey/Server/startup.sh
+
+[Install]
+WantedBy=multi-user.target

@@ -1,4 +1,4 @@
-##  3 Gründerteam
+## 3 Gründerteam
 
 ### Jendrik Bradaczek
 
@@ -32,6 +32,17 @@
 - FOH-Technik, Veranstaltungstechnik
 
 ---
+
+### Kompetenzen
+
+- Fünf Jahre Erfahrung mit 3D Audio
+  - Ideenentwicklung
+  - Projektplanung
+  - Konzeptumsetzung
+  - Kunden und Künstler Kommunikation
+  - Beschallungskonzepte
+  - Userfeedback
+  - Netzwerken
 
 ### Kompetenzluecken
 

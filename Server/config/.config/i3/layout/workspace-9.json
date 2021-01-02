@@ -1,0 +1,23 @@
+{
+    "border": "normal",
+    "current_border_width": 2,
+    "floating": "auto_off",
+    "geometry": {
+       "height": 1045,
+       "width": 476,
+       "x": 0,
+       "y": 16
+    },
+    "marks": [],
+    "name": "reaper_ambijockey",
+    "percent": 1,
+    "swallows": [
+       {
+       "class": "^REAPER$",
+       "instance": "^REAPER$",
+       "title": "^reaper_ambijockey"
+       }
+    ],
+    "type": "con"
+}
+

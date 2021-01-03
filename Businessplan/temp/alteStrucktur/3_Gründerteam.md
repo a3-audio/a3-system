@@ -23,13 +23,16 @@
 
 #### Ausbildung:
 
-- Mediengestalter Bild und Tone
+- Mediengestalter Bild und Ton
 
 #### Berufserfahrung:
 
-- IT-Systemadministration, ISB
-- Hifi im Hinterhof (Planung- Beratung, Verkauf)
-- FOH-Technik, Veranstaltungstechnik
+- 2018-heute: IT-Systemadministration, Informationssicherheitsbeauftragter
+- Verkäufer für Unterhaltungselektronik:
+    - 2013-2018: Hifi im Hinterhof (Planung, Beratung, Verkauf)
+    - 2009-2013: Klangpunkt Aachen
+- 2000-heute: FOH-Technik, Veranstaltungstechnik
+- 2005-2009: Mediengestaltung Bild und Ton
 
 ---
 
@@ -39,7 +42,7 @@
   - Ideenentwicklung
   - Projektplanung
   - Konzeptumsetzung
-  - Kunden und Künstler Kommunikation
+  - Kunden- und Künstler Kommunikation
   - Beschallungskonzepte
   - Userfeedback
   - Netzwerken
@@ -63,9 +66,9 @@
 - Frieder Weiss
 - BIRDMILK COLLECTIVE
 
-### Referencen
+### Referenzen
 
-- Gardelegen
+- Gardelegen 2018
 - Garbicz 2018
 - Chaos Communication Congress 35C3
 - Garbicz 2019

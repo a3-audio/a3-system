@@ -1,59 +1,26 @@
 # Businessplan AAA
 
+[[Toc]]
+
 ## Zusammenfassung
-
----
-
-## Inhaltsverzeichnis
-
-- [Zusammenfassung](#Zusammenfassung)
-- Inhalsverzeichnes
-- [Produkt](#Produkt)
-
-  - Produktbeschreibung
-  - Technische Merkmale und Daten
-  - Konkurrenzprodukte
-  - Stärken und Schwächen
-  - Zielgruppen
-  - Kundennutzen
-  - Herstellung / Produktion
-  - Entwicklungsstand
-  - Weitere Entwiklungsschitte
-
-- [Gründerteam](#Gründerteam)
-
-- [Marktanalyse](#Marktanalyse)
-
-  - Gesamtmarkt
-  - Marktsegmentierung
-  - Marktpotential
-  - Wettbewerber
-
-- [Marketing](#Marketing)
-
-  - Produktpolitik
-  - Preispolitik
-  - Kommunikationspolitik
-  - Vertriebspolitik
-
-- [Unternehmen und Organisation](#Unternehmen%20und%20Organisation)
-
-  - Firmenphilosophie
-  - Rechtsform, Geschäftsführung, Eigentum
-  - Organisation
-  - Personal
-  - Kosten
-  - Risikomanagement
-
-- [Finanzplanung](#Finanzplanung)
-  - Rentabilitätsvorschau
-  - Kapitalbedarf und Finanzierungsplanung
-
----
 
 ## Produkt
 
 ### Produktbeschreibung
+
+- [ ] Produkt beschreibung alter text muss Uberarbeitet werden
+
+<alt>
+Beschallung im 21. Jahrhundert sollte mehr sein als Stereo. Da Musik vorwiegend in Stereo produziert wird, ist das Ziel unseres Produkts eine möglichst einfach verständliche Möglichkeit zu bieten, diese in einer Mehr-Lautsprecher-Anordnung live zu bewegen. Durch diese Möglichkeit wird das ein-dimensionale Klangbild Stereo (links/rechts) um eine zweite Dimension (vorne/hinten) bereichert. Für die spätere Entwicklung ist auch die dritte Dimension (oben/unten) geplant. Das Verfahren zur Verräumlichung, welches wir zurzeit einsetzen heißt, Ambisonic. Es ist kein großes Problem unser Produkt auf weitere System wie Wellenfeldsynthese oder Vbap aus zuweilen. Das Problem bisher besteht in der Komplexität der Thematik, der Kompatibilität zu den Veranstaltungs- und Präsentationsumgebungen und der aufwendigen Konfiguration in der Musikproduktion. Diese Probleme werden folgendermaßen gelöst:
+
+- Die Komplexität wird durch unsere Software auf einem Server (entweder im DJ-Mixer-Controller (standalone) oder extern (more Power) vor dem Nutzer verborgen und durch das selbsterklärende Interface trivialisiert. Gestützt wird das Produkt durch eine detaillierte Dokumentation im Github Repository.
+
+- Die Kompatibilität wird durch die Möglichkeit der Modus-Umschaltung am Motion-Controller gewährleistet. Damit kann jeder der 4 Kanäle zu Mono, Stereo oder Ambisonic konfiguriert werden.
+
+- Die aufwendige Anpassung der Musikproduktionsumgebung entfällt ebenfalls, da unser System in der Lage ist nach Stereo zu konvertieren. Es gibt eine physikalische Einschränkung für 3D Audiosysteme, der maximale Durchmesser der Lautsprecherinstallation beträgt ca. 19 Meter. Es besteht die Möglichkeit den Kreis in eine Richtung mit Stereo zu erweitern, um große Veranstaltungsszenarien abzudecken. Direkte Konkurrenten gibt es nicht, nur indirekte, das sind Mixer Hersteller und Software-Plug-ins für DAW’s. Keines der Plug-ins löst die Problematik der einfachen Bedienung der Audiobewegung. Es gibt keine Mixer, die auf die speziellen Bedürfnisse von 3D-Audio ausgelegt sind.
+
+![Prototype](pix/protoLastState.jpg)
+<alt/>
 
 Der 3D-Audio-Controller-Stack ist das weltweit erste DJ-Mischpult mit mehr Kanal Tonausgabe und intuitiven Bedingung, zur Interaktiven und automatisieren Bewegung von Schallquellen.
 
@@ -88,22 +55,6 @@ Der 3D-Audio-Controller-Stack ist das weltweit erste DJ-Mischpult mit mehr Kanal
 - Controller-Stack
 - Kleiner Server
 - Beschallungsbandel mit KirschAudio oder Hifi im Hinterhof
-
----
-
-# #Alt
-
-Beschallung im 21. Jahrhundert sollte mehr sein als Stereo. Da Musik vorwiegend in Stereo produziert wird, ist das Ziel unseres Produkts eine möglichst einfach verständliche Möglichkeit zu bieten, diese in einer Mehr-Lautsprecher-Anordnung live zu bewegen. Durch diese Möglichkeit wird das ein-dimensionale Klangbild Stereo (links/rechts) um eine zweite Dimension (vorne/hinten) bereichert. Für die spätere Entwicklung ist auch die dritte Dimension (oben/unten) geplant. Das Verfahren zur Verräumlichung, welches wir zurzeit einsetzen heißt, Ambisonic. Es ist kein großes Problem unser Produkt auf weitere System wie Wellenfeldsynthese oder Vbap aus zuweilen. Das Problem bisher besteht in der Komplexität der Thematik, der Kompatibilität zu den Veranstaltungs- und Präsentationsumgebungen und der aufwendigen Konfiguration in der Musikproduktion. Diese Probleme werden folgendermaßen gelöst:
-
-- Die Komplexität wird durch unsere Software auf einem Server (entweder im DJ-Mixer-Controller (standalone) oder extern (more Power) vor dem Nutzer verborgen und durch das selbsterklärende Interface trivialisiert. Gestützt wird das Produkt durch eine detaillierte Dokumentation im Github Repository.
-
-- Die Kompatibilität wird durch die Möglichkeit der Modus-Umschaltung am Motion-Controller gewährleistet. Damit kann jeder der 4 Kanäle zu Mono, Stereo oder Ambisonic konfiguriert werden.
-
-- Die aufwendige Anpassung der Musikproduktionsumgebung entfällt ebenfalls, da unser System in der Lage ist nach Stereo zu konvertieren. Es gibt eine physikalische Einschränkung für 3D Audiosysteme, der maximale Durchmesser der Lautsprecherinstallation beträgt ca. 19 Meter. Es besteht die Möglichkeit den Kreis in eine Richtung mit Stereo zu erweitern, um große Veranstaltungsszenarien abzudecken. Direkte Konkurrenten gibt es nicht, nur indirekte, das sind Mixer Hersteller und Software-Plug-ins für DAW’s. Keines der Plug-ins löst die Problematik der einfachen Bedienung der Audiobewegung. Es gibt keine Mixer, die auf die speziellen Bedürfnisse von 3D-Audio ausgelegt sind.
-
-![Prototype](pix/protoLastState.jpg)
-
-# #Alt
 
 ### Technische_Merkmale_und_Daten
 
@@ -183,12 +134,11 @@ Es gibt keine Direckte Konkurenz
 
 ### Zielgruppen
 
-# #Alt
+- [ ] Zielgrupper ueberarbeiten
 
-Die primär Zielgruppe sind Musiker, Produzenten, Musikclubbetreiber, Kulturstätten und
-Technikverleiher. Die Preisgestaltung orientiert sich an dem aktuellen (quasi-) Industriestandard Allen & Heath Xone 92 oder Pioneer DJM 900 (~ € 2000,-) Es gebiet noch eine Sekunde Zielgruppe, die Augmented- und Virtual-Reality Anwendungen
-umfasst.
-# #Alt
+<alt>
+Die primär Zielgruppe sind Musiker, Produzenten, Musikclubbetreiber, Kulturstätten und Technikverleiher. Die Preisgestaltung orientiert sich an dem aktuellen (quasi-) Industriestandard Allen & Heath Xone 92 oder Pioneer DJM 900 (~ € 2000,-) Es gebiet noch eine Sekunde Zielgruppe, die Augmented- und Virtual-Reality Anwendungen umfasst.
+<alt/>
 
 ### Kundennutzen
 
@@ -238,9 +188,13 @@ Zurzeit liegt unser Enwiklungsfokus auf der Ausarbeitung Usability der GUI des M
 
 _Produktwerbung_ bedeutet zurzeit hauptsächlich die Kontaktaufnahme zu Schlüsselkunden in den Marktsegmenten Messen und Ausstellungen. Diesen zeigen wir die Einsatzmöglichkeiten und Vorteile des showcase und informieren sie über den Entwicklungsstand. Diese Kontakte ermöglichen dem Planungsteam eine kundenorientierte Entwicklungsstrategie.
 
+- [ ] Das hier miuss verschoben werden
+
 ### Weitere Entwiklungsschitte
 
 #### in Milestones
+
+- [ ] Milestones Pflegen
 
 - Entwicklungs-Milestone Prototype (Alpha Release)
   - GUIv0.02 in QT6
@@ -414,3 +368,5 @@ Marktpotenzial ist nicht exakt bekannt da es keine Vergleichsprodukte gibt. Es i
 ### Rentabilitätsvorschau
 
 ### Kapitalbedarf und Finanzierungsplanung
+
+---

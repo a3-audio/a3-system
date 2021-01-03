@@ -113,7 +113,7 @@ to control and see all information on one fingertip.
 |-----------------------------------------------------------|         
 | MODE:   MONO | MODE:   STER | MODE:   VBAP | MODE:   AMBI |         
 | LENGTH: 34   | LENGTH: 34   | LENGTH: 34   | LENGTH: 34   |
-| LOOP:   ONE  | LOOP:   ONE  | LOOP:   ONE  | LOOP:   ONE  |    
+| LOOP:   ONE  | LOOP:   LO0P | LOOP:   ONE  | LOOP:   ONE  |  
 |-----------------------------------------------------------|    
 | RCV:192.168.178.125:1234|SND:192.168.178.126:1232|BPM:128 | <- SYSTEMVIEW
 |-----------------------------------------------------------|

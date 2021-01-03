@@ -1,6 +1,6 @@
 # A^3 Moving Controler
 
-
+TODO aufraeumen!!!
 ## Notizen
 
 - Kivy geht nur unter Python 3.7

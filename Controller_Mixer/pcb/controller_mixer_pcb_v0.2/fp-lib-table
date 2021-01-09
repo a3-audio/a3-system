@@ -1,3 +1,4 @@
 (fp_lib_table
-  (lib (name jst)(type KiCad)(uri /home/aaa/mixerpcb/mixer.pcb/jst)(options "")(descr ""))
+  (lib (name jst)(type KiCad)(uri ${KISYSMOD}/jst)(options "")(descr ""))
+  (lib (name teensy)(type KiCad)(uri ${KISYSMOD}/teensy.pretty)(options "")(descr ""))
 )

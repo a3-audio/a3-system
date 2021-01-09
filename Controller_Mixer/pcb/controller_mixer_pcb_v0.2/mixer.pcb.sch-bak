@@ -13,18 +13,10 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text GLabel 6050 7300 0    50   Input ~ 0
-s0
-Text GLabel 6050 7400 0    50   Input ~ 0
-s1
-Text GLabel 6050 7500 0    50   Input ~ 0
-s2
 Text GLabel 9600 2400 0    50   Input ~ 0
 s0
 Text GLabel 9600 2500 0    50   Input ~ 0
 s1
-Text GLabel 8250 5900 2    50   Input ~ 0
-mux_ch1
 Text GLabel 9600 2200 0    50   Input ~ 0
 mux_ch4
 Text GLabel 9600 2600 0    50   Input ~ 0
@@ -58,37 +50,6 @@ F 3 "" H 9900 3100 50  0001 C CNN
 	1    9900 3100
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:GND #PWR0107
-U 1 1 5FFE5E36
-P 6050 5200
-F 0 "#PWR0107" H 6050 4950 50  0001 C CNN
-F 1 "GND" V 6055 5072 50  0000 R CNN
-F 2 "" H 6050 5200 50  0001 C CNN
-F 3 "" H 6050 5200 50  0001 C CNN
-	1    6050 5200
-	0    1    1    0   
-$EndComp
-NoConn ~ 8250 5050
-NoConn ~ 8250 5200
-NoConn ~ 8250 7750
-NoConn ~ 8250 7850
-NoConn ~ 8250 7950
-NoConn ~ 8250 8050
-NoConn ~ 8250 8150
-NoConn ~ 8250 8250
-NoConn ~ 6050 8350
-NoConn ~ 6050 8250
-NoConn ~ 6050 8150
-NoConn ~ 6050 8050
-NoConn ~ 6050 7950
-NoConn ~ 6050 7800
-NoConn ~ 6050 7700
-NoConn ~ 6850 8650
-NoConn ~ 7000 8650
-NoConn ~ 7150 8650
-NoConn ~ 7300 8650
-NoConn ~ 7450 8650
 $Comp
 L Connector_Generic:Conn_01x03 J33
 U 1 1 5FF90FEE
@@ -1654,81 +1615,6 @@ Wire Wire Line
 	5050 3750 5050 2900
 Wire Wire Line
 	5050 2900 5000 2900
-Text GLabel 8250 5800 2    50   Input ~ 0
-mux_ch2
-Text GLabel 8250 7500 2    50   Input ~ 0
-pfl_btn_ch1
-Text GLabel 8250 7400 2    50   Input ~ 0
-pfl_btn_ch2
-Text GLabel 8250 7300 2    50   Input ~ 0
-pfl_btn_ch3
-Text GLabel 8250 7200 2    50   Input ~ 0
-pfl_btn_ch4
-Text GLabel 8250 7100 2    50   Input ~ 0
-pfl_btn_master
-Text GLabel 6050 6900 0    50   Input ~ 0
-pfl_led_ch1
-Text GLabel 8250 7000 2    50   Input ~ 0
-pfl_led_ch2
-Text GLabel 8250 6900 2    50   Input ~ 0
-pfl_led_ch3
-Text GLabel 8250 6800 2    50   Input ~ 0
-pfl_led_ch4
-Text GLabel 8250 6700 2    50   Input ~ 0
-pfl_led_master
-$Comp
-L power:GND #PWR0208
-U 1 1 6076C36F
-P 8250 6600
-F 0 "#PWR0208" H 8250 6350 50  0001 C CNN
-F 1 "GND" V 8255 6472 50  0000 R CNN
-F 2 "" H 8250 6600 50  0001 C CNN
-F 3 "" H 8250 6600 50  0001 C CNN
-	1    8250 6600
-	0    -1   -1   0   
-$EndComp
-Text GLabel 6050 6400 0    50   Input ~ 0
-rEnc5_clk
-Text GLabel 6050 6300 0    50   Input ~ 0
-rEnc5_DT
-Text GLabel 6050 6200 0    50   Input ~ 0
-rEnc4_clk
-Text GLabel 6050 6100 0    50   Input ~ 0
-rEnc4_DT
-Text GLabel 6050 6000 0    50   Input ~ 0
-rEnc3_clk
-Text GLabel 6050 5900 0    50   Input ~ 0
-rEnc3_DT
-Text GLabel 6050 5800 0    50   Input ~ 0
-rEnc2_clk
-Text GLabel 6050 5700 0    50   Input ~ 0
-rEnc2_DT
-Text GLabel 6050 5600 0    50   Input ~ 0
-rEnc1_clk
-Text GLabel 6050 5500 0    50   Input ~ 0
-rEnc1_DT
-Text GLabel 6050 5400 0    50   Input ~ 0
-rEnc0_clk
-Text GLabel 6050 5300 0    50   Input ~ 0
-rEnc0_DT
-Text GLabel 6050 6500 0    50   Input ~ 0
-mux_encBtn_fx
-Text GLabel 6050 7000 0    50   Input ~ 0
-mux_selBtn_fx
-Text GLabel 8250 5500 2    50   Input ~ 0
-mux_master
-Text GLabel 8250 5600 2    50   Input ~ 0
-mux_ch4
-Text GLabel 8250 5700 2    50   Input ~ 0
-mux_ch3
-Text GLabel 8250 6100 2    50   Input ~ 0
-display_sda1
-Text GLabel 8250 6200 2    50   Input ~ 0
-display_scl1
-Text GLabel 6050 6800 0    50   Input ~ 0
-display_sda2
-Text GLabel 6050 6700 0    50   Input ~ 0
-display_scl2
 $Comp
 L Connector_Generic:Conn_01x03 J7
 U 1 1 60010904
@@ -1750,38 +1636,6 @@ F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 3350 2450 50  0001 C
 F 3 "~" H 3350 2450 50  0001 C CNN
 	1    3350 2450
 	1    0    0    -1  
-$EndComp
-Text GLabel 8250 6000 2    50   Input ~ 0
-pin18
-Text GLabel 8250 6300 2    50   Input ~ 0
-pin15
-Text GLabel 8250 6400 2    50   Input ~ 0
-pin14
-Text GLabel 6050 7100 0    50   Input ~ 0
-pin28
-Text GLabel 6050 7200 0    50   Input ~ 0
-pin29
-$Comp
-L teensy:Teensy4.1 U5
-U 1 1 5FF8B2D7
-P 7150 7350
-F 0 "U5" H 7150 9915 50  0000 C CNN
-F 1 "Teensy4.1" H 7150 9824 50  0000 C CNN
-F 2 "teensy:Teensy41" H 6750 7750 50  0001 C CNN
-F 3 "" H 6750 7750 50  0001 C CNN
-	1    7150 7350
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR0209
-U 1 1 6076DEA4
-P 6050 6600
-F 0 "#PWR0209" H 6050 6450 50  0001 C CNN
-F 1 "+3.3V" V 6065 6728 50  0000 L CNN
-F 2 "" H 6050 6600 50  0001 C CNN
-F 3 "" H 6050 6600 50  0001 C CNN
-	1    6050 6600
-	0    -1   -1   0   
 $EndComp
 $Comp
 L power:+3.3V #PWR0163
@@ -1872,19 +1726,6 @@ F 3 "~" H 3350 1750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 J1
-U 1 1 60010898
-P 3350 1400
-F 0 "J1" H 3430 1442 50  0000 L CNN
-F 1 "Conn_01x03" H 3430 1351 50  0000 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 3350 1400 50  0001 C CNN
-F 3 "~" H 3350 1400 50  0001 C CNN
-	1    3350 1400
-	1    0    0    -1  
-$EndComp
-Text GLabel 8250 6500 2    50   Input ~ 0
-neopixel
-$Comp
 L 74xx:74HC4051 U7
 U 1 1 5FFF243B
 P 12800 2500
@@ -1916,28 +1757,6 @@ F 2 "Package_DIP:DIP-16_W7.62mm" H 7250 2100 50  0000 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 7250 2100 50  0001 C CNN
 	1    7250 2500
 	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR0106
-U 1 1 5FFE3AE3
-P 8250 5400
-F 0 "#PWR0106" H 8250 5250 50  0001 C CNN
-F 1 "+3.3V" V 8265 5528 50  0000 L CNN
-F 2 "" H 8250 5400 50  0001 C CNN
-F 3 "" H 8250 5400 50  0001 C CNN
-	1    8250 5400
-	0    1    1    0   
-$EndComp
-$Comp
-L power:GND #PWR0105
-U 1 1 607676BE
-P 8250 5300
-F 0 "#PWR0105" H 8250 5050 50  0001 C CNN
-F 1 "GND" H 8255 5127 50  0000 C CNN
-F 2 "" H 8250 5300 50  0001 C CNN
-F 3 "" H 8250 5300 50  0001 C CNN
-	1    8250 5300
-	0    -1   -1   0   
 $EndComp
 $Comp
 L Connector_Generic:Conn_01x03 J8
@@ -2973,10 +2792,10 @@ F 3 "" H 9450 8000 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 J?
+L Connector_Generic:Conn_01x03 J72
 U 1 1 6087B9A2
 P 9650 8000
-F 0 "J?" H 9730 8042 50  0000 L CNN
+F 0 "J72" H 9730 8042 50  0000 L CNN
 F 1 "Conn_01x03" H 9730 7951 50  0000 L CNN
 F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 9650 8000 50  0001 C CNN
 F 3 "~" H 9650 8000 50  0001 C CNN
@@ -3006,10 +2825,10 @@ F 3 "" H 9450 7650 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 J?
+L Connector_Generic:Conn_01x03 J71
 U 1 1 6086F85E
 P 9650 7650
-F 0 "J?" H 9730 7692 50  0000 L CNN
+F 0 "J71" H 9730 7692 50  0000 L CNN
 F 1 "Conn_01x03" H 9730 7601 50  0000 L CNN
 F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 9650 7650 50  0001 C CNN
 F 3 "~" H 9650 7650 50  0001 C CNN
@@ -3039,10 +2858,10 @@ F 3 "" H 9450 7300 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 J?
+L Connector_Generic:Conn_01x03 J70
 U 1 1 6086378C
 P 9650 7300
-F 0 "J?" H 9730 7342 50  0000 L CNN
+F 0 "J70" H 9730 7342 50  0000 L CNN
 F 1 "Conn_01x03" H 9730 7251 50  0000 L CNN
 F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 9650 7300 50  0001 C CNN
 F 3 "~" H 9650 7300 50  0001 C CNN
@@ -3072,10 +2891,10 @@ F 3 "" H 9450 6950 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 J?
+L Connector_Generic:Conn_01x03 J69
 U 1 1 60857731
 P 9650 6950
-F 0 "J?" H 9730 6992 50  0000 L CNN
+F 0 "J69" H 9730 6992 50  0000 L CNN
 F 1 "Conn_01x03" H 9730 6901 50  0000 L CNN
 F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 9650 6950 50  0001 C CNN
 F 3 "~" H 9650 6950 50  0001 C CNN
@@ -3105,10 +2924,10 @@ F 3 "" H 9450 6600 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 J?
+L Connector_Generic:Conn_01x03 J68
 U 1 1 607EDECE
 P 9650 6600
-F 0 "J?" H 9730 6642 50  0000 L CNN
+F 0 "J68" H 9730 6642 50  0000 L CNN
 F 1 "Conn_01x03" H 9730 6551 50  0000 L CNN
 F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 9650 6600 50  0001 C CNN
 F 3 "~" H 9650 6600 50  0001 C CNN
@@ -3125,4 +2944,185 @@ Text GLabel 9450 6850 0    50   Input ~ 0
 pin15
 Text GLabel 9450 6500 0    50   Input ~ 0
 pin18
+$Comp
+L Connector_Generic:Conn_01x03 J1
+U 1 1 60010898
+P 3350 1400
+F 0 "J1" H 3430 1442 50  0000 L CNN
+F 1 "Conn_01x03" H 3430 1351 50  0000 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 3350 1400 50  0001 C CNN
+F 3 "~" H 3350 1400 50  0001 C CNN
+	1    3350 1400
+	1    0    0    -1  
+$EndComp
+Text GLabel 5500 7200 0    50   Input ~ 0
+s0
+Text GLabel 5500 7300 0    50   Input ~ 0
+s1
+Text GLabel 5500 7400 0    50   Input ~ 0
+s2
+Text GLabel 7700 5800 2    50   Input ~ 0
+mux_ch1
+$Comp
+L power:GND #PWR0107
+U 1 1 5FFE5E36
+P 5500 5100
+F 0 "#PWR0107" H 5500 4850 50  0001 C CNN
+F 1 "GND" V 5505 4972 50  0000 R CNN
+F 2 "" H 5500 5100 50  0001 C CNN
+F 3 "" H 5500 5100 50  0001 C CNN
+	1    5500 5100
+	0    1    1    0   
+$EndComp
+NoConn ~ 7700 4950
+NoConn ~ 7700 5100
+NoConn ~ 7700 7650
+NoConn ~ 7700 7750
+NoConn ~ 7700 7850
+NoConn ~ 7700 7950
+NoConn ~ 7700 8050
+NoConn ~ 7700 8150
+NoConn ~ 5500 8250
+NoConn ~ 5500 8150
+NoConn ~ 5500 8050
+NoConn ~ 5500 7950
+NoConn ~ 5500 7850
+NoConn ~ 5500 7700
+NoConn ~ 5500 7600
+NoConn ~ 6300 8550
+NoConn ~ 6450 8550
+NoConn ~ 6600 8550
+NoConn ~ 6750 8550
+NoConn ~ 6900 8550
+Text GLabel 7700 5700 2    50   Input ~ 0
+mux_ch2
+Text GLabel 7700 7400 2    50   Input ~ 0
+pfl_btn_ch1
+Text GLabel 7700 7300 2    50   Input ~ 0
+pfl_btn_ch2
+Text GLabel 7700 7200 2    50   Input ~ 0
+pfl_btn_ch3
+Text GLabel 7700 7100 2    50   Input ~ 0
+pfl_btn_ch4
+Text GLabel 7700 7000 2    50   Input ~ 0
+pfl_btn_master
+Text GLabel 5500 6800 0    50   Input ~ 0
+pfl_led_ch1
+Text GLabel 7700 6900 2    50   Input ~ 0
+pfl_led_ch2
+Text GLabel 7700 6800 2    50   Input ~ 0
+pfl_led_ch3
+Text GLabel 7700 6700 2    50   Input ~ 0
+pfl_led_ch4
+Text GLabel 7700 6600 2    50   Input ~ 0
+pfl_led_master
+$Comp
+L power:GND #PWR0208
+U 1 1 6076C36F
+P 7700 6500
+F 0 "#PWR0208" H 7700 6250 50  0001 C CNN
+F 1 "GND" V 7705 6372 50  0000 R CNN
+F 2 "" H 7700 6500 50  0001 C CNN
+F 3 "" H 7700 6500 50  0001 C CNN
+	1    7700 6500
+	0    -1   -1   0   
+$EndComp
+Text GLabel 5500 6300 0    50   Input ~ 0
+rEnc5_clk
+Text GLabel 5500 6200 0    50   Input ~ 0
+rEnc5_DT
+Text GLabel 5500 6100 0    50   Input ~ 0
+rEnc4_clk
+Text GLabel 5500 6000 0    50   Input ~ 0
+rEnc4_DT
+Text GLabel 5500 5900 0    50   Input ~ 0
+rEnc3_clk
+Text GLabel 5500 5800 0    50   Input ~ 0
+rEnc3_DT
+Text GLabel 5500 5700 0    50   Input ~ 0
+rEnc2_clk
+Text GLabel 5500 5600 0    50   Input ~ 0
+rEnc2_DT
+Text GLabel 5500 5500 0    50   Input ~ 0
+rEnc1_clk
+Text GLabel 5500 5400 0    50   Input ~ 0
+rEnc1_DT
+Text GLabel 5500 5300 0    50   Input ~ 0
+rEnc0_clk
+Text GLabel 5500 5200 0    50   Input ~ 0
+rEnc0_DT
+Text GLabel 5500 6400 0    50   Input ~ 0
+mux_encBtn_fx
+Text GLabel 5500 6900 0    50   Input ~ 0
+mux_selBtn_fx
+Text GLabel 7700 5400 2    50   Input ~ 0
+mux_master
+Text GLabel 7700 5500 2    50   Input ~ 0
+mux_ch4
+Text GLabel 7700 5600 2    50   Input ~ 0
+mux_ch3
+Text GLabel 7700 6000 2    50   Input ~ 0
+display_sda1
+Text GLabel 7700 6100 2    50   Input ~ 0
+display_scl1
+Text GLabel 5500 6700 0    50   Input ~ 0
+display_sda2
+Text GLabel 5500 6600 0    50   Input ~ 0
+display_scl2
+Text GLabel 7700 5900 2    50   Input ~ 0
+pin18
+Text GLabel 7700 6200 2    50   Input ~ 0
+pin15
+Text GLabel 7700 6300 2    50   Input ~ 0
+pin14
+Text GLabel 5500 7000 0    50   Input ~ 0
+pin28
+Text GLabel 5500 7100 0    50   Input ~ 0
+pin29
+$Comp
+L teensy:Teensy4.1 U5
+U 1 1 5FF8B2D7
+P 6600 7250
+F 0 "U5" H 6600 9815 50  0000 C CNN
+F 1 "Teensy4.1" H 6600 9724 50  0000 C CNN
+F 2 "teensy:Teensy41" H 6200 7650 50  0001 C CNN
+F 3 "" H 6200 7650 50  0001 C CNN
+	1    6600 7250
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0209
+U 1 1 6076DEA4
+P 5500 6500
+F 0 "#PWR0209" H 5500 6350 50  0001 C CNN
+F 1 "+3.3V" V 5515 6628 50  0000 L CNN
+F 2 "" H 5500 6500 50  0001 C CNN
+F 3 "" H 5500 6500 50  0001 C CNN
+	1    5500 6500
+	0    -1   -1   0   
+$EndComp
+Text GLabel 7700 6400 2    50   Input ~ 0
+neopixel
+$Comp
+L power:+3.3V #PWR0106
+U 1 1 5FFE3AE3
+P 7700 5300
+F 0 "#PWR0106" H 7700 5150 50  0001 C CNN
+F 1 "+3.3V" V 7715 5428 50  0000 L CNN
+F 2 "" H 7700 5300 50  0001 C CNN
+F 3 "" H 7700 5300 50  0001 C CNN
+	1    7700 5300
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0105
+U 1 1 607676BE
+P 7700 5200
+F 0 "#PWR0105" H 7700 4950 50  0001 C CNN
+F 1 "GND" H 7705 5027 50  0000 C CNN
+F 2 "" H 7700 5200 50  0001 C CNN
+F 3 "" H 7700 5200 50  0001 C CNN
+	1    7700 5200
+	0    -1   -1   0   
+$EndComp
 $EndSCHEMATC

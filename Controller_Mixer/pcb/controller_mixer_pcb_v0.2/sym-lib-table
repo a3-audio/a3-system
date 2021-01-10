@@ -2,4 +2,5 @@
   (lib (name mixer.pcb)(type Legacy)(uri ${KICAD_SYMBOL_DIR}/mixer.pcb.lib)(options "")(descr ""))
   (lib (name teensy)(type Legacy)(uri ${KICAD_SYMBOL_DIR}/teensy.lib)(options "")(descr ""))
   (lib (name power)(type Legacy)(uri ${KICAD_SYMBOL_DIR}/power.lib)(options "")(descr ""))
+  (lib (name mixer.pcb-rescue)(type Legacy)(uri ${KIPRJMOD}/mixer.pcb-rescue.lib)(options "")(descr ""))
 )

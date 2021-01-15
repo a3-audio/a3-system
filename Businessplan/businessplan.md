@@ -190,7 +190,7 @@ _Produktwerbung_ bedeutet zurzeit hauptsächlich die Kontaktaufnahme zu Schlüss
 
 - [ ] Das hier miuss verschoben werden
 
-### Weitere Entwiklungsschitte
+### Weitere Entwicklungsschitte
 
 #### in Milestones
 

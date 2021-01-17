@@ -7,5 +7,4 @@ class QuadraticDial(QDial):
         print("instantiating QuadraticDial")
 
     def sizeHint(self):
-        print("calling sizeHint")
         return QSize(64, 64)

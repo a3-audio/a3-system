@@ -7,5 +7,4 @@ class QuadraticPushButton(QPushButton):
         print("instantiating QuadraticPushButton")
 
     def sizeHint(self):
-        print("calling sizeHint")
         return QSize(64, 64)

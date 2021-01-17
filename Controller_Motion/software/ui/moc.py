@@ -7,6 +7,7 @@ from PySide6.QtUiTools import QUiLoader
 
 from widgets.QuadraticDial import QuadraticDial
 from widgets.QuadraticPushButton import QuadraticPushButton
+from widgets.MotionControllerDisplay import MotionControllerDisplay
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
@@ -19,6 +20,7 @@ if __name__ == "__main__":
     loader = QUiLoader()
     loader.registerCustomWidget(QuadraticDial)
     loader.registerCustomWidget(QuadraticPushButton)
+    loader.registerCustomWidget(MotionControllerDisplay)
 
     print(loader.availableWidgets())
 

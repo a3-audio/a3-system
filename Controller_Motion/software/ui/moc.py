@@ -30,7 +30,9 @@ if __name__ == "__main__":
         print(loader.errorString())
         sys.exit(-1)
 
-    window.show()
+    # create track objects and pass to display widget
+
     window.setFixedSize(318, 1000)
+    window.show()
 
     sys.exit(app.exec_())

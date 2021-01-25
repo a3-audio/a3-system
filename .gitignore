@@ -24,4 +24,4 @@ Controller_Motion/Hardware/controller_motion_pcb/controller_motion_pcb.kicad_pcb
 
 Server/reaper/linux/reaper_ambijockey.RPP-bak
 
-
+**/__pycache__

@@ -59,3 +59,18 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
         self.mouse_pos = (event.x(), event.y())
         print(self.geometry())
         self.repaint()
+
+    def poti_changed(self, channel, row, value):
+        print("channel " + str(channel) + " poti " + str(row) + " value changed: " + str(value))
+
+    def encoder_motion(self, channel, direction):
+        print("channel " + str(channel) + " encoder moved in direction: " + str(direction))
+    def encoder_pressed(self, channel):
+        print("channel " + str(channel) + " encoder pressed ")
+    def encoder_released(self, channel):
+        print("channel " + str(channel) + " encoder released ")
+
+    def button_pressed(self, channel, row):
+        print("channel " + str(channel) + " button " + str(row) + " pressed ")
+    def button_released(self, channel, row):
+        print("channel " + str(channel) + " button " + str(row) + " released ")

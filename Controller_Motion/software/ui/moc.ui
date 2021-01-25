@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>438</width>
-    <height>1000</height>
+    <height>1018</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -27,28 +27,60 @@
     <item>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QuadraticDial" name="dialTop11"/>
+       <widget class="QuadraticDial" name="dialTop11">
+        <property name="maximum">
+         <number>1023</number>
+        </property>
+       </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QuadraticDial" name="dialTop14"/>
+       <widget class="QuadraticDial" name="dialTop41">
+        <property name="maximum">
+         <number>1023</number>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QuadraticDial" name="dialTop21"/>
+       <widget class="QuadraticDial" name="dialTop12">
+        <property name="maximum">
+         <number>1023</number>
+        </property>
+       </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QuadraticDial" name="dialTop22"/>
+       <widget class="QuadraticDial" name="dialTop22">
+        <property name="maximum">
+         <number>1023</number>
+        </property>
+       </widget>
       </item>
       <item row="1" column="3">
-       <widget class="QuadraticDial" name="dialTop24"/>
+       <widget class="QuadraticDial" name="dialTop42">
+        <property name="maximum">
+         <number>1023</number>
+        </property>
+       </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QuadraticDial" name="dialTop13"/>
+       <widget class="QuadraticDial" name="dialTop31">
+        <property name="maximum">
+         <number>1023</number>
+        </property>
+       </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QuadraticDial" name="dialTop23"/>
+       <widget class="QuadraticDial" name="dialTop32">
+        <property name="maximum">
+         <number>1023</number>
+        </property>
+       </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QuadraticDial" name="dialTop12"/>
+       <widget class="QuadraticDial" name="dialTop21">
+        <property name="maximum">
+         <number>1023</number>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -69,9 +101,44 @@
      </widget>
     </item>
     <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="buttonEncoder1">
+        <property name="text">
+         <string>Encoder 1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="buttonEncoder2">
+        <property name="text">
+         <string>Encoder 2</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="buttonEncoder3">
+        <property name="text">
+         <string>Encoder 3</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="buttonEncoder4">
+        <property name="text">
+         <string>Encoder 4</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="3">
        <widget class="QuadraticDial" name="dialBottom4">
+        <property name="maximum">
+         <number>20</number>
+        </property>
         <property name="wrapping">
          <bool>true</bool>
         </property>
@@ -82,6 +149,9 @@
       </item>
       <item row="0" column="1">
        <widget class="QuadraticDial" name="dialBottom2">
+        <property name="maximum">
+         <number>20</number>
+        </property>
         <property name="wrapping">
          <bool>true</bool>
         </property>
@@ -92,6 +162,9 @@
       </item>
       <item row="0" column="2">
        <widget class="QuadraticDial" name="dialBottom3">
+        <property name="maximum">
+         <number>20</number>
+        </property>
         <property name="wrapping">
          <bool>true</bool>
         </property>
@@ -102,6 +175,9 @@
       </item>
       <item row="0" column="0">
        <widget class="QuadraticDial" name="dialBottom1">
+        <property name="maximum">
+         <number>20</number>
+        </property>
         <property name="wrapping">
          <bool>true</bool>
         </property>
@@ -115,7 +191,7 @@
     <item>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="1" column="0">
-       <widget class="QuadraticPushButton" name="button21">
+       <widget class="QuadraticPushButton" name="button12">
         <property name="baseSize">
          <size>
           <width>0</width>
@@ -128,7 +204,7 @@
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QuadraticPushButton" name="button13">
+       <widget class="QuadraticPushButton" name="button31">
         <property name="baseSize">
          <size>
           <width>0</width>
@@ -154,7 +230,7 @@
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QuadraticPushButton" name="button41">
+       <widget class="QuadraticPushButton" name="button14">
         <property name="baseSize">
          <size>
           <width>0</width>
@@ -167,7 +243,7 @@
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QuadraticPushButton" name="button31">
+       <widget class="QuadraticPushButton" name="button13">
         <property name="baseSize">
          <size>
           <width>0</width>
@@ -180,7 +256,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QuadraticPushButton" name="button12">
+       <widget class="QuadraticPushButton" name="button21">
         <property name="baseSize">
          <size>
           <width>0</width>
@@ -193,7 +269,7 @@
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QuadraticPushButton" name="button14">
+       <widget class="QuadraticPushButton" name="button41">
         <property name="sizeIncrement">
          <size>
           <width>1</width>
@@ -225,7 +301,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QuadraticPushButton" name="button32">
+       <widget class="QuadraticPushButton" name="button23">
         <property name="baseSize">
          <size>
           <width>0</width>
@@ -238,7 +314,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QuadraticPushButton" name="button42">
+       <widget class="QuadraticPushButton" name="button24">
         <property name="baseSize">
          <size>
           <width>0</width>
@@ -251,7 +327,7 @@
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QuadraticPushButton" name="button23">
+       <widget class="QuadraticPushButton" name="button32">
         <property name="baseSize">
          <size>
           <width>0</width>
@@ -277,7 +353,7 @@
        </widget>
       </item>
       <item row="3" column="2">
-       <widget class="QuadraticPushButton" name="button43">
+       <widget class="QuadraticPushButton" name="button34">
         <property name="baseSize">
          <size>
           <width>0</width>
@@ -290,7 +366,7 @@
        </widget>
       </item>
       <item row="1" column="3">
-       <widget class="QuadraticPushButton" name="button24">
+       <widget class="QuadraticPushButton" name="button42">
         <property name="baseSize">
          <size>
           <width>0</width>
@@ -303,7 +379,7 @@
        </widget>
       </item>
       <item row="2" column="3">
-       <widget class="QuadraticPushButton" name="button34">
+       <widget class="QuadraticPushButton" name="button43">
         <property name="baseSize">
          <size>
           <width>0</width>

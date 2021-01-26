@@ -7,115 +7,115 @@ from widgets.QuadraticDial import QuadraticDial
 class InputAdapterUI:
 
     def dialTop11_valueChanged(self, value):
-        self.mocDisplay.poti_changed(1, 1, value / 1023)
+        self.mocDisplay.poti_changed(0, 0, value / 1023)
     def dialTop12_valueChanged(self, value):
-        self.mocDisplay.poti_changed(1, 2, value / 1023)
+        self.mocDisplay.poti_changed(0, 1, value / 1023)
     def dialTop21_valueChanged(self, value):
-        self.mocDisplay.poti_changed(2, 1, value / 1023)
+        self.mocDisplay.poti_changed(1, 0, value / 1023)
     def dialTop22_valueChanged(self, value):
-        self.mocDisplay.poti_changed(2, 2, value / 1023)
+        self.mocDisplay.poti_changed(1, 1, value / 1023)
     def dialTop31_valueChanged(self, value):
-        self.mocDisplay.poti_changed(3, 1, value / 1023)
+        self.mocDisplay.poti_changed(2, 0, value / 1023)
     def dialTop32_valueChanged(self, value):
-        self.mocDisplay.poti_changed(3, 2, value / 1023)
+        self.mocDisplay.poti_changed(2, 1, value / 1023)
     def dialTop41_valueChanged(self, value):
-        self.mocDisplay.poti_changed(4, 1, value / 1023)
+        self.mocDisplay.poti_changed(3, 0, value / 1023)
     def dialTop42_valueChanged(self, value):
-        self.mocDisplay.poti_changed(4, 2, value / 1023)
+        self.mocDisplay.poti_changed(3, 1, value / 1023)
 
     def buttonEncoder1_pressed(self):
-        self.mocDisplay.encoder_pressed(1)
+        self.mocDisplay.encoder_pressed(0)
     def buttonEncoder1_released(self):
-        self.mocDisplay.encoder_released(1)
+        self.mocDisplay.encoder_released(0)
     def buttonEncoder2_pressed(self):
-        self.mocDisplay.encoder_pressed(2)
+        self.mocDisplay.encoder_pressed(1)
     def buttonEncoder2_released(self):
-        self.mocDisplay.encoder_released(2)
+        self.mocDisplay.encoder_released(1)
     def buttonEncoder3_pressed(self):
-        self.mocDisplay.encoder_pressed(3)
+        self.mocDisplay.encoder_pressed(2)
     def buttonEncoder3_released(self):
-        self.mocDisplay.encoder_released(3)
+        self.mocDisplay.encoder_released(2)
     def buttonEncoder4_pressed(self):
-        self.mocDisplay.encoder_pressed(4)
+        self.mocDisplay.encoder_pressed(3)
     def buttonEncoder4_released(self):
-        self.mocDisplay.encoder_released(4)
+        self.mocDisplay.encoder_released(3)
 
     def dialBottom1_step(self, step):
-        self.mocDisplay.encoder_motion(1, step)
+        self.mocDisplay.encoder_motion(0, step)
     def dialBottom2_step(self, step):
-        self.mocDisplay.encoder_motion(2, step)
+        self.mocDisplay.encoder_motion(1, step)
     def dialBottom3_step(self, step):
-        self.mocDisplay.encoder_motion(3, step)
+        self.mocDisplay.encoder_motion(2, step)
     def dialBottom4_step(self, step):
-        self.mocDisplay.encoder_motion(4, step)
+        self.mocDisplay.encoder_motion(3, step)
 
     def button11_pressed(self):
-        self.mocDisplay.button_pressed(1, 1)
+        self.mocDisplay.button_pressed(0, 0)
     def button11_released(self):
-        self.mocDisplay.button_released(1, 1)
+        self.mocDisplay.button_released(0, 0)
     def button12_pressed(self):
-        self.mocDisplay.button_pressed(1, 2)
+        self.mocDisplay.button_pressed(0, 1)
     def button12_released(self):
-        self.mocDisplay.button_released(1, 2)
+        self.mocDisplay.button_released(0, 1)
     def button13_pressed(self):
-        self.mocDisplay.button_pressed(1, 3)
+        self.mocDisplay.button_pressed(0, 2)
     def button13_released(self):
-        self.mocDisplay.button_released(1, 3)
+        self.mocDisplay.button_released(0, 2)
     def button14_pressed(self):
-        self.mocDisplay.button_pressed(1, 4)
+        self.mocDisplay.button_pressed(0, 3)
     def button14_released(self):
-        self.mocDisplay.button_released(1, 4)
+        self.mocDisplay.button_released(0, 3)
 
     def button21_pressed(self):
-        self.mocDisplay.button_pressed(2, 1)
+        self.mocDisplay.button_pressed(1, 0)
     def button21_released(self):
-        self.mocDisplay.button_released(2, 1)
+        self.mocDisplay.button_released(1, 0)
     def button22_pressed(self):
-        self.mocDisplay.button_pressed(2, 2)
+        self.mocDisplay.button_pressed(1, 1)
     def button22_released(self):
-        self.mocDisplay.button_released(2, 2)
+        self.mocDisplay.button_released(1, 1)
     def button23_pressed(self):
-        self.mocDisplay.button_pressed(2, 3)
+        self.mocDisplay.button_pressed(1, 2)
     def button23_released(self):
-        self.mocDisplay.button_released(2, 3)
+        self.mocDisplay.button_released(1, 2)
     def button24_pressed(self):
-        self.mocDisplay.button_pressed(2, 4)
+        self.mocDisplay.button_pressed(1, 3)
     def button24_released(self):
-        self.mocDisplay.button_released(2, 4)
+        self.mocDisplay.button_released(1, 3)
 
     def button31_pressed(self):
-        self.mocDisplay.button_pressed(3, 1)
+        self.mocDisplay.button_pressed(2, 0)
     def button31_released(self):
-        self.mocDisplay.button_released(3, 1)
+        self.mocDisplay.button_released(2, 0)
     def button32_pressed(self):
-        self.mocDisplay.button_pressed(3, 2)
+        self.mocDisplay.button_pressed(2, 1)
     def button32_released(self):
-        self.mocDisplay.button_released(3, 2)
+        self.mocDisplay.button_released(2, 1)
     def button33_pressed(self):
-        self.mocDisplay.button_pressed(3, 3)
+        self.mocDisplay.button_pressed(2, 2)
     def button33_released(self):
-        self.mocDisplay.button_released(3, 3)
+        self.mocDisplay.button_released(2, 2)
     def button34_pressed(self):
-        self.mocDisplay.button_pressed(3, 4)
+        self.mocDisplay.button_pressed(2, 3)
     def button34_released(self):
-        self.mocDisplay.button_released(3, 4)
+        self.mocDisplay.button_released(2, 3)
 
     def button41_pressed(self):
-        self.mocDisplay.button_pressed(4, 1)
+        self.mocDisplay.button_pressed(3, 0)
     def button41_released(self):
-        self.mocDisplay.button_released(4, 1)
+        self.mocDisplay.button_released(3, 0)
     def button42_pressed(self):
-        self.mocDisplay.button_pressed(4, 2)
+        self.mocDisplay.button_pressed(3, 1)
     def button42_released(self):
-        self.mocDisplay.button_released(4, 2)
+        self.mocDisplay.button_released(3, 1)
     def button43_pressed(self):
-        self.mocDisplay.button_pressed(4, 3)
+        self.mocDisplay.button_pressed(3, 2)
     def button43_released(self):
-        self.mocDisplay.button_released(4, 3)
+        self.mocDisplay.button_released(3, 2)
     def button44_pressed(self):
-        self.mocDisplay.button_pressed(4, 4)
+        self.mocDisplay.button_pressed(3, 3)
     def button44_released(self):
-        self.mocDisplay.button_released(4, 4)
+        self.mocDisplay.button_released(3, 3)
 
     def __init__(self, centralWidget):
         self.mocDisplay = centralWidget.findChild(MotionControllerDisplay, "mocDisplay")

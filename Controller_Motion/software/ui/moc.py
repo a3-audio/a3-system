@@ -13,6 +13,8 @@ from widgets.QuadraticDial import QuadraticDial
 from widgets.QuadraticPushButton import QuadraticPushButton
 from widgets.MotionControllerDisplay import MotionControllerDisplay
 
+from Track import Track
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='AAA Motion Controller.')
     parser.add_argument("--develop", help="run in development mode with mockup UI", action="store_true")
@@ -50,10 +52,13 @@ if __name__ == "__main__":
         window.setCentralWidget(MotionControllerDisplay())
         window.showFullScreen()
 
-        adapter = InputDispatcherOSC()
+        # adapter = InputDispatcherOSC()
 
     # create track objects and pass to display widget
-    # num_tracks = 4
-    # tracks = [Track() for i in range(num_tracks)]
+    num_tracks = 4
+    tracks = [Track() for i in range(num_tracks)]
+
+    mocDisplay = window.findChild(MotionControllerDisplay)
+    mocDisplay.setTracks(tracks)
 
     sys.exit(app.exec_())

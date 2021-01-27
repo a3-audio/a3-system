@@ -3,14 +3,17 @@ import argparse
 
 from PySide6.QtCore import QFile, QIODevice
 from PySide6.QtCore import QSize
-from PySide6.QtWidgets import QDial
-from PySide6.QtWidgets import QApplication
-from PySide6.QtWidgets import QMainWindow
+from PySide6.QtWidgets import QMainWindow, QApplication, QWidget, QDial
 from PySide6.QtUiTools import QUiLoader
+
+from InputAdapterUI import InputAdapterUI
+from InputAdapterOSC import InputAdapterOSC
 
 from widgets.QuadraticDial import QuadraticDial
 from widgets.QuadraticPushButton import QuadraticPushButton
 from widgets.MotionControllerDisplay import MotionControllerDisplay
+
+from Track import Track
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='AAA Motion Controller.')
@@ -40,15 +43,22 @@ if __name__ == "__main__":
             print(loader.errorString())
             sys.exit(-1)
 
-        window.setFixedSize(318, 1000)
+        adapter = InputAdapterUI(window.findChild(QWidget, "centralwidget"))
+
+        window.setFixedSize(318, 1050)
         window.show()
     else:
         window = QMainWindow()
         window.setCentralWidget(MotionControllerDisplay())
         window.showFullScreen()
 
+        # adapter = InputDispatcherOSC()
+
     # create track objects and pass to display widget
-    # num_tracks = 4
-    # tracks = [Track() for i in range(num_tracks)]
+    num_tracks = 4
+    tracks = [Track() for i in range(num_tracks)]
+
+    mocDisplay = window.findChild(MotionControllerDisplay)
+    mocDisplay.setTracks(tracks)
 
     sys.exit(app.exec_())

@@ -79,8 +79,8 @@ from pythonosc.udp_client import SimpleUDPClient
 oscRouterPort = 9000
 
 # OSC-Clients
-ctrl_mixer = SimpleUDPClient('192.168.43.139', 8500)  # Set IP Adress
-ctrl_motion = SimpleUDPClient('192.168.43.112', 8700)  # Set IP Adress
+ctrl_mixer = SimpleUDPClient('192.168.43.51', 8500)  # Set IP Adress
+ctrl_motion = SimpleUDPClient('192.168.43.52', 8700)  # Set IP Adress
 reaper = SimpleUDPClient('127.0.0.1', 9001)
 iem_1 = SimpleUDPClient('127.0.0.1', 1337)
 iem_2 = SimpleUDPClient('127.0.0.1', 1338)

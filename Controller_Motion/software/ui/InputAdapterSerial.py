@@ -7,6 +7,14 @@ from widgets.MotionControllerDisplay import MotionControllerDisplay
 import asyncio
 import serial_asyncio
 
+import numpy
+import time
+from pythonosc.udp_client import SimpleUDPClient
+
+
+# OSC-Clients
+osc_router = SimpleUDPClient('192.168.43.50', 9000)
+
 class InputAdapterSerial(QThread):
     class SerialProtocol(asyncio.Protocol):
         def __init__(self, mocDisplay):
@@ -21,8 +29,17 @@ class InputAdapterSerial(QThread):
             self.transport.loop.stop()
 
         def data_received(self, data):
-            print('serial data received', repr(data))
-            QMetaObject.invokeMethod(self.mocDisplay, self.mocDisplay.button_pressed(channel=0, row=0), QtCore.Qt.QueuedConnection)
+            line = data.decode('utf-8')
+            words = line.split(":")
+            identifier = words[0]
+            value = words[1]
+
+            # Poti
+            if identifier == "P0":
+                print('identifier', identifier)
+                print('value', value)
+                osc_router.send_message("/ambijockey/moc/ch/1/width/", numpy.interp(value, [0, 1023], [0, 1]))
+                QMetaObject.invokeMethod(self.mocDisplay, self.mocDisplay.poti_changed(0, 0, value), QtCore.Qt.QueuedConnection)
 
     def __init__(self, mocDisplay, serialDevice, baudRate):
         super(InputAdapterSerial, self).__init__()

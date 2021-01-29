@@ -1,3 +1,5 @@
+import os
+
 from PySide6 import QtCore
 from PySide6.QtCore import SIGNAL, QObject, QMetaObject, QThread
 from widgets.MotionControllerDisplay import MotionControllerDisplay
@@ -22,16 +24,20 @@ class InputAdapterSerial(QThread):
             print('serial data received', repr(data))
             QMetaObject.invokeMethod(self.mocDisplay, self.mocDisplay.button_pressed(channel=0, row=0), QtCore.Qt.QueuedConnection)
 
-    def __init__(self, mocDisplay, serialPort, baudRate):
+    def __init__(self, mocDisplay, serialDevice, baudRate):
         super(InputAdapterSerial, self).__init__()
         self.mocDisplay = mocDisplay
-        self.serialPort = serialPort
+        self.serialDevice = serialDevice
         self.baudRate = baudRate
         self.start()
 
     def run(self):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        coro = serial_asyncio.create_serial_connection(loop, lambda: InputAdapterSerial.SerialProtocol(self.mocDisplay), self.serialPort, baudrate=self.baudRate)
-        loop.run_until_complete(coro)
-        loop.run_forever()
+        try:
+            coro = serial_asyncio.create_serial_connection(loop, lambda: InputAdapterSerial.SerialProtocol(self.mocDisplay), self.serialDevice, baudrate=self.baudRate)
+            loop.run_until_complete(coro)
+            loop.run_forever()
+        except Exception as e:
+            print(e)
+            os._exit(1)

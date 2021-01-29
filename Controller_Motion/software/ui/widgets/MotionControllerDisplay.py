@@ -147,10 +147,10 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
     @Slot(int, int)
     def encoder_motion(self, channel, direction):
         print("channel " + str(channel) + " encoder moved in direction: " + str(direction))
-    @Slot()
+    @Slot(int)
     def encoder_pressed(self, channel):
         print("channel " + str(channel) + " encoder pressed ")
-    @Slot()
+    @Slot(int)
     def encoder_released(self, channel):
         print("channel " + str(channel) + " encoder released ")
 

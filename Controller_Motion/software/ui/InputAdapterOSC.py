@@ -21,7 +21,8 @@ class InputAdapterOSC:
         ser.write(data.encode())
 
     def __init__(self, mocDisplay):
-        self.mocDisplay = mocDisplay
+        self.mocDisplay = centralWidget.findChild(MotionControllerDisplay, "mocDisplay")
+        self.centralWidget = centralWidget
 
         ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
         ser.flush()
@@ -39,8 +40,11 @@ class InputAdapterOSC:
                     # print("p1 " + value)
                     osc_router.send_message(
                         "/ambijockey/moc/ch/1/width/", numpy.interp(value, [0, 1023], [0, 1]))
-                    osc_gui.send_message(
-                        "/ambijockey/moc/ch/1/width/", numpy.interp(value, [0, 1023], [0, 1]))
+
+                    dialTop11 = self.centralWidget.findChild(QDial, "dialTop11")
+                    dialTop11.valueChanged.connect(value)
+        #            osc_gui.send_message(
+        #               "/ambijockey/moc/ch/1/width/", numpy.interp(value, [0, 1023], [0, 1]))
                 if identifier == "P1":
                     osc_router.send_message(
                         "/ambijockey/moc/ch/2/width", numpy.interp(value, [0, 1023], [0, 1]))
@@ -122,21 +126,21 @@ class InputAdapterOSC:
                     osc_gui.send_message(
                         "/ambijockey/moc/EB/3/", numpy.interp(value, [0,1], [1,0]))
 
-              # Button Matrix - Button to led matrix
+              # - Button to led matrix
               #
-              # -------------------------
-              # | B3  | B2  | B1  | B0  |  
-              # | L15 | L8  | L7  | L0  |
-              # ------------------------- 
-              # | B7  | B6  | B5  | B4  |
-              # | L14 | L9  | L6  | L1  |
-              # ------------------------- 
-              # | B11 | B10 | B9  | B8  |
-              # | L13 | L10 | L5  | L2  |
-              # -------------------------
-              # | B15 | B14 | B13 | B1  |
-              # | L12 | L11 | L4  | L3  |
-              # -------------------------
+              #   -------------------------   
+              #   | B3  | B2  | B1  | B0  |  
+              #   | L15 | L8  | L7  | L0  |
+              #   ------------------------- 
+              #   | B7  | B6  | B5  | B4  |
+              #   | L14 | L9  | L6  | L1  |
+              #   ------------------------- 
+              #   | B11 | B10 | B9  | B8  |
+              #   | L13 | L10 | L5  | L2  |
+              #   -------------------------
+              #   | B15 | B14 | B13 | B1  |
+              #   | L12 | L11 | L4  | L3  |
+              #   -------------------------
 
                 if identifier == "B0":
                     osc_router.send_message("/ambijockey/moc/B/4/0/", value)

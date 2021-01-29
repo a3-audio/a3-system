@@ -1,0 +1,10 @@
+[Unit]
+Description=Motion Controller ui
+
+After=multi-user.target
+
+[Service]
+User=aaa
+ExecStart=/usr/bin/startx :2
+[Install]
+WantedBy=multi-user.target

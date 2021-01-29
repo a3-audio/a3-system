@@ -2,7 +2,7 @@ import PySide6.QtOpenGL
 
 from PySide6 import QtCore, QtGui, QtWidgets, QtOpenGLWidgets
 #from PySide6.QtOpenGLFunctions import QOpenGLFunctions_4_3_Core
-from PySide6.QtCore import QRect
+from PySide6.QtCore import QObject, Signal, Slot, QRect
 from PySide6.QtGui import QColor, QFont
 
 from Track import PlaybackParameters
@@ -134,6 +134,7 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
         print(self.geometry())
         self.repaint()
 
+    @Slot(int, int, float)
     def poti_changed(self, track, row, value):
         print("track " + str(track) + " poti " + str(row) + " value changed: " + str(value))
         if row == 0:
@@ -143,14 +144,19 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
 
         self.repaint()
 
+    @Slot(int, int)
     def encoder_motion(self, channel, direction):
         print("channel " + str(channel) + " encoder moved in direction: " + str(direction))
+    @Slot()
     def encoder_pressed(self, channel):
         print("channel " + str(channel) + " encoder pressed ")
+    @Slot()
     def encoder_released(self, channel):
         print("channel " + str(channel) + " encoder released ")
 
+    @Slot(int, int)
     def button_pressed(self, channel, row):
         print("channel " + str(channel) + " button " + str(row) + " pressed ")
+    @Slot(int, int)
     def button_released(self, channel, row):
         print("channel " + str(channel) + " button " + str(row) + " released ")

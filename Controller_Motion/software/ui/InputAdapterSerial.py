@@ -1,0 +1,37 @@
+from PySide6 import QtCore
+from PySide6.QtCore import SIGNAL, QObject, QMetaObject, QThread
+from widgets.MotionControllerDisplay import MotionControllerDisplay
+
+import asyncio
+import serial_asyncio
+
+class InputAdapterSerial(QThread):
+    class SerialProtocol(asyncio.Protocol):
+        def __init__(self, mocDisplay):
+            self.mocDisplay = mocDisplay
+
+        def connection_made(self, transport):
+            self.transport = transport
+            print('serial port opened', transport)
+
+        def connection_lost(self, exc):
+            print('serial port closed')
+            self.transport.loop.stop()
+
+        def data_received(self, data):
+            print('serial data received', repr(data))
+            QMetaObject.invokeMethod(self.mocDisplay, self.mocDisplay.button_pressed(channel=0, row=0), QtCore.Qt.QueuedConnection)
+
+    def __init__(self, mocDisplay, serialPort, baudRate):
+        super(InputAdapterSerial, self).__init__()
+        self.mocDisplay = mocDisplay
+        self.serialPort = serialPort
+        self.baudRate = baudRate
+        self.start()
+
+    def run(self):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        coro = serial_asyncio.create_serial_connection(loop, lambda: InputAdapterSerial.SerialProtocol(self.mocDisplay), self.serialPort, baudrate=self.baudRate)
+        loop.run_until_complete(coro)
+        loop.run_forever()

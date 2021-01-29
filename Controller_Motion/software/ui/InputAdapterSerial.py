@@ -11,12 +11,16 @@ import numpy
 import time
 from pythonosc.udp_client import SimpleUDPClient
 
-
-# OSC-Clients
+# OSC-Client
 osc_router = SimpleUDPClient('192.168.43.50', 9000)
 
 class InputAdapterSerial(QThread):
     class SerialProtocol(asyncio.Protocol):
+        
+        def sendData(data):
+            data += "\r\n"
+            ser.write(data.encode())
+            
         def __init__(self, mocDisplay):
             self.mocDisplay = mocDisplay
 
@@ -34,12 +38,13 @@ class InputAdapterSerial(QThread):
             identifier = words[0]
             value = words[1]
 
-            # Poti
+            # Potis
             if identifier == "P0":
                 print('identifier', identifier)
                 print('value', value)
-                osc_router.send_message("/ambijockey/moc/ch/1/width/", numpy.interp(value, [0, 1023], [0, 1]))
-                QMetaObject.invokeMethod(self.mocDisplay, self.mocDisplay.poti_changed(0, 0, value), QtCore.Qt.QueuedConnection)
+                polvalue = numpy.interp(value, [0, 1023], [0, 1])
+                osc_router.send_message("/ambijockey/moc/ch/1/width/", polvalue)
+                QMetaObject.invokeMethod(self.mocDisplay, self.mocDisplay.poti_changed(0, 0, polvalue), QtCore.Qt.QueuedConnection)
 
     def __init__(self, mocDisplay, serialDevice, baudRate):
         super(InputAdapterSerial, self).__init__()

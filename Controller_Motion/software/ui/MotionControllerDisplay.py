@@ -3,7 +3,7 @@ import PySide6.QtOpenGL
 from PySide6 import QtCore, QtGui, QtWidgets, QtOpenGLWidgets
 #from PySide6.QtOpenGLFunctions import QOpenGLFunctions_4_3_Core
 from PySide6.QtCore import QObject, QThread, Signal, Slot, QRect
-from PySide6.QtGui import QColor, QFont
+from PySide6.QtGui import QColor, QFont, QImage
 
 from Track import PlaybackParameters
 
@@ -12,7 +12,6 @@ from OpenGL import GL
 class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        print("instantiating MotionControllerDisplay")
 
         self.context = QtGui.QOpenGLContext()
         print(self.context.format())
@@ -27,27 +26,30 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
             'font_scale' : 0.015,
             'line_spacing_rel_h' : 0.028
         }
+
         pen = QtGui.QPen()
         pen.setWidth(2)
         pen.setBrush(QtCore.Qt.white)
         self.pen_outlines = pen
         self.mouse_pos = (0, 0)
 
+        self.image_orientation = QImage("resources/orientation.png")
+
         self.tracks = None
 
     def setTracks(self, tracks):
         self.tracks = tracks
-        print("got " + str(len(tracks)) + " tracks")
 
-    def abs2rel(self, x, y):
+    def abs_to_rel(self, x, y):
         return (x / self.width(), y / self.height())
-    def rel2abs(self, x, y):
+    def rel_to_abs(self, x, y):
         return (x * self.width(), y * self.height())
+    def rel_to_abs_width(self, x):
+        return x * self.width()
+    def rel_to_abs_height(self, y):
+        return y * self.height()
 
     def paintGL(self):
-        print("drawing in thread: ")
-        print(QThread.currentThread())
-
         gl = self.context.functions()
         gl.glClearColor(0, 0.05, 0.1, 1)
         gl.glClear(GL.GL_COLOR_BUFFER_BIT)
@@ -56,9 +58,10 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
         painter.setFont(QtGui.QFont('monospace', self.height() * self.draw_params['font_scale']))
 
         painter.setBrush(QtCore.Qt.red)
-        ms = self.rel2abs(self.draw_params['marker_size_rel_w'], 0)[0]
-        print(ms)
+        ms = self.rel_to_abs_width(self.draw_params['marker_size_rel_w'])
 
+        header_height = self.rel_to_abs_height(self.draw_params['channel_top_height_rel'])
+        footer_height = self.rel_to_abs_height(self.draw_params['channel_bottom_height_rel'])
         if self.tracks:
             num_tracks = len(self.tracks)
             for t in range(num_tracks):
@@ -66,29 +69,15 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
                 region = QRect(t*track_width, 0, track_width, self.height())
                 color = QColor()
                 color.setHsl(int(255/num_tracks*t), 100, 150)
-                self.drawTrackIntoRegion(painter, self.tracks[t], region, color)
 
-        # marker = QRect(self.mouse_pos[0] - ms/2, self.mouse_pos[1] - ms/2, ms, ms)
-        # painter.drawEllipse(marker)
+                header_region = QRect(region)
+                header_region.setHeight(header_height)
+                self.drawTrackHeader(painter, self.tracks[t], header_region, color)
 
-        # painter.setBrush(QtCore.Qt.NoBrush)
-        # painter.setPen(self.pen_outlines)
-        # size = self.rel2abs(1, self.draw_params['channel_top_height_rel'])
-        # channel_top = QRect(0, 0, size[0], size[1])
-        # painter.drawRect(channel_top)
-
-        # painter.setPen(QtCore.Qt.yellow)
-
-    def drawTrackIntoRegion(self, painter, track, region, color):
-        header_region = region
-        header_region.setHeight(self.rel2abs(0, self.draw_params['channel_top_height_rel'])[1])
-        self.drawTrackHeader(painter, track, header_region, color)
-
-        footer_size = self.rel2abs(0, self.draw_params['channel_bottom_height_rel'])[1]
-        footer_region = region
-        footer_region.setBottom(self.height())
-        footer_region.setTop(self.height() - footer_size)
-        self.drawTrackFooter(painter, track, footer_region, color)
+                footer_region = QRect(region)
+                footer_region.setBottom(self.height())
+                footer_region.setTop(self.height() - footer_height)
+                self.drawTrackFooter(painter, self.tracks[t], footer_region, color)
 
     def drawTrackHeader(self, painter, track, region, color):
         painter.setBrush(QtGui.QBrush(color))
@@ -96,9 +85,9 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
         painter.drawRect(region)
 
         text_region = QRect(region)
-        left_pad = self.rel2abs(self.draw_params['text_pad_rel_w'], 0)[0]
-        top_pad = self.rel2abs(0, self.draw_params['text_pad_rel_h'])[1]
-        line_spacing = self.rel2abs(0, self.draw_params['line_spacing_rel_h'])[1]
+        left_pad = self.rel_to_abs_width(self.draw_params['text_pad_rel_w'])
+        top_pad  = self.rel_to_abs_height(self.draw_params['text_pad_rel_h'])
+        line_spacing = self.rel_to_abs_height(self.draw_params['line_spacing_rel_h'])
         text_region.adjust(left_pad, top_pad, 0, 0)
 
         painter.setPen(QtCore.Qt.black)
@@ -115,9 +104,9 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
         painter.drawRect(region)
 
         text_region = QRect(region)
-        left_pad = self.rel2abs(self.draw_params['text_pad_rel_w'], 0)[0]
-        top_pad = self.rel2abs(0, self.draw_params['text_pad_rel_h'])[1]
-        line_spacing = self.rel2abs(0, self.draw_params['line_spacing_rel_h'])[1]
+        left_pad = self.rel_to_abs_width(self.draw_params['text_pad_rel_w'])
+        top_pad = self.rel_to_abs_height(self.draw_params['text_pad_rel_h'])
+        line_spacing = self.rel_to_abs_height(self.draw_params['line_spacing_rel_h'])
         text_region.adjust(left_pad, top_pad, 0, 0)
 
         painter.setPen(QtCore.Qt.black)
@@ -134,13 +123,10 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
     def mouseMoveEvent(self, event):
         # rel = self.abs2rel(event.x(), event.y())
         self.mouse_pos = (event.x(), event.y())
-        print(self.geometry())
         self.repaint()
 
     @Slot(int, int, float)
     def poti_changed(self, track, row, value):
-        print("poti_changed in thread: ")
-        print(QThread.currentThread())
         print("track " + str(track) + " poti " + str(row) + " value changed: " + str(value))
         if row == 0:
             self.tracks[track].ambi_params.width = value*180

@@ -1,7 +1,7 @@
 import os
 
 from PySide6 import QtCore
-from PySide6.QtCore import SIGNAL, QObject, QMetaObject, QThread
+from PySide6.QtCore import Signal, QObject, QMetaObject, QThread
 from MotionControllerDisplay import MotionControllerDisplay
 
 import numpy
@@ -9,9 +9,25 @@ import asyncio
 import serial_asyncio
 
 class InputAdapterSerial(QThread):
-    class SerialProtocol(asyncio.Protocol):
+    class SerialProtocol(asyncio.Protocol, QObject):
+        poti_changed = Signal(int, int, float)
+        encoder_motion = Signal(int, int)
+        encoder_pressed = Signal(int)
+        encoder_released = Signal(int)
+        button_pressed = Signal(int, int)
+        button_released = Signal(int, int)
+
         def __init__(self, mocDisplay):
+            super().__init__()
+            
             self.mocDisplay = mocDisplay
+
+            self.poti_changed.connect(mocDisplay.poti_changed, QtCore.Qt.QueuedConnection)
+            self.encoder_motion.connect(mocDisplay.encoder_motion, QtCore.Qt.QueuedConnection)
+            self.encoder_pressed.connect(mocDisplay.encoder_pressed, QtCore.Qt.QueuedConnection)
+            self.encoder_released.connect(mocDisplay.encoder_released, QtCore.Qt.QueuedConnection)
+            self.button_pressed.connect(mocDisplay.button_pressed, QtCore.Qt.QueuedConnection)
+            self.button_released.connect(mocDisplay.button_released, QtCore.Qt.QueuedConnection)
 
         def connection_made(self, transport):
             self.transport = transport
@@ -27,12 +43,13 @@ class InputAdapterSerial(QThread):
             identifier = words[0]
             value = words[1]
 
+            print('identifier: ', identifier)
+            print('value: ', value)
+
             # Potis
             if identifier == "P0":
-                print('identifier', identifier)
-                print('value', value)
                 value_normalized = numpy.interp(value, [0, 1023], [0, 1])
-                QMetaObject.invokeMethod(self.mocDisplay, self.mocDisplay.poti_changed(0, 0, value_normalized), QtCore.Qt.QueuedConnection)
+                self.poti_changed.emit(0, 0, value_normalized)
 
     def __init__(self, mocDisplay, serialDevice, baudRate):
         super(InputAdapterSerial, self).__init__()

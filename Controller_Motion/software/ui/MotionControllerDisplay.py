@@ -2,7 +2,7 @@ import PySide6.QtOpenGL
 
 from PySide6 import QtCore, QtGui, QtWidgets, QtOpenGLWidgets
 #from PySide6.QtOpenGLFunctions import QOpenGLFunctions_4_3_Core
-from PySide6.QtCore import QObject, Signal, Slot, QRect
+from PySide6.QtCore import QObject, QThread, Signal, Slot, QRect
 from PySide6.QtGui import QColor, QFont
 
 from Track import PlaybackParameters
@@ -45,6 +45,9 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
         return (x * self.width(), y * self.height())
 
     def paintGL(self):
+        print("drawing in thread: ")
+        print(QThread.currentThread())
+
         gl = self.context.functions()
         gl.glClearColor(0, 0.05, 0.1, 1)
         gl.glClear(GL.GL_COLOR_BUFFER_BIT)
@@ -136,6 +139,8 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
 
     @Slot(int, int, float)
     def poti_changed(self, track, row, value):
+        print("poti_changed in thread: ")
+        print(QThread.currentThread())
         print("track " + str(track) + " poti " + str(row) + " value changed: " + str(value))
         if row == 0:
             self.tracks[track].ambi_params.width = value*180

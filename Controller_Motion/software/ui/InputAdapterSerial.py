@@ -19,7 +19,7 @@ class InputAdapterSerial(QThread):
 
         def __init__(self, mocDisplay):
             super().__init__()
-            
+
             self.mocDisplay = mocDisplay
 
             self.poti_changed.connect(mocDisplay.poti_changed, QtCore.Qt.QueuedConnection)

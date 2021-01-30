@@ -4,25 +4,12 @@ from PySide6 import QtCore
 from PySide6.QtCore import SIGNAL, QObject, QMetaObject, QThread
 from widgets.MotionControllerDisplay import MotionControllerDisplay
 
+import numpy
 import asyncio
 import serial_asyncio
 
-from queue import Queue
-from threading import Thread
-
-import numpy
-from pythonosc.udp_client import SimpleUDPClient
-
-# OSC-Client
-osc_router = SimpleUDPClient('192.168.43.50', 9000)
-
 class InputAdapterSerial(QThread):
     class SerialProtocol(asyncio.Protocol):
-        
-        def sendData(data):
-            data += "\r\n"
-            ser.write(data.encode())
-            
         def __init__(self, mocDisplay):
             self.mocDisplay = mocDisplay
 
@@ -44,9 +31,8 @@ class InputAdapterSerial(QThread):
             if identifier == "P0":
                 print('identifier', identifier)
                 print('value', value)
-                polvalue = numpy.interp(value, [0, 1023], [0, 1])
-                osc_router.send_message("/ambijockey/moc/ch/1/width/", polvalue)
-                QMetaObject.invokeMethod(self.mocDisplay, self.mocDisplay.poti_changed(0, 0, value), QtCore.Qt.QueuedConnection)
+                value_normalized = numpy.interp(value, [0, 1023], [0, 1])
+                QMetaObject.invokeMethod(self.mocDisplay, self.mocDisplay.poti_changed(0, 0, value_normalized), QtCore.Qt.QueuedConnection)
 
     def __init__(self, mocDisplay, serialDevice, baudRate):
         super(InputAdapterSerial, self).__init__()

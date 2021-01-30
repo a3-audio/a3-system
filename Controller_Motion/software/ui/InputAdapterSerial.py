@@ -51,6 +51,20 @@ class InputAdapterSerial(QThread):
                 # Potis
                 if identifier == "P0":
                     self.poti_changed.emit(0, 0, value_normalized)
+                if identifier == "P1":
+                    self.poti_changed.emit(0, 1, value_normalized)
+                if identifier == "P2":
+                    self.poti_changed.emit(1, 0, value_normalized)
+                if identifier == "P3":
+                    self.poti_changed.emit(1, 1, value_normalized)
+                if identifier == "P4":
+                    self.poti_changed.emit(2, 0, value_normalized)
+                if identifier == "P5":
+                    self.poti_changed.emit(2, 1, value_normalized)
+                if identifier == "P6":
+                    self.poti_changed.emit(3, 0, value_normalized)
+                if identifier == "P7":
+                    self.poti_changed.emit(3, 1, value_normalized)
 
     def __init__(self, mocDisplay, serialDevice, baudRate):
         super(InputAdapterSerial, self).__init__()

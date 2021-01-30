@@ -1,5 +1,6 @@
 import sys
 import argparse
+import signal
 
 from PySide6.QtCore import QFile, QIODevice
 from PySide6.QtCore import QSize
@@ -14,6 +15,8 @@ from widgets.QuadraticDial import QuadraticDial
 from widgets.QuadraticPushButton import QuadraticPushButton
 
 from Track import Track
+
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='AAA Motion Controller.')

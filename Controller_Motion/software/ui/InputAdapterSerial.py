@@ -38,19 +38,19 @@ class InputAdapterSerial(QThread):
             self.transport.loop.stop()
 
         def data_received(self, data):
-            line = data.decode('utf-8')
-            words = line.split(":")
-            identifier = words[0]
-            value = words[1]
+            for line in data.decode('utf-8').splitlines():
+                words = line.split(":")
+                identifier = words[0]
+                value = words[1]
 
-            print('identifier: ', identifier)
-            print('value: ', value)
+                print('identifier: ', identifier)
+                print('value: ', value)
 
-            value_normalized = numpy.interp(value, [0, 1023], [0, 1])
+                value_normalized = numpy.interp(value, [0, 1023], [0, 1])
 
-            # Potis
-            if identifier == "P0":
-                self.poti_changed.emit(0, 0, value_normalized)
+                # Potis
+                if identifier == "P0":
+                    self.poti_changed.emit(0, 0, value_normalized)
 
     def __init__(self, mocDisplay, serialDevice, baudRate):
         super(InputAdapterSerial, self).__init__()

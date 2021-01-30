@@ -46,9 +46,10 @@ class InputAdapterSerial(QThread):
             print('identifier: ', identifier)
             print('value: ', value)
 
+            value_normalized = numpy.interp(value, [0, 1023], [0, 1])
+
             # Potis
             if identifier == "P0":
-                value_normalized = numpy.interp(value, [0, 1023], [0, 1])
                 self.poti_changed.emit(0, 0, value_normalized)
 
     def __init__(self, mocDisplay, serialDevice, baudRate):

@@ -54,14 +54,20 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
         gl.glClearColor(0, 0.05, 0.1, 1)
         gl.glClear(GL.GL_COLOR_BUFFER_BIT)
 
+        self.draw_params_dynamic = {
+            'left_pad' : self.rel_to_abs_width(self.draw_params['text_pad_rel_w']),
+            'top_pad' : self.rel_to_abs_height(self.draw_params['text_pad_rel_h']),
+            'line_spacing' : self.rel_to_abs_height(self.draw_params['line_spacing_rel_h']),
+            'header_height' : self.rel_to_abs_height(self.draw_params['channel_top_height_rel']),
+            'footer_height' : self.rel_to_abs_height(self.draw_params['channel_bottom_height_rel']),
+        }
+
         painter = QtGui.QPainter(self)
         painter.setFont(QtGui.QFont('monospace', self.height() * self.draw_params['font_scale']))
 
         painter.setBrush(QtCore.Qt.red)
         ms = self.rel_to_abs_width(self.draw_params['marker_size_rel_w'])
 
-        header_height = self.rel_to_abs_height(self.draw_params['channel_top_height_rel'])
-        footer_height = self.rel_to_abs_height(self.draw_params['channel_bottom_height_rel'])
         if self.tracks:
             num_tracks = len(self.tracks)
             for t in range(num_tracks):
@@ -71,12 +77,12 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
                 color.setHsl(int(255/num_tracks*t), 100, 150)
 
                 header_region = QRect(region)
-                header_region.setHeight(header_height)
+                header_region.setHeight(self.draw_params_dynamic['header_height'])
                 self.drawTrackHeader(painter, self.tracks[t], header_region, color)
 
                 footer_region = QRect(region)
                 footer_region.setBottom(self.height())
-                footer_region.setTop(self.height() - footer_height)
+                footer_region.setTop(self.height() - self.draw_params_dynamic['footer_height'])
                 self.drawTrackFooter(painter, self.tracks[t], footer_region, color)
 
     def drawTrackHeader(self, painter, track, region, color):
@@ -85,16 +91,14 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
         painter.drawRect(region)
 
         text_region = QRect(region)
-        left_pad = self.rel_to_abs_width(self.draw_params['text_pad_rel_w'])
-        top_pad  = self.rel_to_abs_height(self.draw_params['text_pad_rel_h'])
-        line_spacing = self.rel_to_abs_height(self.draw_params['line_spacing_rel_h'])
-        text_region.adjust(left_pad, top_pad, 0, 0)
+        text_region.adjust(self.draw_params_dynamic['left_pad'],
+                           self.draw_params_dynamic['top_pad'], 0, 0)
 
         painter.setPen(QtCore.Qt.black)
         width_string = f'Width: {track.ambi_params.width:.0f}°'
         painter.drawText(text_region, width_string)
 
-        text_region.adjust(0, line_spacing, 0, 0)
+        text_region.adjust(0, self.draw_params_dynamic['line_spacing'], 0, 0)
         side_string = f'Side: {track.ambi_params.side:.1f}dB'
         painter.drawText(text_region, side_string)
 
@@ -104,19 +108,17 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
         painter.drawRect(region)
 
         text_region = QRect(region)
-        left_pad = self.rel_to_abs_width(self.draw_params['text_pad_rel_w'])
-        top_pad = self.rel_to_abs_height(self.draw_params['text_pad_rel_h'])
-        line_spacing = self.rel_to_abs_height(self.draw_params['line_spacing_rel_h'])
-        text_region.adjust(left_pad, top_pad, 0, 0)
+        text_region.adjust(self.draw_params_dynamic['left_pad'],
+                           self.draw_params_dynamic['top_pad'], 0, 0)
 
         painter.setPen(QtCore.Qt.black)
         ambi_mode_string = track.ambi_params.mode.name
         painter.drawText(text_region, "Mode: " + ambi_mode_string)
 
-        text_region.adjust(0, line_spacing, 0, 0)
+        text_region.adjust(0, self.draw_params_dynamic['line_spacing'], 0, 0)
         painter.drawText(text_region, "Length: " + str(track.playback_params.length))
 
-        text_region.adjust(0, line_spacing, 0, 0)
+        text_region.adjust(0, self.draw_params_dynamic['line_spacing'], 0, 0)
         playback_mode_string = track.playback_params.mode.name
         painter.drawText(text_region, "Loop: " + playback_mode_string)
 

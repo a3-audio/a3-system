@@ -8,10 +8,10 @@ from PySide6.QtUiTools import QUiLoader
 
 from InputAdapterUI import InputAdapterUI
 from InputAdapterSerial import InputAdapterSerial
+from MotionControllerDisplay import MotionControllerDisplay
 
 from widgets.QuadraticDial import QuadraticDial
 from widgets.QuadraticPushButton import QuadraticPushButton
-from widgets.MotionControllerDisplay import MotionControllerDisplay
 
 from Track import Track
 

@@ -1,7 +1,7 @@
 from PySide6.QtCore import SIGNAL, QObject
 from PySide6.QtWidgets import QDial, QPushButton
 
-from widgets.MotionControllerDisplay import MotionControllerDisplay
+from MotionControllerDisplay import MotionControllerDisplay
 from widgets.QuadraticDial import QuadraticDial
 
 class InputAdapterUI:

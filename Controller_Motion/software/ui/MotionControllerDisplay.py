@@ -133,7 +133,7 @@ class MotionControllerDisplay(QtOpenGLWidgets.QOpenGLWidget):
         if row == 0:
             self.tracks[track].ambi_params.width = value*180
         if row == 1:
-            self.tracks[track].ambi_params.side = value*12
+            self.tracks[track].ambi_params.side = value*9
 
         self.repaint()
 

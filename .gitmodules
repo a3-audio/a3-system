@@ -1,0 +1,3 @@
+[submodule "Controller_Motion/software/MotionControllerUI"]
+	path = Controller_Motion/software/MotionControllerUI
+	url = git@github.com:ambisonics-audio-association/MotionControllerUI.git

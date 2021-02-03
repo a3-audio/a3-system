@@ -7,7 +7,6 @@
 ## Produkt
 
 ### Produktbeschreibung
-
 - [ ] Produkt beschreibung alter text muss Uberarbeitet werden
 
 <alt>
@@ -257,7 +256,6 @@ _Produktwerbung_ bedeutet zurzeit hauptsächlich die Kontaktaufnahme zu Schlüss
 - SFX-Technicker
 - System- , Netzwerk-Administrator
 - Freiberuflicher Fotograf
-- Mitbegründer von Kallias (Musiklabel)
 
 #### Raphael Eisman
 
@@ -323,7 +321,8 @@ _Produktwerbung_ bedeutet zurzeit hauptsächlich die Kontaktaufnahme zu Schlüss
 
 ### Marktpotential
 
-Marktpotenzial ist nicht exakt bekannt da es keine Vergleichsprodukte gibt. Es ist aber zu beobachten, dass immer mehr 3D Audio Anwendungen in die Konsumelektronik Einzug halten, zum Beispiel die neuen Kopfhörer von Apple. Unsere Bewertung des Potenzials leitet sich aus Gesprächen mit Künstler, Kunden und Interessenten ab.
+Das Marktpotenzial ist nicht exakt bekannt da es keine Vergleichsprodukte gibt. Es ist aber zu beobachten, dass immer mehr 3D Audio Anwendungen in die Konsumelektronik Einzug halten, zum Beispiel die neuen AirPods Max von Apple. Ebenfalls wissen wir aus Insiderquellen, das ein Französischer PA Hersteller den Zuschlag bekommen hat. Um mehrere 3D-Audiosysteme, für eine Publikumsveranstaltung mit geschätzten 25 Millionen Besuche im arabischen Raum, zu installieren. Die im Oktober 2020 eröffnet werden sollte, aber aufgrund von Corona auf 2021 verschoben wurde.
+Unsere Bewertung des Potenzials leitet sich aus Gesprächen mit Künstler, Kunden und Interessenten ab.
 
 #### Marktprognose für elektronische Musikinstrument
 

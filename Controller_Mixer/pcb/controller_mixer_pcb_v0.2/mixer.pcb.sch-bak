@@ -13,304 +13,16 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text GLabel 7100 2400 0    50   Input ~ 0
-s0
-Text GLabel 7100 2500 0    50   Input ~ 0
-s1
-Text GLabel 7100 2200 0    50   Input ~ 0
-mux_ch3
-Text GLabel 7100 2600 0    50   Input ~ 0
-s2
-Wire Wire Line
-	7500 3100 7400 3100
-Wire Wire Line
-	7400 3100 7100 3100
-Wire Wire Line
-	7100 3100 7100 2800
-Connection ~ 7400 3100
-$Comp
-L power:+3.3V #PWR0160
-U 1 1 6001088C
-P 7400 2000
-F 0 "#PWR0160" H 7400 1850 50  0001 C CNN
-F 1 "+3.3V" V 7415 2128 50  0000 L CNN
-F 2 "" H 7400 2000 50  0001 C CNN
-F 3 "" H 7400 2000 50  0001 C CNN
-	1    7400 2000
-	0    1    1    0   
-$EndComp
-$Comp
-L power:GND #PWR0161
-U 1 1 60010892
-P 7400 3100
-F 0 "#PWR0161" H 7400 2850 50  0001 C CNN
-F 1 "GND" H 7405 2927 50  0000 C CNN
-F 2 "" H 7400 3100 50  0001 C CNN
-F 3 "" H 7400 3100 50  0001 C CNN
-	1    7400 3100
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR0165
-U 1 1 600108B6
-P 8600 1650
-F 0 "#PWR0165" H 8600 1500 50  0001 C CNN
-F 1 "+3.3V" V 8615 1778 50  0000 L CNN
-F 2 "" H 8600 1650 50  0001 C CNN
-F 3 "" H 8600 1650 50  0001 C CNN
-	1    8600 1650
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0167
-U 1 1 600108C8
-P 8600 2000
-F 0 "#PWR0167" H 8600 1850 50  0001 C CNN
-F 1 "+3.3V" V 8615 2128 50  0000 L CNN
-F 2 "" H 8600 2000 50  0001 C CNN
-F 3 "" H 8600 2000 50  0001 C CNN
-	1    8600 2000
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0168
-U 1 1 600108D4
-P 8600 2200
-F 0 "#PWR0168" H 8600 1950 50  0001 C CNN
-F 1 "GND" V 8605 2072 50  0000 R CNN
-F 2 "" H 8600 2200 50  0001 C CNN
-F 3 "" H 8600 2200 50  0001 C CNN
-	1    8600 2200
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0169
-U 1 1 600108DA
-P 8600 2350
-F 0 "#PWR0169" H 8600 2200 50  0001 C CNN
-F 1 "+3.3V" V 8615 2478 50  0000 L CNN
-F 2 "" H 8600 2350 50  0001 C CNN
-F 3 "" H 8600 2350 50  0001 C CNN
-	1    8600 2350
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0170
-U 1 1 600108E6
-P 8600 2550
-F 0 "#PWR0170" H 8600 2300 50  0001 C CNN
-F 1 "GND" V 8605 2422 50  0000 R CNN
-F 2 "" H 8600 2550 50  0001 C CNN
-F 3 "" H 8600 2550 50  0001 C CNN
-	1    8600 2550
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0171
-U 1 1 600108EC
-P 8600 2700
-F 0 "#PWR0171" H 8600 2550 50  0001 C CNN
-F 1 "+3.3V" V 8615 2828 50  0000 L CNN
-F 2 "" H 8600 2700 50  0001 C CNN
-F 3 "" H 8600 2700 50  0001 C CNN
-	1    8600 2700
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0172
-U 1 1 600108F8
-P 8600 2900
-F 0 "#PWR0172" H 8600 2650 50  0001 C CNN
-F 1 "GND" V 8605 2772 50  0000 R CNN
-F 2 "" H 8600 2900 50  0001 C CNN
-F 3 "" H 8600 2900 50  0001 C CNN
-	1    8600 2900
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0173
-U 1 1 600108FE
-P 8600 3050
-F 0 "#PWR0173" H 8600 2900 50  0001 C CNN
-F 1 "+3.3V" V 8615 3178 50  0000 L CNN
-F 2 "" H 8600 3050 50  0001 C CNN
-F 3 "" H 8600 3050 50  0001 C CNN
-	1    8600 3050
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0174
-U 1 1 6001090A
-P 8600 3250
-F 0 "#PWR0174" H 8600 3000 50  0001 C CNN
-F 1 "GND" V 8605 3122 50  0000 R CNN
-F 2 "" H 8600 3250 50  0001 C CNN
-F 3 "" H 8600 3250 50  0001 C CNN
-	1    8600 3250
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0175
-U 1 1 60010910
-P 8600 3400
-F 0 "#PWR0175" H 8600 3250 50  0001 C CNN
-F 1 "+3.3V" V 8615 3528 50  0000 L CNN
-F 2 "" H 8600 3400 50  0001 C CNN
-F 3 "" H 8600 3400 50  0001 C CNN
-	1    8600 3400
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0176
-U 1 1 6001091C
-P 8600 3600
-F 0 "#PWR0176" H 8600 3350 50  0001 C CNN
-F 1 "GND" V 8605 3472 50  0000 R CNN
-F 2 "" H 8600 3600 50  0001 C CNN
-F 3 "" H 8600 3600 50  0001 C CNN
-	1    8600 3600
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0177
-U 1 1 60010922
-P 8600 3750
-F 0 "#PWR0177" H 8600 3600 50  0001 C CNN
-F 1 "+3.3V" V 8615 3878 50  0000 L CNN
-F 2 "" H 8600 3750 50  0001 C CNN
-F 3 "" H 8600 3750 50  0001 C CNN
-	1    8600 3750
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh3_7
-U 1 1 60010904
-P 8800 3500
-F 0 "MuxCh3_7" H 8880 3542 50  0000 L CNN
-F 1 "Conn_01x03" H 8880 3451 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 8800 3500 50  0001 C CNN
-F 3 "~" H 8800 3500 50  0001 C CNN
-F 4 "  MuxCh3_7" H 8800 3500 50  0001 L CNN "Field4"
-	1    8800 3500
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh3_4
-U 1 1 600108CE
-P 8800 2450
-F 0 "MuxCh3_4" H 8880 2492 50  0000 L CNN
-F 1 "Conn_01x03" H 8880 2401 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 8800 2450 50  0001 C CNN
-F 3 "~" H 8800 2450 50  0001 C CNN
-F 4 "  MuxCh3_4" H 8800 2450 50  0001 L CNN "Field4"
-	1    8800 2450
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR0163
-U 1 1 600108A4
-P 8600 1300
-F 0 "#PWR0163" H 8600 1150 50  0001 C CNN
-F 1 "+3.3V" V 8615 1428 50  0000 L CNN
-F 2 "" H 8600 1300 50  0001 C CNN
-F 3 "" H 8600 1300 50  0001 C CNN
-	1    8600 1300
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0162
-U 1 1 6001089E
-P 8600 1500
-F 0 "#PWR0162" H 8600 1250 50  0001 C CNN
-F 1 "GND" V 8605 1372 50  0000 R CNN
-F 2 "" H 8600 1500 50  0001 C CNN
-F 3 "" H 8600 1500 50  0001 C CNN
-	1    8600 1500
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh3_3
-U 1 1 600108BC
-P 8800 2100
-F 0 "MuxCh3_3" H 8880 2142 50  0000 L CNN
-F 1 "Conn_01x03" H 8880 2051 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 8800 2100 50  0001 C CNN
-F 3 "~" H 8800 2100 50  0001 C CNN
-F 4 "  MuxCh3_3" H 8800 2100 50  0001 L CNN "Field4"
-	1    8800 2100
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh3_2
-U 1 1 600108AA
-P 8800 1750
-F 0 "MuxCh3_2" H 8880 1792 50  0000 L CNN
-F 1 "Conn_01x03" H 8880 1701 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 8800 1750 50  0001 C CNN
-F 3 "~" H 8800 1750 50  0001 C CNN
-F 4 "  MuxCh3_2" H 8800 1750 50  0001 L CNN "Field4"
-	1    8800 1750
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh3_8
-U 1 1 60010916
-P 8800 3850
-F 0 "MuxCh3_8" H 8880 3892 50  0000 L CNN
-F 1 "Conn_01x03" H 8880 3801 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 8800 3850 50  0001 C CNN
-F 3 "~" H 8800 3850 50  0001 C CNN
-F 4 "  MuxCh3_8" H 8800 3850 50  0001 L CNN "Field4"
-	1    8800 3850
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh3_6
-U 1 1 600108F2
-P 8800 3150
-F 0 "MuxCh3_6" H 8880 3192 50  0000 L CNN
-F 1 "Conn_01x03" H 8880 3101 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 8800 3150 50  0001 C CNN
-F 3 "~" H 8800 3150 50  0001 C CNN
-F 4 "  MuxCh3_6" H 8800 3150 50  0001 L CNN "Field4"
-	1    8800 3150
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh3_5
-U 1 1 600108E0
-P 8800 2800
-F 0 "MuxCh3_5" H 8880 2842 50  0000 L CNN
-F 1 "Conn_01x03" H 8880 2751 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 8800 2800 50  0001 C CNN
-F 3 "~" H 8800 2800 50  0001 C CNN
-F 4 "  MuxCh3_5" H 8800 2800 50  0001 L CNN "Field4"
-	1    8800 2800
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74HC4051 MuxCh3
-U 1 1 60010881
-P 7400 2500
-F 0 "MuxCh3" H 7450 3181 50  0000 C CNN
-F 1 "74HC4051" H 7450 3090 50  0000 C CNN
-F 2 "Package_DIP:DIP-16_W7.62mm" H 7400 2100 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 7400 2100 50  0001 C CNN
-	1    7400 2500
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	2850 7550 2850 6750
 Wire Wire Line
-	1850 7550 2850 7550
-Wire Wire Line
-	2800 7200 1850 7200
+	1850 7550 1950 7550
 Wire Wire Line
 	2800 6650 2800 7200
 Wire Wire Line
 	2850 6650 2800 6650
 Wire Wire Line
-	2750 6850 1850 6850
+	2750 6850 1950 6850
 Wire Wire Line
 	2750 6550 2750 6850
 Wire Wire Line
@@ -320,9 +32,9 @@ Wire Wire Line
 Wire Wire Line
 	2700 6500 2700 6450
 Wire Wire Line
-	1850 6500 2700 6500
+	1850 6500 1950 6500
 Wire Wire Line
-	2700 6150 1850 6150
+	2700 6150 1950 6150
 Wire Wire Line
 	2700 6350 2700 6150
 Wire Wire Line
@@ -332,9 +44,9 @@ Wire Wire Line
 Wire Wire Line
 	2750 5800 2750 6250
 Wire Wire Line
-	1850 5800 2750 5800
+	1850 5800 1950 5800
 Wire Wire Line
-	2800 5450 1850 5450
+	2800 5450 1950 5450
 Wire Wire Line
 	2800 6150 2800 5450
 Wire Wire Line
@@ -926,291 +638,291 @@ F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 14050 6400 50  0001 C CN
 	1    14050 6800
 	-1   0    0    -1  
 $EndComp
-Text GLabel 11250 5750 2    50   Input ~ 0
+Text GLabel 10850 5900 2    50   Input ~ 0
 neopixel
 $Comp
 L power:GND #PWR0207
 U 1 1 607656B6
-P 11250 5850
-F 0 "#PWR0207" H 11250 5600 50  0001 C CNN
-F 1 "GND" V 11255 5722 50  0000 R CNN
-F 2 "" H 11250 5850 50  0001 C CNN
-F 3 "" H 11250 5850 50  0001 C CNN
-	1    11250 5850
+P 10850 6000
+F 0 "#PWR0207" H 10850 5750 50  0001 C CNN
+F 1 "GND" V 10855 5872 50  0000 R CNN
+F 2 "" H 10850 6000 50  0001 C CNN
+F 3 "" H 10850 6000 50  0001 C CNN
+	1    10850 6000
 	0    -1   -1   0   
 $EndComp
 $Comp
 L power:+3.3V #PWR0206
 U 1 1 60764E8F
-P 11250 5650
-F 0 "#PWR0206" H 11250 5500 50  0001 C CNN
-F 1 "+3.3V" V 11265 5778 50  0000 L CNN
-F 2 "" H 11250 5650 50  0001 C CNN
-F 3 "" H 11250 5650 50  0001 C CNN
-	1    11250 5650
+P 11400 6050
+F 0 "#PWR0206" H 11400 5900 50  0001 C CNN
+F 1 "+3.3V" V 11415 6178 50  0000 L CNN
+F 2 "" H 11400 6050 50  0001 C CNN
+F 3 "" H 11400 6050 50  0001 C CNN
+	1    11400 6050
 	0    1    1    0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 NeoPixel
+L Connector_Generic:Conn_01x03 NeoPixel1
 U 1 1 607646F2
-P 11050 5750
-F 0 "NeoPixel" H 11130 5792 50  0001 L CNN
-F 1 "Conn_01x03" H 11130 5701 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 11050 5750 50  0001 C CNN
-F 3 "~" H 11050 5750 50  0001 C CNN
-F 4 "NeoPixel  " H 11050 5750 50  0000 L CNN "Field4"
-	1    11050 5750
+P 10650 5900
+F 0 "NeoPixel1" H 10730 5942 50  0001 L CNN
+F 1 "Conn_01x03" H 10730 5851 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 10650 5900 50  0001 C CNN
+F 3 "~" H 10650 5900 50  0001 C CNN
+F 4 "NeoPixel  " H 10650 5900 50  0000 L CNN "Field4"
+	1    10650 5900
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:+3.3V #PWR0196
 U 1 1 6025BCEA
-P 11250 8500
-F 0 "#PWR0196" H 11250 8350 50  0001 C CNN
-F 1 "+3.3V" V 11265 8628 50  0000 L CNN
-F 2 "" H 11250 8500 50  0001 C CNN
-F 3 "" H 11250 8500 50  0001 C CNN
-	1    11250 8500
+P 10850 8650
+F 0 "#PWR0196" H 10850 8500 50  0001 C CNN
+F 1 "+3.3V" V 10865 8778 50  0000 L CNN
+F 2 "" H 10850 8650 50  0001 C CNN
+F 3 "" H 10850 8650 50  0001 C CNN
+	1    10850 8650
 	0    1    1    0   
 $EndComp
 $Comp
 L Connector_Generic:Conn_01x02 pfl_btn_1
 U 1 1 6037D85D
-P 11050 8600
-F 0 "pfl_btn_1" H 11130 8592 50  0001 L CNN
-F 1 "Conn_01x02" H 11130 8501 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 11050 8600 50  0001 C CNN
-F 3 "~" H 11050 8600 50  0001 C CNN
-F 4 "pfl_btn_1  " H 11050 8600 50  0000 L CNN "Field4"
-	1    11050 8600
+P 10650 8750
+F 0 "pfl_btn_1" H 10730 8742 50  0001 L CNN
+F 1 "Conn_01x02" H 10730 8651 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 10650 8750 50  0001 C CNN
+F 3 "~" H 10650 8750 50  0001 C CNN
+F 4 "pfl_btn_1  " H 10650 8750 50  0000 L CNN "Field4"
+	1    10650 8750
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:+3.3V #PWR0197
 U 1 1 6048B6AA
-P 11250 8250
-F 0 "#PWR0197" H 11250 8100 50  0001 C CNN
-F 1 "+3.3V" V 11265 8378 50  0000 L CNN
-F 2 "" H 11250 8250 50  0001 C CNN
-F 3 "" H 11250 8250 50  0001 C CNN
-	1    11250 8250
+P 10850 8400
+F 0 "#PWR0197" H 10850 8250 50  0001 C CNN
+F 1 "+3.3V" V 10865 8528 50  0000 L CNN
+F 2 "" H 10850 8400 50  0001 C CNN
+F 3 "" H 10850 8400 50  0001 C CNN
+	1    10850 8400
 	0    1    1    0   
 $EndComp
 $Comp
 L Connector_Generic:Conn_01x02 pfl_btn_2
 U 1 1 6048B6B0
-P 11050 8350
-F 0 "pfl_btn_2" H 11130 8342 50  0001 L CNN
-F 1 "Conn_01x02" H 11130 8251 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 11050 8350 50  0001 C CNN
-F 3 "~" H 11050 8350 50  0001 C CNN
-F 4 "pfl_btn_2  " H 11050 8350 50  0000 L CNN "Field4"
-	1    11050 8350
+P 10650 8500
+F 0 "pfl_btn_2" H 10730 8492 50  0001 L CNN
+F 1 "Conn_01x02" H 10730 8401 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 10650 8500 50  0001 C CNN
+F 3 "~" H 10650 8500 50  0001 C CNN
+F 4 "pfl_btn_2  " H 10650 8500 50  0000 L CNN "Field4"
+	1    10650 8500
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:+3.3V #PWR0198
 U 1 1 60492E77
-P 11250 8000
-F 0 "#PWR0198" H 11250 7850 50  0001 C CNN
-F 1 "+3.3V" V 11265 8128 50  0000 L CNN
-F 2 "" H 11250 8000 50  0001 C CNN
-F 3 "" H 11250 8000 50  0001 C CNN
-	1    11250 8000
+P 10850 8150
+F 0 "#PWR0198" H 10850 8000 50  0001 C CNN
+F 1 "+3.3V" V 10865 8278 50  0000 L CNN
+F 2 "" H 10850 8150 50  0001 C CNN
+F 3 "" H 10850 8150 50  0001 C CNN
+	1    10850 8150
 	0    1    1    0   
 $EndComp
 $Comp
 L Connector_Generic:Conn_01x02 pfl_btn_3
 U 1 1 60492E7D
-P 11050 8100
-F 0 "pfl_btn_3" H 11130 8092 50  0001 L CNN
-F 1 "Conn_01x02" H 11130 8001 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 11050 8100 50  0001 C CNN
-F 3 "~" H 11050 8100 50  0001 C CNN
-F 4 "pfl_btn_3  " H 11050 8100 50  0000 L CNN "Field4"
-	1    11050 8100
+P 10650 8250
+F 0 "pfl_btn_3" H 10730 8242 50  0001 L CNN
+F 1 "Conn_01x02" H 10730 8151 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 10650 8250 50  0001 C CNN
+F 3 "~" H 10650 8250 50  0001 C CNN
+F 4 "pfl_btn_3  " H 10650 8250 50  0000 L CNN "Field4"
+	1    10650 8250
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:+3.3V #PWR0199
 U 1 1 6049A132
-P 11250 7750
-F 0 "#PWR0199" H 11250 7600 50  0001 C CNN
-F 1 "+3.3V" V 11265 7878 50  0000 L CNN
-F 2 "" H 11250 7750 50  0001 C CNN
-F 3 "" H 11250 7750 50  0001 C CNN
-	1    11250 7750
+P 10850 7900
+F 0 "#PWR0199" H 10850 7750 50  0001 C CNN
+F 1 "+3.3V" V 10865 8028 50  0000 L CNN
+F 2 "" H 10850 7900 50  0001 C CNN
+F 3 "" H 10850 7900 50  0001 C CNN
+	1    10850 7900
 	0    1    1    0   
 $EndComp
 $Comp
 L Connector_Generic:Conn_01x02 pfl_btn_4
 U 1 1 6049A138
-P 11050 7850
-F 0 "pfl_btn_4" H 11130 7842 50  0001 L CNN
-F 1 "Conn_01x02" H 11130 7751 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 11050 7850 50  0001 C CNN
-F 3 "~" H 11050 7850 50  0001 C CNN
-F 4 "pfl_btn_4  " H 11050 7850 50  0000 L CNN "Field4"
-	1    11050 7850
+P 10650 8000
+F 0 "pfl_btn_4" H 10730 7992 50  0001 L CNN
+F 1 "Conn_01x02" H 10730 7901 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 10650 8000 50  0001 C CNN
+F 3 "~" H 10650 8000 50  0001 C CNN
+F 4 "pfl_btn_4  " H 10650 8000 50  0000 L CNN "Field4"
+	1    10650 8000
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:+3.3V #PWR0200
 U 1 1 604A19B3
-P 11250 7500
-F 0 "#PWR0200" H 11250 7350 50  0001 C CNN
-F 1 "+3.3V" V 11265 7628 50  0000 L CNN
-F 2 "" H 11250 7500 50  0001 C CNN
-F 3 "" H 11250 7500 50  0001 C CNN
-	1    11250 7500
+P 10850 7650
+F 0 "#PWR0200" H 10850 7500 50  0001 C CNN
+F 1 "+3.3V" V 10865 7778 50  0000 L CNN
+F 2 "" H 10850 7650 50  0001 C CNN
+F 3 "" H 10850 7650 50  0001 C CNN
+	1    10850 7650
 	0    1    1    0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x02 pfl_btn_master
+L Connector_Generic:Conn_01x02 pfl_btn_master1
 U 1 1 604A19B9
-P 11050 7600
-F 0 "pfl_btn_master" H 11130 7592 50  0001 L CNN
-F 1 "Conn_01x02" H 11130 7501 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 11050 7600 50  0001 C CNN
-F 3 "~" H 11050 7600 50  0001 C CNN
-F 4 "pfl_btn_master  " H 11050 7600 50  0000 L CNN "Field4"
-	1    11050 7600
+P 10650 7750
+F 0 "pfl_btn_master1" H 10730 7742 50  0001 L CNN
+F 1 "Conn_01x02" H 10730 7651 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 10650 7750 50  0001 C CNN
+F 3 "~" H 10650 7750 50  0001 C CNN
+F 4 "pfl_btn_master  " H 10650 7750 50  0000 L CNN "Field4"
+	1    10650 7750
 	-1   0    0    1   
 $EndComp
-Text GLabel 11250 8600 2    50   Input ~ 0
+Text GLabel 10850 8750 2    50   Input ~ 0
 pfl_btn_ch1
-Text GLabel 11250 8350 2    50   Input ~ 0
+Text GLabel 10850 8500 2    50   Input ~ 0
 pfl_btn_ch2
-Text GLabel 11250 8100 2    50   Input ~ 0
+Text GLabel 10850 8250 2    50   Input ~ 0
 pfl_btn_ch3
-Text GLabel 11250 7850 2    50   Input ~ 0
+Text GLabel 10850 8000 2    50   Input ~ 0
 pfl_btn_ch4
-Text GLabel 11250 7600 2    50   Input ~ 0
+Text GLabel 10850 7750 2    50   Input ~ 0
 pfl_btn_master
 $Comp
 L power:+3.3V #PWR0201
 U 1 1 60687944
-P 11250 7150
-F 0 "#PWR0201" H 11250 7000 50  0001 C CNN
-F 1 "+3.3V" V 11265 7278 50  0000 L CNN
-F 2 "" H 11250 7150 50  0001 C CNN
-F 3 "" H 11250 7150 50  0001 C CNN
-	1    11250 7150
+P 10850 7300
+F 0 "#PWR0201" H 10850 7150 50  0001 C CNN
+F 1 "+3.3V" V 10865 7428 50  0000 L CNN
+F 2 "" H 10850 7300 50  0001 C CNN
+F 3 "" H 10850 7300 50  0001 C CNN
+	1    10850 7300
 	0    1    1    0   
 $EndComp
 $Comp
 L Connector_Generic:Conn_01x02 pfl_led_1
 U 1 1 6068794A
-P 11050 7250
-F 0 "pfl_led_1" H 11130 7242 50  0001 L CNN
-F 1 "Conn_01x02" H 11130 7151 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 11050 7250 50  0001 C CNN
-F 3 "~" H 11050 7250 50  0001 C CNN
-F 4 "pfl_led_1  " H 11050 7250 50  0000 L CNN "Field4"
-	1    11050 7250
+P 10650 7400
+F 0 "pfl_led_1" H 10730 7392 50  0001 L CNN
+F 1 "Conn_01x02" H 10730 7301 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 10650 7400 50  0001 C CNN
+F 3 "~" H 10650 7400 50  0001 C CNN
+F 4 "pfl_led_1  " H 10650 7400 50  0000 L CNN "Field4"
+	1    10650 7400
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:+3.3V #PWR0202
 U 1 1 60687950
-P 11250 6900
-F 0 "#PWR0202" H 11250 6750 50  0001 C CNN
-F 1 "+3.3V" V 11265 7028 50  0000 L CNN
-F 2 "" H 11250 6900 50  0001 C CNN
-F 3 "" H 11250 6900 50  0001 C CNN
-	1    11250 6900
+P 10850 7050
+F 0 "#PWR0202" H 10850 6900 50  0001 C CNN
+F 1 "+3.3V" V 10865 7178 50  0000 L CNN
+F 2 "" H 10850 7050 50  0001 C CNN
+F 3 "" H 10850 7050 50  0001 C CNN
+	1    10850 7050
 	0    1    1    0   
 $EndComp
 $Comp
 L Connector_Generic:Conn_01x02 pfl_led_2
 U 1 1 60687956
-P 11050 7000
-F 0 "pfl_led_2" H 11130 6992 50  0001 L CNN
-F 1 "Conn_01x02" H 11130 6901 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 11050 7000 50  0001 C CNN
-F 3 "~" H 11050 7000 50  0001 C CNN
-F 4 "pfl_led_2  " H 11050 7000 50  0000 L CNN "Field4"
-	1    11050 7000
+P 10650 7150
+F 0 "pfl_led_2" H 10730 7142 50  0001 L CNN
+F 1 "Conn_01x02" H 10730 7051 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 10650 7150 50  0001 C CNN
+F 3 "~" H 10650 7150 50  0001 C CNN
+F 4 "pfl_led_2  " H 10650 7150 50  0000 L CNN "Field4"
+	1    10650 7150
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:+3.3V #PWR0203
 U 1 1 6068795C
-P 11250 6650
-F 0 "#PWR0203" H 11250 6500 50  0001 C CNN
-F 1 "+3.3V" V 11265 6778 50  0000 L CNN
-F 2 "" H 11250 6650 50  0001 C CNN
-F 3 "" H 11250 6650 50  0001 C CNN
-	1    11250 6650
+P 10850 6800
+F 0 "#PWR0203" H 10850 6650 50  0001 C CNN
+F 1 "+3.3V" V 10865 6928 50  0000 L CNN
+F 2 "" H 10850 6800 50  0001 C CNN
+F 3 "" H 10850 6800 50  0001 C CNN
+	1    10850 6800
 	0    1    1    0   
 $EndComp
 $Comp
 L Connector_Generic:Conn_01x02 pfl_led_3
 U 1 1 60687962
-P 11050 6750
-F 0 "pfl_led_3" H 11130 6742 50  0001 L CNN
-F 1 "Conn_01x02" H 11130 6651 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 11050 6750 50  0001 C CNN
-F 3 "~" H 11050 6750 50  0001 C CNN
-F 4 "pfl_led_3  " H 11050 6750 50  0000 L CNN "Field4"
-	1    11050 6750
+P 10650 6900
+F 0 "pfl_led_3" H 10730 6892 50  0001 L CNN
+F 1 "Conn_01x02" H 10730 6801 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 10650 6900 50  0001 C CNN
+F 3 "~" H 10650 6900 50  0001 C CNN
+F 4 "pfl_led_3  " H 10650 6900 50  0000 L CNN "Field4"
+	1    10650 6900
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:+3.3V #PWR0204
 U 1 1 60687968
-P 11250 6400
-F 0 "#PWR0204" H 11250 6250 50  0001 C CNN
-F 1 "+3.3V" V 11265 6528 50  0000 L CNN
-F 2 "" H 11250 6400 50  0001 C CNN
-F 3 "" H 11250 6400 50  0001 C CNN
-	1    11250 6400
+P 10850 6550
+F 0 "#PWR0204" H 10850 6400 50  0001 C CNN
+F 1 "+3.3V" V 10865 6678 50  0000 L CNN
+F 2 "" H 10850 6550 50  0001 C CNN
+F 3 "" H 10850 6550 50  0001 C CNN
+	1    10850 6550
 	0    1    1    0   
 $EndComp
 $Comp
 L Connector_Generic:Conn_01x02 pfl_led_4
 U 1 1 6068796E
-P 11050 6500
-F 0 "pfl_led_4" H 11130 6492 50  0001 L CNN
-F 1 "Conn_01x02" H 11130 6401 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 11050 6500 50  0001 C CNN
-F 3 "~" H 11050 6500 50  0001 C CNN
-F 4 "pfl_led_4  " H 11050 6500 50  0000 L CNN "Field4"
-	1    11050 6500
+P 10650 6650
+F 0 "pfl_led_4" H 10730 6642 50  0001 L CNN
+F 1 "Conn_01x02" H 10730 6551 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 10650 6650 50  0001 C CNN
+F 3 "~" H 10650 6650 50  0001 C CNN
+F 4 "pfl_led_4  " H 10650 6650 50  0000 L CNN "Field4"
+	1    10650 6650
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:+3.3V #PWR0205
 U 1 1 60687974
-P 11250 6150
-F 0 "#PWR0205" H 11250 6000 50  0001 C CNN
-F 1 "+3.3V" V 11265 6278 50  0000 L CNN
-F 2 "" H 11250 6150 50  0001 C CNN
-F 3 "" H 11250 6150 50  0001 C CNN
-	1    11250 6150
+P 10850 6300
+F 0 "#PWR0205" H 10850 6150 50  0001 C CNN
+F 1 "+3.3V" V 10865 6428 50  0000 L CNN
+F 2 "" H 10850 6300 50  0001 C CNN
+F 3 "" H 10850 6300 50  0001 C CNN
+	1    10850 6300
 	0    1    1    0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x02 pfl_led_master
+L Connector_Generic:Conn_01x02 pfl_led_master1
 U 1 1 6068797A
-P 11050 6250
-F 0 "pfl_led_master" H 11130 6242 50  0001 L CNN
-F 1 "Conn_01x02" H 11130 6151 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 11050 6250 50  0001 C CNN
-F 3 "~" H 11050 6250 50  0001 C CNN
-F 4 "pfl_led_master  " H 11050 6250 50  0000 L CNN "Field4"
-	1    11050 6250
+P 10650 6400
+F 0 "pfl_led_master1" H 10730 6392 50  0001 L CNN
+F 1 "Conn_01x02" H 10730 6301 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 10650 6400 50  0001 C CNN
+F 3 "~" H 10650 6400 50  0001 C CNN
+F 4 "pfl_led_master  " H 10650 6400 50  0000 L CNN "Field4"
+	1    10650 6400
 	-1   0    0    1   
 $EndComp
-Text GLabel 11250 7250 2    50   Input ~ 0
+Text GLabel 10850 7400 2    50   Input ~ 0
 pfl_led_ch1
-Text GLabel 11250 7000 2    50   Input ~ 0
+Text GLabel 10850 7150 2    50   Input ~ 0
 pfl_led_ch2
-Text GLabel 11250 6750 2    50   Input ~ 0
+Text GLabel 10850 6900 2    50   Input ~ 0
 pfl_led_ch3
-Text GLabel 11250 6500 2    50   Input ~ 0
+Text GLabel 10850 6650 2    50   Input ~ 0
 pfl_led_ch4
-Text GLabel 11250 6250 2    50   Input ~ 0
+Text GLabel 10850 6400 2    50   Input ~ 0
 pfl_led_master
 $Comp
 L power:+3.3V #PWR0247
@@ -1260,1031 +972,215 @@ Text GLabel 9100 6650 0    50   Input ~ 0
 pin29
 Text GLabel 9100 6300 0    50   Input ~ 0
 pin28
-Text GLabel 11250 4950 2    50   Input ~ 0
+Text GLabel 10850 5100 2    50   Input ~ 0
 vu_clk
-Text GLabel 11250 5050 2    50   Input ~ 0
+Text GLabel 10850 5200 2    50   Input ~ 0
 vu_cs
-Text GLabel 11250 5150 2    50   Input ~ 0
+Text GLabel 10850 5300 2    50   Input ~ 0
 vu_din
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh3_1
-U 1 1 60010898
-P 8800 1400
-F 0 "MuxCh3_1" H 8880 1442 50  0000 L CNN
-F 1 "Conn_01x03" H 8880 1351 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 8800 1400 50  0001 C CNN
-F 3 "~" H 8800 1400 50  0001 C CNN
-F 4 "  MuxCh3_1" H 8800 1400 50  0001 L CNN "Field4"
-	1    8800 1400
-	1    0    0    -1  
-$EndComp
-Text GLabel 5500 7200 0    50   Input ~ 0
+Text GLabel 5000 7200 0    50   Input ~ 0
 s0
-Text GLabel 5500 7300 0    50   Input ~ 0
+Text GLabel 5000 7300 0    50   Input ~ 0
 s1
-Text GLabel 5500 7400 0    50   Input ~ 0
+Text GLabel 5000 7400 0    50   Input ~ 0
 s2
-Text GLabel 7700 5800 2    50   Input ~ 0
+Text GLabel 8050 6150 2    50   Input ~ 0
 mux_ch1
 $Comp
 L power:GND #PWR0107
 U 1 1 5FFE5E36
-P 5500 5100
-F 0 "#PWR0107" H 5500 4850 50  0001 C CNN
-F 1 "GND" V 5505 4972 50  0000 R CNN
-F 2 "" H 5500 5100 50  0001 C CNN
-F 3 "" H 5500 5100 50  0001 C CNN
-	1    5500 5100
+P 5000 5100
+F 0 "#PWR0107" H 5000 4850 50  0001 C CNN
+F 1 "GND" V 5005 4972 50  0000 R CNN
+F 2 "" H 5000 5100 50  0001 C CNN
+F 3 "" H 5000 5100 50  0001 C CNN
+	1    5000 5100
 	0    1    1    0   
 $EndComp
-NoConn ~ 7700 4950
-NoConn ~ 7700 5100
-NoConn ~ 7700 7650
-NoConn ~ 7700 7750
-NoConn ~ 7700 7850
-NoConn ~ 7700 7950
-NoConn ~ 7700 8050
-NoConn ~ 7700 8150
-NoConn ~ 5500 8250
-NoConn ~ 5500 8150
-NoConn ~ 5500 8050
-NoConn ~ 5500 7950
-NoConn ~ 5500 7850
-NoConn ~ 5500 7700
-NoConn ~ 5500 7600
-NoConn ~ 6300 8550
-NoConn ~ 6450 8550
-NoConn ~ 6600 8550
-NoConn ~ 6750 8550
-NoConn ~ 6900 8550
-Text GLabel 7700 5700 2    50   Input ~ 0
+NoConn ~ 7200 4950
+NoConn ~ 7200 5100
+NoConn ~ 7200 7650
+NoConn ~ 7200 7750
+NoConn ~ 7200 7850
+NoConn ~ 7200 7950
+NoConn ~ 7200 8050
+NoConn ~ 7200 8150
+NoConn ~ 5000 8250
+NoConn ~ 5000 8150
+NoConn ~ 5000 8050
+NoConn ~ 5000 7950
+NoConn ~ 5000 7850
+NoConn ~ 5000 7700
+NoConn ~ 5000 7600
+NoConn ~ 5800 8550
+NoConn ~ 5950 8550
+NoConn ~ 6100 8550
+NoConn ~ 6250 8550
+NoConn ~ 6400 8550
+Text GLabel 8050 5850 2    50   Input ~ 0
 mux_ch2
-Text GLabel 7700 7400 2    50   Input ~ 0
+Text GLabel 8050 8250 2    50   Input ~ 0
 pfl_btn_ch1
-Text GLabel 7700 7300 2    50   Input ~ 0
+Text GLabel 8050 7950 2    50   Input ~ 0
 pfl_btn_ch2
-Text GLabel 7700 7200 2    50   Input ~ 0
+Text GLabel 8050 7650 2    50   Input ~ 0
 pfl_btn_ch3
-Text GLabel 7700 7100 2    50   Input ~ 0
+Text GLabel 8050 7350 2    50   Input ~ 0
 pfl_btn_ch4
-Text GLabel 7700 7000 2    50   Input ~ 0
+Text GLabel 8050 7050 2    50   Input ~ 0
 pfl_btn_master
-Text GLabel 5500 6800 0    50   Input ~ 0
+Text GLabel 4100 6700 0    50   Input ~ 0
 pfl_led_ch1
-Text GLabel 7700 6900 2    50   Input ~ 0
+Text GLabel 7750 6900 2    50   Input ~ 0
 pfl_led_ch2
-Text GLabel 7700 6800 2    50   Input ~ 0
+Text GLabel 7750 6800 2    50   Input ~ 0
 pfl_led_ch3
-Text GLabel 7700 6700 2    50   Input ~ 0
+Text GLabel 7750 6700 2    50   Input ~ 0
 pfl_led_ch4
-Text GLabel 7700 6600 2    50   Input ~ 0
+Text GLabel 7750 6600 2    50   Input ~ 0
 pfl_led_master
 $Comp
 L power:GND #PWR0208
 U 1 1 6076C36F
-P 7700 6500
-F 0 "#PWR0208" H 7700 6250 50  0001 C CNN
-F 1 "GND" V 7705 6372 50  0000 R CNN
-F 2 "" H 7700 6500 50  0001 C CNN
-F 3 "" H 7700 6500 50  0001 C CNN
-	1    7700 6500
+P 7200 6500
+F 0 "#PWR0208" H 7200 6250 50  0001 C CNN
+F 1 "GND" V 7205 6372 50  0000 R CNN
+F 2 "" H 7200 6500 50  0001 C CNN
+F 3 "" H 7200 6500 50  0001 C CNN
+	1    7200 6500
 	0    -1   -1   0   
 $EndComp
-Text GLabel 5500 6300 0    50   Input ~ 0
+Text GLabel 5000 6300 0    50   Input ~ 0
 rEnc5_clk
-Text GLabel 5500 6200 0    50   Input ~ 0
+Text GLabel 5000 6200 0    50   Input ~ 0
 rEnc5_DT
-Text GLabel 5500 6100 0    50   Input ~ 0
+Text GLabel 5000 6100 0    50   Input ~ 0
 rEnc4_clk
-Text GLabel 5500 6000 0    50   Input ~ 0
+Text GLabel 5000 6000 0    50   Input ~ 0
 rEnc4_DT
-Text GLabel 5500 5900 0    50   Input ~ 0
+Text GLabel 5000 5900 0    50   Input ~ 0
 rEnc3_clk
-Text GLabel 5500 5800 0    50   Input ~ 0
+Text GLabel 5000 5800 0    50   Input ~ 0
 rEnc3_DT
-Text GLabel 5500 5700 0    50   Input ~ 0
+Text GLabel 5000 5700 0    50   Input ~ 0
 rEnc2_clk
-Text GLabel 5500 5600 0    50   Input ~ 0
+Text GLabel 5000 5600 0    50   Input ~ 0
 rEnc2_DT
-Text GLabel 5500 5500 0    50   Input ~ 0
+Text GLabel 5000 5500 0    50   Input ~ 0
 rEnc1_clk
-Text GLabel 5500 5400 0    50   Input ~ 0
+Text GLabel 5000 5400 0    50   Input ~ 0
 rEnc1_DT
-Text GLabel 5500 5300 0    50   Input ~ 0
+Text GLabel 5000 5300 0    50   Input ~ 0
 rEnc0_clk
-Text GLabel 5500 5200 0    50   Input ~ 0
+Text GLabel 5000 5200 0    50   Input ~ 0
 rEnc0_DT
-Text GLabel 5500 6400 0    50   Input ~ 0
+Text GLabel 4400 6400 0    50   Input ~ 0
 mux_encBtn_fx
-Text GLabel 5500 6900 0    50   Input ~ 0
+Text GLabel 4400 7000 0    50   Input ~ 0
 mux_selBtn_fx
-Text GLabel 7700 5400 2    50   Input ~ 0
+Text GLabel 8050 4950 2    50   Input ~ 0
 mux_master
-Text GLabel 7700 5500 2    50   Input ~ 0
+Text GLabel 8050 5250 2    50   Input ~ 0
 mux_ch4
-Text GLabel 7700 5600 2    50   Input ~ 0
+Text GLabel 8050 5550 2    50   Input ~ 0
 mux_ch3
-Text GLabel 7700 6000 2    50   Input ~ 0
+Text GLabel 7200 6000 2    50   Input ~ 0
 display_sda1
-Text GLabel 7700 6100 2    50   Input ~ 0
+Text GLabel 7200 6100 2    50   Input ~ 0
 display_scl1
-Text GLabel 5500 6700 0    50   Input ~ 0
+Text GLabel 5000 6700 0    50   Input ~ 0
 display_sda2
-Text GLabel 5500 6600 0    50   Input ~ 0
+Text GLabel 5000 6600 0    50   Input ~ 0
 display_scl2
-Text GLabel 7700 5900 2    50   Input ~ 0
+Text GLabel 7200 5900 2    50   Input ~ 0
 vu_din
-Text GLabel 7700 6200 2    50   Input ~ 0
+Text GLabel 7200 6200 2    50   Input ~ 0
 vu_cs
-Text GLabel 7700 6300 2    50   Input ~ 0
+Text GLabel 7200 6300 2    50   Input ~ 0
 vu_clk
-Text GLabel 5500 7000 0    50   Input ~ 0
+Text GLabel 4400 7300 0    50   Input ~ 0
 pin28
-Text GLabel 5500 7100 0    50   Input ~ 0
+Text GLabel 4400 7600 0    50   Input ~ 0
 pin29
 $Comp
 L mixer.pcb-rescue:Teensy4.1-teensy U5
 U 1 1 5FF8B2D7
-P 6600 7250
-F 0 "U5" H 6600 9815 50  0001 C CNN
-F 1 "Teensy4.1" H 6600 9724 50  0000 C CNN
-F 2 "teensy:Teensy41" H 6200 7650 50  0001 C CNN
-F 3 "" H 6200 7650 50  0001 C CNN
-	1    6600 7250
+P 6100 7250
+F 0 "U5" H 6100 9815 50  0001 C CNN
+F 1 "Teensy4.1" H 6100 9724 50  0000 C CNN
+F 2 "teensy:Teensy41" H 5700 7650 50  0001 C CNN
+F 3 "" H 5700 7650 50  0001 C CNN
+	1    6100 7250
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:+3.3V #PWR0209
 U 1 1 6076DEA4
-P 5500 6500
-F 0 "#PWR0209" H 5500 6350 50  0001 C CNN
-F 1 "+3.3V" V 5515 6628 50  0000 L CNN
-F 2 "" H 5500 6500 50  0001 C CNN
-F 3 "" H 5500 6500 50  0001 C CNN
-	1    5500 6500
+P 5000 6500
+F 0 "#PWR0209" H 5000 6350 50  0001 C CNN
+F 1 "+3.3V" V 5015 6628 50  0000 L CNN
+F 2 "" H 5000 6500 50  0001 C CNN
+F 3 "" H 5000 6500 50  0001 C CNN
+	1    5000 6500
 	0    -1   -1   0   
 $EndComp
-Text GLabel 7700 6400 2    50   Input ~ 0
+Text GLabel 7200 6400 2    50   Input ~ 0
 neopixel
 $Comp
 L power:+3.3V #PWR0106
 U 1 1 5FFE3AE3
-P 7700 5300
-F 0 "#PWR0106" H 7700 5150 50  0001 C CNN
-F 1 "+3.3V" V 7715 5428 50  0000 L CNN
-F 2 "" H 7700 5300 50  0001 C CNN
-F 3 "" H 7700 5300 50  0001 C CNN
-	1    7700 5300
+P 7200 5300
+F 0 "#PWR0106" H 7200 5150 50  0001 C CNN
+F 1 "+3.3V" V 7215 5428 50  0000 L CNN
+F 2 "" H 7200 5300 50  0001 C CNN
+F 3 "" H 7200 5300 50  0001 C CNN
+	1    7200 5300
 	0    1    1    0   
 $EndComp
 $Comp
 L power:GND #PWR0105
 U 1 1 607676BE
-P 7700 5200
-F 0 "#PWR0105" H 7700 4950 50  0001 C CNN
-F 1 "GND" H 7705 5027 50  0000 C CNN
-F 2 "" H 7700 5200 50  0001 C CNN
-F 3 "" H 7700 5200 50  0001 C CNN
-	1    7700 5200
+P 7200 5200
+F 0 "#PWR0105" H 7200 4950 50  0001 C CNN
+F 1 "GND" H 7205 5027 50  0000 C CNN
+F 2 "" H 7200 5200 50  0001 C CNN
+F 3 "" H 7200 5200 50  0001 C CNN
+	1    7200 5200
 	0    -1   -1   0   
 $EndComp
 $Comp
-L mixer.pcb:Connector_Generic_Conn_01x05 VU_Matrix
+L mixer.pcb-rescue:Connector_Generic_Conn_01x05-mixer.pcb VU_Matrix1
 U 1 1 5FFCCC67
-P 11050 5150
-F 0 "VU_Matrix" H 10968 4725 50  0001 C CNN
-F 1 "MAX7219 led matrix vu" H 10968 4816 50  0001 C CNN
-F 2 "Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical" H 11050 5150 50  0001 C CNN
-F 3 "" H 11050 5150 50  0001 C CNN
-F 4 "VU_Matrix  " H 11050 5150 50  0000 L CNN "Field4"
-	1    11050 5150
+P 10650 5300
+F 0 "VU_Matrix1" H 10568 4875 50  0001 C CNN
+F 1 "MAX7219 led matrix vu" H 10568 4966 50  0001 C CNN
+F 2 "Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical" H 10650 5300 50  0001 C CNN
+F 3 "" H 10650 5300 50  0001 C CNN
+F 4 "VU_Matrix  " H 10650 5300 50  0000 L CNN "Field4"
+	1    10650 5300
 	-1   0    0    1   
 $EndComp
 $Comp
-L mixer.pcb:+3.3V #PWR0102
+L mixer.pcb-rescue:+3.3V-mixer.pcb #PWR0102
 U 1 1 5FFD070A
-P 11250 5350
-F 0 "#PWR0102" H 11250 5200 50  0001 C CNN
-F 1 "+3.3V" V 11265 5478 50  0000 L CNN
-F 2 "" H 11250 5350 50  0001 C CNN
-F 3 "" H 11250 5350 50  0001 C CNN
-	1    11250 5350
+P 10850 5500
+F 0 "#PWR0102" H 10850 5350 50  0001 C CNN
+F 1 "+3.3V" V 10865 5628 50  0000 L CNN
+F 2 "" H 10850 5500 50  0001 C CNN
+F 3 "" H 10850 5500 50  0001 C CNN
+	1    10850 5500
 	0    1    1    0   
 $EndComp
 $Comp
 L power:GND #PWR0101
 U 1 1 5FFD1DCA
-P 11250 5250
-F 0 "#PWR0101" H 11250 5000 50  0001 C CNN
-F 1 "GND" V 11255 5122 50  0000 R CNN
-F 2 "" H 11250 5250 50  0001 C CNN
-F 3 "" H 11250 5250 50  0001 C CNN
-	1    11250 5250
+P 10850 5400
+F 0 "#PWR0101" H 10850 5150 50  0001 C CNN
+F 1 "GND" V 10855 5272 50  0000 R CNN
+F 2 "" H 10850 5400 50  0001 C CNN
+F 3 "" H 10850 5400 50  0001 C CNN
+	1    10850 5400
 	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	7800 2200 7950 2200
-Wire Wire Line
-	7950 2200 7950 1400
-Wire Wire Line
-	7950 1400 8600 1400
-Wire Wire Line
-	7800 2300 8000 2300
-Wire Wire Line
-	8000 2300 8000 1750
-Wire Wire Line
-	8000 1750 8600 1750
-Wire Wire Line
-	7800 2400 8050 2400
-Wire Wire Line
-	8050 2400 8050 2100
-Wire Wire Line
-	8050 2100 8600 2100
-Wire Wire Line
-	7800 2500 7950 2500
-Wire Wire Line
-	7950 2500 7950 2450
-Wire Wire Line
-	7950 2450 8600 2450
-Wire Wire Line
-	7800 2900 7950 2900
-Wire Wire Line
-	7950 2900 7950 3850
-Wire Wire Line
-	7950 3850 8600 3850
-Wire Wire Line
-	7800 2800 8000 2800
-Wire Wire Line
-	8000 2800 8000 3500
-Wire Wire Line
-	8000 3500 8600 3500
-Wire Wire Line
-	7800 2700 8050 2700
-Wire Wire Line
-	8050 2700 8050 3150
-Wire Wire Line
-	8050 3150 8600 3150
-Wire Wire Line
-	7800 2600 8100 2600
-Wire Wire Line
-	8100 2600 8100 2800
-Wire Wire Line
-	8100 2800 8600 2800
-$Comp
-L power:GND #PWR0166
-U 1 1 600108C2
-P 8600 1850
-F 0 "#PWR0166" H 8600 1600 50  0001 C CNN
-F 1 "GND" V 8605 1722 50  0000 R CNN
-F 2 "" H 8600 1850 50  0001 C CNN
-F 3 "" H 8600 1850 50  0001 C CNN
-	1    8600 1850
-	0    1    1    0   
-$EndComp
-$Comp
-L power:GND #PWR0164
-U 1 1 600108B0
-P 8600 3950
-F 0 "#PWR0164" H 8600 3700 50  0001 C CNN
-F 1 "GND" V 8605 3822 50  0000 R CNN
-F 2 "" H 8600 3950 50  0001 C CNN
-F 3 "" H 8600 3950 50  0001 C CNN
-	1    8600 3950
-	0    1    1    0   
-$EndComp
-Text GLabel 9900 2400 0    50   Input ~ 0
-s0
-Text GLabel 9900 2500 0    50   Input ~ 0
-s1
-Text GLabel 9900 2200 0    50   Input ~ 0
-mux_ch4
-Text GLabel 9900 2600 0    50   Input ~ 0
-s2
-Wire Wire Line
-	10300 3100 10200 3100
-Wire Wire Line
-	10200 3100 9900 3100
-Wire Wire Line
-	9900 3100 9900 2800
-Connection ~ 10200 3100
-$Comp
-L power:+3.3V #PWR0103
-U 1 1 600AEBFC
-P 10200 2000
-F 0 "#PWR0103" H 10200 1850 50  0001 C CNN
-F 1 "+3.3V" V 10215 2128 50  0000 L CNN
-F 2 "" H 10200 2000 50  0001 C CNN
-F 3 "" H 10200 2000 50  0001 C CNN
-	1    10200 2000
-	0    1    1    0   
-$EndComp
-$Comp
-L power:GND #PWR0104
-U 1 1 600AEC02
-P 10200 3100
-F 0 "#PWR0104" H 10200 2850 50  0001 C CNN
-F 1 "GND" H 10205 2927 50  0000 C CNN
-F 2 "" H 10200 3100 50  0001 C CNN
-F 3 "" H 10200 3100 50  0001 C CNN
-	1    10200 3100
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR0108
-U 1 1 600AEC08
-P 11400 1650
-F 0 "#PWR0108" H 11400 1500 50  0001 C CNN
-F 1 "+3.3V" V 11415 1778 50  0000 L CNN
-F 2 "" H 11400 1650 50  0001 C CNN
-F 3 "" H 11400 1650 50  0001 C CNN
-	1    11400 1650
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0109
-U 1 1 600AEC0E
-P 11400 2000
-F 0 "#PWR0109" H 11400 1850 50  0001 C CNN
-F 1 "+3.3V" V 11415 2128 50  0000 L CNN
-F 2 "" H 11400 2000 50  0001 C CNN
-F 3 "" H 11400 2000 50  0001 C CNN
-	1    11400 2000
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0110
-U 1 1 600AEC14
-P 11400 2200
-F 0 "#PWR0110" H 11400 1950 50  0001 C CNN
-F 1 "GND" V 11405 2072 50  0000 R CNN
-F 2 "" H 11400 2200 50  0001 C CNN
-F 3 "" H 11400 2200 50  0001 C CNN
-	1    11400 2200
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0111
-U 1 1 600AEC1A
-P 11400 2350
-F 0 "#PWR0111" H 11400 2200 50  0001 C CNN
-F 1 "+3.3V" V 11415 2478 50  0000 L CNN
-F 2 "" H 11400 2350 50  0001 C CNN
-F 3 "" H 11400 2350 50  0001 C CNN
-	1    11400 2350
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0112
-U 1 1 600AEC20
-P 11400 2550
-F 0 "#PWR0112" H 11400 2300 50  0001 C CNN
-F 1 "GND" V 11405 2422 50  0000 R CNN
-F 2 "" H 11400 2550 50  0001 C CNN
-F 3 "" H 11400 2550 50  0001 C CNN
-	1    11400 2550
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0113
-U 1 1 600AEC26
-P 11400 2700
-F 0 "#PWR0113" H 11400 2550 50  0001 C CNN
-F 1 "+3.3V" V 11415 2828 50  0000 L CNN
-F 2 "" H 11400 2700 50  0001 C CNN
-F 3 "" H 11400 2700 50  0001 C CNN
-	1    11400 2700
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0114
-U 1 1 600AEC2C
-P 11400 2900
-F 0 "#PWR0114" H 11400 2650 50  0001 C CNN
-F 1 "GND" V 11405 2772 50  0000 R CNN
-F 2 "" H 11400 2900 50  0001 C CNN
-F 3 "" H 11400 2900 50  0001 C CNN
-	1    11400 2900
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0115
-U 1 1 600AEC32
-P 11400 3050
-F 0 "#PWR0115" H 11400 2900 50  0001 C CNN
-F 1 "+3.3V" V 11415 3178 50  0000 L CNN
-F 2 "" H 11400 3050 50  0001 C CNN
-F 3 "" H 11400 3050 50  0001 C CNN
-	1    11400 3050
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0116
-U 1 1 600AEC38
-P 11400 3250
-F 0 "#PWR0116" H 11400 3000 50  0001 C CNN
-F 1 "GND" V 11405 3122 50  0000 R CNN
-F 2 "" H 11400 3250 50  0001 C CNN
-F 3 "" H 11400 3250 50  0001 C CNN
-	1    11400 3250
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0117
-U 1 1 600AEC3E
-P 11400 3400
-F 0 "#PWR0117" H 11400 3250 50  0001 C CNN
-F 1 "+3.3V" V 11415 3528 50  0000 L CNN
-F 2 "" H 11400 3400 50  0001 C CNN
-F 3 "" H 11400 3400 50  0001 C CNN
-	1    11400 3400
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0118
-U 1 1 600AEC44
-P 11400 3600
-F 0 "#PWR0118" H 11400 3350 50  0001 C CNN
-F 1 "GND" V 11405 3472 50  0000 R CNN
-F 2 "" H 11400 3600 50  0001 C CNN
-F 3 "" H 11400 3600 50  0001 C CNN
-	1    11400 3600
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0119
-U 1 1 600AEC4A
-P 11400 3750
-F 0 "#PWR0119" H 11400 3600 50  0001 C CNN
-F 1 "+3.3V" V 11415 3878 50  0000 L CNN
-F 2 "" H 11400 3750 50  0001 C CNN
-F 3 "" H 11400 3750 50  0001 C CNN
-	1    11400 3750
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh4_7
-U 1 1 600AEC50
-P 11600 3500
-F 0 "MuxCh4_7" H 11680 3542 50  0000 L CNN
-F 1 "Conn_01x03" H 11680 3451 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 11600 3500 50  0001 C CNN
-F 3 "~" H 11600 3500 50  0001 C CNN
-F 4 "  MuxCh4_7" H 11600 3500 50  0001 L CNN "Field4"
-	1    11600 3500
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh4_4
-U 1 1 600AEC56
-P 11600 2450
-F 0 "MuxCh4_4" H 11680 2492 50  0000 L CNN
-F 1 "Conn_01x03" H 11680 2401 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 11600 2450 50  0001 C CNN
-F 3 "~" H 11600 2450 50  0001 C CNN
-F 4 "  MuxCh4_4" H 11600 2450 50  0001 L CNN "Field4"
-	1    11600 2450
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR0120
-U 1 1 600AEC5C
-P 11400 1300
-F 0 "#PWR0120" H 11400 1150 50  0001 C CNN
-F 1 "+3.3V" V 11415 1428 50  0000 L CNN
-F 2 "" H 11400 1300 50  0001 C CNN
-F 3 "" H 11400 1300 50  0001 C CNN
-	1    11400 1300
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0121
-U 1 1 600AEC62
-P 11400 1500
-F 0 "#PWR0121" H 11400 1250 50  0001 C CNN
-F 1 "GND" V 11405 1372 50  0000 R CNN
-F 2 "" H 11400 1500 50  0001 C CNN
-F 3 "" H 11400 1500 50  0001 C CNN
-	1    11400 1500
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh4_3
-U 1 1 600AEC68
-P 11600 2100
-F 0 "MuxCh4_3" H 11680 2142 50  0000 L CNN
-F 1 "Conn_01x03" H 11680 2051 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 11600 2100 50  0001 C CNN
-F 3 "~" H 11600 2100 50  0001 C CNN
-F 4 "  MuxCh4_3" H 11600 2100 50  0001 L CNN "Field4"
-	1    11600 2100
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh4_2
-U 1 1 600AEC6E
-P 11600 1750
-F 0 "MuxCh4_2" H 11680 1792 50  0000 L CNN
-F 1 "Conn_01x03" H 11680 1701 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 11600 1750 50  0001 C CNN
-F 3 "~" H 11600 1750 50  0001 C CNN
-F 4 "  MuxCh4_2" H 11600 1750 50  0001 L CNN "Field4"
-	1    11600 1750
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh4_8
-U 1 1 600AEC74
-P 11600 3850
-F 0 "MuxCh4_8" H 11680 3892 50  0000 L CNN
-F 1 "Conn_01x03" H 11680 3801 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 11600 3850 50  0001 C CNN
-F 3 "~" H 11600 3850 50  0001 C CNN
-F 4 "  MuxCh4_8" H 11600 3850 50  0001 L CNN "Field4"
-	1    11600 3850
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh4_6
-U 1 1 600AEC7A
-P 11600 3150
-F 0 "MuxCh4_6" H 11680 3192 50  0000 L CNN
-F 1 "Conn_01x03" H 11680 3101 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 11600 3150 50  0001 C CNN
-F 3 "~" H 11600 3150 50  0001 C CNN
-F 4 "  MuxCh4_6" H 11600 3150 50  0001 L CNN "Field4"
-	1    11600 3150
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh4_5
-U 1 1 600AEC80
-P 11600 2800
-F 0 "MuxCh4_5" H 11680 2842 50  0000 L CNN
-F 1 "Conn_01x03" H 11680 2751 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 11600 2800 50  0001 C CNN
-F 3 "~" H 11600 2800 50  0001 C CNN
-F 4 "  MuxCh4_5" H 11600 2800 50  0001 L CNN "Field4"
-	1    11600 2800
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74HC4051 MuxCh4
-U 1 1 600AEC86
-P 10200 2500
-F 0 "MuxCh4" H 10250 3181 50  0000 C CNN
-F 1 "74HC4051" H 10250 3090 50  0000 C CNN
-F 2 "Package_DIP:DIP-16_W7.62mm" H 10200 2100 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 10200 2100 50  0001 C CNN
-	1    10200 2500
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh4_1
-U 1 1 600AEC8C
-P 11600 1400
-F 0 "MuxCh4_1" H 11680 1442 50  0000 L CNN
-F 1 "Conn_01x03" H 11680 1351 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 11600 1400 50  0001 C CNN
-F 3 "~" H 11600 1400 50  0001 C CNN
-F 4 "  MuxCh4_1" H 11600 1400 50  0001 L CNN "Field4"
-	1    11600 1400
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	10600 2200 10750 2200
-Wire Wire Line
-	10750 2200 10750 1400
-Wire Wire Line
-	10750 1400 11400 1400
-Wire Wire Line
-	10600 2300 10800 2300
-Wire Wire Line
-	10800 2300 10800 1750
-Wire Wire Line
-	10800 1750 11400 1750
-Wire Wire Line
-	10600 2400 10850 2400
-Wire Wire Line
-	10850 2400 10850 2100
-Wire Wire Line
-	10850 2100 11400 2100
-Wire Wire Line
-	10600 2500 10750 2500
-Wire Wire Line
-	10750 2500 10750 2450
-Wire Wire Line
-	10750 2450 11400 2450
-Wire Wire Line
-	10600 2900 10750 2900
-Wire Wire Line
-	10750 2900 10750 3850
-Wire Wire Line
-	10750 3850 11400 3850
-Wire Wire Line
-	10600 2800 10800 2800
-Wire Wire Line
-	10800 2800 10800 3500
-Wire Wire Line
-	10800 3500 11400 3500
-Wire Wire Line
-	10600 2700 10850 2700
-Wire Wire Line
-	10850 2700 10850 3150
-Wire Wire Line
-	10850 3150 11400 3150
-Wire Wire Line
-	10600 2600 10900 2600
-Wire Wire Line
-	10900 2600 10900 2800
-Wire Wire Line
-	10900 2800 11400 2800
-$Comp
-L power:GND #PWR0122
-U 1 1 600AECAA
-P 11400 1850
-F 0 "#PWR0122" H 11400 1600 50  0001 C CNN
-F 1 "GND" V 11405 1722 50  0000 R CNN
-F 2 "" H 11400 1850 50  0001 C CNN
-F 3 "" H 11400 1850 50  0001 C CNN
-	1    11400 1850
-	0    1    1    0   
-$EndComp
-$Comp
-L power:GND #PWR0123
-U 1 1 600AECB0
-P 11400 3950
-F 0 "#PWR0123" H 11400 3700 50  0001 C CNN
-F 1 "GND" V 11405 3822 50  0000 R CNN
-F 2 "" H 11400 3950 50  0001 C CNN
-F 3 "" H 11400 3950 50  0001 C CNN
-	1    11400 3950
-	0    1    1    0   
-$EndComp
-Text GLabel 13050 2400 0    50   Input ~ 0
-s0
-Text GLabel 13050 2500 0    50   Input ~ 0
-s1
-Text GLabel 13050 2600 0    50   Input ~ 0
-s2
-Wire Wire Line
-	13450 3100 13350 3100
-Wire Wire Line
-	13350 3100 13050 3100
-Wire Wire Line
-	13050 3100 13050 2800
-Connection ~ 13350 3100
-$Comp
-L power:+3.3V #PWR0124
-U 1 1 600E0941
-P 13350 2000
-F 0 "#PWR0124" H 13350 1850 50  0001 C CNN
-F 1 "+3.3V" V 13365 2128 50  0000 L CNN
-F 2 "" H 13350 2000 50  0001 C CNN
-F 3 "" H 13350 2000 50  0001 C CNN
-	1    13350 2000
-	0    1    1    0   
-$EndComp
-$Comp
-L power:GND #PWR0125
-U 1 1 600E0947
-P 13350 3100
-F 0 "#PWR0125" H 13350 2850 50  0001 C CNN
-F 1 "GND" H 13355 2927 50  0000 C CNN
-F 2 "" H 13350 3100 50  0001 C CNN
-F 3 "" H 13350 3100 50  0001 C CNN
-	1    13350 3100
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR0126
-U 1 1 600E094D
-P 14550 1650
-F 0 "#PWR0126" H 14550 1500 50  0001 C CNN
-F 1 "+3.3V" V 14565 1778 50  0000 L CNN
-F 2 "" H 14550 1650 50  0001 C CNN
-F 3 "" H 14550 1650 50  0001 C CNN
-	1    14550 1650
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0127
-U 1 1 600E0953
-P 14550 2000
-F 0 "#PWR0127" H 14550 1850 50  0001 C CNN
-F 1 "+3.3V" V 14565 2128 50  0000 L CNN
-F 2 "" H 14550 2000 50  0001 C CNN
-F 3 "" H 14550 2000 50  0001 C CNN
-	1    14550 2000
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0128
-U 1 1 600E0959
-P 14550 2200
-F 0 "#PWR0128" H 14550 1950 50  0001 C CNN
-F 1 "GND" V 14555 2072 50  0000 R CNN
-F 2 "" H 14550 2200 50  0001 C CNN
-F 3 "" H 14550 2200 50  0001 C CNN
-	1    14550 2200
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0129
-U 1 1 600E095F
-P 14550 2350
-F 0 "#PWR0129" H 14550 2200 50  0001 C CNN
-F 1 "+3.3V" V 14565 2478 50  0000 L CNN
-F 2 "" H 14550 2350 50  0001 C CNN
-F 3 "" H 14550 2350 50  0001 C CNN
-	1    14550 2350
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0130
-U 1 1 600E0965
-P 14550 2550
-F 0 "#PWR0130" H 14550 2300 50  0001 C CNN
-F 1 "GND" V 14555 2422 50  0000 R CNN
-F 2 "" H 14550 2550 50  0001 C CNN
-F 3 "" H 14550 2550 50  0001 C CNN
-	1    14550 2550
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0131
-U 1 1 600E096B
-P 14550 2700
-F 0 "#PWR0131" H 14550 2550 50  0001 C CNN
-F 1 "+3.3V" V 14565 2828 50  0000 L CNN
-F 2 "" H 14550 2700 50  0001 C CNN
-F 3 "" H 14550 2700 50  0001 C CNN
-	1    14550 2700
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0132
-U 1 1 600E0971
-P 14550 2900
-F 0 "#PWR0132" H 14550 2650 50  0001 C CNN
-F 1 "GND" V 14555 2772 50  0000 R CNN
-F 2 "" H 14550 2900 50  0001 C CNN
-F 3 "" H 14550 2900 50  0001 C CNN
-	1    14550 2900
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0133
-U 1 1 600E0977
-P 14550 3050
-F 0 "#PWR0133" H 14550 2900 50  0001 C CNN
-F 1 "+3.3V" V 14565 3178 50  0000 L CNN
-F 2 "" H 14550 3050 50  0001 C CNN
-F 3 "" H 14550 3050 50  0001 C CNN
-	1    14550 3050
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0134
-U 1 1 600E097D
-P 14550 3250
-F 0 "#PWR0134" H 14550 3000 50  0001 C CNN
-F 1 "GND" V 14555 3122 50  0000 R CNN
-F 2 "" H 14550 3250 50  0001 C CNN
-F 3 "" H 14550 3250 50  0001 C CNN
-	1    14550 3250
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0135
-U 1 1 600E0983
-P 14550 3400
-F 0 "#PWR0135" H 14550 3250 50  0001 C CNN
-F 1 "+3.3V" V 14565 3528 50  0000 L CNN
-F 2 "" H 14550 3400 50  0001 C CNN
-F 3 "" H 14550 3400 50  0001 C CNN
-	1    14550 3400
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0136
-U 1 1 600E0989
-P 14550 3600
-F 0 "#PWR0136" H 14550 3350 50  0001 C CNN
-F 1 "GND" V 14555 3472 50  0000 R CNN
-F 2 "" H 14550 3600 50  0001 C CNN
-F 3 "" H 14550 3600 50  0001 C CNN
-	1    14550 3600
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0137
-U 1 1 600E098F
-P 14550 3750
-F 0 "#PWR0137" H 14550 3600 50  0001 C CNN
-F 1 "+3.3V" V 14565 3878 50  0000 L CNN
-F 2 "" H 14550 3750 50  0001 C CNN
-F 3 "" H 14550 3750 50  0001 C CNN
-	1    14550 3750
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxMaster_7
-U 1 1 600E0995
-P 14750 3500
-F 0 "MuxMaster_7" H 14830 3542 50  0000 L CNN
-F 1 "Conn_01x03" H 14830 3451 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 14750 3500 50  0001 C CNN
-F 3 "~" H 14750 3500 50  0001 C CNN
-F 4 "  MuxMaster_7" H 14750 3500 50  0001 L CNN "Field4"
-	1    14750 3500
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxMaster_4
-U 1 1 600E099B
-P 14750 2450
-F 0 "MuxMaster_4" H 14830 2492 50  0000 L CNN
-F 1 "Conn_01x03" H 14830 2401 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 14750 2450 50  0001 C CNN
-F 3 "~" H 14750 2450 50  0001 C CNN
-F 4 "  MuxMaster_4" H 14750 2450 50  0001 L CNN "Field4"
-	1    14750 2450
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR0138
-U 1 1 600E09A1
-P 14550 1300
-F 0 "#PWR0138" H 14550 1150 50  0001 C CNN
-F 1 "+3.3V" V 14565 1428 50  0000 L CNN
-F 2 "" H 14550 1300 50  0001 C CNN
-F 3 "" H 14550 1300 50  0001 C CNN
-	1    14550 1300
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0139
-U 1 1 600E09A7
-P 14550 1500
-F 0 "#PWR0139" H 14550 1250 50  0001 C CNN
-F 1 "GND" V 14555 1372 50  0000 R CNN
-F 2 "" H 14550 1500 50  0001 C CNN
-F 3 "" H 14550 1500 50  0001 C CNN
-	1    14550 1500
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxMaster_3
-U 1 1 600E09AD
-P 14750 2100
-F 0 "MuxMaster_3" H 14830 2142 50  0000 L CNN
-F 1 "Conn_01x03" H 14830 2051 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 14750 2100 50  0001 C CNN
-F 3 "~" H 14750 2100 50  0001 C CNN
-F 4 "  MuxMaster_3" H 14750 2100 50  0001 L CNN "Field4"
-	1    14750 2100
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxMaster_2
-U 1 1 600E09B3
-P 14750 1750
-F 0 "MuxMaster_2" H 14830 1792 50  0000 L CNN
-F 1 "Conn_01x03" H 14830 1701 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 14750 1750 50  0001 C CNN
-F 3 "~" H 14750 1750 50  0001 C CNN
-F 4 "  MuxMaster_2" H 14750 1750 50  0001 L CNN "Field4"
-	1    14750 1750
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxMaster_8
-U 1 1 600E09B9
-P 14750 3850
-F 0 "MuxMaster_8" H 14830 3892 50  0000 L CNN
-F 1 "Conn_01x03" H 14830 3801 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 14750 3850 50  0001 C CNN
-F 3 "~" H 14750 3850 50  0001 C CNN
-F 4 "  MuxMaster_8" H 14750 3850 50  0001 L CNN "Field4"
-	1    14750 3850
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxMaster_6
-U 1 1 600E09BF
-P 14750 3150
-F 0 "MuxMaster_6" H 14830 3192 50  0000 L CNN
-F 1 "Conn_01x03" H 14830 3101 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 14750 3150 50  0001 C CNN
-F 3 "~" H 14750 3150 50  0001 C CNN
-F 4 "  MuxMaster_6" H 14750 3150 50  0001 L CNN "Field4"
-	1    14750 3150
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxMaster_5
-U 1 1 600E09C5
-P 14750 2800
-F 0 "MuxMaster_5" H 14830 2842 50  0000 L CNN
-F 1 "Conn_01x03" H 14830 2751 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 14750 2800 50  0001 C CNN
-F 3 "~" H 14750 2800 50  0001 C CNN
-F 4 "  MuxMaster_5" H 14750 2800 50  0001 L CNN "Field4"
-	1    14750 2800
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74HC4051 muxMaster1
-U 1 1 600E09CB
-P 13350 2500
-F 0 "muxMaster1" H 13400 3181 50  0000 C CNN
-F 1 "74HC4051" H 13400 3090 50  0000 C CNN
-F 2 "Package_DIP:DIP-16_W7.62mm" H 13350 2100 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 13350 2100 50  0001 C CNN
-	1    13350 2500
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxMaster_1
-U 1 1 600E09D1
-P 14750 1400
-F 0 "MuxMaster_1" H 14830 1442 50  0000 L CNN
-F 1 "Conn_01x03" H 14830 1351 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 14750 1400 50  0001 C CNN
-F 3 "~" H 14750 1400 50  0001 C CNN
-F 4 "  MuxMaster_1" H 14750 1400 50  0001 L CNN "Field4"
-	1    14750 1400
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	13750 2200 13900 2200
-Wire Wire Line
-	13900 2200 13900 1400
-Wire Wire Line
-	13900 1400 14550 1400
-Wire Wire Line
-	13750 2300 13950 2300
-Wire Wire Line
-	13950 2300 13950 1750
-Wire Wire Line
-	13950 1750 14550 1750
-Wire Wire Line
-	13750 2400 14000 2400
-Wire Wire Line
-	14000 2400 14000 2100
-Wire Wire Line
-	14000 2100 14550 2100
-Wire Wire Line
-	13750 2500 13900 2500
-Wire Wire Line
-	13900 2500 13900 2450
-Wire Wire Line
-	13900 2450 14550 2450
-Wire Wire Line
-	13750 2900 13900 2900
-Wire Wire Line
-	13900 2900 13900 3850
-Wire Wire Line
-	13900 3850 14550 3850
-Wire Wire Line
-	13750 2800 13950 2800
-Wire Wire Line
-	13950 2800 13950 3500
-Wire Wire Line
-	13950 3500 14550 3500
-Wire Wire Line
-	13750 2700 14000 2700
-Wire Wire Line
-	14000 2700 14000 3150
-Wire Wire Line
-	14000 3150 14550 3150
-Wire Wire Line
-	13750 2600 14050 2600
-Wire Wire Line
-	14050 2600 14050 2800
-Wire Wire Line
-	14050 2800 14550 2800
-$Comp
-L power:GND #PWR0140
-U 1 1 600E09EF
-P 14550 1850
-F 0 "#PWR0140" H 14550 1600 50  0001 C CNN
-F 1 "GND" V 14555 1722 50  0000 R CNN
-F 2 "" H 14550 1850 50  0001 C CNN
-F 3 "" H 14550 1850 50  0001 C CNN
-	1    14550 1850
-	0    1    1    0   
-$EndComp
-$Comp
-L power:GND #PWR0141
-U 1 1 600E09F5
-P 14550 3950
-F 0 "#PWR0141" H 14550 3700 50  0001 C CNN
-F 1 "GND" V 14555 3822 50  0000 R CNN
-F 2 "" H 14550 3950 50  0001 C CNN
-F 3 "" H 14550 3950 50  0001 C CNN
-	1    14550 3950
-	0    1    1    0   
 $EndComp
 $Comp
 L Connector_Generic:Conn_01x02 fx1_btn1
@@ -2310,12 +1206,12 @@ F 3 "" H 1850 5200 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	1850 5100 2850 5100
+	1850 5100 1950 5100
 $Comp
-L Connector_Generic:Conn_01x03 spare(29)
+L Connector_Generic:Conn_01x03 spare(29)1
 U 1 1 6087B9A2
 P 9300 6750
-F 0 "spare(29)" H 9380 6792 50  0001 L CNN
+F 0 "spare(29)1" H 9380 6792 50  0001 L CNN
 F 1 "Conn_01x03" H 9380 6701 50  0001 L CNN
 F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 9300 6750 50  0001 C CNN
 F 3 "~" H 9300 6750 50  0001 C CNN
@@ -2324,10 +1220,10 @@ F 4 "  spare(29)" H 9300 6750 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 spare(28)
+L Connector_Generic:Conn_01x03 spare(28)1
 U 1 1 6086F85E
 P 9300 6400
-F 0 "spare(28)" H 9380 6442 50  0001 L CNN
+F 0 "spare(28)1" H 9380 6442 50  0001 L CNN
 F 1 "Conn_01x03" H 9380 6351 50  0001 L CNN
 F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 9300 6400 50  0001 C CNN
 F 3 "~" H 9300 6400 50  0001 C CNN
@@ -2335,744 +1231,6 @@ F 4 "  spare(28)" H 9300 6400 50  0000 L CNN "Field4"
 	1    9300 6400
 	1    0    0    -1  
 $EndComp
-Text GLabel 13050 2200 0    50   Input ~ 0
-mux_master
-$Comp
-L power:GND #PWR0142
-U 1 1 600CE395
-P 2700 3900
-F 0 "#PWR0142" H 2700 3650 50  0001 C CNN
-F 1 "GND" V 2705 3772 50  0000 R CNN
-F 2 "" H 2700 3900 50  0001 C CNN
-F 3 "" H 2700 3900 50  0001 C CNN
-	1    2700 3900
-	0    1    1    0   
-$EndComp
-$Comp
-L power:GND #PWR0143
-U 1 1 600CE38F
-P 2700 1800
-F 0 "#PWR0143" H 2700 1550 50  0001 C CNN
-F 1 "GND" V 2705 1672 50  0000 R CNN
-F 2 "" H 2700 1800 50  0001 C CNN
-F 3 "" H 2700 1800 50  0001 C CNN
-	1    2700 1800
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	2200 2750 2700 2750
-Wire Wire Line
-	2200 2550 2200 2750
-Wire Wire Line
-	1900 2550 2200 2550
-Wire Wire Line
-	2150 3100 2700 3100
-Wire Wire Line
-	2150 2650 2150 3100
-Wire Wire Line
-	1900 2650 2150 2650
-Wire Wire Line
-	2100 3450 2700 3450
-Wire Wire Line
-	2100 2750 2100 3450
-Wire Wire Line
-	1900 2750 2100 2750
-Wire Wire Line
-	2050 3800 2700 3800
-Wire Wire Line
-	2050 2850 2050 3800
-Wire Wire Line
-	1900 2850 2050 2850
-Wire Wire Line
-	2050 2400 2700 2400
-Wire Wire Line
-	2050 2450 2050 2400
-Wire Wire Line
-	1900 2450 2050 2450
-Wire Wire Line
-	2150 2050 2700 2050
-Wire Wire Line
-	2150 2350 2150 2050
-Wire Wire Line
-	1900 2350 2150 2350
-Wire Wire Line
-	2100 1700 2700 1700
-Wire Wire Line
-	2100 2250 2100 1700
-Wire Wire Line
-	1900 2250 2100 2250
-Wire Wire Line
-	2050 1350 2700 1350
-Wire Wire Line
-	2050 2150 2050 1350
-Wire Wire Line
-	1900 2150 2050 2150
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh1_1
-U 1 1 600CE371
-P 2900 1350
-F 0 "MuxCh1_1" H 2980 1392 50  0000 L CNN
-F 1 "Conn_01x03" H 2980 1301 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 2900 1350 50  0001 C CNN
-F 3 "~" H 2900 1350 50  0001 C CNN
-F 4 "  MuxCh1_1" H 2900 1350 50  0001 L CNN "Field4"
-	1    2900 1350
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74HC4051 MuxCh1
-U 1 1 600CE36B
-P 1500 2450
-F 0 "MuxCh1" H 1550 3131 50  0000 C CNN
-F 1 "74HC4051" H 1550 3040 50  0000 C CNN
-F 2 "Package_DIP:DIP-16_W7.62mm" H 1500 2050 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 1500 2050 50  0001 C CNN
-	1    1500 2450
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh1_5
-U 1 1 600CE365
-P 2900 2750
-F 0 "MuxCh1_5" H 2980 2792 50  0000 L CNN
-F 1 "Conn_01x03" H 2980 2701 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 2900 2750 50  0001 C CNN
-F 3 "~" H 2900 2750 50  0001 C CNN
-F 4 "  MuxCh1_5" H 2900 2750 50  0001 L CNN "Field4"
-	1    2900 2750
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh1_6
-U 1 1 600CE35F
-P 2900 3100
-F 0 "MuxCh1_6" H 2980 3142 50  0000 L CNN
-F 1 "Conn_01x03" H 2980 3051 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 2900 3100 50  0001 C CNN
-F 3 "~" H 2900 3100 50  0001 C CNN
-F 4 "  MuxCh1_6" H 2900 3100 50  0001 L CNN "Field4"
-	1    2900 3100
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh1_8
-U 1 1 600CE359
-P 2900 3800
-F 0 "MuxCh1_8" H 2980 3842 50  0000 L CNN
-F 1 "Conn_01x03" H 2980 3751 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 2900 3800 50  0001 C CNN
-F 3 "~" H 2900 3800 50  0001 C CNN
-F 4 "  MuxCh1_8" H 2900 3800 50  0001 L CNN "Field4"
-	1    2900 3800
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh1_2
-U 1 1 600CE353
-P 2900 1700
-F 0 "MuxCh1_2" H 2980 1742 50  0000 L CNN
-F 1 "Conn_01x03" H 2980 1651 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 2900 1700 50  0001 C CNN
-F 3 "~" H 2900 1700 50  0001 C CNN
-F 4 "  MuxCh1_2" H 2900 1700 50  0001 L CNN "Field4"
-	1    2900 1700
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh1_3
-U 1 1 600CE34D
-P 2900 2050
-F 0 "MuxCh1_3" H 2980 2092 50  0000 L CNN
-F 1 "Conn_01x03" H 2980 2001 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 2900 2050 50  0001 C CNN
-F 3 "~" H 2900 2050 50  0001 C CNN
-F 4 "  MuxCh1_3" H 2900 2050 50  0001 L CNN "Field4"
-	1    2900 2050
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0144
-U 1 1 600CE347
-P 2700 1450
-F 0 "#PWR0144" H 2700 1200 50  0001 C CNN
-F 1 "GND" V 2705 1322 50  0000 R CNN
-F 2 "" H 2700 1450 50  0001 C CNN
-F 3 "" H 2700 1450 50  0001 C CNN
-	1    2700 1450
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0145
-U 1 1 600CE341
-P 2700 1250
-F 0 "#PWR0145" H 2700 1100 50  0001 C CNN
-F 1 "+3.3V" V 2715 1378 50  0000 L CNN
-F 2 "" H 2700 1250 50  0001 C CNN
-F 3 "" H 2700 1250 50  0001 C CNN
-	1    2700 1250
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh1_4
-U 1 1 600CE33B
-P 2900 2400
-F 0 "MuxCh1_4" H 2980 2442 50  0000 L CNN
-F 1 "Conn_01x03" H 2980 2351 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 2900 2400 50  0001 C CNN
-F 3 "~" H 2900 2400 50  0001 C CNN
-F 4 "  MuxCh1_4" H 2900 2400 50  0001 L CNN "Field4"
-	1    2900 2400
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh1_7
-U 1 1 600CE335
-P 2900 3450
-F 0 "MuxCh1_7" H 2980 3492 50  0000 L CNN
-F 1 "Conn_01x03" H 2980 3401 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 2900 3450 50  0001 C CNN
-F 3 "~" H 2900 3450 50  0001 C CNN
-F 4 "  MuxCh1_7" H 2900 3450 50  0001 L CNN "Field4"
-	1    2900 3450
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR0146
-U 1 1 600CE32F
-P 2700 3700
-F 0 "#PWR0146" H 2700 3550 50  0001 C CNN
-F 1 "+3.3V" V 2715 3828 50  0000 L CNN
-F 2 "" H 2700 3700 50  0001 C CNN
-F 3 "" H 2700 3700 50  0001 C CNN
-	1    2700 3700
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0147
-U 1 1 600CE329
-P 2700 3550
-F 0 "#PWR0147" H 2700 3300 50  0001 C CNN
-F 1 "GND" V 2705 3422 50  0000 R CNN
-F 2 "" H 2700 3550 50  0001 C CNN
-F 3 "" H 2700 3550 50  0001 C CNN
-	1    2700 3550
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0148
-U 1 1 600CE323
-P 2700 3350
-F 0 "#PWR0148" H 2700 3200 50  0001 C CNN
-F 1 "+3.3V" V 2715 3478 50  0000 L CNN
-F 2 "" H 2700 3350 50  0001 C CNN
-F 3 "" H 2700 3350 50  0001 C CNN
-	1    2700 3350
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0149
-U 1 1 600CE31D
-P 2700 3200
-F 0 "#PWR0149" H 2700 2950 50  0001 C CNN
-F 1 "GND" V 2705 3072 50  0000 R CNN
-F 2 "" H 2700 3200 50  0001 C CNN
-F 3 "" H 2700 3200 50  0001 C CNN
-	1    2700 3200
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0150
-U 1 1 600CE317
-P 2700 3000
-F 0 "#PWR0150" H 2700 2850 50  0001 C CNN
-F 1 "+3.3V" V 2715 3128 50  0000 L CNN
-F 2 "" H 2700 3000 50  0001 C CNN
-F 3 "" H 2700 3000 50  0001 C CNN
-	1    2700 3000
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0151
-U 1 1 600CE311
-P 2700 2850
-F 0 "#PWR0151" H 2700 2600 50  0001 C CNN
-F 1 "GND" V 2705 2722 50  0000 R CNN
-F 2 "" H 2700 2850 50  0001 C CNN
-F 3 "" H 2700 2850 50  0001 C CNN
-	1    2700 2850
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0152
-U 1 1 600CE30B
-P 2700 2650
-F 0 "#PWR0152" H 2700 2500 50  0001 C CNN
-F 1 "+3.3V" V 2715 2778 50  0000 L CNN
-F 2 "" H 2700 2650 50  0001 C CNN
-F 3 "" H 2700 2650 50  0001 C CNN
-	1    2700 2650
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0153
-U 1 1 600CE305
-P 2700 2500
-F 0 "#PWR0153" H 2700 2250 50  0001 C CNN
-F 1 "GND" V 2705 2372 50  0000 R CNN
-F 2 "" H 2700 2500 50  0001 C CNN
-F 3 "" H 2700 2500 50  0001 C CNN
-	1    2700 2500
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0154
-U 1 1 600CE2FF
-P 2700 2300
-F 0 "#PWR0154" H 2700 2150 50  0001 C CNN
-F 1 "+3.3V" V 2715 2428 50  0000 L CNN
-F 2 "" H 2700 2300 50  0001 C CNN
-F 3 "" H 2700 2300 50  0001 C CNN
-	1    2700 2300
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0155
-U 1 1 600CE2F9
-P 2700 2150
-F 0 "#PWR0155" H 2700 1900 50  0001 C CNN
-F 1 "GND" V 2705 2022 50  0000 R CNN
-F 2 "" H 2700 2150 50  0001 C CNN
-F 3 "" H 2700 2150 50  0001 C CNN
-	1    2700 2150
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0156
-U 1 1 600CE2F3
-P 2700 1950
-F 0 "#PWR0156" H 2700 1800 50  0001 C CNN
-F 1 "+3.3V" V 2715 2078 50  0000 L CNN
-F 2 "" H 2700 1950 50  0001 C CNN
-F 3 "" H 2700 1950 50  0001 C CNN
-	1    2700 1950
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0157
-U 1 1 600CE2ED
-P 2700 1600
-F 0 "#PWR0157" H 2700 1450 50  0001 C CNN
-F 1 "+3.3V" V 2715 1728 50  0000 L CNN
-F 2 "" H 2700 1600 50  0001 C CNN
-F 3 "" H 2700 1600 50  0001 C CNN
-	1    2700 1600
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0158
-U 1 1 600CE2E7
-P 1500 3050
-F 0 "#PWR0158" H 1500 2800 50  0001 C CNN
-F 1 "GND" H 1505 2877 50  0000 C CNN
-F 2 "" H 1500 3050 50  0001 C CNN
-F 3 "" H 1500 3050 50  0001 C CNN
-	1    1500 3050
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR0159
-U 1 1 600CE2E1
-P 1500 1950
-F 0 "#PWR0159" H 1500 1800 50  0001 C CNN
-F 1 "+3.3V" V 1515 2078 50  0000 L CNN
-F 2 "" H 1500 1950 50  0001 C CNN
-F 3 "" H 1500 1950 50  0001 C CNN
-	1    1500 1950
-	0    1    1    0   
-$EndComp
-Connection ~ 1500 3050
-Wire Wire Line
-	1200 3050 1200 2750
-Wire Wire Line
-	1500 3050 1200 3050
-Wire Wire Line
-	1600 3050 1500 3050
-Text GLabel 1200 2550 0    50   Input ~ 0
-s2
-Text GLabel 1200 2150 0    50   Input ~ 0
-mux_ch1
-Text GLabel 1200 2450 0    50   Input ~ 0
-s1
-Text GLabel 1200 2350 0    50   Input ~ 0
-s0
-$Comp
-L power:GND #PWR0178
-U 1 1 600BDA79
-P 5650 3950
-F 0 "#PWR0178" H 5650 3700 50  0001 C CNN
-F 1 "GND" V 5655 3822 50  0000 R CNN
-F 2 "" H 5650 3950 50  0001 C CNN
-F 3 "" H 5650 3950 50  0001 C CNN
-	1    5650 3950
-	0    1    1    0   
-$EndComp
-$Comp
-L power:GND #PWR0179
-U 1 1 600BDA73
-P 5650 1850
-F 0 "#PWR0179" H 5650 1600 50  0001 C CNN
-F 1 "GND" V 5655 1722 50  0000 R CNN
-F 2 "" H 5650 1850 50  0001 C CNN
-F 3 "" H 5650 1850 50  0001 C CNN
-	1    5650 1850
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	5150 2800 5650 2800
-Wire Wire Line
-	5150 2600 5150 2800
-Wire Wire Line
-	4850 2600 5150 2600
-Wire Wire Line
-	5100 3150 5650 3150
-Wire Wire Line
-	5100 2700 5100 3150
-Wire Wire Line
-	4850 2700 5100 2700
-Wire Wire Line
-	5050 3500 5650 3500
-Wire Wire Line
-	5050 2800 5050 3500
-Wire Wire Line
-	4850 2800 5050 2800
-Wire Wire Line
-	5000 3850 5650 3850
-Wire Wire Line
-	5000 2900 5000 3850
-Wire Wire Line
-	4850 2900 5000 2900
-Wire Wire Line
-	5000 2450 5650 2450
-Wire Wire Line
-	5000 2500 5000 2450
-Wire Wire Line
-	4850 2500 5000 2500
-Wire Wire Line
-	5100 2100 5650 2100
-Wire Wire Line
-	5100 2400 5100 2100
-Wire Wire Line
-	4850 2400 5100 2400
-Wire Wire Line
-	5050 1750 5650 1750
-Wire Wire Line
-	5050 2300 5050 1750
-Wire Wire Line
-	4850 2300 5050 2300
-Wire Wire Line
-	5000 1400 5650 1400
-Wire Wire Line
-	5000 2200 5000 1400
-Wire Wire Line
-	4850 2200 5000 2200
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh2_1
-U 1 1 600BDA55
-P 5850 1400
-F 0 "MuxCh2_1" H 5930 1442 50  0000 L CNN
-F 1 "Conn_01x03" H 5930 1351 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 5850 1400 50  0001 C CNN
-F 3 "~" H 5850 1400 50  0001 C CNN
-F 4 "  MuxCh2_1" H 5850 1400 50  0001 L CNN "Field4"
-	1    5850 1400
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74HC4051 MuxCh2
-U 1 1 600BDA4F
-P 4450 2500
-F 0 "MuxCh2" H 4500 3181 50  0000 C CNN
-F 1 "74HC4051" H 4500 3090 50  0000 C CNN
-F 2 "Package_DIP:DIP-16_W7.62mm" H 4450 2100 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 4450 2100 50  0001 C CNN
-	1    4450 2500
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh2_5
-U 1 1 600BDA49
-P 5850 2800
-F 0 "MuxCh2_5" H 5930 2842 50  0000 L CNN
-F 1 "Conn_01x03" H 5930 2751 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 5850 2800 50  0001 C CNN
-F 3 "~" H 5850 2800 50  0001 C CNN
-F 4 "  MuxCh2_5" H 5850 2800 50  0001 L CNN "Field4"
-	1    5850 2800
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh2_6
-U 1 1 600BDA43
-P 5850 3150
-F 0 "MuxCh2_6" H 5930 3192 50  0000 L CNN
-F 1 "Conn_01x03" H 5930 3101 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 5850 3150 50  0001 C CNN
-F 3 "~" H 5850 3150 50  0001 C CNN
-F 4 "  MuxCh2_6" H 5850 3150 50  0001 L CNN "Field4"
-	1    5850 3150
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh2_8
-U 1 1 600BDA3D
-P 5850 3850
-F 0 "MuxCh2_8" H 5930 3892 50  0000 L CNN
-F 1 "Conn_01x03" H 5930 3801 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 5850 3850 50  0001 C CNN
-F 3 "~" H 5850 3850 50  0001 C CNN
-F 4 "  MuxCh2_8" H 5850 3850 50  0001 L CNN "Field4"
-	1    5850 3850
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh2_2
-U 1 1 600BDA37
-P 5850 1750
-F 0 "MuxCh2_2" H 5930 1792 50  0000 L CNN
-F 1 "Conn_01x03" H 5930 1701 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 5850 1750 50  0001 C CNN
-F 3 "~" H 5850 1750 50  0001 C CNN
-F 4 "  MuxCh2_2" H 5850 1750 50  0001 L CNN "Field4"
-	1    5850 1750
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh2_3
-U 1 1 600BDA31
-P 5850 2100
-F 0 "MuxCh2_3" H 5930 2142 50  0000 L CNN
-F 1 "Conn_01x03" H 5930 2051 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 5850 2100 50  0001 C CNN
-F 3 "~" H 5850 2100 50  0001 C CNN
-F 4 "  MuxCh2_3" H 5850 2100 50  0001 L CNN "Field4"
-	1    5850 2100
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0180
-U 1 1 600BDA2B
-P 5650 1500
-F 0 "#PWR0180" H 5650 1250 50  0001 C CNN
-F 1 "GND" V 5655 1372 50  0000 R CNN
-F 2 "" H 5650 1500 50  0001 C CNN
-F 3 "" H 5650 1500 50  0001 C CNN
-	1    5650 1500
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0181
-U 1 1 600BDA25
-P 5650 1300
-F 0 "#PWR0181" H 5650 1150 50  0001 C CNN
-F 1 "+3.3V" V 5665 1428 50  0000 L CNN
-F 2 "" H 5650 1300 50  0001 C CNN
-F 3 "" H 5650 1300 50  0001 C CNN
-	1    5650 1300
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh2_4
-U 1 1 600BDA1F
-P 5850 2450
-F 0 "MuxCh2_4" H 5930 2492 50  0000 L CNN
-F 1 "Conn_01x03" H 5930 2401 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 5850 2450 50  0001 C CNN
-F 3 "~" H 5850 2450 50  0001 C CNN
-F 4 "  MuxCh2_4" H 5850 2450 50  0001 L CNN "Field4"
-	1    5850 2450
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 MuxCh2_7
-U 1 1 600BDA19
-P 5850 3500
-F 0 "MuxCh2_7" H 5930 3542 50  0000 L CNN
-F 1 "Conn_01x03" H 5930 3451 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 5850 3500 50  0001 C CNN
-F 3 "~" H 5850 3500 50  0001 C CNN
-F 4 "  MuxCh2_7" H 5850 3500 50  0001 L CNN "Field4"
-	1    5850 3500
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR0182
-U 1 1 600BDA13
-P 5650 3750
-F 0 "#PWR0182" H 5650 3600 50  0001 C CNN
-F 1 "+3.3V" V 5665 3878 50  0000 L CNN
-F 2 "" H 5650 3750 50  0001 C CNN
-F 3 "" H 5650 3750 50  0001 C CNN
-	1    5650 3750
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0183
-U 1 1 600BDA0D
-P 5650 3600
-F 0 "#PWR0183" H 5650 3350 50  0001 C CNN
-F 1 "GND" V 5655 3472 50  0000 R CNN
-F 2 "" H 5650 3600 50  0001 C CNN
-F 3 "" H 5650 3600 50  0001 C CNN
-	1    5650 3600
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0184
-U 1 1 600BDA07
-P 5650 3400
-F 0 "#PWR0184" H 5650 3250 50  0001 C CNN
-F 1 "+3.3V" V 5665 3528 50  0000 L CNN
-F 2 "" H 5650 3400 50  0001 C CNN
-F 3 "" H 5650 3400 50  0001 C CNN
-	1    5650 3400
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0185
-U 1 1 600BDA01
-P 5650 3250
-F 0 "#PWR0185" H 5650 3000 50  0001 C CNN
-F 1 "GND" V 5655 3122 50  0000 R CNN
-F 2 "" H 5650 3250 50  0001 C CNN
-F 3 "" H 5650 3250 50  0001 C CNN
-	1    5650 3250
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0186
-U 1 1 600BD9FB
-P 5650 3050
-F 0 "#PWR0186" H 5650 2900 50  0001 C CNN
-F 1 "+3.3V" V 5665 3178 50  0000 L CNN
-F 2 "" H 5650 3050 50  0001 C CNN
-F 3 "" H 5650 3050 50  0001 C CNN
-	1    5650 3050
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0187
-U 1 1 600BD9F5
-P 5650 2900
-F 0 "#PWR0187" H 5650 2650 50  0001 C CNN
-F 1 "GND" V 5655 2772 50  0000 R CNN
-F 2 "" H 5650 2900 50  0001 C CNN
-F 3 "" H 5650 2900 50  0001 C CNN
-	1    5650 2900
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0188
-U 1 1 600BD9EF
-P 5650 2700
-F 0 "#PWR0188" H 5650 2550 50  0001 C CNN
-F 1 "+3.3V" V 5665 2828 50  0000 L CNN
-F 2 "" H 5650 2700 50  0001 C CNN
-F 3 "" H 5650 2700 50  0001 C CNN
-	1    5650 2700
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0189
-U 1 1 600BD9E9
-P 5650 2550
-F 0 "#PWR0189" H 5650 2300 50  0001 C CNN
-F 1 "GND" V 5655 2422 50  0000 R CNN
-F 2 "" H 5650 2550 50  0001 C CNN
-F 3 "" H 5650 2550 50  0001 C CNN
-	1    5650 2550
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0190
-U 1 1 600BD9E3
-P 5650 2350
-F 0 "#PWR0190" H 5650 2200 50  0001 C CNN
-F 1 "+3.3V" V 5665 2478 50  0000 L CNN
-F 2 "" H 5650 2350 50  0001 C CNN
-F 3 "" H 5650 2350 50  0001 C CNN
-	1    5650 2350
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0191
-U 1 1 600BD9DD
-P 5650 2200
-F 0 "#PWR0191" H 5650 1950 50  0001 C CNN
-F 1 "GND" V 5655 2072 50  0000 R CNN
-F 2 "" H 5650 2200 50  0001 C CNN
-F 3 "" H 5650 2200 50  0001 C CNN
-	1    5650 2200
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0192
-U 1 1 600BD9D7
-P 5650 2000
-F 0 "#PWR0192" H 5650 1850 50  0001 C CNN
-F 1 "+3.3V" V 5665 2128 50  0000 L CNN
-F 2 "" H 5650 2000 50  0001 C CNN
-F 3 "" H 5650 2000 50  0001 C CNN
-	1    5650 2000
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0193
-U 1 1 600BD9D1
-P 5650 1650
-F 0 "#PWR0193" H 5650 1500 50  0001 C CNN
-F 1 "+3.3V" V 5665 1778 50  0000 L CNN
-F 2 "" H 5650 1650 50  0001 C CNN
-F 3 "" H 5650 1650 50  0001 C CNN
-	1    5650 1650
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0194
-U 1 1 600BD9CB
-P 4450 3100
-F 0 "#PWR0194" H 4450 2850 50  0001 C CNN
-F 1 "GND" H 4455 2927 50  0000 C CNN
-F 2 "" H 4450 3100 50  0001 C CNN
-F 3 "" H 4450 3100 50  0001 C CNN
-	1    4450 3100
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR0195
-U 1 1 600BD9C5
-P 4450 2000
-F 0 "#PWR0195" H 4450 1850 50  0001 C CNN
-F 1 "+3.3V" V 4465 2128 50  0000 L CNN
-F 2 "" H 4450 2000 50  0001 C CNN
-F 3 "" H 4450 2000 50  0001 C CNN
-	1    4450 2000
-	0    1    1    0   
-$EndComp
-Connection ~ 4450 3100
-Wire Wire Line
-	4150 3100 4150 2800
-Wire Wire Line
-	4450 3100 4150 3100
-Wire Wire Line
-	4550 3100 4450 3100
-Text GLabel 4150 2600 0    50   Input ~ 0
-s2
-Text GLabel 4150 2200 0    50   Input ~ 0
-mux_ch2
-Text GLabel 4150 2500 0    50   Input ~ 0
-s1
-Text GLabel 4150 2400 0    50   Input ~ 0
-s0
 $Comp
 L Connector_Generic:Conn_01x05 fx1_enc1
 U 1 1 608C8283
@@ -3085,4 +1243,3560 @@ F 4 "fx1_enc1  " H 12650 5150 50  0000 L CNN "Field4"
 	1    12650 5150
 	-1   0    0    1   
 $EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_5
+U 1 1 600CE365
+P 3200 2900
+F 0 "MuxCh1_5" H 3280 2942 50  0000 L CNN
+F 1 "Conn_01x03" H 3280 2851 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 3200 2900 50  0001 C CNN
+F 3 "~" H 3200 2900 50  0001 C CNN
+F 4 "  MuxCh1_5" H 3200 2900 50  0001 L CNN "Field4"
+	1    3200 2900
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_6
+U 1 1 600CE35F
+P 3200 3350
+F 0 "MuxCh1_6" H 3280 3392 50  0000 L CNN
+F 1 "Conn_01x03" H 3280 3301 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 3200 3350 50  0001 C CNN
+F 3 "~" H 3200 3350 50  0001 C CNN
+F 4 "  MuxCh1_6" H 3200 3350 50  0001 L CNN "Field4"
+	1    3200 3350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_8
+U 1 1 600CE359
+P 3200 4250
+F 0 "MuxCh1_8" H 3280 4292 50  0000 L CNN
+F 1 "Conn_01x03" H 3280 4201 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 3200 4250 50  0001 C CNN
+F 3 "~" H 3200 4250 50  0001 C CNN
+F 4 "  MuxCh1_8" H 3200 4250 50  0001 L CNN "Field4"
+	1    3200 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_4
+U 1 1 600CE33B
+P 3200 2450
+F 0 "MuxCh1_4" H 3280 2492 50  0000 L CNN
+F 1 "Conn_01x03" H 3280 2401 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 3200 2450 50  0001 C CNN
+F 3 "~" H 3200 2450 50  0001 C CNN
+F 4 "  MuxCh1_4" H 3200 2450 50  0001 L CNN "Field4"
+	1    3200 2450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_7
+U 1 1 600CE335
+P 3200 3800
+F 0 "MuxCh1_7" H 3280 3842 50  0000 L CNN
+F 1 "Conn_01x03" H 3280 3751 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 3200 3800 50  0001 C CNN
+F 3 "~" H 3200 3800 50  0001 C CNN
+F 4 "  MuxCh1_7" H 3200 3800 50  0001 L CNN "Field4"
+	1    3200 3800
+	1    0    0    -1  
+$EndComp
+Text GLabel 1300 2500 0    50   Input ~ 0
+s0
+Text GLabel 1300 2600 0    50   Input ~ 0
+s1
+Text GLabel 1300 2300 0    50   Input ~ 0
+mux_ch1
+Text GLabel 1300 2700 0    50   Input ~ 0
+s2
+Wire Wire Line
+	1700 3200 1600 3200
+Wire Wire Line
+	1600 3200 1300 3200
+Wire Wire Line
+	1300 3200 1300 2900
+Connection ~ 1600 3200
+$Comp
+L power:+3.3V #PWR0159
+U 1 1 600CE2E1
+P 1600 2100
+F 0 "#PWR0159" H 1600 1950 50  0001 C CNN
+F 1 "+3.3V" V 1615 2228 50  0000 L CNN
+F 2 "" H 1600 2100 50  0001 C CNN
+F 3 "" H 1600 2100 50  0001 C CNN
+	1    1600 2100
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0158
+U 1 1 600CE2E7
+P 1600 3200
+F 0 "#PWR0158" H 1600 2950 50  0001 C CNN
+F 1 "GND" H 1605 3027 50  0000 C CNN
+F 2 "" H 1600 3200 50  0001 C CNN
+F 3 "" H 1600 3200 50  0001 C CNN
+	1    1600 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0154
+U 1 1 600CE2FF
+P 3000 2350
+F 0 "#PWR0154" H 3000 2200 50  0001 C CNN
+F 1 "+3.3V" V 3015 2478 50  0000 L CNN
+F 2 "" H 3000 2350 50  0001 C CNN
+F 3 "" H 3000 2350 50  0001 C CNN
+	1    3000 2350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0153
+U 1 1 600CE305
+P 3000 2550
+F 0 "#PWR0153" H 3000 2300 50  0001 C CNN
+F 1 "GND" V 3005 2422 50  0000 R CNN
+F 2 "" H 3000 2550 50  0001 C CNN
+F 3 "" H 3000 2550 50  0001 C CNN
+	1    3000 2550
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0152
+U 1 1 600CE30B
+P 3000 2800
+F 0 "#PWR0152" H 3000 2650 50  0001 C CNN
+F 1 "+3.3V" V 3015 2928 50  0000 L CNN
+F 2 "" H 3000 2800 50  0001 C CNN
+F 3 "" H 3000 2800 50  0001 C CNN
+	1    3000 2800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0151
+U 1 1 600CE311
+P 3000 3000
+F 0 "#PWR0151" H 3000 2750 50  0001 C CNN
+F 1 "GND" V 3005 2872 50  0000 R CNN
+F 2 "" H 3000 3000 50  0001 C CNN
+F 3 "" H 3000 3000 50  0001 C CNN
+	1    3000 3000
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0150
+U 1 1 600CE317
+P 3000 3250
+F 0 "#PWR0150" H 3000 3100 50  0001 C CNN
+F 1 "+3.3V" V 3015 3378 50  0000 L CNN
+F 2 "" H 3000 3250 50  0001 C CNN
+F 3 "" H 3000 3250 50  0001 C CNN
+	1    3000 3250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0149
+U 1 1 600CE31D
+P 3000 3450
+F 0 "#PWR0149" H 3000 3200 50  0001 C CNN
+F 1 "GND" V 3005 3322 50  0000 R CNN
+F 2 "" H 3000 3450 50  0001 C CNN
+F 3 "" H 3000 3450 50  0001 C CNN
+	1    3000 3450
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0148
+U 1 1 600CE323
+P 3000 3700
+F 0 "#PWR0148" H 3000 3550 50  0001 C CNN
+F 1 "+3.3V" V 3015 3828 50  0000 L CNN
+F 2 "" H 3000 3700 50  0001 C CNN
+F 3 "" H 3000 3700 50  0001 C CNN
+	1    3000 3700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0147
+U 1 1 600CE329
+P 3000 3900
+F 0 "#PWR0147" H 3000 3650 50  0001 C CNN
+F 1 "GND" V 3005 3772 50  0000 R CNN
+F 2 "" H 3000 3900 50  0001 C CNN
+F 3 "" H 3000 3900 50  0001 C CNN
+	1    3000 3900
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0146
+U 1 1 600CE32F
+P 3000 4150
+F 0 "#PWR0146" H 3000 4000 50  0001 C CNN
+F 1 "+3.3V" V 3015 4278 50  0000 L CNN
+F 2 "" H 3000 4150 50  0001 C CNN
+F 3 "" H 3000 4150 50  0001 C CNN
+	1    3000 4150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L 74xx:74HC4051 MuxCh1
+U 1 1 600CE36B
+P 1600 2600
+F 0 "MuxCh1" H 1650 3281 50  0000 C CNN
+F 1 "74HC4051" H 1650 3190 50  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 1600 2200 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 1600 2200 50  0001 C CNN
+	1    1600 2600
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0142
+U 1 1 600CE395
+P 3000 4350
+F 0 "#PWR0142" H 3000 4100 50  0001 C CNN
+F 1 "GND" V 3005 4222 50  0000 R CNN
+F 2 "" H 3000 4350 50  0001 C CNN
+F 3 "" H 3000 4350 50  0001 C CNN
+	1    3000 4350
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0144
+U 1 1 600CE347
+P 3000 1200
+F 0 "#PWR0144" H 3000 950 50  0001 C CNN
+F 1 "GND" V 3005 1072 50  0000 R CNN
+F 2 "" H 3000 1200 50  0001 C CNN
+F 3 "" H 3000 1200 50  0001 C CNN
+	1    3000 1200
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0145
+U 1 1 600CE341
+P 3000 1000
+F 0 "#PWR0145" H 3000 850 50  0001 C CNN
+F 1 "+3.3V" V 3015 1128 50  0000 L CNN
+F 2 "" H 3000 1000 50  0001 C CNN
+F 3 "" H 3000 1000 50  0001 C CNN
+	1    3000 1000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R9
+U 1 1 60232D50
+P 2550 950
+F 0 "R9" H 2480 904 50  0001 C CNN
+F 1 "100k   " H 2480 950 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 2480 950 50  0001 C CNN
+F 3 "~" H 2550 950 50  0001 C CNN
+	1    2550 950 
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_1
+U 1 1 600CE371
+P 3200 1100
+F 0 "MuxCh1_1" H 3280 1142 50  0000 L CNN
+F 1 "Conn_01x03" H 3280 1051 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 3200 1100 50  0001 C CNN
+F 3 "~" H 3200 1100 50  0001 C CNN
+F 4 "  MuxCh1_1" H 3200 1100 50  0001 L CNN "Field4"
+	1    3200 1100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2550 1100 3000 1100
+$Comp
+L power:GND #PWR0103
+U 1 1 603CAD81
+P 2550 800
+F 0 "#PWR0103" H 2550 550 50  0001 C CNN
+F 1 "GND" V 2555 672 50  0000 R CNN
+F 2 "" H 2550 800 50  0001 C CNN
+F 3 "" H 2550 800 50  0001 C CNN
+	1    2550 800 
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0155
+U 1 1 600CE2F9
+P 3000 2100
+F 0 "#PWR0155" H 3000 1850 50  0001 C CNN
+F 1 "GND" V 3005 1972 50  0000 R CNN
+F 2 "" H 3000 2100 50  0001 C CNN
+F 3 "" H 3000 2100 50  0001 C CNN
+	1    3000 2100
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0143
+U 1 1 600CE38F
+P 3000 1650
+F 0 "#PWR0143" H 3000 1400 50  0001 C CNN
+F 1 "GND" V 3005 1522 50  0000 R CNN
+F 2 "" H 3000 1650 50  0001 C CNN
+F 3 "" H 3000 1650 50  0001 C CNN
+	1    3000 1650
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0156
+U 1 1 600CE2F3
+P 3000 1900
+F 0 "#PWR0156" H 3000 1750 50  0001 C CNN
+F 1 "+3.3V" V 3015 2028 50  0000 L CNN
+F 2 "" H 3000 1900 50  0001 C CNN
+F 3 "" H 3000 1900 50  0001 C CNN
+	1    3000 1900
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0157
+U 1 1 600CE2ED
+P 3000 1450
+F 0 "#PWR0157" H 3000 1300 50  0001 C CNN
+F 1 "+3.3V" V 3015 1578 50  0000 L CNN
+F 2 "" H 3000 1450 50  0001 C CNN
+F 3 "" H 3000 1450 50  0001 C CNN
+	1    3000 1450
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_2
+U 1 1 600CE353
+P 3200 1550
+F 0 "MuxCh1_2" H 3280 1592 50  0000 L CNN
+F 1 "Conn_01x03" H 3280 1501 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 3200 1550 50  0001 C CNN
+F 3 "~" H 3200 1550 50  0001 C CNN
+F 4 "  MuxCh1_2" H 3200 1550 50  0001 L CNN "Field4"
+	1    3200 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0104
+U 1 1 603E87C9
+P 2550 1250
+F 0 "#PWR0104" H 2550 1000 50  0001 C CNN
+F 1 "GND" V 2555 1122 50  0000 R CNN
+F 2 "" H 2550 1250 50  0001 C CNN
+F 3 "" H 2550 1250 50  0001 C CNN
+	1    2550 1250
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:CP-Device C1
+U 1 1 606F6BA4
+P 11400 5900
+F 0 "C1" H 11282 5854 50  0000 R CNN
+F 1 "CP" H 11282 5945 50  0000 R CNN
+F 2 "Capacitor_THT:CP_Radial_D10.0mm_P2.50mm" H 11438 5750 50  0001 C CNN
+F 3 "~" H 11400 5900 50  0001 C CNN
+	1    11400 5900
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	10850 5800 10850 5750
+Wire Wire Line
+	10850 5750 11250 5750
+Wire Wire Line
+	11400 6050 11250 6050
+Wire Wire Line
+	11250 6050 11250 5750
+Connection ~ 11400 6050
+Connection ~ 11250 5750
+Wire Wire Line
+	11250 5750 11400 5750
+$Comp
+L mixer.pcb-rescue:R-Device R10
+U 1 1 6087B97C
+P 2550 1400
+F 0 "R10" H 2480 1354 50  0001 C CNN
+F 1 "100k   " H 2480 1400 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 2480 1400 50  0001 C CNN
+F 3 "~" H 2550 1400 50  0001 C CNN
+	1    2550 1400
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2550 1550 3000 1550
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_3
+U 1 1 600CE34D
+P 3200 2000
+F 0 "MuxCh1_3" H 3280 2042 50  0000 L CNN
+F 1 "Conn_01x03" H 3280 1951 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 3200 2000 50  0001 C CNN
+F 3 "~" H 3200 2000 50  0001 C CNN
+F 4 "  MuxCh1_3" H 3200 2000 50  0001 L CNN "Field4"
+	1    3200 2000
+	1    0    0    -1  
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R11
+U 1 1 6090D08D
+P 2550 1850
+F 0 "R11" H 2480 1804 50  0001 C CNN
+F 1 "100k   " H 2480 1850 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 2480 1850 50  0001 C CNN
+F 3 "~" H 2550 1850 50  0001 C CNN
+	1    2550 1850
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2550 2000 3000 2000
+$Comp
+L power:GND #PWR0108
+U 1 1 6090D094
+P 2550 1700
+F 0 "#PWR0108" H 2550 1450 50  0001 C CNN
+F 1 "GND" V 2555 1572 50  0000 R CNN
+F 2 "" H 2550 1700 50  0001 C CNN
+F 3 "" H 2550 1700 50  0001 C CNN
+	1    2550 1700
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0109
+U 1 1 6090D09A
+P 2550 2150
+F 0 "#PWR0109" H 2550 1900 50  0001 C CNN
+F 1 "GND" V 2555 2022 50  0000 R CNN
+F 2 "" H 2550 2150 50  0001 C CNN
+F 3 "" H 2550 2150 50  0001 C CNN
+	1    2550 2150
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R12
+U 1 1 6090D0A0
+P 2550 2300
+F 0 "R12" H 2480 2254 50  0001 C CNN
+F 1 "100k   " H 2480 2300 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 2480 2300 50  0001 C CNN
+F 3 "~" H 2550 2300 50  0001 C CNN
+	1    2550 2300
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2550 2450 3000 2450
+$Comp
+L mixer.pcb-rescue:R-Device R13
+U 1 1 6091657E
+P 2550 2750
+F 0 "R13" H 2480 2704 50  0001 C CNN
+F 1 "100k   " H 2480 2750 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 2480 2750 50  0001 C CNN
+F 3 "~" H 2550 2750 50  0001 C CNN
+	1    2550 2750
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2550 2900 3000 2900
+$Comp
+L power:GND #PWR0110
+U 1 1 60916585
+P 2550 2600
+F 0 "#PWR0110" H 2550 2350 50  0001 C CNN
+F 1 "GND" V 2555 2472 50  0000 R CNN
+F 2 "" H 2550 2600 50  0001 C CNN
+F 3 "" H 2550 2600 50  0001 C CNN
+	1    2550 2600
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0111
+U 1 1 6091658B
+P 2550 3050
+F 0 "#PWR0111" H 2550 2800 50  0001 C CNN
+F 1 "GND" V 2555 2922 50  0000 R CNN
+F 2 "" H 2550 3050 50  0001 C CNN
+F 3 "" H 2550 3050 50  0001 C CNN
+	1    2550 3050
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R14
+U 1 1 60916591
+P 2550 3200
+F 0 "R14" H 2480 3154 50  0001 C CNN
+F 1 "100k   " H 2480 3200 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 2480 3200 50  0001 C CNN
+F 3 "~" H 2550 3200 50  0001 C CNN
+	1    2550 3200
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2550 3350 3000 3350
+$Comp
+L mixer.pcb-rescue:R-Device R15
+U 1 1 60920904
+P 2550 3650
+F 0 "R15" H 2480 3604 50  0001 C CNN
+F 1 "100k   " H 2480 3650 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 2480 3650 50  0001 C CNN
+F 3 "~" H 2550 3650 50  0001 C CNN
+	1    2550 3650
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2550 3800 3000 3800
+$Comp
+L power:GND #PWR0112
+U 1 1 6092090B
+P 2550 3500
+F 0 "#PWR0112" H 2550 3250 50  0001 C CNN
+F 1 "GND" V 2555 3372 50  0000 R CNN
+F 2 "" H 2550 3500 50  0001 C CNN
+F 3 "" H 2550 3500 50  0001 C CNN
+	1    2550 3500
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0113
+U 1 1 60920911
+P 2550 3950
+F 0 "#PWR0113" H 2550 3700 50  0001 C CNN
+F 1 "GND" V 2555 3822 50  0000 R CNN
+F 2 "" H 2550 3950 50  0001 C CNN
+F 3 "" H 2550 3950 50  0001 C CNN
+	1    2550 3950
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R16
+U 1 1 60920917
+P 2550 4100
+F 0 "R16" H 2480 4054 50  0001 C CNN
+F 1 "100k   " H 2480 4100 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 2480 4100 50  0001 C CNN
+F 3 "~" H 2550 4100 50  0001 C CNN
+	1    2550 4100
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2550 4250 3000 4250
+Wire Wire Line
+	2000 4250 2000 3000
+Wire Wire Line
+	2050 3800 2050 2900
+Wire Wire Line
+	2050 2900 2000 2900
+Wire Wire Line
+	2100 3350 2100 2800
+Wire Wire Line
+	2100 2800 2000 2800
+Wire Wire Line
+	2150 2900 2150 2700
+Wire Wire Line
+	2150 2700 2000 2700
+Wire Wire Line
+	2000 1100 2000 2300
+Wire Wire Line
+	2050 1550 2050 2400
+Wire Wire Line
+	2050 2400 2000 2400
+Wire Wire Line
+	2000 2500 2100 2500
+Wire Wire Line
+	2150 2450 2150 2600
+Wire Wire Line
+	2150 2600 2000 2600
+Wire Wire Line
+	2550 1100 2000 1100
+Connection ~ 2550 1100
+Wire Wire Line
+	2050 1550 2550 1550
+Connection ~ 2550 1550
+Wire Wire Line
+	2100 2500 2100 2000
+Wire Wire Line
+	2550 2000 2100 2000
+Connection ~ 2550 2000
+Wire Wire Line
+	2150 2450 2550 2450
+Connection ~ 2550 2450
+Wire Wire Line
+	2550 2900 2150 2900
+Connection ~ 2550 2900
+Wire Wire Line
+	2100 3350 2550 3350
+Connection ~ 2550 3350
+Wire Wire Line
+	2550 3800 2050 3800
+Connection ~ 2550 3800
+Wire Wire Line
+	2000 4250 2550 4250
+Connection ~ 2550 4250
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_13
+U 1 1 60B90E21
+P 6250 2900
+F 0 "MuxCh1_13" H 6330 2942 50  0000 L CNN
+F 1 "Conn_01x03" H 6330 2851 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 6250 2900 50  0001 C CNN
+F 3 "~" H 6250 2900 50  0001 C CNN
+F 4 "  MuxCh1_5" H 6250 2900 50  0001 L CNN "Field4"
+	1    6250 2900
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_14
+U 1 1 60B90E28
+P 6250 3350
+F 0 "MuxCh1_14" H 6330 3392 50  0000 L CNN
+F 1 "Conn_01x03" H 6330 3301 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 6250 3350 50  0001 C CNN
+F 3 "~" H 6250 3350 50  0001 C CNN
+F 4 "  MuxCh1_6" H 6250 3350 50  0001 L CNN "Field4"
+	1    6250 3350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_16
+U 1 1 60B90E2F
+P 6250 4250
+F 0 "MuxCh1_16" H 6330 4292 50  0000 L CNN
+F 1 "Conn_01x03" H 6330 4201 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 6250 4250 50  0001 C CNN
+F 3 "~" H 6250 4250 50  0001 C CNN
+F 4 "  MuxCh1_8" H 6250 4250 50  0001 L CNN "Field4"
+	1    6250 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_12
+U 1 1 60B90E36
+P 6250 2450
+F 0 "MuxCh1_12" H 6330 2492 50  0000 L CNN
+F 1 "Conn_01x03" H 6330 2401 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 6250 2450 50  0001 C CNN
+F 3 "~" H 6250 2450 50  0001 C CNN
+F 4 "  MuxCh1_4" H 6250 2450 50  0001 L CNN "Field4"
+	1    6250 2450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_15
+U 1 1 60B90E3D
+P 6250 3800
+F 0 "MuxCh1_15" H 6330 3842 50  0000 L CNN
+F 1 "Conn_01x03" H 6330 3751 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 6250 3800 50  0001 C CNN
+F 3 "~" H 6250 3800 50  0001 C CNN
+F 4 "  MuxCh1_7" H 6250 3800 50  0001 L CNN "Field4"
+	1    6250 3800
+	1    0    0    -1  
+$EndComp
+Text GLabel 4350 2500 0    50   Input ~ 0
+s0
+Text GLabel 4350 2600 0    50   Input ~ 0
+s1
+Text GLabel 4350 2300 0    50   Input ~ 0
+mux_ch2
+Text GLabel 4350 2700 0    50   Input ~ 0
+s2
+Wire Wire Line
+	4750 3200 4650 3200
+Wire Wire Line
+	4650 3200 4350 3200
+Wire Wire Line
+	4350 3200 4350 2900
+Connection ~ 4650 3200
+$Comp
+L power:+3.3V #PWR0114
+U 1 1 60B90E4B
+P 4650 2100
+F 0 "#PWR0114" H 4650 1950 50  0001 C CNN
+F 1 "+3.3V" V 4665 2228 50  0000 L CNN
+F 2 "" H 4650 2100 50  0001 C CNN
+F 3 "" H 4650 2100 50  0001 C CNN
+	1    4650 2100
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0115
+U 1 1 60B90E51
+P 4650 3200
+F 0 "#PWR0115" H 4650 2950 50  0001 C CNN
+F 1 "GND" H 4655 3027 50  0000 C CNN
+F 2 "" H 4650 3200 50  0001 C CNN
+F 3 "" H 4650 3200 50  0001 C CNN
+	1    4650 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0116
+U 1 1 60B90E57
+P 6050 2350
+F 0 "#PWR0116" H 6050 2200 50  0001 C CNN
+F 1 "+3.3V" V 6065 2478 50  0000 L CNN
+F 2 "" H 6050 2350 50  0001 C CNN
+F 3 "" H 6050 2350 50  0001 C CNN
+	1    6050 2350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0117
+U 1 1 60B90E5D
+P 6050 2550
+F 0 "#PWR0117" H 6050 2300 50  0001 C CNN
+F 1 "GND" V 6055 2422 50  0000 R CNN
+F 2 "" H 6050 2550 50  0001 C CNN
+F 3 "" H 6050 2550 50  0001 C CNN
+	1    6050 2550
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0118
+U 1 1 60B90E63
+P 6050 2800
+F 0 "#PWR0118" H 6050 2650 50  0001 C CNN
+F 1 "+3.3V" V 6065 2928 50  0000 L CNN
+F 2 "" H 6050 2800 50  0001 C CNN
+F 3 "" H 6050 2800 50  0001 C CNN
+	1    6050 2800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0119
+U 1 1 60B90E69
+P 6050 3000
+F 0 "#PWR0119" H 6050 2750 50  0001 C CNN
+F 1 "GND" V 6055 2872 50  0000 R CNN
+F 2 "" H 6050 3000 50  0001 C CNN
+F 3 "" H 6050 3000 50  0001 C CNN
+	1    6050 3000
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0120
+U 1 1 60B90E6F
+P 6050 3250
+F 0 "#PWR0120" H 6050 3100 50  0001 C CNN
+F 1 "+3.3V" V 6065 3378 50  0000 L CNN
+F 2 "" H 6050 3250 50  0001 C CNN
+F 3 "" H 6050 3250 50  0001 C CNN
+	1    6050 3250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0121
+U 1 1 60B90E75
+P 6050 3450
+F 0 "#PWR0121" H 6050 3200 50  0001 C CNN
+F 1 "GND" V 6055 3322 50  0000 R CNN
+F 2 "" H 6050 3450 50  0001 C CNN
+F 3 "" H 6050 3450 50  0001 C CNN
+	1    6050 3450
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0122
+U 1 1 60B90E7B
+P 6050 3700
+F 0 "#PWR0122" H 6050 3550 50  0001 C CNN
+F 1 "+3.3V" V 6065 3828 50  0000 L CNN
+F 2 "" H 6050 3700 50  0001 C CNN
+F 3 "" H 6050 3700 50  0001 C CNN
+	1    6050 3700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0123
+U 1 1 60B90E81
+P 6050 3900
+F 0 "#PWR0123" H 6050 3650 50  0001 C CNN
+F 1 "GND" V 6055 3772 50  0000 R CNN
+F 2 "" H 6050 3900 50  0001 C CNN
+F 3 "" H 6050 3900 50  0001 C CNN
+	1    6050 3900
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0124
+U 1 1 60B90E87
+P 6050 4150
+F 0 "#PWR0124" H 6050 4000 50  0001 C CNN
+F 1 "+3.3V" V 6065 4278 50  0000 L CNN
+F 2 "" H 6050 4150 50  0001 C CNN
+F 3 "" H 6050 4150 50  0001 C CNN
+	1    6050 4150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L 74xx:74HC4051 MuxCh2
+U 1 1 60B90E8D
+P 4650 2600
+F 0 "MuxCh2" H 4700 3281 50  0000 C CNN
+F 1 "74HC4051" H 4700 3190 50  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 4650 2200 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 4650 2200 50  0001 C CNN
+	1    4650 2600
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0125
+U 1 1 60B90E93
+P 6050 4350
+F 0 "#PWR0125" H 6050 4100 50  0001 C CNN
+F 1 "GND" V 6055 4222 50  0000 R CNN
+F 2 "" H 6050 4350 50  0001 C CNN
+F 3 "" H 6050 4350 50  0001 C CNN
+	1    6050 4350
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0126
+U 1 1 60B90E99
+P 6050 1200
+F 0 "#PWR0126" H 6050 950 50  0001 C CNN
+F 1 "GND" V 6055 1072 50  0000 R CNN
+F 2 "" H 6050 1200 50  0001 C CNN
+F 3 "" H 6050 1200 50  0001 C CNN
+	1    6050 1200
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0127
+U 1 1 60B90E9F
+P 6050 1000
+F 0 "#PWR0127" H 6050 850 50  0001 C CNN
+F 1 "+3.3V" V 6065 1128 50  0000 L CNN
+F 2 "" H 6050 1000 50  0001 C CNN
+F 3 "" H 6050 1000 50  0001 C CNN
+	1    6050 1000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R22
+U 1 1 60B90EA5
+P 5600 950
+F 0 "R22" H 5530 904 50  0001 C CNN
+F 1 "100k   " H 5530 950 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 5530 950 50  0001 C CNN
+F 3 "~" H 5600 950 50  0001 C CNN
+	1    5600 950 
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_9
+U 1 1 60B90EAC
+P 6250 1100
+F 0 "MuxCh1_9" H 6330 1142 50  0000 L CNN
+F 1 "Conn_01x03" H 6330 1051 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 6250 1100 50  0001 C CNN
+F 3 "~" H 6250 1100 50  0001 C CNN
+F 4 "  MuxCh1_1" H 6250 1100 50  0001 L CNN "Field4"
+	1    6250 1100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5600 1100 6050 1100
+$Comp
+L power:GND #PWR0128
+U 1 1 60B90EB3
+P 5600 800
+F 0 "#PWR0128" H 5600 550 50  0001 C CNN
+F 1 "GND" V 5605 672 50  0000 R CNN
+F 2 "" H 5600 800 50  0001 C CNN
+F 3 "" H 5600 800 50  0001 C CNN
+	1    5600 800 
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0129
+U 1 1 60B90EB9
+P 6050 2100
+F 0 "#PWR0129" H 6050 1850 50  0001 C CNN
+F 1 "GND" V 6055 1972 50  0000 R CNN
+F 2 "" H 6050 2100 50  0001 C CNN
+F 3 "" H 6050 2100 50  0001 C CNN
+	1    6050 2100
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0130
+U 1 1 60B90EBF
+P 6050 1650
+F 0 "#PWR0130" H 6050 1400 50  0001 C CNN
+F 1 "GND" V 6055 1522 50  0000 R CNN
+F 2 "" H 6050 1650 50  0001 C CNN
+F 3 "" H 6050 1650 50  0001 C CNN
+	1    6050 1650
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0131
+U 1 1 60B90EC5
+P 6050 1900
+F 0 "#PWR0131" H 6050 1750 50  0001 C CNN
+F 1 "+3.3V" V 6065 2028 50  0000 L CNN
+F 2 "" H 6050 1900 50  0001 C CNN
+F 3 "" H 6050 1900 50  0001 C CNN
+	1    6050 1900
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0132
+U 1 1 60B90ECB
+P 6050 1450
+F 0 "#PWR0132" H 6050 1300 50  0001 C CNN
+F 1 "+3.3V" V 6065 1578 50  0000 L CNN
+F 2 "" H 6050 1450 50  0001 C CNN
+F 3 "" H 6050 1450 50  0001 C CNN
+	1    6050 1450
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_10
+U 1 1 60B90ED2
+P 6250 1550
+F 0 "MuxCh1_10" H 6330 1592 50  0000 L CNN
+F 1 "Conn_01x03" H 6330 1501 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 6250 1550 50  0001 C CNN
+F 3 "~" H 6250 1550 50  0001 C CNN
+F 4 "  MuxCh1_2" H 6250 1550 50  0001 L CNN "Field4"
+	1    6250 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0133
+U 1 1 60B90ED8
+P 5600 1250
+F 0 "#PWR0133" H 5600 1000 50  0001 C CNN
+F 1 "GND" V 5605 1122 50  0000 R CNN
+F 2 "" H 5600 1250 50  0001 C CNN
+F 3 "" H 5600 1250 50  0001 C CNN
+	1    5600 1250
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R23
+U 1 1 60B90EDE
+P 5600 1400
+F 0 "R23" H 5530 1354 50  0001 C CNN
+F 1 "100k   " H 5530 1400 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 5530 1400 50  0001 C CNN
+F 3 "~" H 5600 1400 50  0001 C CNN
+	1    5600 1400
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5600 1550 6050 1550
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_11
+U 1 1 60B90EE6
+P 6250 2000
+F 0 "MuxCh1_11" H 6330 2042 50  0000 L CNN
+F 1 "Conn_01x03" H 6330 1951 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 6250 2000 50  0001 C CNN
+F 3 "~" H 6250 2000 50  0001 C CNN
+F 4 "  MuxCh1_3" H 6250 2000 50  0001 L CNN "Field4"
+	1    6250 2000
+	1    0    0    -1  
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R24
+U 1 1 60B90EEC
+P 5600 1850
+F 0 "R24" H 5530 1804 50  0001 C CNN
+F 1 "100k   " H 5530 1850 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 5530 1850 50  0001 C CNN
+F 3 "~" H 5600 1850 50  0001 C CNN
+	1    5600 1850
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5600 2000 6050 2000
+$Comp
+L power:GND #PWR0134
+U 1 1 60B90EF3
+P 5600 1700
+F 0 "#PWR0134" H 5600 1450 50  0001 C CNN
+F 1 "GND" V 5605 1572 50  0000 R CNN
+F 2 "" H 5600 1700 50  0001 C CNN
+F 3 "" H 5600 1700 50  0001 C CNN
+	1    5600 1700
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0135
+U 1 1 60B90EF9
+P 5600 2150
+F 0 "#PWR0135" H 5600 1900 50  0001 C CNN
+F 1 "GND" V 5605 2022 50  0000 R CNN
+F 2 "" H 5600 2150 50  0001 C CNN
+F 3 "" H 5600 2150 50  0001 C CNN
+	1    5600 2150
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R25
+U 1 1 60B90EFF
+P 5600 2300
+F 0 "R25" H 5530 2254 50  0001 C CNN
+F 1 "100k   " H 5530 2300 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 5530 2300 50  0001 C CNN
+F 3 "~" H 5600 2300 50  0001 C CNN
+	1    5600 2300
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5600 2450 6050 2450
+$Comp
+L mixer.pcb-rescue:R-Device R26
+U 1 1 60B90F06
+P 5600 2750
+F 0 "R26" H 5530 2704 50  0001 C CNN
+F 1 "100k   " H 5530 2750 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 5530 2750 50  0001 C CNN
+F 3 "~" H 5600 2750 50  0001 C CNN
+	1    5600 2750
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5600 2900 6050 2900
+$Comp
+L power:GND #PWR0136
+U 1 1 60B90F0D
+P 5600 2600
+F 0 "#PWR0136" H 5600 2350 50  0001 C CNN
+F 1 "GND" V 5605 2472 50  0000 R CNN
+F 2 "" H 5600 2600 50  0001 C CNN
+F 3 "" H 5600 2600 50  0001 C CNN
+	1    5600 2600
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0137
+U 1 1 60B90F13
+P 5600 3050
+F 0 "#PWR0137" H 5600 2800 50  0001 C CNN
+F 1 "GND" V 5605 2922 50  0000 R CNN
+F 2 "" H 5600 3050 50  0001 C CNN
+F 3 "" H 5600 3050 50  0001 C CNN
+	1    5600 3050
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R27
+U 1 1 60B90F19
+P 5600 3200
+F 0 "R27" H 5530 3154 50  0001 C CNN
+F 1 "100k   " H 5530 3200 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 5530 3200 50  0001 C CNN
+F 3 "~" H 5600 3200 50  0001 C CNN
+	1    5600 3200
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5600 3350 6050 3350
+$Comp
+L mixer.pcb-rescue:R-Device R28
+U 1 1 60B90F20
+P 5600 3650
+F 0 "R28" H 5530 3604 50  0001 C CNN
+F 1 "100k   " H 5530 3650 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 5530 3650 50  0001 C CNN
+F 3 "~" H 5600 3650 50  0001 C CNN
+	1    5600 3650
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5600 3800 6050 3800
+$Comp
+L power:GND #PWR0138
+U 1 1 60B90F27
+P 5600 3500
+F 0 "#PWR0138" H 5600 3250 50  0001 C CNN
+F 1 "GND" V 5605 3372 50  0000 R CNN
+F 2 "" H 5600 3500 50  0001 C CNN
+F 3 "" H 5600 3500 50  0001 C CNN
+	1    5600 3500
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0139
+U 1 1 60B90F2D
+P 5600 3950
+F 0 "#PWR0139" H 5600 3700 50  0001 C CNN
+F 1 "GND" V 5605 3822 50  0000 R CNN
+F 2 "" H 5600 3950 50  0001 C CNN
+F 3 "" H 5600 3950 50  0001 C CNN
+	1    5600 3950
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R29
+U 1 1 60B90F33
+P 5600 4100
+F 0 "R29" H 5530 4054 50  0001 C CNN
+F 1 "100k   " H 5530 4100 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 5530 4100 50  0001 C CNN
+F 3 "~" H 5600 4100 50  0001 C CNN
+	1    5600 4100
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5600 4250 6050 4250
+Wire Wire Line
+	5050 4250 5050 3000
+Wire Wire Line
+	5100 3800 5100 2900
+Wire Wire Line
+	5100 2900 5050 2900
+Wire Wire Line
+	5150 3350 5150 2800
+Wire Wire Line
+	5150 2800 5050 2800
+Wire Wire Line
+	5200 2900 5200 2700
+Wire Wire Line
+	5200 2700 5050 2700
+Wire Wire Line
+	5050 1100 5050 2300
+Wire Wire Line
+	5100 1550 5100 2400
+Wire Wire Line
+	5100 2400 5050 2400
+Wire Wire Line
+	5050 2500 5150 2500
+Wire Wire Line
+	5200 2450 5200 2600
+Wire Wire Line
+	5200 2600 5050 2600
+Wire Wire Line
+	5600 1100 5050 1100
+Connection ~ 5600 1100
+Wire Wire Line
+	5100 1550 5600 1550
+Connection ~ 5600 1550
+Wire Wire Line
+	5150 2500 5150 2000
+Wire Wire Line
+	5600 2000 5150 2000
+Connection ~ 5600 2000
+Wire Wire Line
+	5200 2450 5600 2450
+Connection ~ 5600 2450
+Wire Wire Line
+	5600 2900 5200 2900
+Connection ~ 5600 2900
+Wire Wire Line
+	5150 3350 5600 3350
+Connection ~ 5600 3350
+Wire Wire Line
+	5600 3800 5100 3800
+Connection ~ 5600 3800
+Wire Wire Line
+	5050 4250 5600 4250
+Connection ~ 5600 4250
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_21
+U 1 1 60BA96A5
+P 9350 2900
+F 0 "MuxCh1_21" H 9430 2942 50  0000 L CNN
+F 1 "Conn_01x03" H 9430 2851 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 9350 2900 50  0001 C CNN
+F 3 "~" H 9350 2900 50  0001 C CNN
+F 4 "  MuxCh1_5" H 9350 2900 50  0001 L CNN "Field4"
+	1    9350 2900
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_22
+U 1 1 60BA96AC
+P 9350 3350
+F 0 "MuxCh1_22" H 9430 3392 50  0000 L CNN
+F 1 "Conn_01x03" H 9430 3301 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 9350 3350 50  0001 C CNN
+F 3 "~" H 9350 3350 50  0001 C CNN
+F 4 "  MuxCh1_6" H 9350 3350 50  0001 L CNN "Field4"
+	1    9350 3350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_24
+U 1 1 60BA96B3
+P 9350 4250
+F 0 "MuxCh1_24" H 9430 4292 50  0000 L CNN
+F 1 "Conn_01x03" H 9430 4201 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 9350 4250 50  0001 C CNN
+F 3 "~" H 9350 4250 50  0001 C CNN
+F 4 "  MuxCh1_8" H 9350 4250 50  0001 L CNN "Field4"
+	1    9350 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_20
+U 1 1 60BA96BA
+P 9350 2450
+F 0 "MuxCh1_20" H 9430 2492 50  0000 L CNN
+F 1 "Conn_01x03" H 9430 2401 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 9350 2450 50  0001 C CNN
+F 3 "~" H 9350 2450 50  0001 C CNN
+F 4 "  MuxCh1_4" H 9350 2450 50  0001 L CNN "Field4"
+	1    9350 2450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_23
+U 1 1 60BA96C1
+P 9350 3800
+F 0 "MuxCh1_23" H 9430 3842 50  0000 L CNN
+F 1 "Conn_01x03" H 9430 3751 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 9350 3800 50  0001 C CNN
+F 3 "~" H 9350 3800 50  0001 C CNN
+F 4 "  MuxCh1_7" H 9350 3800 50  0001 L CNN "Field4"
+	1    9350 3800
+	1    0    0    -1  
+$EndComp
+Text GLabel 7450 2500 0    50   Input ~ 0
+s0
+Text GLabel 7450 2600 0    50   Input ~ 0
+s1
+Text GLabel 7450 2300 0    50   Input ~ 0
+mux_ch3
+Text GLabel 7450 2700 0    50   Input ~ 0
+s2
+Wire Wire Line
+	7850 3200 7750 3200
+Wire Wire Line
+	7750 3200 7450 3200
+Wire Wire Line
+	7450 3200 7450 2900
+Connection ~ 7750 3200
+$Comp
+L power:+3.3V #PWR0140
+U 1 1 60BA96CF
+P 7750 2100
+F 0 "#PWR0140" H 7750 1950 50  0001 C CNN
+F 1 "+3.3V" V 7765 2228 50  0000 L CNN
+F 2 "" H 7750 2100 50  0001 C CNN
+F 3 "" H 7750 2100 50  0001 C CNN
+	1    7750 2100
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0141
+U 1 1 60BA96D5
+P 7750 3200
+F 0 "#PWR0141" H 7750 2950 50  0001 C CNN
+F 1 "GND" H 7755 3027 50  0000 C CNN
+F 2 "" H 7750 3200 50  0001 C CNN
+F 3 "" H 7750 3200 50  0001 C CNN
+	1    7750 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0160
+U 1 1 60BA96DB
+P 9150 2350
+F 0 "#PWR0160" H 9150 2200 50  0001 C CNN
+F 1 "+3.3V" V 9165 2478 50  0000 L CNN
+F 2 "" H 9150 2350 50  0001 C CNN
+F 3 "" H 9150 2350 50  0001 C CNN
+	1    9150 2350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0161
+U 1 1 60BA96E1
+P 9150 2550
+F 0 "#PWR0161" H 9150 2300 50  0001 C CNN
+F 1 "GND" V 9155 2422 50  0000 R CNN
+F 2 "" H 9150 2550 50  0001 C CNN
+F 3 "" H 9150 2550 50  0001 C CNN
+	1    9150 2550
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0162
+U 1 1 60BA96E7
+P 9150 2800
+F 0 "#PWR0162" H 9150 2650 50  0001 C CNN
+F 1 "+3.3V" V 9165 2928 50  0000 L CNN
+F 2 "" H 9150 2800 50  0001 C CNN
+F 3 "" H 9150 2800 50  0001 C CNN
+	1    9150 2800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0163
+U 1 1 60BA96ED
+P 9150 3000
+F 0 "#PWR0163" H 9150 2750 50  0001 C CNN
+F 1 "GND" V 9155 2872 50  0000 R CNN
+F 2 "" H 9150 3000 50  0001 C CNN
+F 3 "" H 9150 3000 50  0001 C CNN
+	1    9150 3000
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0164
+U 1 1 60BA96F3
+P 9150 3250
+F 0 "#PWR0164" H 9150 3100 50  0001 C CNN
+F 1 "+3.3V" V 9165 3378 50  0000 L CNN
+F 2 "" H 9150 3250 50  0001 C CNN
+F 3 "" H 9150 3250 50  0001 C CNN
+	1    9150 3250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0165
+U 1 1 60BA96F9
+P 9150 3450
+F 0 "#PWR0165" H 9150 3200 50  0001 C CNN
+F 1 "GND" V 9155 3322 50  0000 R CNN
+F 2 "" H 9150 3450 50  0001 C CNN
+F 3 "" H 9150 3450 50  0001 C CNN
+	1    9150 3450
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0166
+U 1 1 60BA96FF
+P 9150 3700
+F 0 "#PWR0166" H 9150 3550 50  0001 C CNN
+F 1 "+3.3V" V 9165 3828 50  0000 L CNN
+F 2 "" H 9150 3700 50  0001 C CNN
+F 3 "" H 9150 3700 50  0001 C CNN
+	1    9150 3700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0167
+U 1 1 60BA9705
+P 9150 3900
+F 0 "#PWR0167" H 9150 3650 50  0001 C CNN
+F 1 "GND" V 9155 3772 50  0000 R CNN
+F 2 "" H 9150 3900 50  0001 C CNN
+F 3 "" H 9150 3900 50  0001 C CNN
+	1    9150 3900
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0168
+U 1 1 60BA970B
+P 9150 4150
+F 0 "#PWR0168" H 9150 4000 50  0001 C CNN
+F 1 "+3.3V" V 9165 4278 50  0000 L CNN
+F 2 "" H 9150 4150 50  0001 C CNN
+F 3 "" H 9150 4150 50  0001 C CNN
+	1    9150 4150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L 74xx:74HC4051 MuxCh3
+U 1 1 60BA9711
+P 7750 2600
+F 0 "MuxCh3" H 7800 3281 50  0000 C CNN
+F 1 "74HC4051" H 7800 3190 50  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 7750 2200 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 7750 2200 50  0001 C CNN
+	1    7750 2600
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0169
+U 1 1 60BA9717
+P 9150 4350
+F 0 "#PWR0169" H 9150 4100 50  0001 C CNN
+F 1 "GND" V 9155 4222 50  0000 R CNN
+F 2 "" H 9150 4350 50  0001 C CNN
+F 3 "" H 9150 4350 50  0001 C CNN
+	1    9150 4350
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0170
+U 1 1 60BA971D
+P 9150 1200
+F 0 "#PWR0170" H 9150 950 50  0001 C CNN
+F 1 "GND" V 9155 1072 50  0000 R CNN
+F 2 "" H 9150 1200 50  0001 C CNN
+F 3 "" H 9150 1200 50  0001 C CNN
+	1    9150 1200
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0171
+U 1 1 60BA9723
+P 9150 1000
+F 0 "#PWR0171" H 9150 850 50  0001 C CNN
+F 1 "+3.3V" V 9165 1128 50  0000 L CNN
+F 2 "" H 9150 1000 50  0001 C CNN
+F 3 "" H 9150 1000 50  0001 C CNN
+	1    9150 1000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R44
+U 1 1 60BA9729
+P 8700 950
+F 0 "R44" H 8630 904 50  0001 C CNN
+F 1 "100k   " H 8630 950 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8630 950 50  0001 C CNN
+F 3 "~" H 8700 950 50  0001 C CNN
+	1    8700 950 
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_17
+U 1 1 60BA9730
+P 9350 1100
+F 0 "MuxCh1_17" H 9430 1142 50  0000 L CNN
+F 1 "Conn_01x03" H 9430 1051 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 9350 1100 50  0001 C CNN
+F 3 "~" H 9350 1100 50  0001 C CNN
+F 4 "  MuxCh1_1" H 9350 1100 50  0001 L CNN "Field4"
+	1    9350 1100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8700 1100 9150 1100
+$Comp
+L power:GND #PWR0172
+U 1 1 60BA9737
+P 8700 800
+F 0 "#PWR0172" H 8700 550 50  0001 C CNN
+F 1 "GND" V 8705 672 50  0000 R CNN
+F 2 "" H 8700 800 50  0001 C CNN
+F 3 "" H 8700 800 50  0001 C CNN
+	1    8700 800 
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0173
+U 1 1 60BA973D
+P 9150 2100
+F 0 "#PWR0173" H 9150 1850 50  0001 C CNN
+F 1 "GND" V 9155 1972 50  0000 R CNN
+F 2 "" H 9150 2100 50  0001 C CNN
+F 3 "" H 9150 2100 50  0001 C CNN
+	1    9150 2100
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0174
+U 1 1 60BA9743
+P 9150 1650
+F 0 "#PWR0174" H 9150 1400 50  0001 C CNN
+F 1 "GND" V 9155 1522 50  0000 R CNN
+F 2 "" H 9150 1650 50  0001 C CNN
+F 3 "" H 9150 1650 50  0001 C CNN
+	1    9150 1650
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0175
+U 1 1 60BA9749
+P 9150 1900
+F 0 "#PWR0175" H 9150 1750 50  0001 C CNN
+F 1 "+3.3V" V 9165 2028 50  0000 L CNN
+F 2 "" H 9150 1900 50  0001 C CNN
+F 3 "" H 9150 1900 50  0001 C CNN
+	1    9150 1900
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0176
+U 1 1 60BA974F
+P 9150 1450
+F 0 "#PWR0176" H 9150 1300 50  0001 C CNN
+F 1 "+3.3V" V 9165 1578 50  0000 L CNN
+F 2 "" H 9150 1450 50  0001 C CNN
+F 3 "" H 9150 1450 50  0001 C CNN
+	1    9150 1450
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_18
+U 1 1 60BA9756
+P 9350 1550
+F 0 "MuxCh1_18" H 9430 1592 50  0000 L CNN
+F 1 "Conn_01x03" H 9430 1501 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 9350 1550 50  0001 C CNN
+F 3 "~" H 9350 1550 50  0001 C CNN
+F 4 "  MuxCh1_2" H 9350 1550 50  0001 L CNN "Field4"
+	1    9350 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0177
+U 1 1 60BA975C
+P 8700 1250
+F 0 "#PWR0177" H 8700 1000 50  0001 C CNN
+F 1 "GND" V 8705 1122 50  0000 R CNN
+F 2 "" H 8700 1250 50  0001 C CNN
+F 3 "" H 8700 1250 50  0001 C CNN
+	1    8700 1250
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R45
+U 1 1 60BA9762
+P 8700 1400
+F 0 "R45" H 8630 1354 50  0001 C CNN
+F 1 "100k   " H 8630 1400 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8630 1400 50  0001 C CNN
+F 3 "~" H 8700 1400 50  0001 C CNN
+	1    8700 1400
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	8700 1550 9150 1550
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_19
+U 1 1 60BA976A
+P 9350 2000
+F 0 "MuxCh1_19" H 9430 2042 50  0000 L CNN
+F 1 "Conn_01x03" H 9430 1951 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 9350 2000 50  0001 C CNN
+F 3 "~" H 9350 2000 50  0001 C CNN
+F 4 "  MuxCh1_3" H 9350 2000 50  0001 L CNN "Field4"
+	1    9350 2000
+	1    0    0    -1  
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R46
+U 1 1 60BA9770
+P 8700 1850
+F 0 "R46" H 8630 1804 50  0001 C CNN
+F 1 "100k   " H 8630 1850 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8630 1850 50  0001 C CNN
+F 3 "~" H 8700 1850 50  0001 C CNN
+	1    8700 1850
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	8700 2000 9150 2000
+$Comp
+L power:GND #PWR0178
+U 1 1 60BA9777
+P 8700 1700
+F 0 "#PWR0178" H 8700 1450 50  0001 C CNN
+F 1 "GND" V 8705 1572 50  0000 R CNN
+F 2 "" H 8700 1700 50  0001 C CNN
+F 3 "" H 8700 1700 50  0001 C CNN
+	1    8700 1700
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0179
+U 1 1 60BA977D
+P 8700 2150
+F 0 "#PWR0179" H 8700 1900 50  0001 C CNN
+F 1 "GND" V 8705 2022 50  0000 R CNN
+F 2 "" H 8700 2150 50  0001 C CNN
+F 3 "" H 8700 2150 50  0001 C CNN
+	1    8700 2150
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R47
+U 1 1 60BA9783
+P 8700 2300
+F 0 "R47" H 8630 2254 50  0001 C CNN
+F 1 "100k   " H 8630 2300 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8630 2300 50  0001 C CNN
+F 3 "~" H 8700 2300 50  0001 C CNN
+	1    8700 2300
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	8700 2450 9150 2450
+$Comp
+L mixer.pcb-rescue:R-Device R48
+U 1 1 60BA978A
+P 8700 2750
+F 0 "R48" H 8630 2704 50  0001 C CNN
+F 1 "100k   " H 8630 2750 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8630 2750 50  0001 C CNN
+F 3 "~" H 8700 2750 50  0001 C CNN
+	1    8700 2750
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	8700 2900 9150 2900
+$Comp
+L power:GND #PWR0180
+U 1 1 60BA9791
+P 8700 2600
+F 0 "#PWR0180" H 8700 2350 50  0001 C CNN
+F 1 "GND" V 8705 2472 50  0000 R CNN
+F 2 "" H 8700 2600 50  0001 C CNN
+F 3 "" H 8700 2600 50  0001 C CNN
+	1    8700 2600
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0181
+U 1 1 60BA9797
+P 8700 3050
+F 0 "#PWR0181" H 8700 2800 50  0001 C CNN
+F 1 "GND" V 8705 2922 50  0000 R CNN
+F 2 "" H 8700 3050 50  0001 C CNN
+F 3 "" H 8700 3050 50  0001 C CNN
+	1    8700 3050
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R49
+U 1 1 60BA979D
+P 8700 3200
+F 0 "R49" H 8630 3154 50  0001 C CNN
+F 1 "100k   " H 8630 3200 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8630 3200 50  0001 C CNN
+F 3 "~" H 8700 3200 50  0001 C CNN
+	1    8700 3200
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	8700 3350 9150 3350
+$Comp
+L mixer.pcb-rescue:R-Device R50
+U 1 1 60BA97A4
+P 8700 3650
+F 0 "R50" H 8630 3604 50  0001 C CNN
+F 1 "100k   " H 8630 3650 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8630 3650 50  0001 C CNN
+F 3 "~" H 8700 3650 50  0001 C CNN
+	1    8700 3650
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	8700 3800 9150 3800
+$Comp
+L power:GND #PWR0182
+U 1 1 60BA97AB
+P 8700 3500
+F 0 "#PWR0182" H 8700 3250 50  0001 C CNN
+F 1 "GND" V 8705 3372 50  0000 R CNN
+F 2 "" H 8700 3500 50  0001 C CNN
+F 3 "" H 8700 3500 50  0001 C CNN
+	1    8700 3500
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0183
+U 1 1 60BA97B1
+P 8700 3950
+F 0 "#PWR0183" H 8700 3700 50  0001 C CNN
+F 1 "GND" V 8705 3822 50  0000 R CNN
+F 2 "" H 8700 3950 50  0001 C CNN
+F 3 "" H 8700 3950 50  0001 C CNN
+	1    8700 3950
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R51
+U 1 1 60BA97B7
+P 8700 4100
+F 0 "R51" H 8630 4054 50  0001 C CNN
+F 1 "100k   " H 8630 4100 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8630 4100 50  0001 C CNN
+F 3 "~" H 8700 4100 50  0001 C CNN
+	1    8700 4100
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	8700 4250 9150 4250
+Wire Wire Line
+	8150 4250 8150 3000
+Wire Wire Line
+	8200 3800 8200 2900
+Wire Wire Line
+	8200 2900 8150 2900
+Wire Wire Line
+	8250 3350 8250 2800
+Wire Wire Line
+	8250 2800 8150 2800
+Wire Wire Line
+	8300 2900 8300 2700
+Wire Wire Line
+	8300 2700 8150 2700
+Wire Wire Line
+	8150 1100 8150 2300
+Wire Wire Line
+	8200 1550 8200 2400
+Wire Wire Line
+	8200 2400 8150 2400
+Wire Wire Line
+	8150 2500 8250 2500
+Wire Wire Line
+	8300 2450 8300 2600
+Wire Wire Line
+	8300 2600 8150 2600
+Wire Wire Line
+	8700 1100 8150 1100
+Connection ~ 8700 1100
+Wire Wire Line
+	8200 1550 8700 1550
+Connection ~ 8700 1550
+Wire Wire Line
+	8250 2500 8250 2000
+Wire Wire Line
+	8700 2000 8250 2000
+Connection ~ 8700 2000
+Wire Wire Line
+	8300 2450 8700 2450
+Connection ~ 8700 2450
+Wire Wire Line
+	8700 2900 8300 2900
+Connection ~ 8700 2900
+Wire Wire Line
+	8250 3350 8700 3350
+Connection ~ 8700 3350
+Wire Wire Line
+	8700 3800 8200 3800
+Connection ~ 8700 3800
+Wire Wire Line
+	8150 4250 8700 4250
+Connection ~ 8700 4250
+$Comp
+L mixer.pcb-rescue:R-Device R38
+U 1 1 60BA97DC
+P 8150 6250
+F 0 "R38" H 8080 6204 50  0001 C CNN
+F 1 "100k" V 8080 6250 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8080 6250 50  0001 C CNN
+F 3 "~" H 8150 6250 50  0001 C CNN
+	1    8150 6250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0184
+U 1 1 60BA97E2
+P 8300 6250
+F 0 "#PWR0184" H 8300 6000 50  0001 C CNN
+F 1 "GND" V 8305 6122 50  0000 R CNN
+F 2 "" H 8300 6250 50  0001 C CNN
+F 3 "" H 8300 6250 50  0001 C CNN
+	1    8300 6250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_29
+U 1 1 60BC2863
+P 12500 2900
+F 0 "MuxCh1_29" H 12580 2942 50  0000 L CNN
+F 1 "Conn_01x03" H 12580 2851 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 12500 2900 50  0001 C CNN
+F 3 "~" H 12500 2900 50  0001 C CNN
+F 4 "  MuxCh1_5" H 12500 2900 50  0001 L CNN "Field4"
+	1    12500 2900
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_30
+U 1 1 60BC286A
+P 12500 3350
+F 0 "MuxCh1_30" H 12580 3392 50  0000 L CNN
+F 1 "Conn_01x03" H 12580 3301 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 12500 3350 50  0001 C CNN
+F 3 "~" H 12500 3350 50  0001 C CNN
+F 4 "  MuxCh1_6" H 12500 3350 50  0001 L CNN "Field4"
+	1    12500 3350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_32
+U 1 1 60BC2871
+P 12500 4250
+F 0 "MuxCh1_32" H 12580 4292 50  0000 L CNN
+F 1 "Conn_01x03" H 12580 4201 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 12500 4250 50  0001 C CNN
+F 3 "~" H 12500 4250 50  0001 C CNN
+F 4 "  MuxCh1_8" H 12500 4250 50  0001 L CNN "Field4"
+	1    12500 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_28
+U 1 1 60BC2878
+P 12500 2450
+F 0 "MuxCh1_28" H 12580 2492 50  0000 L CNN
+F 1 "Conn_01x03" H 12580 2401 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 12500 2450 50  0001 C CNN
+F 3 "~" H 12500 2450 50  0001 C CNN
+F 4 "  MuxCh1_4" H 12500 2450 50  0001 L CNN "Field4"
+	1    12500 2450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_31
+U 1 1 60BC287F
+P 12500 3800
+F 0 "MuxCh1_31" H 12580 3842 50  0000 L CNN
+F 1 "Conn_01x03" H 12580 3751 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 12500 3800 50  0001 C CNN
+F 3 "~" H 12500 3800 50  0001 C CNN
+F 4 "  MuxCh1_7" H 12500 3800 50  0001 L CNN "Field4"
+	1    12500 3800
+	1    0    0    -1  
+$EndComp
+Text GLabel 10600 2500 0    50   Input ~ 0
+s0
+Text GLabel 10600 2600 0    50   Input ~ 0
+s1
+Text GLabel 10600 2300 0    50   Input ~ 0
+mux_ch4
+Text GLabel 10600 2700 0    50   Input ~ 0
+s2
+Wire Wire Line
+	11000 3200 10900 3200
+Wire Wire Line
+	10900 3200 10600 3200
+Wire Wire Line
+	10600 3200 10600 2900
+Connection ~ 10900 3200
+$Comp
+L power:+3.3V #PWR0185
+U 1 1 60BC288D
+P 10900 2100
+F 0 "#PWR0185" H 10900 1950 50  0001 C CNN
+F 1 "+3.3V" V 10915 2228 50  0000 L CNN
+F 2 "" H 10900 2100 50  0001 C CNN
+F 3 "" H 10900 2100 50  0001 C CNN
+	1    10900 2100
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0186
+U 1 1 60BC2893
+P 10900 3200
+F 0 "#PWR0186" H 10900 2950 50  0001 C CNN
+F 1 "GND" H 10905 3027 50  0000 C CNN
+F 2 "" H 10900 3200 50  0001 C CNN
+F 3 "" H 10900 3200 50  0001 C CNN
+	1    10900 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0187
+U 1 1 60BC2899
+P 12300 2350
+F 0 "#PWR0187" H 12300 2200 50  0001 C CNN
+F 1 "+3.3V" V 12315 2478 50  0000 L CNN
+F 2 "" H 12300 2350 50  0001 C CNN
+F 3 "" H 12300 2350 50  0001 C CNN
+	1    12300 2350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0188
+U 1 1 60BC289F
+P 12300 2550
+F 0 "#PWR0188" H 12300 2300 50  0001 C CNN
+F 1 "GND" V 12305 2422 50  0000 R CNN
+F 2 "" H 12300 2550 50  0001 C CNN
+F 3 "" H 12300 2550 50  0001 C CNN
+	1    12300 2550
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0189
+U 1 1 60BC28A5
+P 12300 2800
+F 0 "#PWR0189" H 12300 2650 50  0001 C CNN
+F 1 "+3.3V" V 12315 2928 50  0000 L CNN
+F 2 "" H 12300 2800 50  0001 C CNN
+F 3 "" H 12300 2800 50  0001 C CNN
+	1    12300 2800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0190
+U 1 1 60BC28AB
+P 12300 3000
+F 0 "#PWR0190" H 12300 2750 50  0001 C CNN
+F 1 "GND" V 12305 2872 50  0000 R CNN
+F 2 "" H 12300 3000 50  0001 C CNN
+F 3 "" H 12300 3000 50  0001 C CNN
+	1    12300 3000
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0191
+U 1 1 60BC28B1
+P 12300 3250
+F 0 "#PWR0191" H 12300 3100 50  0001 C CNN
+F 1 "+3.3V" V 12315 3378 50  0000 L CNN
+F 2 "" H 12300 3250 50  0001 C CNN
+F 3 "" H 12300 3250 50  0001 C CNN
+	1    12300 3250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0192
+U 1 1 60BC28B7
+P 12300 3450
+F 0 "#PWR0192" H 12300 3200 50  0001 C CNN
+F 1 "GND" V 12305 3322 50  0000 R CNN
+F 2 "" H 12300 3450 50  0001 C CNN
+F 3 "" H 12300 3450 50  0001 C CNN
+	1    12300 3450
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0193
+U 1 1 60BC28BD
+P 12300 3700
+F 0 "#PWR0193" H 12300 3550 50  0001 C CNN
+F 1 "+3.3V" V 12315 3828 50  0000 L CNN
+F 2 "" H 12300 3700 50  0001 C CNN
+F 3 "" H 12300 3700 50  0001 C CNN
+	1    12300 3700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0194
+U 1 1 60BC28C3
+P 12300 3900
+F 0 "#PWR0194" H 12300 3650 50  0001 C CNN
+F 1 "GND" V 12305 3772 50  0000 R CNN
+F 2 "" H 12300 3900 50  0001 C CNN
+F 3 "" H 12300 3900 50  0001 C CNN
+	1    12300 3900
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0195
+U 1 1 60BC28C9
+P 12300 4150
+F 0 "#PWR0195" H 12300 4000 50  0001 C CNN
+F 1 "+3.3V" V 12315 4278 50  0000 L CNN
+F 2 "" H 12300 4150 50  0001 C CNN
+F 3 "" H 12300 4150 50  0001 C CNN
+	1    12300 4150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L 74xx:74HC4051 MuxCh4
+U 1 1 60BC28CF
+P 10900 2600
+F 0 "MuxCh4" H 10950 3281 50  0000 C CNN
+F 1 "74HC4051" H 10950 3190 50  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 10900 2200 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 10900 2200 50  0001 C CNN
+	1    10900 2600
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0238
+U 1 1 60BC28D5
+P 12300 4350
+F 0 "#PWR0238" H 12300 4100 50  0001 C CNN
+F 1 "GND" V 12305 4222 50  0000 R CNN
+F 2 "" H 12300 4350 50  0001 C CNN
+F 3 "" H 12300 4350 50  0001 C CNN
+	1    12300 4350
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0239
+U 1 1 60BC28DB
+P 12300 1200
+F 0 "#PWR0239" H 12300 950 50  0001 C CNN
+F 1 "GND" V 12305 1072 50  0000 R CNN
+F 2 "" H 12300 1200 50  0001 C CNN
+F 3 "" H 12300 1200 50  0001 C CNN
+	1    12300 1200
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0240
+U 1 1 60BC28E1
+P 12300 1000
+F 0 "#PWR0240" H 12300 850 50  0001 C CNN
+F 1 "+3.3V" V 12315 1128 50  0000 L CNN
+F 2 "" H 12300 1000 50  0001 C CNN
+F 3 "" H 12300 1000 50  0001 C CNN
+	1    12300 1000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R52
+U 1 1 60BC28E7
+P 11850 950
+F 0 "R52" H 11780 904 50  0001 C CNN
+F 1 "100k   " H 11780 950 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 11780 950 50  0001 C CNN
+F 3 "~" H 11850 950 50  0001 C CNN
+	1    11850 950 
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_25
+U 1 1 60BC28EE
+P 12500 1100
+F 0 "MuxCh1_25" H 12580 1142 50  0000 L CNN
+F 1 "Conn_01x03" H 12580 1051 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 12500 1100 50  0001 C CNN
+F 3 "~" H 12500 1100 50  0001 C CNN
+F 4 "  MuxCh1_1" H 12500 1100 50  0001 L CNN "Field4"
+	1    12500 1100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	11850 1100 12300 1100
+$Comp
+L power:GND #PWR0241
+U 1 1 60BC28F5
+P 11850 800
+F 0 "#PWR0241" H 11850 550 50  0001 C CNN
+F 1 "GND" V 11855 672 50  0000 R CNN
+F 2 "" H 11850 800 50  0001 C CNN
+F 3 "" H 11850 800 50  0001 C CNN
+	1    11850 800 
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0242
+U 1 1 60BC28FB
+P 12300 2100
+F 0 "#PWR0242" H 12300 1850 50  0001 C CNN
+F 1 "GND" V 12305 1972 50  0000 R CNN
+F 2 "" H 12300 2100 50  0001 C CNN
+F 3 "" H 12300 2100 50  0001 C CNN
+	1    12300 2100
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0243
+U 1 1 60BC2901
+P 12300 1650
+F 0 "#PWR0243" H 12300 1400 50  0001 C CNN
+F 1 "GND" V 12305 1522 50  0000 R CNN
+F 2 "" H 12300 1650 50  0001 C CNN
+F 3 "" H 12300 1650 50  0001 C CNN
+	1    12300 1650
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0248
+U 1 1 60BC2907
+P 12300 1900
+F 0 "#PWR0248" H 12300 1750 50  0001 C CNN
+F 1 "+3.3V" V 12315 2028 50  0000 L CNN
+F 2 "" H 12300 1900 50  0001 C CNN
+F 3 "" H 12300 1900 50  0001 C CNN
+	1    12300 1900
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0249
+U 1 1 60BC290D
+P 12300 1450
+F 0 "#PWR0249" H 12300 1300 50  0001 C CNN
+F 1 "+3.3V" V 12315 1578 50  0000 L CNN
+F 2 "" H 12300 1450 50  0001 C CNN
+F 3 "" H 12300 1450 50  0001 C CNN
+	1    12300 1450
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_26
+U 1 1 60BC2914
+P 12500 1550
+F 0 "MuxCh1_26" H 12580 1592 50  0000 L CNN
+F 1 "Conn_01x03" H 12580 1501 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 12500 1550 50  0001 C CNN
+F 3 "~" H 12500 1550 50  0001 C CNN
+F 4 "  MuxCh1_2" H 12500 1550 50  0001 L CNN "Field4"
+	1    12500 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0250
+U 1 1 60BC291A
+P 11850 1250
+F 0 "#PWR0250" H 11850 1000 50  0001 C CNN
+F 1 "GND" V 11855 1122 50  0000 R CNN
+F 2 "" H 11850 1250 50  0001 C CNN
+F 3 "" H 11850 1250 50  0001 C CNN
+	1    11850 1250
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R53
+U 1 1 60BC2920
+P 11850 1400
+F 0 "R53" H 11780 1354 50  0001 C CNN
+F 1 "100k   " H 11780 1400 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 11780 1400 50  0001 C CNN
+F 3 "~" H 11850 1400 50  0001 C CNN
+	1    11850 1400
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	11850 1550 12300 1550
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_27
+U 1 1 60BC2928
+P 12500 2000
+F 0 "MuxCh1_27" H 12580 2042 50  0000 L CNN
+F 1 "Conn_01x03" H 12580 1951 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 12500 2000 50  0001 C CNN
+F 3 "~" H 12500 2000 50  0001 C CNN
+F 4 "  MuxCh1_3" H 12500 2000 50  0001 L CNN "Field4"
+	1    12500 2000
+	1    0    0    -1  
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R54
+U 1 1 60BC292E
+P 11850 1850
+F 0 "R54" H 11780 1804 50  0001 C CNN
+F 1 "100k   " H 11780 1850 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 11780 1850 50  0001 C CNN
+F 3 "~" H 11850 1850 50  0001 C CNN
+	1    11850 1850
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	11850 2000 12300 2000
+$Comp
+L power:GND #PWR0251
+U 1 1 60BC2935
+P 11850 1700
+F 0 "#PWR0251" H 11850 1450 50  0001 C CNN
+F 1 "GND" V 11855 1572 50  0000 R CNN
+F 2 "" H 11850 1700 50  0001 C CNN
+F 3 "" H 11850 1700 50  0001 C CNN
+	1    11850 1700
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0252
+U 1 1 60BC293B
+P 11850 2150
+F 0 "#PWR0252" H 11850 1900 50  0001 C CNN
+F 1 "GND" V 11855 2022 50  0000 R CNN
+F 2 "" H 11850 2150 50  0001 C CNN
+F 3 "" H 11850 2150 50  0001 C CNN
+	1    11850 2150
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R55
+U 1 1 60BC2941
+P 11850 2300
+F 0 "R55" H 11780 2254 50  0001 C CNN
+F 1 "100k   " H 11780 2300 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 11780 2300 50  0001 C CNN
+F 3 "~" H 11850 2300 50  0001 C CNN
+	1    11850 2300
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	11850 2450 12300 2450
+$Comp
+L mixer.pcb-rescue:R-Device R56
+U 1 1 60BC2948
+P 11850 2750
+F 0 "R56" H 11780 2704 50  0001 C CNN
+F 1 "100k   " H 11780 2750 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 11780 2750 50  0001 C CNN
+F 3 "~" H 11850 2750 50  0001 C CNN
+	1    11850 2750
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	11850 2900 12300 2900
+$Comp
+L power:GND #PWR0253
+U 1 1 60BC294F
+P 11850 2600
+F 0 "#PWR0253" H 11850 2350 50  0001 C CNN
+F 1 "GND" V 11855 2472 50  0000 R CNN
+F 2 "" H 11850 2600 50  0001 C CNN
+F 3 "" H 11850 2600 50  0001 C CNN
+	1    11850 2600
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0254
+U 1 1 60BC2955
+P 11850 3050
+F 0 "#PWR0254" H 11850 2800 50  0001 C CNN
+F 1 "GND" V 11855 2922 50  0000 R CNN
+F 2 "" H 11850 3050 50  0001 C CNN
+F 3 "" H 11850 3050 50  0001 C CNN
+	1    11850 3050
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R57
+U 1 1 60BC295B
+P 11850 3200
+F 0 "R57" H 11780 3154 50  0001 C CNN
+F 1 "100k   " H 11780 3200 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 11780 3200 50  0001 C CNN
+F 3 "~" H 11850 3200 50  0001 C CNN
+	1    11850 3200
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	11850 3350 12300 3350
+$Comp
+L mixer.pcb-rescue:R-Device R58
+U 1 1 60BC2962
+P 11850 3650
+F 0 "R58" H 11780 3604 50  0001 C CNN
+F 1 "100k   " H 11780 3650 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 11780 3650 50  0001 C CNN
+F 3 "~" H 11850 3650 50  0001 C CNN
+	1    11850 3650
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	11850 3800 12300 3800
+$Comp
+L power:GND #PWR0255
+U 1 1 60BC2969
+P 11850 3500
+F 0 "#PWR0255" H 11850 3250 50  0001 C CNN
+F 1 "GND" V 11855 3372 50  0000 R CNN
+F 2 "" H 11850 3500 50  0001 C CNN
+F 3 "" H 11850 3500 50  0001 C CNN
+	1    11850 3500
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0256
+U 1 1 60BC296F
+P 11850 3950
+F 0 "#PWR0256" H 11850 3700 50  0001 C CNN
+F 1 "GND" V 11855 3822 50  0000 R CNN
+F 2 "" H 11850 3950 50  0001 C CNN
+F 3 "" H 11850 3950 50  0001 C CNN
+	1    11850 3950
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R59
+U 1 1 60BC2975
+P 11850 4100
+F 0 "R59" H 11780 4054 50  0001 C CNN
+F 1 "100k   " H 11780 4100 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 11780 4100 50  0001 C CNN
+F 3 "~" H 11850 4100 50  0001 C CNN
+	1    11850 4100
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	11850 4250 12300 4250
+Wire Wire Line
+	11300 4250 11300 3000
+Wire Wire Line
+	11350 3800 11350 2900
+Wire Wire Line
+	11350 2900 11300 2900
+Wire Wire Line
+	11400 3350 11400 2800
+Wire Wire Line
+	11400 2800 11300 2800
+Wire Wire Line
+	11450 2900 11450 2700
+Wire Wire Line
+	11450 2700 11300 2700
+Wire Wire Line
+	11300 1100 11300 2300
+Wire Wire Line
+	11350 1550 11350 2400
+Wire Wire Line
+	11350 2400 11300 2400
+Wire Wire Line
+	11300 2500 11400 2500
+Wire Wire Line
+	11450 2450 11450 2600
+Wire Wire Line
+	11450 2600 11300 2600
+Wire Wire Line
+	11850 1100 11300 1100
+Connection ~ 11850 1100
+Wire Wire Line
+	11350 1550 11850 1550
+Connection ~ 11850 1550
+Wire Wire Line
+	11400 2500 11400 2000
+Wire Wire Line
+	11850 2000 11400 2000
+Connection ~ 11850 2000
+Wire Wire Line
+	11450 2450 11850 2450
+Connection ~ 11850 2450
+Wire Wire Line
+	11850 2900 11450 2900
+Connection ~ 11850 2900
+Wire Wire Line
+	11400 3350 11850 3350
+Connection ~ 11850 3350
+Wire Wire Line
+	11850 3800 11350 3800
+Connection ~ 11850 3800
+Wire Wire Line
+	11300 4250 11850 4250
+Connection ~ 11850 4250
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_37
+U 1 1 60BD8FBA
+P 15450 2900
+F 0 "MuxCh1_37" H 15530 2942 50  0000 L CNN
+F 1 "Conn_01x03" H 15530 2851 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 15450 2900 50  0001 C CNN
+F 3 "~" H 15450 2900 50  0001 C CNN
+F 4 "  MuxCh1_5" H 15450 2900 50  0001 L CNN "Field4"
+	1    15450 2900
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_38
+U 1 1 60BD8FC1
+P 15450 3350
+F 0 "MuxCh1_38" H 15530 3392 50  0000 L CNN
+F 1 "Conn_01x03" H 15530 3301 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 15450 3350 50  0001 C CNN
+F 3 "~" H 15450 3350 50  0001 C CNN
+F 4 "  MuxCh1_6" H 15450 3350 50  0001 L CNN "Field4"
+	1    15450 3350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_40
+U 1 1 60BD8FC8
+P 15450 4250
+F 0 "MuxCh1_40" H 15530 4292 50  0000 L CNN
+F 1 "Conn_01x03" H 15530 4201 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 15450 4250 50  0001 C CNN
+F 3 "~" H 15450 4250 50  0001 C CNN
+F 4 "  MuxCh1_8" H 15450 4250 50  0001 L CNN "Field4"
+	1    15450 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_36
+U 1 1 60BD8FCF
+P 15450 2450
+F 0 "MuxCh1_36" H 15530 2492 50  0000 L CNN
+F 1 "Conn_01x03" H 15530 2401 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 15450 2450 50  0001 C CNN
+F 3 "~" H 15450 2450 50  0001 C CNN
+F 4 "  MuxCh1_4" H 15450 2450 50  0001 L CNN "Field4"
+	1    15450 2450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_39
+U 1 1 60BD8FD6
+P 15450 3800
+F 0 "MuxCh1_39" H 15530 3842 50  0000 L CNN
+F 1 "Conn_01x03" H 15530 3751 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 15450 3800 50  0001 C CNN
+F 3 "~" H 15450 3800 50  0001 C CNN
+F 4 "  MuxCh1_7" H 15450 3800 50  0001 L CNN "Field4"
+	1    15450 3800
+	1    0    0    -1  
+$EndComp
+Text GLabel 13550 2500 0    50   Input ~ 0
+s0
+Text GLabel 13550 2600 0    50   Input ~ 0
+s1
+Text GLabel 13550 2300 0    50   Input ~ 0
+mux_master
+Text GLabel 13550 2700 0    50   Input ~ 0
+s2
+Wire Wire Line
+	13950 3200 13850 3200
+Wire Wire Line
+	13850 3200 13550 3200
+Wire Wire Line
+	13550 3200 13550 2900
+Connection ~ 13850 3200
+$Comp
+L power:+3.3V #PWR0257
+U 1 1 60BD8FE4
+P 13850 2100
+F 0 "#PWR0257" H 13850 1950 50  0001 C CNN
+F 1 "+3.3V" V 13865 2228 50  0000 L CNN
+F 2 "" H 13850 2100 50  0001 C CNN
+F 3 "" H 13850 2100 50  0001 C CNN
+	1    13850 2100
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0258
+U 1 1 60BD8FEA
+P 13850 3200
+F 0 "#PWR0258" H 13850 2950 50  0001 C CNN
+F 1 "GND" H 13855 3027 50  0000 C CNN
+F 2 "" H 13850 3200 50  0001 C CNN
+F 3 "" H 13850 3200 50  0001 C CNN
+	1    13850 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0259
+U 1 1 60BD8FF0
+P 15250 2350
+F 0 "#PWR0259" H 15250 2200 50  0001 C CNN
+F 1 "+3.3V" V 15265 2478 50  0000 L CNN
+F 2 "" H 15250 2350 50  0001 C CNN
+F 3 "" H 15250 2350 50  0001 C CNN
+	1    15250 2350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0260
+U 1 1 60BD8FF6
+P 15250 2550
+F 0 "#PWR0260" H 15250 2300 50  0001 C CNN
+F 1 "GND" V 15255 2422 50  0000 R CNN
+F 2 "" H 15250 2550 50  0001 C CNN
+F 3 "" H 15250 2550 50  0001 C CNN
+	1    15250 2550
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0261
+U 1 1 60BD8FFC
+P 15250 2800
+F 0 "#PWR0261" H 15250 2650 50  0001 C CNN
+F 1 "+3.3V" V 15265 2928 50  0000 L CNN
+F 2 "" H 15250 2800 50  0001 C CNN
+F 3 "" H 15250 2800 50  0001 C CNN
+	1    15250 2800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0262
+U 1 1 60BD9002
+P 15250 3000
+F 0 "#PWR0262" H 15250 2750 50  0001 C CNN
+F 1 "GND" V 15255 2872 50  0000 R CNN
+F 2 "" H 15250 3000 50  0001 C CNN
+F 3 "" H 15250 3000 50  0001 C CNN
+	1    15250 3000
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0263
+U 1 1 60BD9008
+P 15250 3250
+F 0 "#PWR0263" H 15250 3100 50  0001 C CNN
+F 1 "+3.3V" V 15265 3378 50  0000 L CNN
+F 2 "" H 15250 3250 50  0001 C CNN
+F 3 "" H 15250 3250 50  0001 C CNN
+	1    15250 3250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0264
+U 1 1 60BD900E
+P 15250 3450
+F 0 "#PWR0264" H 15250 3200 50  0001 C CNN
+F 1 "GND" V 15255 3322 50  0000 R CNN
+F 2 "" H 15250 3450 50  0001 C CNN
+F 3 "" H 15250 3450 50  0001 C CNN
+	1    15250 3450
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0265
+U 1 1 60BD9014
+P 15250 3700
+F 0 "#PWR0265" H 15250 3550 50  0001 C CNN
+F 1 "+3.3V" V 15265 3828 50  0000 L CNN
+F 2 "" H 15250 3700 50  0001 C CNN
+F 3 "" H 15250 3700 50  0001 C CNN
+	1    15250 3700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0266
+U 1 1 60BD901A
+P 15250 3900
+F 0 "#PWR0266" H 15250 3650 50  0001 C CNN
+F 1 "GND" V 15255 3772 50  0000 R CNN
+F 2 "" H 15250 3900 50  0001 C CNN
+F 3 "" H 15250 3900 50  0001 C CNN
+	1    15250 3900
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0267
+U 1 1 60BD9020
+P 15250 4150
+F 0 "#PWR0267" H 15250 4000 50  0001 C CNN
+F 1 "+3.3V" V 15265 4278 50  0000 L CNN
+F 2 "" H 15250 4150 50  0001 C CNN
+F 3 "" H 15250 4150 50  0001 C CNN
+	1    15250 4150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L 74xx:74HC4051 MuxCh5
+U 1 1 60BD9026
+P 13850 2600
+F 0 "MuxCh5" H 13900 3281 50  0000 C CNN
+F 1 "74HC4051" H 13900 3190 50  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 13850 2200 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 13850 2200 50  0001 C CNN
+	1    13850 2600
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0268
+U 1 1 60BD902C
+P 15250 4350
+F 0 "#PWR0268" H 15250 4100 50  0001 C CNN
+F 1 "GND" V 15255 4222 50  0000 R CNN
+F 2 "" H 15250 4350 50  0001 C CNN
+F 3 "" H 15250 4350 50  0001 C CNN
+	1    15250 4350
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0269
+U 1 1 60BD9032
+P 15250 1200
+F 0 "#PWR0269" H 15250 950 50  0001 C CNN
+F 1 "GND" V 15255 1072 50  0000 R CNN
+F 2 "" H 15250 1200 50  0001 C CNN
+F 3 "" H 15250 1200 50  0001 C CNN
+	1    15250 1200
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0270
+U 1 1 60BD9038
+P 15250 1000
+F 0 "#PWR0270" H 15250 850 50  0001 C CNN
+F 1 "+3.3V" V 15265 1128 50  0000 L CNN
+F 2 "" H 15250 1000 50  0001 C CNN
+F 3 "" H 15250 1000 50  0001 C CNN
+	1    15250 1000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R60
+U 1 1 60BD903E
+P 14800 950
+F 0 "R60" H 14730 904 50  0001 C CNN
+F 1 "100k   " H 14730 950 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 14730 950 50  0001 C CNN
+F 3 "~" H 14800 950 50  0001 C CNN
+	1    14800 950 
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_33
+U 1 1 60BD9045
+P 15450 1100
+F 0 "MuxCh1_33" H 15530 1142 50  0000 L CNN
+F 1 "Conn_01x03" H 15530 1051 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 15450 1100 50  0001 C CNN
+F 3 "~" H 15450 1100 50  0001 C CNN
+F 4 "  MuxCh1_1" H 15450 1100 50  0001 L CNN "Field4"
+	1    15450 1100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	14800 1100 15250 1100
+$Comp
+L power:GND #PWR0271
+U 1 1 60BD904C
+P 14800 800
+F 0 "#PWR0271" H 14800 550 50  0001 C CNN
+F 1 "GND" V 14805 672 50  0000 R CNN
+F 2 "" H 14800 800 50  0001 C CNN
+F 3 "" H 14800 800 50  0001 C CNN
+	1    14800 800 
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0272
+U 1 1 60BD9052
+P 15250 2100
+F 0 "#PWR0272" H 15250 1850 50  0001 C CNN
+F 1 "GND" V 15255 1972 50  0000 R CNN
+F 2 "" H 15250 2100 50  0001 C CNN
+F 3 "" H 15250 2100 50  0001 C CNN
+	1    15250 2100
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0273
+U 1 1 60BD9058
+P 15250 1650
+F 0 "#PWR0273" H 15250 1400 50  0001 C CNN
+F 1 "GND" V 15255 1522 50  0000 R CNN
+F 2 "" H 15250 1650 50  0001 C CNN
+F 3 "" H 15250 1650 50  0001 C CNN
+	1    15250 1650
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0274
+U 1 1 60BD905E
+P 15250 1900
+F 0 "#PWR0274" H 15250 1750 50  0001 C CNN
+F 1 "+3.3V" V 15265 2028 50  0000 L CNN
+F 2 "" H 15250 1900 50  0001 C CNN
+F 3 "" H 15250 1900 50  0001 C CNN
+	1    15250 1900
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:+3.3V #PWR0275
+U 1 1 60BD9064
+P 15250 1450
+F 0 "#PWR0275" H 15250 1300 50  0001 C CNN
+F 1 "+3.3V" V 15265 1578 50  0000 L CNN
+F 2 "" H 15250 1450 50  0001 C CNN
+F 3 "" H 15250 1450 50  0001 C CNN
+	1    15250 1450
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_34
+U 1 1 60BD906B
+P 15450 1550
+F 0 "MuxCh1_34" H 15530 1592 50  0000 L CNN
+F 1 "Conn_01x03" H 15530 1501 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 15450 1550 50  0001 C CNN
+F 3 "~" H 15450 1550 50  0001 C CNN
+F 4 "  MuxCh1_2" H 15450 1550 50  0001 L CNN "Field4"
+	1    15450 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0276
+U 1 1 60BD9071
+P 14800 1250
+F 0 "#PWR0276" H 14800 1000 50  0001 C CNN
+F 1 "GND" V 14805 1122 50  0000 R CNN
+F 2 "" H 14800 1250 50  0001 C CNN
+F 3 "" H 14800 1250 50  0001 C CNN
+	1    14800 1250
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R61
+U 1 1 60BD9077
+P 14800 1400
+F 0 "R61" H 14730 1354 50  0001 C CNN
+F 1 "100k   " H 14730 1400 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 14730 1400 50  0001 C CNN
+F 3 "~" H 14800 1400 50  0001 C CNN
+	1    14800 1400
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	14800 1550 15250 1550
+$Comp
+L Connector_Generic:Conn_01x03 MuxCh1_35
+U 1 1 60BD907F
+P 15450 2000
+F 0 "MuxCh1_35" H 15530 2042 50  0000 L CNN
+F 1 "Conn_01x03" H 15530 1951 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 15450 2000 50  0001 C CNN
+F 3 "~" H 15450 2000 50  0001 C CNN
+F 4 "  MuxCh1_3" H 15450 2000 50  0001 L CNN "Field4"
+	1    15450 2000
+	1    0    0    -1  
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R62
+U 1 1 60BD9085
+P 14800 1850
+F 0 "R62" H 14730 1804 50  0001 C CNN
+F 1 "100k   " H 14730 1850 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 14730 1850 50  0001 C CNN
+F 3 "~" H 14800 1850 50  0001 C CNN
+	1    14800 1850
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	14800 2000 15250 2000
+$Comp
+L power:GND #PWR0277
+U 1 1 60BD908C
+P 14800 1700
+F 0 "#PWR0277" H 14800 1450 50  0001 C CNN
+F 1 "GND" V 14805 1572 50  0000 R CNN
+F 2 "" H 14800 1700 50  0001 C CNN
+F 3 "" H 14800 1700 50  0001 C CNN
+	1    14800 1700
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0278
+U 1 1 60BD9092
+P 14800 2150
+F 0 "#PWR0278" H 14800 1900 50  0001 C CNN
+F 1 "GND" V 14805 2022 50  0000 R CNN
+F 2 "" H 14800 2150 50  0001 C CNN
+F 3 "" H 14800 2150 50  0001 C CNN
+	1    14800 2150
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R63
+U 1 1 60BD9098
+P 14800 2300
+F 0 "R63" H 14730 2254 50  0001 C CNN
+F 1 "100k   " H 14730 2300 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 14730 2300 50  0001 C CNN
+F 3 "~" H 14800 2300 50  0001 C CNN
+	1    14800 2300
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	14800 2450 15250 2450
+$Comp
+L mixer.pcb-rescue:R-Device R64
+U 1 1 60BD909F
+P 14800 2750
+F 0 "R64" H 14730 2704 50  0001 C CNN
+F 1 "100k   " H 14730 2750 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 14730 2750 50  0001 C CNN
+F 3 "~" H 14800 2750 50  0001 C CNN
+	1    14800 2750
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	14800 2900 15250 2900
+$Comp
+L power:GND #PWR0279
+U 1 1 60BD90A6
+P 14800 2600
+F 0 "#PWR0279" H 14800 2350 50  0001 C CNN
+F 1 "GND" V 14805 2472 50  0000 R CNN
+F 2 "" H 14800 2600 50  0001 C CNN
+F 3 "" H 14800 2600 50  0001 C CNN
+	1    14800 2600
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0280
+U 1 1 60BD90AC
+P 14800 3050
+F 0 "#PWR0280" H 14800 2800 50  0001 C CNN
+F 1 "GND" V 14805 2922 50  0000 R CNN
+F 2 "" H 14800 3050 50  0001 C CNN
+F 3 "" H 14800 3050 50  0001 C CNN
+	1    14800 3050
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R65
+U 1 1 60BD90B2
+P 14800 3200
+F 0 "R65" H 14730 3154 50  0001 C CNN
+F 1 "100k   " H 14730 3200 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 14730 3200 50  0001 C CNN
+F 3 "~" H 14800 3200 50  0001 C CNN
+	1    14800 3200
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	14800 3350 15250 3350
+$Comp
+L mixer.pcb-rescue:R-Device R66
+U 1 1 60BD90B9
+P 14800 3650
+F 0 "R66" H 14730 3604 50  0001 C CNN
+F 1 "100k   " H 14730 3650 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 14730 3650 50  0001 C CNN
+F 3 "~" H 14800 3650 50  0001 C CNN
+	1    14800 3650
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	14800 3800 15250 3800
+$Comp
+L power:GND #PWR0281
+U 1 1 60BD90C0
+P 14800 3500
+F 0 "#PWR0281" H 14800 3250 50  0001 C CNN
+F 1 "GND" V 14805 3372 50  0000 R CNN
+F 2 "" H 14800 3500 50  0001 C CNN
+F 3 "" H 14800 3500 50  0001 C CNN
+	1    14800 3500
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0282
+U 1 1 60BD90C6
+P 14800 3950
+F 0 "#PWR0282" H 14800 3700 50  0001 C CNN
+F 1 "GND" V 14805 3822 50  0000 R CNN
+F 2 "" H 14800 3950 50  0001 C CNN
+F 3 "" H 14800 3950 50  0001 C CNN
+	1    14800 3950
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R67
+U 1 1 60BD90CC
+P 14800 4100
+F 0 "R67" H 14730 4054 50  0001 C CNN
+F 1 "100k   " H 14730 4100 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 14730 4100 50  0001 C CNN
+F 3 "~" H 14800 4100 50  0001 C CNN
+	1    14800 4100
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	14800 4250 15250 4250
+Wire Wire Line
+	14250 4250 14250 3000
+Wire Wire Line
+	14300 3800 14300 2900
+Wire Wire Line
+	14300 2900 14250 2900
+Wire Wire Line
+	14350 3350 14350 2800
+Wire Wire Line
+	14350 2800 14250 2800
+Wire Wire Line
+	14400 2900 14400 2700
+Wire Wire Line
+	14400 2700 14250 2700
+Wire Wire Line
+	14250 1100 14250 2300
+Wire Wire Line
+	14300 1550 14300 2400
+Wire Wire Line
+	14300 2400 14250 2400
+Wire Wire Line
+	14250 2500 14350 2500
+Wire Wire Line
+	14400 2450 14400 2600
+Wire Wire Line
+	14400 2600 14250 2600
+Wire Wire Line
+	14800 1100 14250 1100
+Connection ~ 14800 1100
+Wire Wire Line
+	14300 1550 14800 1550
+Connection ~ 14800 1550
+Wire Wire Line
+	14350 2500 14350 2000
+Wire Wire Line
+	14800 2000 14350 2000
+Connection ~ 14800 2000
+Wire Wire Line
+	14400 2450 14800 2450
+Connection ~ 14800 2450
+Wire Wire Line
+	14800 2900 14400 2900
+Connection ~ 14800 2900
+Wire Wire Line
+	14350 3350 14800 3350
+Connection ~ 14800 3350
+Wire Wire Line
+	14800 3800 14300 3800
+Connection ~ 14800 3800
+Wire Wire Line
+	14250 4250 14800 4250
+Connection ~ 14800 4250
+Wire Wire Line
+	8000 6250 8000 6150
+Wire Wire Line
+	8000 6150 8050 6150
+$Comp
+L mixer.pcb-rescue:R-Device R37
+U 1 1 60F4E7F0
+P 8150 5950
+F 0 "R37" H 8080 5904 50  0001 C CNN
+F 1 "100k" V 8080 5950 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8080 5950 50  0001 C CNN
+F 3 "~" H 8150 5950 50  0001 C CNN
+	1    8150 5950
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	8000 5950 8000 5850
+$Comp
+L mixer.pcb-rescue:R-Device R36
+U 1 1 60F5C1C8
+P 8150 5650
+F 0 "R36" H 8080 5604 50  0001 C CNN
+F 1 "100k" V 8080 5650 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8080 5650 50  0001 C CNN
+F 3 "~" H 8150 5650 50  0001 C CNN
+	1    8150 5650
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	8000 5650 8000 5550
+$Comp
+L mixer.pcb-rescue:R-Device R34
+U 1 1 60F69A22
+P 8150 5050
+F 0 "R34" H 8080 5004 50  0001 C CNN
+F 1 "100k" V 8080 5050 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8080 5050 50  0001 C CNN
+F 3 "~" H 8150 5050 50  0001 C CNN
+	1    8150 5050
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	8000 5050 8000 4950
+$Comp
+L mixer.pcb-rescue:R-Device R35
+U 1 1 60F772A8
+P 8150 5350
+F 0 "R35" H 8080 5304 50  0001 C CNN
+F 1 "100k" V 8080 5350 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8080 5350 50  0001 C CNN
+F 3 "~" H 8150 5350 50  0001 C CNN
+	1    8150 5350
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	8000 5350 8000 5250
+$Comp
+L power:GND #PWR0283
+U 1 1 60FED591
+P 8300 5950
+F 0 "#PWR0283" H 8300 5700 50  0001 C CNN
+F 1 "GND" V 8305 5822 50  0000 R CNN
+F 2 "" H 8300 5950 50  0001 C CNN
+F 3 "" H 8300 5950 50  0001 C CNN
+	1    8300 5950
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0284
+U 1 1 60FFAEDB
+P 8300 5650
+F 0 "#PWR0284" H 8300 5400 50  0001 C CNN
+F 1 "GND" V 8305 5522 50  0000 R CNN
+F 2 "" H 8300 5650 50  0001 C CNN
+F 3 "" H 8300 5650 50  0001 C CNN
+	1    8300 5650
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0285
+U 1 1 61008938
+P 8300 5350
+F 0 "#PWR0285" H 8300 5100 50  0001 C CNN
+F 1 "GND" V 8305 5222 50  0000 R CNN
+F 2 "" H 8300 5350 50  0001 C CNN
+F 3 "" H 8300 5350 50  0001 C CNN
+	1    8300 5350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0286
+U 1 1 610162DF
+P 8300 5050
+F 0 "#PWR0286" H 8300 4800 50  0001 C CNN
+F 1 "GND" V 8305 4922 50  0000 R CNN
+F 2 "" H 8300 5050 50  0001 C CNN
+F 3 "" H 8300 5050 50  0001 C CNN
+	1    8300 5050
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	8000 6150 7800 6150
+Wire Wire Line
+	7800 6150 7800 5800
+Wire Wire Line
+	7800 5800 7200 5800
+Connection ~ 8000 6150
+Wire Wire Line
+	7200 5700 7850 5700
+Wire Wire Line
+	7850 5700 7850 5850
+Wire Wire Line
+	7850 5850 8000 5850
+Connection ~ 8000 5850
+Wire Wire Line
+	8000 5850 8050 5850
+Wire Wire Line
+	8050 5550 8000 5550
+Wire Wire Line
+	7850 5550 7850 5600
+Wire Wire Line
+	7850 5600 7200 5600
+Connection ~ 8000 5550
+Wire Wire Line
+	8000 5550 7850 5550
+Wire Wire Line
+	7200 5500 7800 5500
+Wire Wire Line
+	7800 5500 7800 5250
+Wire Wire Line
+	7800 5250 8000 5250
+Connection ~ 8000 5250
+Wire Wire Line
+	8000 5250 8050 5250
+Wire Wire Line
+	8050 4950 8000 4950
+Wire Wire Line
+	7750 4950 7750 5400
+Wire Wire Line
+	7750 5400 7200 5400
+Connection ~ 8000 4950
+Wire Wire Line
+	8000 4950 7750 4950
+$Comp
+L mixer.pcb-rescue:R-Device R1
+U 1 1 61105EB1
+P 2100 4950
+F 0 "R1" H 2030 4904 50  0001 C CNN
+F 1 "100k" V 2030 4950 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 2030 4950 50  0001 C CNN
+F 3 "~" H 2100 4950 50  0001 C CNN
+	1    2100 4950
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0287
+U 1 1 61105EB7
+P 2250 4950
+F 0 "#PWR0287" H 2250 4700 50  0001 C CNN
+F 1 "GND" V 2255 4822 50  0000 R CNN
+F 2 "" H 2250 4950 50  0001 C CNN
+F 3 "" H 2250 4950 50  0001 C CNN
+	1    2250 4950
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R2
+U 1 1 6113EBB7
+P 2100 5300
+F 0 "R2" H 2030 5254 50  0001 C CNN
+F 1 "100k" V 2030 5300 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 2030 5300 50  0001 C CNN
+F 3 "~" H 2100 5300 50  0001 C CNN
+	1    2100 5300
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0288
+U 1 1 6113EBBD
+P 2250 5300
+F 0 "#PWR0288" H 2250 5050 50  0001 C CNN
+F 1 "GND" V 2255 5172 50  0000 R CNN
+F 2 "" H 2250 5300 50  0001 C CNN
+F 3 "" H 2250 5300 50  0001 C CNN
+	1    2250 5300
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R3
+U 1 1 6114F0CB
+P 2100 5650
+F 0 "R3" H 2030 5604 50  0001 C CNN
+F 1 "100k" V 2030 5650 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 2030 5650 50  0001 C CNN
+F 3 "~" H 2100 5650 50  0001 C CNN
+	1    2100 5650
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0289
+U 1 1 6114F0D1
+P 2250 5650
+F 0 "#PWR0289" H 2250 5400 50  0001 C CNN
+F 1 "GND" V 2255 5522 50  0000 R CNN
+F 2 "" H 2250 5650 50  0001 C CNN
+F 3 "" H 2250 5650 50  0001 C CNN
+	1    2250 5650
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R4
+U 1 1 6115F48B
+P 2100 6000
+F 0 "R4" H 2030 5954 50  0001 C CNN
+F 1 "100k" V 2030 6000 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 2030 6000 50  0001 C CNN
+F 3 "~" H 2100 6000 50  0001 C CNN
+	1    2100 6000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0290
+U 1 1 6115F491
+P 2250 6000
+F 0 "#PWR0290" H 2250 5750 50  0001 C CNN
+F 1 "GND" V 2255 5872 50  0000 R CNN
+F 2 "" H 2250 6000 50  0001 C CNN
+F 3 "" H 2250 6000 50  0001 C CNN
+	1    2250 6000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R5
+U 1 1 61170077
+P 2100 6350
+F 0 "R5" H 2030 6304 50  0001 C CNN
+F 1 "100k" V 2030 6350 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 2030 6350 50  0001 C CNN
+F 3 "~" H 2100 6350 50  0001 C CNN
+	1    2100 6350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0291
+U 1 1 6117007D
+P 2250 6350
+F 0 "#PWR0291" H 2250 6100 50  0001 C CNN
+F 1 "GND" V 2255 6222 50  0000 R CNN
+F 2 "" H 2250 6350 50  0001 C CNN
+F 3 "" H 2250 6350 50  0001 C CNN
+	1    2250 6350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R6
+U 1 1 611805BD
+P 2100 6700
+F 0 "R6" H 2030 6654 50  0001 C CNN
+F 1 "100k" V 2030 6700 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 2030 6700 50  0001 C CNN
+F 3 "~" H 2100 6700 50  0001 C CNN
+	1    2100 6700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0292
+U 1 1 611805C3
+P 2250 6700
+F 0 "#PWR0292" H 2250 6450 50  0001 C CNN
+F 1 "GND" V 2255 6572 50  0000 R CNN
+F 2 "" H 2250 6700 50  0001 C CNN
+F 3 "" H 2250 6700 50  0001 C CNN
+	1    2250 6700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R7
+U 1 1 61190C2D
+P 2100 7050
+F 0 "R7" H 2030 7004 50  0001 C CNN
+F 1 "100k" V 2030 7050 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 2030 7050 50  0001 C CNN
+F 3 "~" H 2100 7050 50  0001 C CNN
+	1    2100 7050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0293
+U 1 1 61190C33
+P 2250 7050
+F 0 "#PWR0293" H 2250 6800 50  0001 C CNN
+F 1 "GND" V 2255 6922 50  0000 R CNN
+F 2 "" H 2250 7050 50  0001 C CNN
+F 3 "" H 2250 7050 50  0001 C CNN
+	1    2250 7050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R8
+U 1 1 611A12E5
+P 2100 7400
+F 0 "R8" H 2030 7354 50  0001 C CNN
+F 1 "100k" V 2030 7400 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 2030 7400 50  0001 C CNN
+F 3 "~" H 2100 7400 50  0001 C CNN
+	1    2100 7400
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0294
+U 1 1 611A12EB
+P 2250 7400
+F 0 "#PWR0294" H 2250 7150 50  0001 C CNN
+F 1 "GND" V 2255 7272 50  0000 R CNN
+F 2 "" H 2250 7400 50  0001 C CNN
+F 3 "" H 2250 7400 50  0001 C CNN
+	1    2250 7400
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	1950 4950 1950 5100
+Connection ~ 1950 5100
+Wire Wire Line
+	1950 5100 2850 5100
+Wire Wire Line
+	1950 5300 1950 5450
+Connection ~ 1950 5450
+Wire Wire Line
+	1950 5450 1850 5450
+Wire Wire Line
+	1950 5650 1950 5800
+Connection ~ 1950 5800
+Wire Wire Line
+	1950 5800 2750 5800
+Wire Wire Line
+	1950 6000 1950 6150
+Connection ~ 1950 6150
+Wire Wire Line
+	1950 6150 1850 6150
+Wire Wire Line
+	1950 6350 1950 6500
+Connection ~ 1950 6500
+Wire Wire Line
+	1950 6500 2700 6500
+Wire Wire Line
+	1950 6700 1950 6850
+Connection ~ 1950 6850
+Wire Wire Line
+	1950 6850 1850 6850
+Wire Wire Line
+	1950 7050 1950 7200
+Wire Wire Line
+	1850 7200 1950 7200
+Connection ~ 1950 7200
+Wire Wire Line
+	1950 7200 2800 7200
+Wire Wire Line
+	1950 7400 1950 7550
+Connection ~ 1950 7550
+Wire Wire Line
+	1950 7550 2850 7550
+$Comp
+L mixer.pcb-rescue:R-Device R19
+U 1 1 61241B90
+P 4250 6900
+F 0 "R19" H 4180 6854 50  0001 C CNN
+F 1 "100k" V 4180 6900 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 4180 6900 50  0001 C CNN
+F 3 "~" H 4250 6900 50  0001 C CNN
+	1    4250 6900
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0295
+U 1 1 61241B96
+P 4100 6900
+F 0 "#PWR0295" H 4100 6650 50  0001 C CNN
+F 1 "GND" V 4105 6772 50  0000 R CNN
+F 2 "" H 4100 6900 50  0001 C CNN
+F 3 "" H 4100 6900 50  0001 C CNN
+	1    4100 6900
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5000 6900 4400 6900
+Wire Wire Line
+	4400 7000 4400 6900
+Connection ~ 4400 6900
+$Comp
+L mixer.pcb-rescue:R-Device R18
+U 1 1 60220BEC
+P 4250 6700
+F 0 "R18" H 4180 6654 50  0001 C CNN
+F 1 "500" V 4180 6700 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 4180 6700 50  0001 C CNN
+F 3 "~" H 4250 6700 50  0001 C CNN
+	1    4250 6700
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5000 6800 4400 6800
+Wire Wire Line
+	4400 6800 4400 6700
+Wire Wire Line
+	5000 7000 4550 7000
+Wire Wire Line
+	4550 7000 4550 7200
+Wire Wire Line
+	4550 7200 4400 7200
+Wire Wire Line
+	4400 7400 4600 7400
+Wire Wire Line
+	4600 7100 5000 7100
+Wire Wire Line
+	4600 7100 4600 7400
+$Comp
+L mixer.pcb-rescue:R-Device R30
+U 1 1 60348613
+P 7600 6600
+F 0 "R30" H 7530 6554 50  0001 C CNN
+F 1 "500" V 7530 6600 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 7530 6600 50  0001 C CNN
+F 3 "~" H 7600 6600 50  0001 C CNN
+	1    7600 6600
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R31
+U 1 1 6035EF22
+P 7600 6700
+F 0 "R31" H 7530 6654 50  0001 C CNN
+F 1 "500" V 7530 6700 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 7530 6700 50  0001 C CNN
+F 3 "~" H 7600 6700 50  0001 C CNN
+	1    7600 6700
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R32
+U 1 1 6037379A
+P 7600 6800
+F 0 "R32" H 7530 6754 50  0001 C CNN
+F 1 "500" V 7530 6800 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 7530 6800 50  0001 C CNN
+F 3 "~" H 7600 6800 50  0001 C CNN
+	1    7600 6800
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R33
+U 1 1 60388323
+P 7600 6900
+F 0 "R33" H 7530 6854 50  0001 C CNN
+F 1 "500" V 7530 6900 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 7530 6900 50  0001 C CNN
+F 3 "~" H 7600 6900 50  0001 C CNN
+	1    7600 6900
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	7450 6600 7200 6600
+Wire Wire Line
+	7200 6700 7450 6700
+Wire Wire Line
+	7450 6800 7200 6800
+Wire Wire Line
+	7200 6900 7450 6900
+$Comp
+L mixer.pcb-rescue:R-Device R43
+U 1 1 604E9EA6
+P 8200 8350
+F 0 "R43" H 8130 8304 50  0001 C CNN
+F 1 "100k" V 8130 8350 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8130 8350 50  0001 C CNN
+F 3 "~" H 8200 8350 50  0001 C CNN
+	1    8200 8350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0296
+U 1 1 604E9EAC
+P 8350 8350
+F 0 "#PWR0296" H 8350 8100 50  0001 C CNN
+F 1 "GND" V 8355 8222 50  0000 R CNN
+F 2 "" H 8350 8350 50  0001 C CNN
+F 3 "" H 8350 8350 50  0001 C CNN
+	1    8350 8350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R42
+U 1 1 6051B24B
+P 8200 8050
+F 0 "R42" H 8130 8004 50  0001 C CNN
+F 1 "100k" V 8130 8050 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8130 8050 50  0001 C CNN
+F 3 "~" H 8200 8050 50  0001 C CNN
+	1    8200 8050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0297
+U 1 1 6051B251
+P 8350 8050
+F 0 "#PWR0297" H 8350 7800 50  0001 C CNN
+F 1 "GND" V 8355 7922 50  0000 R CNN
+F 2 "" H 8350 8050 50  0001 C CNN
+F 3 "" H 8350 8050 50  0001 C CNN
+	1    8350 8050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R41
+U 1 1 605504C3
+P 8200 7750
+F 0 "R41" H 8130 7704 50  0001 C CNN
+F 1 "100k" V 8130 7750 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8130 7750 50  0001 C CNN
+F 3 "~" H 8200 7750 50  0001 C CNN
+	1    8200 7750
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0298
+U 1 1 605504C9
+P 8350 7750
+F 0 "#PWR0298" H 8350 7500 50  0001 C CNN
+F 1 "GND" V 8355 7622 50  0000 R CNN
+F 2 "" H 8350 7750 50  0001 C CNN
+F 3 "" H 8350 7750 50  0001 C CNN
+	1    8350 7750
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R40
+U 1 1 6057E057
+P 8200 7450
+F 0 "R40" H 8130 7404 50  0001 C CNN
+F 1 "100k" V 8130 7450 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8130 7450 50  0001 C CNN
+F 3 "~" H 8200 7450 50  0001 C CNN
+	1    8200 7450
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0299
+U 1 1 6057E05D
+P 8350 7450
+F 0 "#PWR0299" H 8350 7200 50  0001 C CNN
+F 1 "GND" V 8355 7322 50  0000 R CNN
+F 2 "" H 8350 7450 50  0001 C CNN
+F 3 "" H 8350 7450 50  0001 C CNN
+	1    8350 7450
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R39
+U 1 1 605AE1F6
+P 8200 7150
+F 0 "R39" H 8130 7104 50  0001 C CNN
+F 1 "100k" V 8130 7150 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 8130 7150 50  0001 C CNN
+F 3 "~" H 8200 7150 50  0001 C CNN
+	1    8200 7150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0300
+U 1 1 605AE1FC
+P 8350 7150
+F 0 "#PWR0300" H 8350 6900 50  0001 C CNN
+F 1 "GND" V 8355 7022 50  0000 R CNN
+F 2 "" H 8350 7150 50  0001 C CNN
+F 3 "" H 8350 7150 50  0001 C CNN
+	1    8350 7150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	8050 7000 7200 7000
+Wire Wire Line
+	8050 7000 8050 7150
+Wire Wire Line
+	7200 7100 8000 7100
+Wire Wire Line
+	8000 7100 8000 7350
+Wire Wire Line
+	8000 7350 8050 7350
+Wire Wire Line
+	8050 7350 8050 7450
+Wire Wire Line
+	8050 7650 7950 7650
+Wire Wire Line
+	7950 7650 7950 7200
+Wire Wire Line
+	7950 7200 7200 7200
+Wire Wire Line
+	7200 7300 7900 7300
+Wire Wire Line
+	7900 7300 7900 7950
+Wire Wire Line
+	7900 7950 8050 7950
+Wire Wire Line
+	8050 7750 8050 7650
+Wire Wire Line
+	8050 7950 8050 8050
+Wire Wire Line
+	8050 8350 8050 8250
+Wire Wire Line
+	8050 8250 7850 8250
+Wire Wire Line
+	7850 8250 7850 7400
+Wire Wire Line
+	7850 7400 7200 7400
+$Comp
+L mixer.pcb-rescue:R-Device R17
+U 1 1 60700002
+P 4250 6300
+F 0 "R17" H 4180 6254 50  0001 C CNN
+F 1 "100k" V 4180 6300 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 4180 6300 50  0001 C CNN
+F 3 "~" H 4250 6300 50  0001 C CNN
+	1    4250 6300
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0301
+U 1 1 60700008
+P 4100 6300
+F 0 "#PWR0301" H 4100 6050 50  0001 C CNN
+F 1 "GND" V 4105 6172 50  0000 R CNN
+F 2 "" H 4100 6300 50  0001 C CNN
+F 3 "" H 4100 6300 50  0001 C CNN
+	1    4100 6300
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5000 6400 4400 6400
+Wire Wire Line
+	4400 6400 4400 6300
+$Comp
+L mixer.pcb-rescue:R-Device R21
+U 1 1 6078D3A0
+P 4250 7500
+F 0 "R21" H 4180 7454 50  0001 C CNN
+F 1 "100k" V 4180 7500 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 4180 7500 50  0001 C CNN
+F 3 "~" H 4250 7500 50  0001 C CNN
+	1    4250 7500
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0302
+U 1 1 6078D3A6
+P 4100 7500
+F 0 "#PWR0302" H 4100 7250 50  0001 C CNN
+F 1 "GND" V 4105 7372 50  0000 R CNN
+F 2 "" H 4100 7500 50  0001 C CNN
+F 3 "" H 4100 7500 50  0001 C CNN
+	1    4100 7500
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:R-Device R20
+U 1 1 607FBE7F
+P 4250 7200
+F 0 "R20" H 4180 7154 50  0001 C CNN
+F 1 "100k" V 4180 7200 50  0000 C BNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 4180 7200 50  0001 C CNN
+F 3 "~" H 4250 7200 50  0001 C CNN
+	1    4250 7200
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0303
+U 1 1 607FBE85
+P 4100 7200
+F 0 "#PWR0303" H 4100 6950 50  0001 C CNN
+F 1 "GND" V 4105 7072 50  0000 R CNN
+F 2 "" H 4100 7200 50  0001 C CNN
+F 3 "" H 4100 7200 50  0001 C CNN
+	1    4100 7200
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4400 7300 4400 7200
+Connection ~ 4400 7200
+Wire Wire Line
+	4400 7400 4400 7500
+Wire Wire Line
+	4400 7500 4400 7600
+Connection ~ 4400 7500
 $EndSCHEMATC

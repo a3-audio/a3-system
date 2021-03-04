@@ -1,36 +1,32 @@
-# Ambijocky
+# Ambijockey
 
 ![first ambijocky](doc/pix/gif1.gif)
 
-Goal for this project is a Hardware Controller which enables everybody, who can use a dj-mixer, to perform
-LIVE on a 3d-Audio-sphere (Ambisonic). You should consider it as loopmachine for panning motions. It
-includes audiostream analysis to create a reliable live beatclock, wich let the user control step motions
-out of bars, steps and bpm).
+Goal for this project is a Hardware Controller which enables everybody, who can use a dj-mixer, to perform LIVE on a 3d-Audio-System. You can consider it as a loopmachine for pan-motions in all directions. 
+It includes audiostream analysis to create a reliable live beatclock, wich let the user control step motions out of bars, steps and bpm.
 
 It consists of three elements:
 
-- The Server which runs the audio and osc-routing-engine (live io-processing)
-- The Mixercontroller: it looks like a 4-channel dj-mixer but just handles osc
-- The Motioncontroller: the touchscreen records and shows actual position and width for all 4 stereo
-  channels at the same time. Also it has 4 store/recall buttons and some potis/encoders for motionmodes
-  and sequence parameters.
+- Server: runs the audio and osc-routing-engine (live io-processing < 2.5ms)
+- MixerController: seems to be a usual 4-channel dj-mixer but handles osc instead of audio
+- MotionController: touchscreen record- loop and play interaction. Visualiser to show position and width for all 4 stereochannels at the same time. Also it has 4 store/recall buttons and some potis/encoders for motionmodes and sequence parameters.
 
 ## Blackboard
 
-### TODO`s
+### TODO's
 
 - beat-counter / beat-detection
 - OSC looper
-- Motion-contoler
+- MotionController
   - GUI
-    - Motion-inticator für jeden kana erstellen
-    - farbe
-    - OSC-adressen eintragen
-  - documentieren
+    - Motion-indicator für jeden Kanal
+    - Farbe
+    - OSC-Adressen eintragen
+  - Dokumentation
 
 ### Hardware
 
-Die Stecker die wie fur die Portis etc. wollen sind **JST XH 2.54mm**
+Die Stecker die wie fur die Potis etc. wollen sind **JST XH 2.54mm**
 
 - [WS2811 NeoPixel LED Driver Chip](https://www.adafruit.com/product/1378)
 - [NeoPixel 5mm Through-Hole LED](https://www.adafruit.com/product/1938)
@@ -54,7 +50,7 @@ Die Stecker die wie fur die Portis etc. wollen sind **JST XH 2.54mm**
 
 3. keep the Code clean
 
-4. Hinterlasse nichts, auser deiner Wurst.
+4. Hinterlasse nichts, ausser deiner Wurst.
 
 5. Easter Eggs are welcome!
 

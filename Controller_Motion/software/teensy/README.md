@@ -1,3 +1,4 @@
+lk
 https://docs.platformio.org/en/latest/core/installation.html#system-requirements
 
 to init penv:

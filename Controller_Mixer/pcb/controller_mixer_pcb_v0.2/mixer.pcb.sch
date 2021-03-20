@@ -4769,31 +4769,8 @@ F 3 "" H 1250 2100 50  0001 C CNN
 	1    1250 2100
 	0    -1   -1   0   
 $EndComp
-$Comp
-L mixer.pcb-rescue:C-Device C4
-U 1 1 602DF39F
-P 1250 1950
-F 0 "C4" H 1365 1996 50  0001 L CNN
-F 1 "100 nF" H 1365 1905 50  0000 L CNN
-F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm" H 1288 1800 50  0001 C CNN
-F 3 "~" H 1250 1950 50  0001 C CNN
-	1    1250 1950
-	-1   0    0    -1  
-$EndComp
 Wire Wire Line
 	1600 2100 1250 2100
-Connection ~ 1250 2100
-$Comp
-L mixer.pcb-rescue:GND-power #PWR0304
-U 1 1 60448F72
-P 1250 1800
-F 0 "#PWR0304" H 1250 1550 50  0001 C CNN
-F 1 "GND" V 1255 1672 50  0000 R CNN
-F 2 "" H 1250 1800 50  0001 C CNN
-F 3 "" H 1250 1800 50  0001 C CNN
-	1    1250 1800
-	0    1    1    0   
-$EndComp
 $Comp
 L mixer.pcb-rescue:+3.3V-power #PWR0305
 U 1 1 604937A2
@@ -5043,10 +5020,10 @@ pfl_led_ch2
 Text GLabel 7500 7650 0    50   Input ~ 0
 pfl_led_ch1
 $Comp
-L mixer.pcb-rescue:GND-power #PWR?
+L mixer.pcb-rescue:GND-power #PWR0201
 U 1 1 607B78AC
 P 7500 7750
-F 0 "#PWR?" H 7500 7500 50  0001 C CNN
+F 0 "#PWR0201" H 7500 7500 50  0001 C CNN
 F 1 "GND" V 7505 7622 50  0000 R CNN
 F 2 "" H 7500 7750 50  0001 C CNN
 F 3 "" H 7500 7750 50  0001 C CNN
@@ -5054,10 +5031,10 @@ F 3 "" H 7500 7750 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L mixer.pcb-rescue:GND-power #PWR?
+L mixer.pcb-rescue:GND-power #PWR0202
 U 1 1 607D3D52
 P 7500 8000
-F 0 "#PWR?" H 7500 7750 50  0001 C CNN
+F 0 "#PWR0202" H 7500 7750 50  0001 C CNN
 F 1 "GND" V 7505 7872 50  0000 R CNN
 F 2 "" H 7500 8000 50  0001 C CNN
 F 3 "" H 7500 8000 50  0001 C CNN
@@ -5065,10 +5042,10 @@ F 3 "" H 7500 8000 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L mixer.pcb-rescue:GND-power #PWR?
+L mixer.pcb-rescue:GND-power #PWR0203
 U 1 1 607EFF6E
 P 7500 8250
-F 0 "#PWR?" H 7500 8000 50  0001 C CNN
+F 0 "#PWR0203" H 7500 8000 50  0001 C CNN
 F 1 "GND" V 7505 8122 50  0000 R CNN
 F 2 "" H 7500 8250 50  0001 C CNN
 F 3 "" H 7500 8250 50  0001 C CNN
@@ -5076,10 +5053,10 @@ F 3 "" H 7500 8250 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L mixer.pcb-rescue:GND-power #PWR?
+L mixer.pcb-rescue:GND-power #PWR0204
 U 1 1 6080C500
 P 7500 8500
-F 0 "#PWR?" H 7500 8250 50  0001 C CNN
+F 0 "#PWR0204" H 7500 8250 50  0001 C CNN
 F 1 "GND" V 7505 8372 50  0000 R CNN
 F 2 "" H 7500 8500 50  0001 C CNN
 F 3 "" H 7500 8500 50  0001 C CNN
@@ -5087,10 +5064,10 @@ F 3 "" H 7500 8500 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L mixer.pcb-rescue:GND-power #PWR?
+L mixer.pcb-rescue:GND-power #PWR0205
 U 1 1 60828DA3
 P 7500 8750
-F 0 "#PWR?" H 7500 8500 50  0001 C CNN
+F 0 "#PWR0205" H 7500 8500 50  0001 C CNN
 F 1 "GND" V 7505 8622 50  0000 R CNN
 F 2 "" H 7500 8750 50  0001 C CNN
 F 3 "" H 7500 8750 50  0001 C CNN
@@ -5133,5 +5110,28 @@ F 3 "~" H 7700 5700 50  0001 C CNN
 F 4 "NeoPixel  " H 7700 5700 50  0000 L CNN "Field4"
 	1    7700 5700
 	1    0    0    -1  
+$EndComp
+Connection ~ 1250 2100
+$Comp
+L mixer.pcb-rescue:GND-power #PWR0304
+U 1 1 60448F72
+P 1250 1800
+F 0 "#PWR0304" H 1250 1550 50  0001 C CNN
+F 1 "GND" V 1255 1672 50  0000 R CNN
+F 2 "" H 1250 1800 50  0001 C CNN
+F 3 "" H 1250 1800 50  0001 C CNN
+	1    1250 1800
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:C-Device C4
+U 1 1 602DF39F
+P 1250 1950
+F 0 "C4" H 1365 1996 50  0001 L CNN
+F 1 "100 nF" H 1365 1905 50  0000 L CNN
+F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm" H 1288 1800 50  0001 C CNN
+F 3 "~" H 1250 1950 50  0001 C CNN
+	1    1250 1950
+	-1   0    0    -1  
 $EndComp
 $EndSCHEMATC

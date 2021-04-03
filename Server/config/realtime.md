@@ -1,3 +1,10 @@
+# server configuration
+
+# audioengine
+
+
+## realtime
+
 REALTIME PRIORITY CONFIGURATION
 
 In Audiolinux realtime priority is assigned by 2 services: rtirq for irq priority and rtapp for application priority.

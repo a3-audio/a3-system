@@ -30,7 +30,7 @@ display_scl2
 Text GLabel 9000 5800 0    50   Input ~ 0
 display_sda2
 $Comp
-L power:GND #PWR0237
+L mixer.pcb-rescue:GND-power #PWR0237
 U 1 1 6112A339
 P 9000 5700
 F 0 "#PWR0237" H 9000 5450 50  0001 C CNN
@@ -41,7 +41,7 @@ F 3 "" H 9000 5700 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0236
+L mixer.pcb-rescue:+3.3V-power #PWR0236
 U 1 1 6112A333
 P 9000 5600
 F 0 "#PWR0236" H 9000 5450 50  0001 C CNN
@@ -52,7 +52,7 @@ F 3 "" H 9000 5600 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x04 display_2
+L mixer.pcb-rescue:Conn_01x04-Connector_Generic display_2
 U 1 1 6112A32D
 P 9200 5700
 F 0 "display_2" H 9118 5275 50  0001 C CNN
@@ -68,7 +68,7 @@ display_scl1
 Text GLabel 9000 6500 0    50   Input ~ 0
 display_sda1
 $Comp
-L power:GND #PWR0235
+L mixer.pcb-rescue:GND-power #PWR0235
 U 1 1 6112697F
 P 9000 6400
 F 0 "#PWR0235" H 9000 6150 50  0001 C CNN
@@ -79,7 +79,7 @@ F 3 "" H 9000 6400 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0234
+L mixer.pcb-rescue:+3.3V-power #PWR0234
 U 1 1 611261BB
 P 9000 6300
 F 0 "#PWR0234" H 9000 6150 50  0001 C CNN
@@ -90,7 +90,7 @@ F 3 "" H 9000 6300 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x04 display_1
+L mixer.pcb-rescue:Conn_01x04-Connector_Generic display_1
 U 1 1 6112534C
 P 9200 6400
 F 0 "display_1" H 9118 5975 50  0001 C CNN
@@ -136,25 +136,25 @@ Wire Wire Line
 Wire Wire Line
 	14450 7200 14450 8550
 $Comp
-L power:GND #PWR0223
+L mixer.pcb-rescue:GND-power #PWR0223
 U 1 1 60909E72
-P 15250 5100
-F 0 "#PWR0223" H 15250 4850 50  0001 C CNN
-F 1 "GND" V 15255 4972 50  0000 R CNN
-F 2 "" H 15250 5100 50  0001 C CNN
-F 3 "" H 15250 5100 50  0001 C CNN
-	1    15250 5100
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0222
-U 1 1 60909E6C
 P 15250 5200
-F 0 "#PWR0222" H 15250 5050 50  0001 C CNN
-F 1 "+3.3V" V 15265 5328 50  0000 L CNN
+F 0 "#PWR0223" H 15250 4950 50  0001 C CNN
+F 1 "GND" V 15255 5072 50  0000 R CNN
 F 2 "" H 15250 5200 50  0001 C CNN
 F 3 "" H 15250 5200 50  0001 C CNN
 	1    15250 5200
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:+3.3V-power #PWR0222
+U 1 1 60909E6C
+P 15250 5100
+F 0 "#PWR0222" H 15250 4950 50  0001 C CNN
+F 1 "+3.3V" V 15265 5228 50  0000 L CNN
+F 2 "" H 15250 5100 50  0001 C CNN
+F 3 "" H 15250 5100 50  0001 C CNN
+	1    15250 5100
 	0    -1   -1   0   
 $EndComp
 Text GLabel 15250 5400 0    50   Input ~ 0
@@ -162,7 +162,7 @@ rEnc5_DT
 Text GLabel 15250 5500 0    50   Input ~ 0
 rEnc5_clk
 $Comp
-L Connector_Generic:Conn_01x05 fx2_enc3
+L mixer.pcb-rescue:Conn_01x05-Connector_Generic fx2_enc3
 U 1 1 60909E64
 P 15450 5300
 F 0 "fx2_enc3" H 15368 4875 50  0001 C CNN
@@ -174,25 +174,25 @@ F 4 "fx2_enc3  " H 15450 5300 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0221
+L mixer.pcb-rescue:GND-power #PWR0221
 U 1 1 60909E5E
-P 15250 5750
-F 0 "#PWR0221" H 15250 5500 50  0001 C CNN
-F 1 "GND" V 15255 5622 50  0000 R CNN
-F 2 "" H 15250 5750 50  0001 C CNN
-F 3 "" H 15250 5750 50  0001 C CNN
-	1    15250 5750
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0220
-U 1 1 60909E58
 P 15250 5850
-F 0 "#PWR0220" H 15250 5700 50  0001 C CNN
-F 1 "+3.3V" V 15265 5978 50  0000 L CNN
+F 0 "#PWR0221" H 15250 5600 50  0001 C CNN
+F 1 "GND" V 15255 5722 50  0000 R CNN
 F 2 "" H 15250 5850 50  0001 C CNN
 F 3 "" H 15250 5850 50  0001 C CNN
 	1    15250 5850
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:+3.3V-power #PWR0220
+U 1 1 60909E58
+P 15250 5750
+F 0 "#PWR0220" H 15250 5600 50  0001 C CNN
+F 1 "+3.3V" V 15265 5878 50  0000 L CNN
+F 2 "" H 15250 5750 50  0001 C CNN
+F 3 "" H 15250 5750 50  0001 C CNN
+	1    15250 5750
 	0    -1   -1   0   
 $EndComp
 Text GLabel 15250 6050 0    50   Input ~ 0
@@ -200,7 +200,7 @@ rEnc4_DT
 Text GLabel 15250 6150 0    50   Input ~ 0
 rEnc4_clk
 $Comp
-L Connector_Generic:Conn_01x05 fx2_enc2
+L mixer.pcb-rescue:Conn_01x05-Connector_Generic fx2_enc2
 U 1 1 60909E50
 P 15450 5950
 F 0 "fx2_enc2" H 15368 5525 50  0001 C CNN
@@ -212,25 +212,25 @@ F 4 "fx2_enc2  " H 15450 5950 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0219
+L mixer.pcb-rescue:GND-power #PWR0219
 U 1 1 60902119
-P 15250 6400
-F 0 "#PWR0219" H 15250 6150 50  0001 C CNN
-F 1 "GND" V 15255 6272 50  0000 R CNN
-F 2 "" H 15250 6400 50  0001 C CNN
-F 3 "" H 15250 6400 50  0001 C CNN
-	1    15250 6400
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0218
-U 1 1 60902113
 P 15250 6500
-F 0 "#PWR0218" H 15250 6350 50  0001 C CNN
-F 1 "+3.3V" V 15265 6628 50  0000 L CNN
+F 0 "#PWR0219" H 15250 6250 50  0001 C CNN
+F 1 "GND" V 15255 6372 50  0000 R CNN
 F 2 "" H 15250 6500 50  0001 C CNN
 F 3 "" H 15250 6500 50  0001 C CNN
 	1    15250 6500
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:+3.3V-power #PWR0218
+U 1 1 60902113
+P 15250 6400
+F 0 "#PWR0218" H 15250 6250 50  0001 C CNN
+F 1 "+3.3V" V 15265 6528 50  0000 L CNN
+F 2 "" H 15250 6400 50  0001 C CNN
+F 3 "" H 15250 6400 50  0001 C CNN
+	1    15250 6400
 	0    -1   -1   0   
 $EndComp
 Text GLabel 15250 6700 0    50   Input ~ 0
@@ -238,7 +238,7 @@ rEnc3_DT
 Text GLabel 15250 6800 0    50   Input ~ 0
 rEnc3_clk
 $Comp
-L Connector_Generic:Conn_01x05 fx2_enc1
+L mixer.pcb-rescue:Conn_01x05-Connector_Generic fx2_enc1
 U 1 1 6090210B
 P 15450 6600
 F 0 "fx2_enc1" H 15368 6175 50  0001 C CNN
@@ -250,25 +250,25 @@ F 4 "fx2_enc1  " H 15450 6600 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0217
+L mixer.pcb-rescue:GND-power #PWR0217
 U 1 1 60902105
-P 15250 7050
-F 0 "#PWR0217" H 15250 6800 50  0001 C CNN
-F 1 "GND" V 15255 6922 50  0000 R CNN
-F 2 "" H 15250 7050 50  0001 C CNN
-F 3 "" H 15250 7050 50  0001 C CNN
-	1    15250 7050
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0216
-U 1 1 609020FF
 P 15250 7150
-F 0 "#PWR0216" H 15250 7000 50  0001 C CNN
-F 1 "+3.3V" V 15265 7278 50  0000 L CNN
+F 0 "#PWR0217" H 15250 6900 50  0001 C CNN
+F 1 "GND" V 15255 7022 50  0000 R CNN
 F 2 "" H 15250 7150 50  0001 C CNN
 F 3 "" H 15250 7150 50  0001 C CNN
 	1    15250 7150
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:+3.3V-power #PWR0216
+U 1 1 609020FF
+P 15250 7050
+F 0 "#PWR0216" H 15250 6900 50  0001 C CNN
+F 1 "+3.3V" V 15265 7178 50  0000 L CNN
+F 2 "" H 15250 7050 50  0001 C CNN
+F 3 "" H 15250 7050 50  0001 C CNN
+	1    15250 7050
 	0    -1   -1   0   
 $EndComp
 Text GLabel 15250 7350 0    50   Input ~ 0
@@ -276,7 +276,7 @@ rEnc2_DT
 Text GLabel 15250 7450 0    50   Input ~ 0
 rEnc2_clk
 $Comp
-L Connector_Generic:Conn_01x05 fx1_enc3
+L mixer.pcb-rescue:Conn_01x05-Connector_Generic fx1_enc3
 U 1 1 609020F7
 P 15450 7250
 F 0 "fx1_enc3" H 15368 6825 50  0001 C CNN
@@ -288,25 +288,25 @@ F 4 "fx1_enc3  " H 15450 7250 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0215
+L mixer.pcb-rescue:GND-power #PWR0215
 U 1 1 608F6C96
-P 15250 7700
-F 0 "#PWR0215" H 15250 7450 50  0001 C CNN
-F 1 "GND" V 15255 7572 50  0000 R CNN
-F 2 "" H 15250 7700 50  0001 C CNN
-F 3 "" H 15250 7700 50  0001 C CNN
-	1    15250 7700
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0214
-U 1 1 608F6C90
 P 15250 7800
-F 0 "#PWR0214" H 15250 7650 50  0001 C CNN
-F 1 "+3.3V" V 15265 7928 50  0000 L CNN
+F 0 "#PWR0215" H 15250 7550 50  0001 C CNN
+F 1 "GND" V 15255 7672 50  0000 R CNN
 F 2 "" H 15250 7800 50  0001 C CNN
 F 3 "" H 15250 7800 50  0001 C CNN
 	1    15250 7800
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:+3.3V-power #PWR0214
+U 1 1 608F6C90
+P 15250 7700
+F 0 "#PWR0214" H 15250 7550 50  0001 C CNN
+F 1 "+3.3V" V 15265 7828 50  0000 L CNN
+F 2 "" H 15250 7700 50  0001 C CNN
+F 3 "" H 15250 7700 50  0001 C CNN
+	1    15250 7700
 	0    -1   -1   0   
 $EndComp
 Text GLabel 15250 8000 0    50   Input ~ 0
@@ -314,7 +314,7 @@ rEnc1_DT
 Text GLabel 15250 8100 0    50   Input ~ 0
 rEnc1_clk
 $Comp
-L Connector_Generic:Conn_01x05 fx1_enc2
+L mixer.pcb-rescue:Conn_01x05-Connector_Generic fx1_enc2
 U 1 1 608F6C88
 P 15450 7900
 F 0 "fx1_enc2" H 15368 7475 50  0001 C CNN
@@ -326,25 +326,25 @@ F 4 "fx1_enc2  " H 15450 7900 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0213
+L mixer.pcb-rescue:GND-power #PWR0213
 U 1 1 608D2671
-P 15250 8350
-F 0 "#PWR0213" H 15250 8100 50  0001 C CNN
-F 1 "GND" V 15255 8222 50  0000 R CNN
-F 2 "" H 15250 8350 50  0001 C CNN
-F 3 "" H 15250 8350 50  0001 C CNN
-	1    15250 8350
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0212
-U 1 1 608D1C65
 P 15250 8450
-F 0 "#PWR0212" H 15250 8300 50  0001 C CNN
-F 1 "+3.3V" V 15265 8578 50  0000 L CNN
+F 0 "#PWR0213" H 15250 8200 50  0001 C CNN
+F 1 "GND" V 15255 8322 50  0000 R CNN
 F 2 "" H 15250 8450 50  0001 C CNN
 F 3 "" H 15250 8450 50  0001 C CNN
 	1    15250 8450
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:+3.3V-power #PWR0212
+U 1 1 608D1C65
+P 15250 8350
+F 0 "#PWR0212" H 15250 8200 50  0001 C CNN
+F 1 "+3.3V" V 15265 8478 50  0000 L CNN
+F 2 "" H 15250 8350 50  0001 C CNN
+F 3 "" H 15250 8350 50  0001 C CNN
+	1    15250 8350
 	0    -1   -1   0   
 $EndComp
 Text GLabel 15250 8650 0    50   Input ~ 0
@@ -354,7 +354,7 @@ rEnc0_clk
 Text GLabel 13750 7200 0    50   Input ~ 0
 mux_encBtn_fx
 $Comp
-L power:+3.3V #PWR0211
+L mixer.pcb-rescue:+3.3V-power #PWR0211
 U 1 1 608BBCC9
 P 14050 7400
 F 0 "#PWR0211" H 14050 7250 50  0001 C CNN
@@ -365,7 +365,7 @@ F 3 "" H 14050 7400 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0210
+L mixer.pcb-rescue:GND-power #PWR0210
 U 1 1 608BB298
 P 14050 6300
 F 0 "#PWR0210" H 14050 6050 50  0001 C CNN
@@ -389,7 +389,7 @@ s1
 Text GLabel 13750 7000 0    50   Input ~ 0
 s0
 $Comp
-L 74xx:74HC4051 fxEncBtns1
+L mixer.pcb-rescue:74HC4051-74xx fxEncBtns1
 U 1 1 60872CBE
 P 14050 6900
 F 0 "fxEncBtns1" H 14100 7581 50  0000 C CNN
@@ -402,41 +402,29 @@ $EndComp
 Text GLabel 7500 5700 0    50   Input ~ 0
 neopixel
 $Comp
-L power:GND #PWR0207
+L mixer.pcb-rescue:GND-power #PWR0207
 U 1 1 607656B6
-P 7500 5600
-F 0 "#PWR0207" H 7500 5350 50  0001 C CNN
-F 1 "GND" V 7505 5472 50  0000 R CNN
-F 2 "" H 7500 5600 50  0001 C CNN
-F 3 "" H 7500 5600 50  0001 C CNN
-	1    7500 5600
+P 7500 5800
+F 0 "#PWR0207" H 7500 5550 50  0001 C CNN
+F 1 "GND" V 7505 5672 50  0000 R CNN
+F 2 "" H 7500 5800 50  0001 C CNN
+F 3 "" H 7500 5800 50  0001 C CNN
+	1    7500 5800
 	0    1    1    0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 NeoPixel1
-U 1 1 607646F2
-P 7700 5700
-F 0 "NeoPixel1" H 7780 5742 50  0001 L CNN
-F 1 "Conn_01x03" H 7780 5651 50  0001 L CNN
-F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 7700 5700 50  0001 C CNN
-F 3 "~" H 7700 5700 50  0001 C CNN
-F 4 "NeoPixel  " H 7700 5700 50  0000 L CNN "Field4"
-	1    7700 5700
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR0196
+L mixer.pcb-rescue:+3.3V-power #PWR0196
 U 1 1 6025BCEA
-P 9000 7750
-F 0 "#PWR0196" H 9000 7600 50  0001 C CNN
-F 1 "+3.3V" V 9015 7878 50  0000 L CNN
-F 2 "" H 9000 7750 50  0001 C CNN
-F 3 "" H 9000 7750 50  0001 C CNN
-	1    9000 7750
+P 9000 7650
+F 0 "#PWR0196" H 9000 7500 50  0001 C CNN
+F 1 "+3.3V" V 9015 7778 50  0000 L CNN
+F 2 "" H 9000 7650 50  0001 C CNN
+F 3 "" H 9000 7650 50  0001 C CNN
+	1    9000 7650
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x02 pfl_btn_1
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic pfl_btn_1
 U 1 1 6037D85D
 P 9200 7650
 F 0 "pfl_btn_1" H 9280 7642 50  0001 L CNN
@@ -448,18 +436,18 @@ F 4 "pfl_btn_1  " H 9200 7650 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3.3V #PWR0197
+L mixer.pcb-rescue:+3.3V-power #PWR0197
 U 1 1 6048B6AA
-P 9000 8000
-F 0 "#PWR0197" H 9000 7850 50  0001 C CNN
-F 1 "+3.3V" V 9015 8128 50  0000 L CNN
-F 2 "" H 9000 8000 50  0001 C CNN
-F 3 "" H 9000 8000 50  0001 C CNN
-	1    9000 8000
+P 9000 7900
+F 0 "#PWR0197" H 9000 7750 50  0001 C CNN
+F 1 "+3.3V" V 9015 8028 50  0000 L CNN
+F 2 "" H 9000 7900 50  0001 C CNN
+F 3 "" H 9000 7900 50  0001 C CNN
+	1    9000 7900
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x02 pfl_btn_2
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic pfl_btn_2
 U 1 1 6048B6B0
 P 9200 7900
 F 0 "pfl_btn_2" H 9280 7892 50  0001 L CNN
@@ -471,18 +459,18 @@ F 4 "pfl_btn_2  " H 9200 7900 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3.3V #PWR0198
+L mixer.pcb-rescue:+3.3V-power #PWR0198
 U 1 1 60492E77
-P 9000 8250
-F 0 "#PWR0198" H 9000 8100 50  0001 C CNN
-F 1 "+3.3V" V 9015 8378 50  0000 L CNN
-F 2 "" H 9000 8250 50  0001 C CNN
-F 3 "" H 9000 8250 50  0001 C CNN
-	1    9000 8250
+P 9000 8150
+F 0 "#PWR0198" H 9000 8000 50  0001 C CNN
+F 1 "+3.3V" V 9015 8278 50  0000 L CNN
+F 2 "" H 9000 8150 50  0001 C CNN
+F 3 "" H 9000 8150 50  0001 C CNN
+	1    9000 8150
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x02 pfl_btn_3
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic pfl_btn_3
 U 1 1 60492E7D
 P 9200 8150
 F 0 "pfl_btn_3" H 9280 8142 50  0001 L CNN
@@ -494,18 +482,18 @@ F 4 "pfl_btn_3  " H 9200 8150 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3.3V #PWR0199
+L mixer.pcb-rescue:+3.3V-power #PWR0199
 U 1 1 6049A132
-P 9000 8500
-F 0 "#PWR0199" H 9000 8350 50  0001 C CNN
-F 1 "+3.3V" V 9015 8628 50  0000 L CNN
-F 2 "" H 9000 8500 50  0001 C CNN
-F 3 "" H 9000 8500 50  0001 C CNN
-	1    9000 8500
+P 9000 8400
+F 0 "#PWR0199" H 9000 8250 50  0001 C CNN
+F 1 "+3.3V" V 9015 8528 50  0000 L CNN
+F 2 "" H 9000 8400 50  0001 C CNN
+F 3 "" H 9000 8400 50  0001 C CNN
+	1    9000 8400
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x02 pfl_btn_4
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic pfl_btn_4
 U 1 1 6049A138
 P 9200 8400
 F 0 "pfl_btn_4" H 9280 8392 50  0001 L CNN
@@ -517,18 +505,18 @@ F 4 "pfl_btn_4  " H 9200 8400 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3.3V #PWR0200
+L mixer.pcb-rescue:+3.3V-power #PWR0200
 U 1 1 604A19B3
-P 9000 8750
-F 0 "#PWR0200" H 9000 8600 50  0001 C CNN
-F 1 "+3.3V" V 9015 8878 50  0000 L CNN
-F 2 "" H 9000 8750 50  0001 C CNN
-F 3 "" H 9000 8750 50  0001 C CNN
-	1    9000 8750
+P 9000 8650
+F 0 "#PWR0200" H 9000 8500 50  0001 C CNN
+F 1 "+3.3V" V 9015 8778 50  0000 L CNN
+F 2 "" H 9000 8650 50  0001 C CNN
+F 3 "" H 9000 8650 50  0001 C CNN
+	1    9000 8650
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x02 pfl_btn_master1
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic pfl_btn_master1
 U 1 1 604A19B9
 P 9200 8650
 F 0 "pfl_btn_master1" H 9280 8642 50  0001 L CNN
@@ -539,29 +527,18 @@ F 4 "pfl_btn_master  " H 9200 8650 50  0000 L CNN "Field4"
 	1    9200 8650
 	1    0    0    -1  
 $EndComp
-Text GLabel 9000 7650 0    50   Input ~ 0
+Text GLabel 9000 7750 0    50   Input ~ 0
 pfl_btn_ch1
-Text GLabel 9000 7900 0    50   Input ~ 0
+Text GLabel 9000 8000 0    50   Input ~ 0
 pfl_btn_ch2
-Text GLabel 9000 8150 0    50   Input ~ 0
+Text GLabel 9000 8250 0    50   Input ~ 0
 pfl_btn_ch3
-Text GLabel 9000 8400 0    50   Input ~ 0
+Text GLabel 9000 8500 0    50   Input ~ 0
 pfl_btn_ch4
-Text GLabel 9000 8650 0    50   Input ~ 0
+Text GLabel 9000 8750 0    50   Input ~ 0
 pfl_btn_master
 $Comp
-L power:+3.3V #PWR0201
-U 1 1 60687944
-P 7500 7750
-F 0 "#PWR0201" H 7500 7600 50  0001 C CNN
-F 1 "+3.3V" V 7515 7878 50  0000 L CNN
-F 2 "" H 7500 7750 50  0001 C CNN
-F 3 "" H 7500 7750 50  0001 C CNN
-	1    7500 7750
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x02 pfl_led_1
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic pfl_led_1
 U 1 1 6068794A
 P 7700 7650
 F 0 "pfl_led_1" H 7780 7642 50  0001 L CNN
@@ -573,18 +550,7 @@ F 4 "pfl_led_1  " H 7700 7650 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3.3V #PWR0202
-U 1 1 60687950
-P 7500 8000
-F 0 "#PWR0202" H 7500 7850 50  0001 C CNN
-F 1 "+3.3V" V 7515 8128 50  0000 L CNN
-F 2 "" H 7500 8000 50  0001 C CNN
-F 3 "" H 7500 8000 50  0001 C CNN
-	1    7500 8000
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x02 pfl_led_2
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic pfl_led_2
 U 1 1 60687956
 P 7700 7900
 F 0 "pfl_led_2" H 7780 7892 50  0001 L CNN
@@ -596,18 +562,7 @@ F 4 "pfl_led_2  " H 7700 7900 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3.3V #PWR0203
-U 1 1 6068795C
-P 7500 8250
-F 0 "#PWR0203" H 7500 8100 50  0001 C CNN
-F 1 "+3.3V" V 7515 8378 50  0000 L CNN
-F 2 "" H 7500 8250 50  0001 C CNN
-F 3 "" H 7500 8250 50  0001 C CNN
-	1    7500 8250
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x02 pfl_led_3
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic pfl_led_3
 U 1 1 60687962
 P 7700 8150
 F 0 "pfl_led_3" H 7780 8142 50  0001 L CNN
@@ -619,18 +574,7 @@ F 4 "pfl_led_3  " H 7700 8150 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3.3V #PWR0204
-U 1 1 60687968
-P 7500 8500
-F 0 "#PWR0204" H 7500 8350 50  0001 C CNN
-F 1 "+3.3V" V 7515 8628 50  0000 L CNN
-F 2 "" H 7500 8500 50  0001 C CNN
-F 3 "" H 7500 8500 50  0001 C CNN
-	1    7500 8500
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x02 pfl_led_4
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic pfl_led_4
 U 1 1 6068796E
 P 7700 8400
 F 0 "pfl_led_4" H 7780 8392 50  0001 L CNN
@@ -642,18 +586,7 @@ F 4 "pfl_led_4  " H 7700 8400 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3.3V #PWR0205
-U 1 1 60687974
-P 7500 8750
-F 0 "#PWR0205" H 7500 8600 50  0001 C CNN
-F 1 "+3.3V" V 7515 8878 50  0000 L CNN
-F 2 "" H 7500 8750 50  0001 C CNN
-F 3 "" H 7500 8750 50  0001 C CNN
-	1    7500 8750
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x02 pfl_led_master1
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic pfl_led_master1
 U 1 1 6068797A
 P 7700 8650
 F 0 "pfl_led_master1" H 7780 8642 50  0001 L CNN
@@ -664,63 +597,53 @@ F 4 "pfl_led_master  " H 7700 8650 50  0000 L CNN "Field4"
 	1    7700 8650
 	1    0    0    -1  
 $EndComp
-Text GLabel 7500 7650 0    50   Input ~ 0
-pfl_led_ch1
-Text GLabel 7500 7900 0    50   Input ~ 0
-pfl_led_ch2
-Text GLabel 7500 8150 0    50   Input ~ 0
-pfl_led_ch3
-Text GLabel 7500 8400 0    50   Input ~ 0
-pfl_led_ch4
-Text GLabel 7500 8650 0    50   Input ~ 0
-pfl_led_master
 $Comp
-L power:+3.3V #PWR0247
+L mixer.pcb-rescue:+3.3V-power #PWR0247
 U 1 1 6087B9AE
+P 7500 7150
+F 0 "#PWR0247" H 7500 7000 50  0001 C CNN
+F 1 "+3.3V" V 7515 7278 50  0000 L CNN
+F 2 "" H 7500 7150 50  0001 C CNN
+F 3 "" H 7500 7150 50  0001 C CNN
+	1    7500 7150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:GND-power #PWR0246
+U 1 1 6087B9A8
 P 7500 7350
-F 0 "#PWR0247" H 7500 7200 50  0001 C CNN
-F 1 "+3.3V" V 7515 7478 50  0000 L CNN
+F 0 "#PWR0246" H 7500 7100 50  0001 C CNN
+F 1 "GND" V 7505 7222 50  0000 R CNN
 F 2 "" H 7500 7350 50  0001 C CNN
 F 3 "" H 7500 7350 50  0001 C CNN
 	1    7500 7350
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0246
-U 1 1 6087B9A8
-P 7500 7250
-F 0 "#PWR0246" H 7500 7000 50  0001 C CNN
-F 1 "GND" V 7505 7122 50  0000 R CNN
-F 2 "" H 7500 7250 50  0001 C CNN
-F 3 "" H 7500 7250 50  0001 C CNN
-	1    7500 7250
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0245
+L mixer.pcb-rescue:+3.3V-power #PWR0245
 U 1 1 6086F86A
+P 7500 6800
+F 0 "#PWR0245" H 7500 6650 50  0001 C CNN
+F 1 "+3.3V" V 7515 6928 50  0000 L CNN
+F 2 "" H 7500 6800 50  0001 C CNN
+F 3 "" H 7500 6800 50  0001 C CNN
+	1    7500 6800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:GND-power #PWR0244
+U 1 1 6086F864
 P 7500 7000
-F 0 "#PWR0245" H 7500 6850 50  0001 C CNN
-F 1 "+3.3V" V 7515 7128 50  0000 L CNN
+F 0 "#PWR0244" H 7500 6750 50  0001 C CNN
+F 1 "GND" V 7505 6872 50  0000 R CNN
 F 2 "" H 7500 7000 50  0001 C CNN
 F 3 "" H 7500 7000 50  0001 C CNN
 	1    7500 7000
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0244
-U 1 1 6086F864
-P 7500 6900
-F 0 "#PWR0244" H 7500 6650 50  0001 C CNN
-F 1 "GND" V 7505 6772 50  0000 R CNN
-F 2 "" H 7500 6900 50  0001 C CNN
-F 3 "" H 7500 6900 50  0001 C CNN
-	1    7500 6900
 	0    1    1    0   
 $EndComp
-Text GLabel 7500 7150 0    50   Input ~ 0
+Text GLabel 7500 7250 0    50   Input ~ 0
 pin29
-Text GLabel 7500 6800 0    50   Input ~ 0
+Text GLabel 7500 6900 0    50   Input ~ 0
 pin28
 Text GLabel 7500 6500 0    50   Input ~ 0
 vu_clk
@@ -737,7 +660,7 @@ s2
 Text GLabel 5150 6550 2    50   Input ~ 0
 mux_ch1
 $Comp
-L power:GND #PWR0107
+L mixer.pcb-rescue:GND-power #PWR0107
 U 1 1 5FFE5E36
 P 2100 5500
 F 0 "#PWR0107" H 2100 5250 50  0001 C CNN
@@ -790,7 +713,7 @@ pfl_led_ch4
 Text GLabel 4850 7000 2    50   Input ~ 0
 pfl_led_master
 $Comp
-L power:GND #PWR0208
+L mixer.pcb-rescue:GND-power #PWR0208
 U 1 1 6076C36F
 P 4300 6900
 F 0 "#PWR0208" H 4300 6650 50  0001 C CNN
@@ -864,7 +787,7 @@ F 3 "" H 2800 8050 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3.3V #PWR0209
+L mixer.pcb-rescue:+3.3V-power #PWR0209
 U 1 1 6076DEA4
 P 950 6050
 F 0 "#PWR0209" H 950 5900 50  0001 C CNN
@@ -877,7 +800,7 @@ $EndComp
 Text GLabel 4300 6800 2    50   Input ~ 0
 neopixel
 $Comp
-L power:GND #PWR0105
+L mixer.pcb-rescue:GND-power #PWR0105
 U 1 1 607676BE
 P 4300 5600
 F 0 "#PWR0105" H 4300 5350 50  0001 C CNN
@@ -900,7 +823,7 @@ F 4 "VU_Matrix  " H 7700 6300 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0101
+L mixer.pcb-rescue:GND-power #PWR0101
 U 1 1 5FFD1DCA
 P 7500 6200
 F 0 "#PWR0101" H 7500 5950 50  0001 C CNN
@@ -911,7 +834,7 @@ F 3 "" H 7500 6200 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 spare(29)1
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic spare(29)1
 U 1 1 6087B9A2
 P 7700 7250
 F 0 "spare(29)1" H 7780 7292 50  0001 L CNN
@@ -923,7 +846,7 @@ F 4 "  spare(29)" H 7700 7250 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 spare(28)1
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic spare(28)1
 U 1 1 6086F85E
 P 7700 6900
 F 0 "spare(28)1" H 7780 6942 50  0001 L CNN
@@ -935,7 +858,7 @@ F 4 "  spare(28)" H 7700 6900 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x05 fx1_enc1
+L mixer.pcb-rescue:Conn_01x05-Connector_Generic fx1_enc1
 U 1 1 608C8283
 P 15450 8550
 F 0 "fx1_enc1" H 15368 8125 50  0001 C CNN
@@ -947,7 +870,7 @@ F 4 "fx1_enc1  " H 15450 8550 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_5
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_5
 U 1 1 600CE365
 P 3200 2900
 F 0 "MuxCh1_5" H 3280 2942 50  0000 L CNN
@@ -959,7 +882,7 @@ F 4 "  MuxCh1_5" H 3200 2900 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_6
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_6
 U 1 1 600CE35F
 P 3200 3350
 F 0 "MuxCh1_6" H 3280 3392 50  0000 L CNN
@@ -971,7 +894,7 @@ F 4 "  MuxCh1_6" H 3200 3350 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_8
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_8
 U 1 1 600CE359
 P 3200 4250
 F 0 "MuxCh1_8" H 3280 4292 50  0000 L CNN
@@ -983,7 +906,7 @@ F 4 "  MuxCh1_8" H 3200 4250 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_4
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_4
 U 1 1 600CE33B
 P 3200 2450
 F 0 "MuxCh1_4" H 3280 2492 50  0000 L CNN
@@ -995,7 +918,7 @@ F 4 "  MuxCh1_4" H 3200 2450 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_7
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_7
 U 1 1 600CE335
 P 3200 3800
 F 0 "MuxCh1_7" H 3280 3842 50  0000 L CNN
@@ -1022,7 +945,7 @@ Wire Wire Line
 	1300 3200 1300 2900
 Connection ~ 1600 3200
 $Comp
-L power:GND #PWR0158
+L mixer.pcb-rescue:GND-power #PWR0158
 U 1 1 600CE2E7
 P 1600 3200
 F 0 "#PWR0158" H 1600 2950 50  0001 C CNN
@@ -1033,7 +956,7 @@ F 3 "" H 1600 3200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3.3V #PWR0154
+L mixer.pcb-rescue:+3.3V-power #PWR0154
 U 1 1 600CE2FF
 P 3000 2350
 F 0 "#PWR0154" H 3000 2200 50  0001 C CNN
@@ -1044,7 +967,7 @@ F 3 "" H 3000 2350 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0153
+L mixer.pcb-rescue:GND-power #PWR0153
 U 1 1 600CE305
 P 3000 2550
 F 0 "#PWR0153" H 3000 2300 50  0001 C CNN
@@ -1055,7 +978,7 @@ F 3 "" H 3000 2550 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0152
+L mixer.pcb-rescue:+3.3V-power #PWR0152
 U 1 1 600CE30B
 P 3000 2800
 F 0 "#PWR0152" H 3000 2650 50  0001 C CNN
@@ -1066,7 +989,7 @@ F 3 "" H 3000 2800 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0151
+L mixer.pcb-rescue:GND-power #PWR0151
 U 1 1 600CE311
 P 3000 3000
 F 0 "#PWR0151" H 3000 2750 50  0001 C CNN
@@ -1077,7 +1000,7 @@ F 3 "" H 3000 3000 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0150
+L mixer.pcb-rescue:+3.3V-power #PWR0150
 U 1 1 600CE317
 P 3000 3250
 F 0 "#PWR0150" H 3000 3100 50  0001 C CNN
@@ -1088,7 +1011,7 @@ F 3 "" H 3000 3250 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0149
+L mixer.pcb-rescue:GND-power #PWR0149
 U 1 1 600CE31D
 P 3000 3450
 F 0 "#PWR0149" H 3000 3200 50  0001 C CNN
@@ -1099,7 +1022,7 @@ F 3 "" H 3000 3450 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0148
+L mixer.pcb-rescue:+3.3V-power #PWR0148
 U 1 1 600CE323
 P 3000 3700
 F 0 "#PWR0148" H 3000 3550 50  0001 C CNN
@@ -1110,7 +1033,7 @@ F 3 "" H 3000 3700 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0147
+L mixer.pcb-rescue:GND-power #PWR0147
 U 1 1 600CE329
 P 3000 3900
 F 0 "#PWR0147" H 3000 3650 50  0001 C CNN
@@ -1121,7 +1044,7 @@ F 3 "" H 3000 3900 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0146
+L mixer.pcb-rescue:+3.3V-power #PWR0146
 U 1 1 600CE32F
 P 3000 4150
 F 0 "#PWR0146" H 3000 4000 50  0001 C CNN
@@ -1132,7 +1055,7 @@ F 3 "" H 3000 4150 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L 74xx:74HC4051 MuxCh1
+L mixer.pcb-rescue:74HC4051-74xx MuxCh1
 U 1 1 600CE36B
 P 1600 2600
 F 0 "MuxCh1" H 1650 3281 50  0000 C CNN
@@ -1143,7 +1066,7 @@ F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 1600 2200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0142
+L mixer.pcb-rescue:GND-power #PWR0142
 U 1 1 600CE395
 P 3000 4350
 F 0 "#PWR0142" H 3000 4100 50  0001 C CNN
@@ -1154,7 +1077,7 @@ F 3 "" H 3000 4350 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0144
+L mixer.pcb-rescue:GND-power #PWR0144
 U 1 1 600CE347
 P 3000 1200
 F 0 "#PWR0144" H 3000 950 50  0001 C CNN
@@ -1165,7 +1088,7 @@ F 3 "" H 3000 1200 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0145
+L mixer.pcb-rescue:+3.3V-power #PWR0145
 U 1 1 600CE341
 P 3000 1000
 F 0 "#PWR0145" H 3000 850 50  0001 C CNN
@@ -1187,7 +1110,7 @@ F 3 "~" H 2550 950 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_1
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_1
 U 1 1 600CE371
 P 3200 1100
 F 0 "MuxCh1_1" H 3280 1142 50  0000 L CNN
@@ -1201,7 +1124,7 @@ $EndComp
 Wire Wire Line
 	2550 1100 3000 1100
 $Comp
-L power:GND #PWR0103
+L mixer.pcb-rescue:GND-power #PWR0103
 U 1 1 603CAD81
 P 2550 800
 F 0 "#PWR0103" H 2550 550 50  0001 C CNN
@@ -1212,7 +1135,7 @@ F 3 "" H 2550 800 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0155
+L mixer.pcb-rescue:GND-power #PWR0155
 U 1 1 600CE2F9
 P 3000 2100
 F 0 "#PWR0155" H 3000 1850 50  0001 C CNN
@@ -1223,7 +1146,7 @@ F 3 "" H 3000 2100 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0143
+L mixer.pcb-rescue:GND-power #PWR0143
 U 1 1 600CE38F
 P 3000 1650
 F 0 "#PWR0143" H 3000 1400 50  0001 C CNN
@@ -1234,7 +1157,7 @@ F 3 "" H 3000 1650 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0156
+L mixer.pcb-rescue:+3.3V-power #PWR0156
 U 1 1 600CE2F3
 P 3000 1900
 F 0 "#PWR0156" H 3000 1750 50  0001 C CNN
@@ -1245,7 +1168,7 @@ F 3 "" H 3000 1900 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0157
+L mixer.pcb-rescue:+3.3V-power #PWR0157
 U 1 1 600CE2ED
 P 3000 1450
 F 0 "#PWR0157" H 3000 1300 50  0001 C CNN
@@ -1256,7 +1179,7 @@ F 3 "" H 3000 1450 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_2
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_2
 U 1 1 600CE353
 P 3200 1550
 F 0 "MuxCh1_2" H 3280 1592 50  0000 L CNN
@@ -1268,7 +1191,7 @@ F 4 "  MuxCh1_2" H 3200 1550 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0104
+L mixer.pcb-rescue:GND-power #PWR0104
 U 1 1 603E87C9
 P 2550 1250
 F 0 "#PWR0104" H 2550 1000 50  0001 C CNN
@@ -1278,8 +1201,6 @@ F 3 "" H 2550 1250 50  0001 C CNN
 	1    2550 1250
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	7500 5800 7500 5850
 $Comp
 L mixer.pcb-rescue:R-Device R10
 U 1 1 6087B97C
@@ -1294,7 +1215,7 @@ $EndComp
 Wire Wire Line
 	2550 1550 3000 1550
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_3
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_3
 U 1 1 600CE34D
 P 3200 2000
 F 0 "MuxCh1_3" H 3280 2042 50  0000 L CNN
@@ -1319,7 +1240,7 @@ $EndComp
 Wire Wire Line
 	2550 2000 3000 2000
 $Comp
-L power:GND #PWR0108
+L mixer.pcb-rescue:GND-power #PWR0108
 U 1 1 6090D094
 P 2550 1700
 F 0 "#PWR0108" H 2550 1450 50  0001 C CNN
@@ -1330,7 +1251,7 @@ F 3 "" H 2550 1700 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0109
+L mixer.pcb-rescue:GND-power #PWR0109
 U 1 1 6090D09A
 P 2550 2150
 F 0 "#PWR0109" H 2550 1900 50  0001 C CNN
@@ -1367,7 +1288,7 @@ $EndComp
 Wire Wire Line
 	2550 2900 3000 2900
 $Comp
-L power:GND #PWR0110
+L mixer.pcb-rescue:GND-power #PWR0110
 U 1 1 60916585
 P 2550 2600
 F 0 "#PWR0110" H 2550 2350 50  0001 C CNN
@@ -1378,7 +1299,7 @@ F 3 "" H 2550 2600 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0111
+L mixer.pcb-rescue:GND-power #PWR0111
 U 1 1 6091658B
 P 2550 3050
 F 0 "#PWR0111" H 2550 2800 50  0001 C CNN
@@ -1415,7 +1336,7 @@ $EndComp
 Wire Wire Line
 	2550 3800 3000 3800
 $Comp
-L power:GND #PWR0112
+L mixer.pcb-rescue:GND-power #PWR0112
 U 1 1 6092090B
 P 2550 3500
 F 0 "#PWR0112" H 2550 3250 50  0001 C CNN
@@ -1426,7 +1347,7 @@ F 3 "" H 2550 3500 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0113
+L mixer.pcb-rescue:GND-power #PWR0113
 U 1 1 60920911
 P 2550 3950
 F 0 "#PWR0113" H 2550 3700 50  0001 C CNN
@@ -1502,7 +1423,7 @@ Wire Wire Line
 	2000 4250 2550 4250
 Connection ~ 2550 4250
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_13
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_13
 U 1 1 60B90E21
 P 6250 2900
 F 0 "MuxCh1_13" H 6330 2942 50  0000 L CNN
@@ -1514,7 +1435,7 @@ F 4 "  MuxCh1_5" H 6250 2900 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_14
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_14
 U 1 1 60B90E28
 P 6250 3350
 F 0 "MuxCh1_14" H 6330 3392 50  0000 L CNN
@@ -1526,7 +1447,7 @@ F 4 "  MuxCh1_6" H 6250 3350 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_16
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_16
 U 1 1 60B90E2F
 P 6250 4250
 F 0 "MuxCh1_16" H 6330 4292 50  0000 L CNN
@@ -1538,7 +1459,7 @@ F 4 "  MuxCh1_8" H 6250 4250 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_12
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_12
 U 1 1 60B90E36
 P 6250 2450
 F 0 "MuxCh1_12" H 6330 2492 50  0000 L CNN
@@ -1550,7 +1471,7 @@ F 4 "  MuxCh1_4" H 6250 2450 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_15
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_15
 U 1 1 60B90E3D
 P 6250 3800
 F 0 "MuxCh1_15" H 6330 3842 50  0000 L CNN
@@ -1577,7 +1498,7 @@ Wire Wire Line
 	4350 3200 4350 2900
 Connection ~ 4650 3200
 $Comp
-L power:GND #PWR0115
+L mixer.pcb-rescue:GND-power #PWR0115
 U 1 1 60B90E51
 P 4650 3200
 F 0 "#PWR0115" H 4650 2950 50  0001 C CNN
@@ -1588,7 +1509,7 @@ F 3 "" H 4650 3200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3.3V #PWR0116
+L mixer.pcb-rescue:+3.3V-power #PWR0116
 U 1 1 60B90E57
 P 6050 2350
 F 0 "#PWR0116" H 6050 2200 50  0001 C CNN
@@ -1599,7 +1520,7 @@ F 3 "" H 6050 2350 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0117
+L mixer.pcb-rescue:GND-power #PWR0117
 U 1 1 60B90E5D
 P 6050 2550
 F 0 "#PWR0117" H 6050 2300 50  0001 C CNN
@@ -1610,7 +1531,7 @@ F 3 "" H 6050 2550 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0118
+L mixer.pcb-rescue:+3.3V-power #PWR0118
 U 1 1 60B90E63
 P 6050 2800
 F 0 "#PWR0118" H 6050 2650 50  0001 C CNN
@@ -1621,7 +1542,7 @@ F 3 "" H 6050 2800 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0119
+L mixer.pcb-rescue:GND-power #PWR0119
 U 1 1 60B90E69
 P 6050 3000
 F 0 "#PWR0119" H 6050 2750 50  0001 C CNN
@@ -1632,7 +1553,7 @@ F 3 "" H 6050 3000 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0120
+L mixer.pcb-rescue:+3.3V-power #PWR0120
 U 1 1 60B90E6F
 P 6050 3250
 F 0 "#PWR0120" H 6050 3100 50  0001 C CNN
@@ -1643,7 +1564,7 @@ F 3 "" H 6050 3250 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0121
+L mixer.pcb-rescue:GND-power #PWR0121
 U 1 1 60B90E75
 P 6050 3450
 F 0 "#PWR0121" H 6050 3200 50  0001 C CNN
@@ -1654,7 +1575,7 @@ F 3 "" H 6050 3450 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0122
+L mixer.pcb-rescue:+3.3V-power #PWR0122
 U 1 1 60B90E7B
 P 6050 3700
 F 0 "#PWR0122" H 6050 3550 50  0001 C CNN
@@ -1665,7 +1586,7 @@ F 3 "" H 6050 3700 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0123
+L mixer.pcb-rescue:GND-power #PWR0123
 U 1 1 60B90E81
 P 6050 3900
 F 0 "#PWR0123" H 6050 3650 50  0001 C CNN
@@ -1676,7 +1597,7 @@ F 3 "" H 6050 3900 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0124
+L mixer.pcb-rescue:+3.3V-power #PWR0124
 U 1 1 60B90E87
 P 6050 4150
 F 0 "#PWR0124" H 6050 4000 50  0001 C CNN
@@ -1687,7 +1608,7 @@ F 3 "" H 6050 4150 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L 74xx:74HC4051 MuxCh2
+L mixer.pcb-rescue:74HC4051-74xx MuxCh2
 U 1 1 60B90E8D
 P 4650 2600
 F 0 "MuxCh2" H 4700 3281 50  0000 C CNN
@@ -1698,7 +1619,7 @@ F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 4650 2200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0125
+L mixer.pcb-rescue:GND-power #PWR0125
 U 1 1 60B90E93
 P 6050 4350
 F 0 "#PWR0125" H 6050 4100 50  0001 C CNN
@@ -1709,7 +1630,7 @@ F 3 "" H 6050 4350 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0126
+L mixer.pcb-rescue:GND-power #PWR0126
 U 1 1 60B90E99
 P 6050 1200
 F 0 "#PWR0126" H 6050 950 50  0001 C CNN
@@ -1720,7 +1641,7 @@ F 3 "" H 6050 1200 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0127
+L mixer.pcb-rescue:+3.3V-power #PWR0127
 U 1 1 60B90E9F
 P 6050 1000
 F 0 "#PWR0127" H 6050 850 50  0001 C CNN
@@ -1742,7 +1663,7 @@ F 3 "~" H 5600 950 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_9
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_9
 U 1 1 60B90EAC
 P 6250 1100
 F 0 "MuxCh1_9" H 6330 1142 50  0000 L CNN
@@ -1756,7 +1677,7 @@ $EndComp
 Wire Wire Line
 	5600 1100 6050 1100
 $Comp
-L power:GND #PWR0128
+L mixer.pcb-rescue:GND-power #PWR0128
 U 1 1 60B90EB3
 P 5600 800
 F 0 "#PWR0128" H 5600 550 50  0001 C CNN
@@ -1767,7 +1688,7 @@ F 3 "" H 5600 800 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0129
+L mixer.pcb-rescue:GND-power #PWR0129
 U 1 1 60B90EB9
 P 6050 2100
 F 0 "#PWR0129" H 6050 1850 50  0001 C CNN
@@ -1778,7 +1699,7 @@ F 3 "" H 6050 2100 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0130
+L mixer.pcb-rescue:GND-power #PWR0130
 U 1 1 60B90EBF
 P 6050 1650
 F 0 "#PWR0130" H 6050 1400 50  0001 C CNN
@@ -1789,7 +1710,7 @@ F 3 "" H 6050 1650 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0131
+L mixer.pcb-rescue:+3.3V-power #PWR0131
 U 1 1 60B90EC5
 P 6050 1900
 F 0 "#PWR0131" H 6050 1750 50  0001 C CNN
@@ -1800,7 +1721,7 @@ F 3 "" H 6050 1900 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0132
+L mixer.pcb-rescue:+3.3V-power #PWR0132
 U 1 1 60B90ECB
 P 6050 1450
 F 0 "#PWR0132" H 6050 1300 50  0001 C CNN
@@ -1811,7 +1732,7 @@ F 3 "" H 6050 1450 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_10
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_10
 U 1 1 60B90ED2
 P 6250 1550
 F 0 "MuxCh1_10" H 6330 1592 50  0000 L CNN
@@ -1823,7 +1744,7 @@ F 4 "  MuxCh1_2" H 6250 1550 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0133
+L mixer.pcb-rescue:GND-power #PWR0133
 U 1 1 60B90ED8
 P 5600 1250
 F 0 "#PWR0133" H 5600 1000 50  0001 C CNN
@@ -1847,7 +1768,7 @@ $EndComp
 Wire Wire Line
 	5600 1550 6050 1550
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_11
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_11
 U 1 1 60B90EE6
 P 6250 2000
 F 0 "MuxCh1_11" H 6330 2042 50  0000 L CNN
@@ -1872,7 +1793,7 @@ $EndComp
 Wire Wire Line
 	5600 2000 6050 2000
 $Comp
-L power:GND #PWR0134
+L mixer.pcb-rescue:GND-power #PWR0134
 U 1 1 60B90EF3
 P 5600 1700
 F 0 "#PWR0134" H 5600 1450 50  0001 C CNN
@@ -1883,7 +1804,7 @@ F 3 "" H 5600 1700 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0135
+L mixer.pcb-rescue:GND-power #PWR0135
 U 1 1 60B90EF9
 P 5600 2150
 F 0 "#PWR0135" H 5600 1900 50  0001 C CNN
@@ -1920,7 +1841,7 @@ $EndComp
 Wire Wire Line
 	5600 2900 6050 2900
 $Comp
-L power:GND #PWR0136
+L mixer.pcb-rescue:GND-power #PWR0136
 U 1 1 60B90F0D
 P 5600 2600
 F 0 "#PWR0136" H 5600 2350 50  0001 C CNN
@@ -1931,7 +1852,7 @@ F 3 "" H 5600 2600 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0137
+L mixer.pcb-rescue:GND-power #PWR0137
 U 1 1 60B90F13
 P 5600 3050
 F 0 "#PWR0137" H 5600 2800 50  0001 C CNN
@@ -1968,7 +1889,7 @@ $EndComp
 Wire Wire Line
 	5600 3800 6050 3800
 $Comp
-L power:GND #PWR0138
+L mixer.pcb-rescue:GND-power #PWR0138
 U 1 1 60B90F27
 P 5600 3500
 F 0 "#PWR0138" H 5600 3250 50  0001 C CNN
@@ -1979,7 +1900,7 @@ F 3 "" H 5600 3500 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0139
+L mixer.pcb-rescue:GND-power #PWR0139
 U 1 1 60B90F2D
 P 5600 3950
 F 0 "#PWR0139" H 5600 3700 50  0001 C CNN
@@ -2055,7 +1976,7 @@ Wire Wire Line
 	5050 4250 5600 4250
 Connection ~ 5600 4250
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_21
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_21
 U 1 1 60BA96A5
 P 9350 2900
 F 0 "MuxCh1_21" H 9430 2942 50  0000 L CNN
@@ -2067,7 +1988,7 @@ F 4 "  MuxCh1_5" H 9350 2900 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_22
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_22
 U 1 1 60BA96AC
 P 9350 3350
 F 0 "MuxCh1_22" H 9430 3392 50  0000 L CNN
@@ -2079,7 +2000,7 @@ F 4 "  MuxCh1_6" H 9350 3350 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_24
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_24
 U 1 1 60BA96B3
 P 9350 4250
 F 0 "MuxCh1_24" H 9430 4292 50  0000 L CNN
@@ -2091,7 +2012,7 @@ F 4 "  MuxCh1_8" H 9350 4250 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_20
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_20
 U 1 1 60BA96BA
 P 9350 2450
 F 0 "MuxCh1_20" H 9430 2492 50  0000 L CNN
@@ -2103,7 +2024,7 @@ F 4 "  MuxCh1_4" H 9350 2450 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_23
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_23
 U 1 1 60BA96C1
 P 9350 3800
 F 0 "MuxCh1_23" H 9430 3842 50  0000 L CNN
@@ -2130,7 +2051,7 @@ Wire Wire Line
 	7450 3200 7450 2900
 Connection ~ 7750 3200
 $Comp
-L power:GND #PWR0141
+L mixer.pcb-rescue:GND-power #PWR0141
 U 1 1 60BA96D5
 P 7750 3200
 F 0 "#PWR0141" H 7750 2950 50  0001 C CNN
@@ -2141,7 +2062,7 @@ F 3 "" H 7750 3200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3.3V #PWR0160
+L mixer.pcb-rescue:+3.3V-power #PWR0160
 U 1 1 60BA96DB
 P 9150 2350
 F 0 "#PWR0160" H 9150 2200 50  0001 C CNN
@@ -2152,7 +2073,7 @@ F 3 "" H 9150 2350 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0161
+L mixer.pcb-rescue:GND-power #PWR0161
 U 1 1 60BA96E1
 P 9150 2550
 F 0 "#PWR0161" H 9150 2300 50  0001 C CNN
@@ -2163,7 +2084,7 @@ F 3 "" H 9150 2550 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0162
+L mixer.pcb-rescue:+3.3V-power #PWR0162
 U 1 1 60BA96E7
 P 9150 2800
 F 0 "#PWR0162" H 9150 2650 50  0001 C CNN
@@ -2174,7 +2095,7 @@ F 3 "" H 9150 2800 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0163
+L mixer.pcb-rescue:GND-power #PWR0163
 U 1 1 60BA96ED
 P 9150 3000
 F 0 "#PWR0163" H 9150 2750 50  0001 C CNN
@@ -2185,7 +2106,7 @@ F 3 "" H 9150 3000 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0164
+L mixer.pcb-rescue:+3.3V-power #PWR0164
 U 1 1 60BA96F3
 P 9150 3250
 F 0 "#PWR0164" H 9150 3100 50  0001 C CNN
@@ -2196,7 +2117,7 @@ F 3 "" H 9150 3250 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0165
+L mixer.pcb-rescue:GND-power #PWR0165
 U 1 1 60BA96F9
 P 9150 3450
 F 0 "#PWR0165" H 9150 3200 50  0001 C CNN
@@ -2207,7 +2128,7 @@ F 3 "" H 9150 3450 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0166
+L mixer.pcb-rescue:+3.3V-power #PWR0166
 U 1 1 60BA96FF
 P 9150 3700
 F 0 "#PWR0166" H 9150 3550 50  0001 C CNN
@@ -2218,7 +2139,7 @@ F 3 "" H 9150 3700 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0167
+L mixer.pcb-rescue:GND-power #PWR0167
 U 1 1 60BA9705
 P 9150 3900
 F 0 "#PWR0167" H 9150 3650 50  0001 C CNN
@@ -2229,7 +2150,7 @@ F 3 "" H 9150 3900 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0168
+L mixer.pcb-rescue:+3.3V-power #PWR0168
 U 1 1 60BA970B
 P 9150 4150
 F 0 "#PWR0168" H 9150 4000 50  0001 C CNN
@@ -2240,7 +2161,7 @@ F 3 "" H 9150 4150 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L 74xx:74HC4051 MuxCh3
+L mixer.pcb-rescue:74HC4051-74xx MuxCh3
 U 1 1 60BA9711
 P 7750 2600
 F 0 "MuxCh3" H 7800 3281 50  0000 C CNN
@@ -2251,7 +2172,7 @@ F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 7750 2200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0169
+L mixer.pcb-rescue:GND-power #PWR0169
 U 1 1 60BA9717
 P 9150 4350
 F 0 "#PWR0169" H 9150 4100 50  0001 C CNN
@@ -2262,7 +2183,7 @@ F 3 "" H 9150 4350 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0170
+L mixer.pcb-rescue:GND-power #PWR0170
 U 1 1 60BA971D
 P 9150 1200
 F 0 "#PWR0170" H 9150 950 50  0001 C CNN
@@ -2273,7 +2194,7 @@ F 3 "" H 9150 1200 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0171
+L mixer.pcb-rescue:+3.3V-power #PWR0171
 U 1 1 60BA9723
 P 9150 1000
 F 0 "#PWR0171" H 9150 850 50  0001 C CNN
@@ -2295,7 +2216,7 @@ F 3 "~" H 8700 950 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_17
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_17
 U 1 1 60BA9730
 P 9350 1100
 F 0 "MuxCh1_17" H 9430 1142 50  0000 L CNN
@@ -2309,7 +2230,7 @@ $EndComp
 Wire Wire Line
 	8700 1100 9150 1100
 $Comp
-L power:GND #PWR0172
+L mixer.pcb-rescue:GND-power #PWR0172
 U 1 1 60BA9737
 P 8700 800
 F 0 "#PWR0172" H 8700 550 50  0001 C CNN
@@ -2320,7 +2241,7 @@ F 3 "" H 8700 800 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0173
+L mixer.pcb-rescue:GND-power #PWR0173
 U 1 1 60BA973D
 P 9150 2100
 F 0 "#PWR0173" H 9150 1850 50  0001 C CNN
@@ -2331,7 +2252,7 @@ F 3 "" H 9150 2100 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0174
+L mixer.pcb-rescue:GND-power #PWR0174
 U 1 1 60BA9743
 P 9150 1650
 F 0 "#PWR0174" H 9150 1400 50  0001 C CNN
@@ -2342,7 +2263,7 @@ F 3 "" H 9150 1650 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0175
+L mixer.pcb-rescue:+3.3V-power #PWR0175
 U 1 1 60BA9749
 P 9150 1900
 F 0 "#PWR0175" H 9150 1750 50  0001 C CNN
@@ -2353,7 +2274,7 @@ F 3 "" H 9150 1900 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0176
+L mixer.pcb-rescue:+3.3V-power #PWR0176
 U 1 1 60BA974F
 P 9150 1450
 F 0 "#PWR0176" H 9150 1300 50  0001 C CNN
@@ -2364,7 +2285,7 @@ F 3 "" H 9150 1450 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_18
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_18
 U 1 1 60BA9756
 P 9350 1550
 F 0 "MuxCh1_18" H 9430 1592 50  0000 L CNN
@@ -2376,7 +2297,7 @@ F 4 "  MuxCh1_2" H 9350 1550 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0177
+L mixer.pcb-rescue:GND-power #PWR0177
 U 1 1 60BA975C
 P 8700 1250
 F 0 "#PWR0177" H 8700 1000 50  0001 C CNN
@@ -2400,7 +2321,7 @@ $EndComp
 Wire Wire Line
 	8700 1550 9150 1550
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_19
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_19
 U 1 1 60BA976A
 P 9350 2000
 F 0 "MuxCh1_19" H 9430 2042 50  0000 L CNN
@@ -2425,7 +2346,7 @@ $EndComp
 Wire Wire Line
 	8700 2000 9150 2000
 $Comp
-L power:GND #PWR0178
+L mixer.pcb-rescue:GND-power #PWR0178
 U 1 1 60BA9777
 P 8700 1700
 F 0 "#PWR0178" H 8700 1450 50  0001 C CNN
@@ -2436,7 +2357,7 @@ F 3 "" H 8700 1700 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0179
+L mixer.pcb-rescue:GND-power #PWR0179
 U 1 1 60BA977D
 P 8700 2150
 F 0 "#PWR0179" H 8700 1900 50  0001 C CNN
@@ -2473,7 +2394,7 @@ $EndComp
 Wire Wire Line
 	8700 2900 9150 2900
 $Comp
-L power:GND #PWR0180
+L mixer.pcb-rescue:GND-power #PWR0180
 U 1 1 60BA9791
 P 8700 2600
 F 0 "#PWR0180" H 8700 2350 50  0001 C CNN
@@ -2484,7 +2405,7 @@ F 3 "" H 8700 2600 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0181
+L mixer.pcb-rescue:GND-power #PWR0181
 U 1 1 60BA9797
 P 8700 3050
 F 0 "#PWR0181" H 8700 2800 50  0001 C CNN
@@ -2521,7 +2442,7 @@ $EndComp
 Wire Wire Line
 	8700 3800 9150 3800
 $Comp
-L power:GND #PWR0182
+L mixer.pcb-rescue:GND-power #PWR0182
 U 1 1 60BA97AB
 P 8700 3500
 F 0 "#PWR0182" H 8700 3250 50  0001 C CNN
@@ -2532,7 +2453,7 @@ F 3 "" H 8700 3500 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0183
+L mixer.pcb-rescue:GND-power #PWR0183
 U 1 1 60BA97B1
 P 8700 3950
 F 0 "#PWR0183" H 8700 3700 50  0001 C CNN
@@ -2619,7 +2540,7 @@ F 3 "~" H 5250 6650 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0184
+L mixer.pcb-rescue:GND-power #PWR0184
 U 1 1 60BA97E2
 P 5400 6650
 F 0 "#PWR0184" H 5400 6400 50  0001 C CNN
@@ -2630,7 +2551,7 @@ F 3 "" H 5400 6650 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_29
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_29
 U 1 1 60BC2863
 P 12500 2900
 F 0 "MuxCh1_29" H 12580 2942 50  0000 L CNN
@@ -2642,7 +2563,7 @@ F 4 "  MuxCh1_5" H 12500 2900 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_30
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_30
 U 1 1 60BC286A
 P 12500 3350
 F 0 "MuxCh1_30" H 12580 3392 50  0000 L CNN
@@ -2654,7 +2575,7 @@ F 4 "  MuxCh1_6" H 12500 3350 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_32
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_32
 U 1 1 60BC2871
 P 12500 4250
 F 0 "MuxCh1_32" H 12580 4292 50  0000 L CNN
@@ -2666,7 +2587,7 @@ F 4 "  MuxCh1_8" H 12500 4250 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_28
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_28
 U 1 1 60BC2878
 P 12500 2450
 F 0 "MuxCh1_28" H 12580 2492 50  0000 L CNN
@@ -2678,7 +2599,7 @@ F 4 "  MuxCh1_4" H 12500 2450 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_31
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_31
 U 1 1 60BC287F
 P 12500 3800
 F 0 "MuxCh1_31" H 12580 3842 50  0000 L CNN
@@ -2705,7 +2626,7 @@ Wire Wire Line
 	10600 3200 10600 2900
 Connection ~ 10900 3200
 $Comp
-L power:GND #PWR0186
+L mixer.pcb-rescue:GND-power #PWR0186
 U 1 1 60BC2893
 P 10900 3200
 F 0 "#PWR0186" H 10900 2950 50  0001 C CNN
@@ -2716,7 +2637,7 @@ F 3 "" H 10900 3200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3.3V #PWR0187
+L mixer.pcb-rescue:+3.3V-power #PWR0187
 U 1 1 60BC2899
 P 12300 2350
 F 0 "#PWR0187" H 12300 2200 50  0001 C CNN
@@ -2727,7 +2648,7 @@ F 3 "" H 12300 2350 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0188
+L mixer.pcb-rescue:GND-power #PWR0188
 U 1 1 60BC289F
 P 12300 2550
 F 0 "#PWR0188" H 12300 2300 50  0001 C CNN
@@ -2738,7 +2659,7 @@ F 3 "" H 12300 2550 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0189
+L mixer.pcb-rescue:+3.3V-power #PWR0189
 U 1 1 60BC28A5
 P 12300 2800
 F 0 "#PWR0189" H 12300 2650 50  0001 C CNN
@@ -2749,7 +2670,7 @@ F 3 "" H 12300 2800 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0190
+L mixer.pcb-rescue:GND-power #PWR0190
 U 1 1 60BC28AB
 P 12300 3000
 F 0 "#PWR0190" H 12300 2750 50  0001 C CNN
@@ -2760,7 +2681,7 @@ F 3 "" H 12300 3000 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0191
+L mixer.pcb-rescue:+3.3V-power #PWR0191
 U 1 1 60BC28B1
 P 12300 3250
 F 0 "#PWR0191" H 12300 3100 50  0001 C CNN
@@ -2771,7 +2692,7 @@ F 3 "" H 12300 3250 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0192
+L mixer.pcb-rescue:GND-power #PWR0192
 U 1 1 60BC28B7
 P 12300 3450
 F 0 "#PWR0192" H 12300 3200 50  0001 C CNN
@@ -2782,7 +2703,7 @@ F 3 "" H 12300 3450 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0193
+L mixer.pcb-rescue:+3.3V-power #PWR0193
 U 1 1 60BC28BD
 P 12300 3700
 F 0 "#PWR0193" H 12300 3550 50  0001 C CNN
@@ -2793,7 +2714,7 @@ F 3 "" H 12300 3700 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0194
+L mixer.pcb-rescue:GND-power #PWR0194
 U 1 1 60BC28C3
 P 12300 3900
 F 0 "#PWR0194" H 12300 3650 50  0001 C CNN
@@ -2804,7 +2725,7 @@ F 3 "" H 12300 3900 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0195
+L mixer.pcb-rescue:+3.3V-power #PWR0195
 U 1 1 60BC28C9
 P 12300 4150
 F 0 "#PWR0195" H 12300 4000 50  0001 C CNN
@@ -2815,7 +2736,7 @@ F 3 "" H 12300 4150 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L 74xx:74HC4051 MuxCh4
+L mixer.pcb-rescue:74HC4051-74xx MuxCh4
 U 1 1 60BC28CF
 P 10900 2600
 F 0 "MuxCh4" H 10950 3281 50  0000 C CNN
@@ -2826,7 +2747,7 @@ F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 10900 2200 50  0001 C CN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0238
+L mixer.pcb-rescue:GND-power #PWR0238
 U 1 1 60BC28D5
 P 12300 4350
 F 0 "#PWR0238" H 12300 4100 50  0001 C CNN
@@ -2837,7 +2758,7 @@ F 3 "" H 12300 4350 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0239
+L mixer.pcb-rescue:GND-power #PWR0239
 U 1 1 60BC28DB
 P 12300 1200
 F 0 "#PWR0239" H 12300 950 50  0001 C CNN
@@ -2848,7 +2769,7 @@ F 3 "" H 12300 1200 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0240
+L mixer.pcb-rescue:+3.3V-power #PWR0240
 U 1 1 60BC28E1
 P 12300 1000
 F 0 "#PWR0240" H 12300 850 50  0001 C CNN
@@ -2870,7 +2791,7 @@ F 3 "~" H 11850 950 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_25
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_25
 U 1 1 60BC28EE
 P 12500 1100
 F 0 "MuxCh1_25" H 12580 1142 50  0000 L CNN
@@ -2884,7 +2805,7 @@ $EndComp
 Wire Wire Line
 	11850 1100 12300 1100
 $Comp
-L power:GND #PWR0241
+L mixer.pcb-rescue:GND-power #PWR0241
 U 1 1 60BC28F5
 P 11850 800
 F 0 "#PWR0241" H 11850 550 50  0001 C CNN
@@ -2895,7 +2816,7 @@ F 3 "" H 11850 800 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0242
+L mixer.pcb-rescue:GND-power #PWR0242
 U 1 1 60BC28FB
 P 12300 2100
 F 0 "#PWR0242" H 12300 1850 50  0001 C CNN
@@ -2906,7 +2827,7 @@ F 3 "" H 12300 2100 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0243
+L mixer.pcb-rescue:GND-power #PWR0243
 U 1 1 60BC2901
 P 12300 1650
 F 0 "#PWR0243" H 12300 1400 50  0001 C CNN
@@ -2917,7 +2838,7 @@ F 3 "" H 12300 1650 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0248
+L mixer.pcb-rescue:+3.3V-power #PWR0248
 U 1 1 60BC2907
 P 12300 1900
 F 0 "#PWR0248" H 12300 1750 50  0001 C CNN
@@ -2928,7 +2849,7 @@ F 3 "" H 12300 1900 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0249
+L mixer.pcb-rescue:+3.3V-power #PWR0249
 U 1 1 60BC290D
 P 12300 1450
 F 0 "#PWR0249" H 12300 1300 50  0001 C CNN
@@ -2939,7 +2860,7 @@ F 3 "" H 12300 1450 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_26
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_26
 U 1 1 60BC2914
 P 12500 1550
 F 0 "MuxCh1_26" H 12580 1592 50  0000 L CNN
@@ -2951,7 +2872,7 @@ F 4 "  MuxCh1_2" H 12500 1550 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0250
+L mixer.pcb-rescue:GND-power #PWR0250
 U 1 1 60BC291A
 P 11850 1250
 F 0 "#PWR0250" H 11850 1000 50  0001 C CNN
@@ -2975,7 +2896,7 @@ $EndComp
 Wire Wire Line
 	11850 1550 12300 1550
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_27
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_27
 U 1 1 60BC2928
 P 12500 2000
 F 0 "MuxCh1_27" H 12580 2042 50  0000 L CNN
@@ -3000,7 +2921,7 @@ $EndComp
 Wire Wire Line
 	11850 2000 12300 2000
 $Comp
-L power:GND #PWR0251
+L mixer.pcb-rescue:GND-power #PWR0251
 U 1 1 60BC2935
 P 11850 1700
 F 0 "#PWR0251" H 11850 1450 50  0001 C CNN
@@ -3011,7 +2932,7 @@ F 3 "" H 11850 1700 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0252
+L mixer.pcb-rescue:GND-power #PWR0252
 U 1 1 60BC293B
 P 11850 2150
 F 0 "#PWR0252" H 11850 1900 50  0001 C CNN
@@ -3048,7 +2969,7 @@ $EndComp
 Wire Wire Line
 	11850 2900 12300 2900
 $Comp
-L power:GND #PWR0253
+L mixer.pcb-rescue:GND-power #PWR0253
 U 1 1 60BC294F
 P 11850 2600
 F 0 "#PWR0253" H 11850 2350 50  0001 C CNN
@@ -3059,7 +2980,7 @@ F 3 "" H 11850 2600 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0254
+L mixer.pcb-rescue:GND-power #PWR0254
 U 1 1 60BC2955
 P 11850 3050
 F 0 "#PWR0254" H 11850 2800 50  0001 C CNN
@@ -3096,7 +3017,7 @@ $EndComp
 Wire Wire Line
 	11850 3800 12300 3800
 $Comp
-L power:GND #PWR0255
+L mixer.pcb-rescue:GND-power #PWR0255
 U 1 1 60BC2969
 P 11850 3500
 F 0 "#PWR0255" H 11850 3250 50  0001 C CNN
@@ -3107,7 +3028,7 @@ F 3 "" H 11850 3500 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0256
+L mixer.pcb-rescue:GND-power #PWR0256
 U 1 1 60BC296F
 P 11850 3950
 F 0 "#PWR0256" H 11850 3700 50  0001 C CNN
@@ -3183,7 +3104,7 @@ Wire Wire Line
 	11300 4250 11850 4250
 Connection ~ 11850 4250
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_37
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_37
 U 1 1 60BD8FBA
 P 15450 2900
 F 0 "MuxCh1_37" H 15530 2942 50  0000 L CNN
@@ -3195,7 +3116,7 @@ F 4 "  MuxCh1_5" H 15450 2900 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_38
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_38
 U 1 1 60BD8FC1
 P 15450 3350
 F 0 "MuxCh1_38" H 15530 3392 50  0000 L CNN
@@ -3207,7 +3128,7 @@ F 4 "  MuxCh1_6" H 15450 3350 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_40
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_40
 U 1 1 60BD8FC8
 P 15450 4250
 F 0 "MuxCh1_40" H 15530 4292 50  0000 L CNN
@@ -3219,7 +3140,7 @@ F 4 "  MuxCh1_8" H 15450 4250 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_36
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_36
 U 1 1 60BD8FCF
 P 15450 2450
 F 0 "MuxCh1_36" H 15530 2492 50  0000 L CNN
@@ -3231,7 +3152,7 @@ F 4 "  MuxCh1_4" H 15450 2450 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_39
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_39
 U 1 1 60BD8FD6
 P 15450 3800
 F 0 "MuxCh1_39" H 15530 3842 50  0000 L CNN
@@ -3258,7 +3179,7 @@ Wire Wire Line
 	13550 3200 13550 2900
 Connection ~ 13850 3200
 $Comp
-L power:GND #PWR0258
+L mixer.pcb-rescue:GND-power #PWR0258
 U 1 1 60BD8FEA
 P 13850 3200
 F 0 "#PWR0258" H 13850 2950 50  0001 C CNN
@@ -3269,7 +3190,7 @@ F 3 "" H 13850 3200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3.3V #PWR0259
+L mixer.pcb-rescue:+3.3V-power #PWR0259
 U 1 1 60BD8FF0
 P 15250 2350
 F 0 "#PWR0259" H 15250 2200 50  0001 C CNN
@@ -3280,7 +3201,7 @@ F 3 "" H 15250 2350 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0260
+L mixer.pcb-rescue:GND-power #PWR0260
 U 1 1 60BD8FF6
 P 15250 2550
 F 0 "#PWR0260" H 15250 2300 50  0001 C CNN
@@ -3291,7 +3212,7 @@ F 3 "" H 15250 2550 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0261
+L mixer.pcb-rescue:+3.3V-power #PWR0261
 U 1 1 60BD8FFC
 P 15250 2800
 F 0 "#PWR0261" H 15250 2650 50  0001 C CNN
@@ -3302,7 +3223,7 @@ F 3 "" H 15250 2800 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0262
+L mixer.pcb-rescue:GND-power #PWR0262
 U 1 1 60BD9002
 P 15250 3000
 F 0 "#PWR0262" H 15250 2750 50  0001 C CNN
@@ -3313,7 +3234,7 @@ F 3 "" H 15250 3000 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0263
+L mixer.pcb-rescue:+3.3V-power #PWR0263
 U 1 1 60BD9008
 P 15250 3250
 F 0 "#PWR0263" H 15250 3100 50  0001 C CNN
@@ -3324,7 +3245,7 @@ F 3 "" H 15250 3250 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0264
+L mixer.pcb-rescue:GND-power #PWR0264
 U 1 1 60BD900E
 P 15250 3450
 F 0 "#PWR0264" H 15250 3200 50  0001 C CNN
@@ -3335,7 +3256,7 @@ F 3 "" H 15250 3450 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0265
+L mixer.pcb-rescue:+3.3V-power #PWR0265
 U 1 1 60BD9014
 P 15250 3700
 F 0 "#PWR0265" H 15250 3550 50  0001 C CNN
@@ -3346,7 +3267,7 @@ F 3 "" H 15250 3700 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0266
+L mixer.pcb-rescue:GND-power #PWR0266
 U 1 1 60BD901A
 P 15250 3900
 F 0 "#PWR0266" H 15250 3650 50  0001 C CNN
@@ -3357,7 +3278,7 @@ F 3 "" H 15250 3900 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0267
+L mixer.pcb-rescue:+3.3V-power #PWR0267
 U 1 1 60BD9020
 P 15250 4150
 F 0 "#PWR0267" H 15250 4000 50  0001 C CNN
@@ -3368,7 +3289,7 @@ F 3 "" H 15250 4150 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L 74xx:74HC4051 MuxCh5
+L mixer.pcb-rescue:74HC4051-74xx MuxCh5
 U 1 1 60BD9026
 P 13850 2600
 F 0 "MuxCh5" H 13900 3281 50  0000 C CNN
@@ -3379,7 +3300,7 @@ F 3 "http://www.ti.com/lit/ds/symlink/cd74hc4051.pdf" H 13850 2200 50  0001 C CN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0268
+L mixer.pcb-rescue:GND-power #PWR0268
 U 1 1 60BD902C
 P 15250 4350
 F 0 "#PWR0268" H 15250 4100 50  0001 C CNN
@@ -3390,7 +3311,7 @@ F 3 "" H 15250 4350 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0269
+L mixer.pcb-rescue:GND-power #PWR0269
 U 1 1 60BD9032
 P 15250 1200
 F 0 "#PWR0269" H 15250 950 50  0001 C CNN
@@ -3401,7 +3322,7 @@ F 3 "" H 15250 1200 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0270
+L mixer.pcb-rescue:+3.3V-power #PWR0270
 U 1 1 60BD9038
 P 15250 1000
 F 0 "#PWR0270" H 15250 850 50  0001 C CNN
@@ -3423,7 +3344,7 @@ F 3 "~" H 14800 950 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_33
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_33
 U 1 1 60BD9045
 P 15450 1100
 F 0 "MuxCh1_33" H 15530 1142 50  0000 L CNN
@@ -3437,7 +3358,7 @@ $EndComp
 Wire Wire Line
 	14800 1100 15250 1100
 $Comp
-L power:GND #PWR0271
+L mixer.pcb-rescue:GND-power #PWR0271
 U 1 1 60BD904C
 P 14800 800
 F 0 "#PWR0271" H 14800 550 50  0001 C CNN
@@ -3448,7 +3369,7 @@ F 3 "" H 14800 800 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0272
+L mixer.pcb-rescue:GND-power #PWR0272
 U 1 1 60BD9052
 P 15250 2100
 F 0 "#PWR0272" H 15250 1850 50  0001 C CNN
@@ -3459,7 +3380,7 @@ F 3 "" H 15250 2100 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0273
+L mixer.pcb-rescue:GND-power #PWR0273
 U 1 1 60BD9058
 P 15250 1650
 F 0 "#PWR0273" H 15250 1400 50  0001 C CNN
@@ -3470,7 +3391,7 @@ F 3 "" H 15250 1650 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0274
+L mixer.pcb-rescue:+3.3V-power #PWR0274
 U 1 1 60BD905E
 P 15250 1900
 F 0 "#PWR0274" H 15250 1750 50  0001 C CNN
@@ -3481,7 +3402,7 @@ F 3 "" H 15250 1900 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0275
+L mixer.pcb-rescue:+3.3V-power #PWR0275
 U 1 1 60BD9064
 P 15250 1450
 F 0 "#PWR0275" H 15250 1300 50  0001 C CNN
@@ -3492,7 +3413,7 @@ F 3 "" H 15250 1450 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_34
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_34
 U 1 1 60BD906B
 P 15450 1550
 F 0 "MuxCh1_34" H 15530 1592 50  0000 L CNN
@@ -3504,7 +3425,7 @@ F 4 "  MuxCh1_2" H 15450 1550 50  0001 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0276
+L mixer.pcb-rescue:GND-power #PWR0276
 U 1 1 60BD9071
 P 14800 1250
 F 0 "#PWR0276" H 14800 1000 50  0001 C CNN
@@ -3528,7 +3449,7 @@ $EndComp
 Wire Wire Line
 	14800 1550 15250 1550
 $Comp
-L Connector_Generic:Conn_01x03 MuxCh1_35
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic MuxCh1_35
 U 1 1 60BD907F
 P 15450 2000
 F 0 "MuxCh1_35" H 15530 2042 50  0000 L CNN
@@ -3553,7 +3474,7 @@ $EndComp
 Wire Wire Line
 	14800 2000 15250 2000
 $Comp
-L power:GND #PWR0277
+L mixer.pcb-rescue:GND-power #PWR0277
 U 1 1 60BD908C
 P 14800 1700
 F 0 "#PWR0277" H 14800 1450 50  0001 C CNN
@@ -3564,7 +3485,7 @@ F 3 "" H 14800 1700 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0278
+L mixer.pcb-rescue:GND-power #PWR0278
 U 1 1 60BD9092
 P 14800 2150
 F 0 "#PWR0278" H 14800 1900 50  0001 C CNN
@@ -3601,7 +3522,7 @@ $EndComp
 Wire Wire Line
 	14800 2900 15250 2900
 $Comp
-L power:GND #PWR0279
+L mixer.pcb-rescue:GND-power #PWR0279
 U 1 1 60BD90A6
 P 14800 2600
 F 0 "#PWR0279" H 14800 2350 50  0001 C CNN
@@ -3612,7 +3533,7 @@ F 3 "" H 14800 2600 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0280
+L mixer.pcb-rescue:GND-power #PWR0280
 U 1 1 60BD90AC
 P 14800 3050
 F 0 "#PWR0280" H 14800 2800 50  0001 C CNN
@@ -3649,7 +3570,7 @@ $EndComp
 Wire Wire Line
 	14800 3800 15250 3800
 $Comp
-L power:GND #PWR0281
+L mixer.pcb-rescue:GND-power #PWR0281
 U 1 1 60BD90C0
 P 14800 3500
 F 0 "#PWR0281" H 14800 3250 50  0001 C CNN
@@ -3660,7 +3581,7 @@ F 3 "" H 14800 3500 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0282
+L mixer.pcb-rescue:GND-power #PWR0282
 U 1 1 60BD90C6
 P 14800 3950
 F 0 "#PWR0282" H 14800 3700 50  0001 C CNN
@@ -3792,7 +3713,7 @@ $EndComp
 Wire Wire Line
 	5100 5750 5100 5650
 $Comp
-L power:GND #PWR0283
+L mixer.pcb-rescue:GND-power #PWR0283
 U 1 1 60FED591
 P 5400 6350
 F 0 "#PWR0283" H 5400 6100 50  0001 C CNN
@@ -3803,7 +3724,7 @@ F 3 "" H 5400 6350 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0284
+L mixer.pcb-rescue:GND-power #PWR0284
 U 1 1 60FFAEDB
 P 5400 6050
 F 0 "#PWR0284" H 5400 5800 50  0001 C CNN
@@ -3814,7 +3735,7 @@ F 3 "" H 5400 6050 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0285
+L mixer.pcb-rescue:GND-power #PWR0285
 U 1 1 61008938
 P 5400 5750
 F 0 "#PWR0285" H 5400 5500 50  0001 C CNN
@@ -3825,7 +3746,7 @@ F 3 "" H 5400 5750 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0286
+L mixer.pcb-rescue:GND-power #PWR0286
 U 1 1 610162DF
 P 5400 5450
 F 0 "#PWR0286" H 5400 5200 50  0001 C CNN
@@ -3890,7 +3811,7 @@ F 3 "~" H 1350 7300 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0295
+L mixer.pcb-rescue:GND-power #PWR0295
 U 1 1 61241B96
 P 1200 7300
 F 0 "#PWR0295" H 1200 7050 50  0001 C CNN
@@ -3996,7 +3917,7 @@ F 3 "~" H 5300 8750 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0296
+L mixer.pcb-rescue:GND-power #PWR0296
 U 1 1 604E9EAC
 P 5450 8750
 F 0 "#PWR0296" H 5450 8500 50  0001 C CNN
@@ -4018,7 +3939,7 @@ F 3 "~" H 5300 8450 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0297
+L mixer.pcb-rescue:GND-power #PWR0297
 U 1 1 6051B251
 P 5450 8450
 F 0 "#PWR0297" H 5450 8200 50  0001 C CNN
@@ -4040,7 +3961,7 @@ F 3 "~" H 5300 8150 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0298
+L mixer.pcb-rescue:GND-power #PWR0298
 U 1 1 605504C9
 P 5450 8150
 F 0 "#PWR0298" H 5450 7900 50  0001 C CNN
@@ -4062,7 +3983,7 @@ F 3 "~" H 5300 7850 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0299
+L mixer.pcb-rescue:GND-power #PWR0299
 U 1 1 6057E05D
 P 5450 7850
 F 0 "#PWR0299" H 5450 7600 50  0001 C CNN
@@ -4084,7 +4005,7 @@ F 3 "~" H 5300 7550 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0300
+L mixer.pcb-rescue:GND-power #PWR0300
 U 1 1 605AE1FC
 P 5450 7550
 F 0 "#PWR0300" H 5450 7300 50  0001 C CNN
@@ -4142,7 +4063,7 @@ F 3 "~" H 1350 6700 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0301
+L mixer.pcb-rescue:GND-power #PWR0301
 U 1 1 60700008
 P 1200 6700
 F 0 "#PWR0301" H 1200 6450 50  0001 C CNN
@@ -4168,7 +4089,7 @@ F 3 "~" H 1350 7900 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0302
+L mixer.pcb-rescue:GND-power #PWR0302
 U 1 1 6078D3A6
 P 1200 7900
 F 0 "#PWR0302" H 1200 7650 50  0001 C CNN
@@ -4190,7 +4111,7 @@ F 3 "~" H 1350 7600 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0303
+L mixer.pcb-rescue:GND-power #PWR0303
 U 1 1 607FBE85
 P 1200 7600
 F 0 "#PWR0303" H 1200 7350 50  0001 C CNN
@@ -4209,7 +4130,7 @@ Wire Wire Line
 	1500 7900 1500 8000
 Connection ~ 1500 7900
 $Comp
-L power:+3.3V #PWR0102
+L mixer.pcb-rescue:+3.3V-power #PWR0102
 U 1 1 602D13B2
 P 6950 6400
 F 0 "#PWR0102" H 6950 6250 50  0001 C CNN
@@ -4280,7 +4201,7 @@ Connection ~ 12250 8100
 Wire Wire Line
 	12250 8250 12250 8100
 $Comp
-L power:GND #PWR0294
+L mixer.pcb-rescue:GND-power #PWR0294
 U 1 1 611A12EB
 P 11950 5800
 F 0 "#PWR0294" H 11950 5550 50  0001 C CNN
@@ -4302,7 +4223,7 @@ F 3 "~" H 12100 5800 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0293
+L mixer.pcb-rescue:GND-power #PWR0293
 U 1 1 61190C33
 P 11950 6150
 F 0 "#PWR0293" H 11950 5900 50  0001 C CNN
@@ -4324,7 +4245,7 @@ F 3 "~" H 12100 6150 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0292
+L mixer.pcb-rescue:GND-power #PWR0292
 U 1 1 611805C3
 P 11950 6500
 F 0 "#PWR0292" H 11950 6250 50  0001 C CNN
@@ -4346,7 +4267,7 @@ F 3 "~" H 12100 6500 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0291
+L mixer.pcb-rescue:GND-power #PWR0291
 U 1 1 6117007D
 P 11950 6850
 F 0 "#PWR0291" H 11950 6600 50  0001 C CNN
@@ -4368,7 +4289,7 @@ F 3 "~" H 12100 6850 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0290
+L mixer.pcb-rescue:GND-power #PWR0290
 U 1 1 6115F491
 P 11950 7200
 F 0 "#PWR0290" H 11950 6950 50  0001 C CNN
@@ -4390,7 +4311,7 @@ F 3 "~" H 12100 7200 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0289
+L mixer.pcb-rescue:GND-power #PWR0289
 U 1 1 6114F0D1
 P 11950 7550
 F 0 "#PWR0289" H 11950 7300 50  0001 C CNN
@@ -4412,7 +4333,7 @@ F 3 "~" H 12100 7550 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0288
+L mixer.pcb-rescue:GND-power #PWR0288
 U 1 1 6113EBBD
 P 11950 7900
 F 0 "#PWR0288" H 11950 7650 50  0001 C CNN
@@ -4434,7 +4355,7 @@ F 3 "~" H 12100 7900 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0287
+L mixer.pcb-rescue:GND-power #PWR0287
 U 1 1 61105EB7
 P 11950 8250
 F 0 "#PWR0287" H 11950 8000 50  0001 C CNN
@@ -4458,7 +4379,7 @@ $EndComp
 Wire Wire Line
 	12350 8100 12250 8100
 $Comp
-L power:+3.3V #PWR0226
+L mixer.pcb-rescue:+3.3V-power #PWR0226
 U 1 1 6102C236
 P 12350 8000
 F 0 "#PWR0226" H 12350 7850 50  0001 C CNN
@@ -4469,7 +4390,7 @@ F 3 "" H 12350 8000 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x02 fx1_btn1
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic fx1_btn1
 U 1 1 60FE8961
 P 12550 8000
 F 0 "fx1_btn1" H 12468 7675 50  0001 C CNN
@@ -4481,7 +4402,7 @@ F 4 "fx1_btn1  " H 12550 8000 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74HC4051 FX-BTNs1
+L mixer.pcb-rescue:74HC4051-74xx FX-BTNs1
 U 1 1 60FAE06B
 P 10950 6850
 F 0 "FX-BTNs1" H 11000 7531 50  0000 C CNN
@@ -4497,7 +4418,7 @@ Wire Wire Line
 	10950 6250 11050 6250
 Connection ~ 10950 6250
 $Comp
-L power:GND #PWR0224
+L mixer.pcb-rescue:GND-power #PWR0224
 U 1 1 60FAE078
 P 10950 6250
 F 0 "#PWR0224" H 10950 6000 50  0001 C CNN
@@ -4508,7 +4429,7 @@ F 3 "" H 10950 6250 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L power:+3.3V #PWR0225
+L mixer.pcb-rescue:+3.3V-power #PWR0225
 U 1 1 60FAE07E
 P 10950 7350
 F 0 "#PWR0225" H 10950 7200 50  0001 C CNN
@@ -4519,7 +4440,7 @@ F 3 "" H 10950 7350 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x02 fx1_btn2
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic fx1_btn2
 U 1 1 60FEA01E
 P 12550 7650
 F 0 "fx1_btn2" H 12468 7325 50  0001 C CNN
@@ -4531,7 +4452,7 @@ F 4 "fx1_btn2  " H 12550 7650 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x02 fx1_btn3
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic fx1_btn3
 U 1 1 60FFC332
 P 12550 7300
 F 0 "fx1_btn3" H 12468 6975 50  0001 C CNN
@@ -4543,7 +4464,7 @@ F 4 "fx1_btn3  " H 12550 7300 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x02 fx1_btn4
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic fx1_btn4
 U 1 1 60FFC338
 P 12550 6950
 F 0 "fx1_btn4" H 12468 6625 50  0001 C CNN
@@ -4555,7 +4476,7 @@ F 4 "fx1_btn4  " H 12550 6950 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x02 fx2_btn1
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic fx2_btn1
 U 1 1 61006035
 P 12550 6600
 F 0 "fx2_btn1" H 12468 6275 50  0001 C CNN
@@ -4567,7 +4488,7 @@ F 4 "fx2_btn1  " H 12550 6600 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x02 fx2_btn2
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic fx2_btn2
 U 1 1 6100603B
 P 12550 6250
 F 0 "fx2_btn2" H 12468 5925 50  0001 C CNN
@@ -4579,7 +4500,7 @@ F 4 "fx2_btn2  " H 12550 6250 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x02 fx2_btn3
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic fx2_btn3
 U 1 1 61006041
 P 12550 5900
 F 0 "fx2_btn3" H 12468 5575 50  0001 C CNN
@@ -4591,7 +4512,7 @@ F 4 "fx2_btn3  " H 12550 5900 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x02 fx2_btn4
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic fx2_btn4
 U 1 1 61006047
 P 12550 5550
 F 0 "fx2_btn4" H 12468 5225 50  0001 C CNN
@@ -4603,7 +4524,7 @@ F 4 "fx2_btn4  " H 12550 5550 50  0000 L CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3.3V #PWR0227
+L mixer.pcb-rescue:+3.3V-power #PWR0227
 U 1 1 6102D7B5
 P 12350 7650
 F 0 "#PWR0227" H 12350 7500 50  0001 C CNN
@@ -4614,7 +4535,7 @@ F 3 "" H 12350 7650 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0228
+L mixer.pcb-rescue:+3.3V-power #PWR0228
 U 1 1 6103529A
 P 12350 7300
 F 0 "#PWR0228" H 12350 7150 50  0001 C CNN
@@ -4625,7 +4546,7 @@ F 3 "" H 12350 7300 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0229
+L mixer.pcb-rescue:+3.3V-power #PWR0229
 U 1 1 6103CDC9
 P 12350 6950
 F 0 "#PWR0229" H 12350 6800 50  0001 C CNN
@@ -4636,7 +4557,7 @@ F 3 "" H 12350 6950 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0230
+L mixer.pcb-rescue:+3.3V-power #PWR0230
 U 1 1 610448DC
 P 12350 6600
 F 0 "#PWR0230" H 12350 6450 50  0001 C CNN
@@ -4647,7 +4568,7 @@ F 3 "" H 12350 6600 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0231
+L mixer.pcb-rescue:+3.3V-power #PWR0231
 U 1 1 6104C462
 P 12350 6250
 F 0 "#PWR0231" H 12350 6100 50  0001 C CNN
@@ -4658,7 +4579,7 @@ F 3 "" H 12350 6250 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0232
+L mixer.pcb-rescue:+3.3V-power #PWR0232
 U 1 1 61053FBA
 P 12350 5900
 F 0 "#PWR0232" H 12350 5750 50  0001 C CNN
@@ -4669,7 +4590,7 @@ F 3 "" H 12350 5900 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0233
+L mixer.pcb-rescue:+3.3V-power #PWR0233
 U 1 1 6105BB87
 P 12350 5550
 F 0 "#PWR0233" H 12350 5400 50  0001 C CNN
@@ -4719,44 +4640,19 @@ Wire Wire Line
 	12350 5650 12250 5650
 Wire Wire Line
 	11350 5650 11350 6450
-Wire Wire Line
-	6950 5850 7500 5850
 $Comp
-L power:+3.3V #PWR0206
-U 1 1 60764E8F
-P 6950 5850
-F 0 "#PWR0206" H 6950 5700 50  0001 C CNN
-F 1 "+3.3V" V 6965 5978 50  0000 L CNN
-F 2 "" H 6950 5850 50  0001 C CNN
-F 3 "" H 6950 5850 50  0001 C CNN
-	1    6950 5850
-	0    -1   -1   0   
-$EndComp
-$Comp
-L mixer.pcb-rescue:CP-Device C1
-U 1 1 606F6BA4
-P 6950 5700
-F 0 "C1" H 6832 5654 50  0001 R CNN
-F 1 "100 uF        " H 6832 5745 50  0000 L CNN
-F 2 "Capacitor_THT:CP_Radial_D10.0mm_P2.50mm" H 6988 5550 50  0001 C CNN
-F 3 "~" H 6950 5700 50  0001 C CNN
-	1    6950 5700
-	-1   0    0    1   
-$EndComp
-Connection ~ 6950 5850
-$Comp
-L power:GND #PWR0114
+L mixer.pcb-rescue:GND-power #PWR0114
 U 1 1 60372733
-P 6950 5550
-F 0 "#PWR0114" H 6950 5300 50  0001 C CNN
-F 1 "GND" V 6955 5422 50  0000 R CNN
-F 2 "" H 6950 5550 50  0001 C CNN
-F 3 "" H 6950 5550 50  0001 C CNN
-	1    6950 5550
+P 6950 5300
+F 0 "#PWR0114" H 6950 5050 50  0001 C CNN
+F 1 "GND" V 6955 5172 50  0000 R CNN
+F 2 "" H 6950 5300 50  0001 C CNN
+F 3 "" H 6950 5300 50  0001 C CNN
+	1    6950 5300
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0140
+L mixer.pcb-rescue:GND-power #PWR0140
 U 1 1 6038B798
 P 6950 6100
 F 0 "#PWR0140" H 6950 5850 50  0001 C CNN
@@ -4767,7 +4663,7 @@ F 3 "" H 6950 6100 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0106
+L mixer.pcb-rescue:+3.3V-power #PWR0106
 U 1 1 5FFE3AE3
 P 4600 5250
 F 0 "#PWR0106" H 4600 5100 50  0001 C CNN
@@ -4794,7 +4690,7 @@ F 3 "~" H 4600 5100 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x02 3.3V_In1
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic 3.3V_In1
 U 1 1 6058C73A
 P 9200 7100
 F 0 "3.3V_In1" H 9280 7092 50  0000 L CNN
@@ -4805,7 +4701,7 @@ F 3 "~" H 9200 7100 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0185
+L mixer.pcb-rescue:GND-power #PWR0185
 U 1 1 605B3432
 P 9000 7200
 F 0 "#PWR0185" H 9000 6950 50  0001 C CNN
@@ -4816,7 +4712,7 @@ F 3 "" H 9000 7200 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0257
+L mixer.pcb-rescue:+3.3V-power #PWR0257
 U 1 1 605B3438
 P 9000 7100
 F 0 "#PWR0257" H 9000 6950 50  0001 C CNN
@@ -4829,7 +4725,7 @@ $EndComp
 Text Notes 8950 7000 0    50   ~ 0
 Zuleitung
 $Comp
-L Connector_Generic:Conn_01x02 3.3V_Test1
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic 3.3V_Test1
 U 1 1 6061354A
 P 750 6150
 F 0 "3.3V_Test1" V 622 6230 50  0001 L CNN
@@ -4848,7 +4744,7 @@ Wire Wire Line
 Wire Wire Line
 	800  6350 800  6900
 $Comp
-L Connector_Generic:Conn_01x02 3.3V_Test2
+L mixer.pcb-rescue:Conn_01x02-Connector_Generic 3.3V_Test2
 U 1 1 60744D9F
 P 4400 5450
 F 0 "3.3V_Test2" H 4318 5125 50  0000 C CNN
@@ -4863,7 +4759,7 @@ Wire Wire Line
 Wire Wire Line
 	4600 5450 4600 5700
 $Comp
-L power:+3.3V #PWR0159
+L mixer.pcb-rescue:+3.3V-power #PWR0159
 U 1 1 600CE2E1
 P 1250 2100
 F 0 "#PWR0159" H 1250 1950 50  0001 C CNN
@@ -4873,33 +4769,10 @@ F 3 "" H 1250 2100 50  0001 C CNN
 	1    1250 2100
 	0    -1   -1   0   
 $EndComp
-$Comp
-L Device:C C4
-U 1 1 602DF39F
-P 1250 1950
-F 0 "C4" H 1365 1996 50  0001 L CNN
-F 1 "100 nF" H 1365 1905 50  0000 L CNN
-F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm" H 1288 1800 50  0001 C CNN
-F 3 "~" H 1250 1950 50  0001 C CNN
-	1    1250 1950
-	-1   0    0    -1  
-$EndComp
 Wire Wire Line
 	1600 2100 1250 2100
-Connection ~ 1250 2100
 $Comp
-L power:GND #PWR0304
-U 1 1 60448F72
-P 1250 1800
-F 0 "#PWR0304" H 1250 1550 50  0001 C CNN
-F 1 "GND" V 1255 1672 50  0000 R CNN
-F 2 "" H 1250 1800 50  0001 C CNN
-F 3 "" H 1250 1800 50  0001 C CNN
-	1    1250 1800
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3.3V #PWR0305
+L mixer.pcb-rescue:+3.3V-power #PWR0305
 U 1 1 604937A2
 P 4350 2100
 F 0 "#PWR0305" H 4350 1950 50  0001 C CNN
@@ -4910,7 +4783,7 @@ F 3 "" H 4350 2100 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Device:C C6
+L mixer.pcb-rescue:C-Device C6
 U 1 1 604937A8
 P 4350 1950
 F 0 "C6" H 4465 1996 50  0001 L CNN
@@ -4921,7 +4794,7 @@ F 3 "~" H 4350 1950 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0306
+L mixer.pcb-rescue:GND-power #PWR0306
 U 1 1 604937AE
 P 4350 1800
 F 0 "#PWR0306" H 4350 1550 50  0001 C CNN
@@ -4932,7 +4805,7 @@ F 3 "" H 4350 1800 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0307
+L mixer.pcb-rescue:+3.3V-power #PWR0307
 U 1 1 604B0B6E
 P 7400 2100
 F 0 "#PWR0307" H 7400 1950 50  0001 C CNN
@@ -4943,7 +4816,7 @@ F 3 "" H 7400 2100 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Device:C C8
+L mixer.pcb-rescue:C-Device C8
 U 1 1 604B0B74
 P 7400 1950
 F 0 "C8" H 7515 1996 50  0001 L CNN
@@ -4954,7 +4827,7 @@ F 3 "~" H 7400 1950 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0308
+L mixer.pcb-rescue:GND-power #PWR0308
 U 1 1 604B0B7A
 P 7400 1800
 F 0 "#PWR0308" H 7400 1550 50  0001 C CNN
@@ -4965,7 +4838,7 @@ F 3 "" H 7400 1800 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0309
+L mixer.pcb-rescue:+3.3V-power #PWR0309
 U 1 1 604CD853
 P 10600 2100
 F 0 "#PWR0309" H 10600 1950 50  0001 C CNN
@@ -4976,7 +4849,7 @@ F 3 "" H 10600 2100 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Device:C C9
+L mixer.pcb-rescue:C-Device C9
 U 1 1 604CD859
 P 10600 1950
 F 0 "C9" H 10715 1996 50  0001 L CNN
@@ -4987,7 +4860,7 @@ F 3 "~" H 10600 1950 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0310
+L mixer.pcb-rescue:GND-power #PWR0310
 U 1 1 604CD85F
 P 10600 1800
 F 0 "#PWR0310" H 10600 1550 50  0001 C CNN
@@ -4998,7 +4871,7 @@ F 3 "" H 10600 1800 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3.3V #PWR0311
+L mixer.pcb-rescue:+3.3V-power #PWR0311
 U 1 1 604EA920
 P 13550 2100
 F 0 "#PWR0311" H 13550 1950 50  0001 C CNN
@@ -5009,7 +4882,7 @@ F 3 "" H 13550 2100 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Device:C C10
+L mixer.pcb-rescue:C-Device C10
 U 1 1 604EA926
 P 13550 1950
 F 0 "C10" H 13665 1996 50  0001 L CNN
@@ -5020,7 +4893,7 @@ F 3 "~" H 13550 1950 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0312
+L mixer.pcb-rescue:GND-power #PWR0312
 U 1 1 604EA92C
 P 13550 1800
 F 0 "#PWR0312" H 13550 1550 50  0001 C CNN
@@ -5043,7 +4916,7 @@ Wire Wire Line
 	13550 2100 13850 2100
 Connection ~ 13550 2100
 $Comp
-L Device:C C5
+L mixer.pcb-rescue:C-Device C5
 U 1 1 6062CC8D
 P 4250 5100
 F 0 "C5" H 4365 5146 50  0001 L CNN
@@ -5054,7 +4927,7 @@ F 3 "~" H 4250 5100 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0313
+L mixer.pcb-rescue:GND-power #PWR0313
 U 1 1 6062CC93
 P 4250 4950
 F 0 "#PWR0313" H 4250 4700 50  0001 C CNN
@@ -5068,7 +4941,7 @@ Wire Wire Line
 	4600 4950 4250 4950
 Connection ~ 4250 4950
 $Comp
-L Device:C C3
+L mixer.pcb-rescue:C-Device C3
 U 1 1 606E23B3
 P 1100 6150
 F 0 "C3" H 1215 6196 50  0001 L CNN
@@ -5079,7 +4952,7 @@ F 3 "~" H 1100 6150 50  0001 C CNN
 	0    1    -1   0   
 $EndComp
 $Comp
-L power:GND #PWR0314
+L mixer.pcb-rescue:GND-power #PWR0314
 U 1 1 606E23B9
 P 1250 6150
 F 0 "#PWR0314" H 1250 5900 50  0001 C CNN
@@ -5090,4 +4963,175 @@ F 3 "" H 1250 6150 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 Connection ~ 950  6150
+$Comp
+L mixer.pcb-rescue:C-Device C11
+U 1 1 6040F556
+P 10950 7500
+F 0 "C11" H 11065 7546 50  0001 L CNN
+F 1 "100 nF" H 11065 7455 50  0000 L CNN
+F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm" H 10988 7350 50  0001 C CNN
+F 3 "~" H 10950 7500 50  0001 C CNN
+	1    10950 7500
+	-1   0    0    1   
+$EndComp
+$Comp
+L mixer.pcb-rescue:GND-power #PWR0315
+U 1 1 6040F55C
+P 10950 7650
+F 0 "#PWR0315" H 10950 7400 50  0001 C CNN
+F 1 "GND" V 10955 7522 50  0000 R CNN
+F 2 "" H 10950 7650 50  0001 C CNN
+F 3 "" H 10950 7650 50  0001 C CNN
+	1    10950 7650
+	0    1    -1   0   
+$EndComp
+Connection ~ 10950 7350
+$Comp
+L mixer.pcb-rescue:C-Device C12
+U 1 1 60489670
+P 14050 7550
+F 0 "C12" H 14165 7596 50  0001 L CNN
+F 1 "100 nF" H 14165 7505 50  0000 L CNN
+F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm" H 14088 7400 50  0001 C CNN
+F 3 "~" H 14050 7550 50  0001 C CNN
+	1    14050 7550
+	-1   0    0    1   
+$EndComp
+$Comp
+L mixer.pcb-rescue:GND-power #PWR0316
+U 1 1 60489676
+P 14050 7700
+F 0 "#PWR0316" H 14050 7450 50  0001 C CNN
+F 1 "GND" V 14055 7572 50  0000 R CNN
+F 2 "" H 14050 7700 50  0001 C CNN
+F 3 "" H 14050 7700 50  0001 C CNN
+	1    14050 7700
+	0    1    -1   0   
+$EndComp
+Connection ~ 14050 7400
+Text GLabel 7500 8650 0    50   Input ~ 0
+pfl_led_master
+Text GLabel 7500 8400 0    50   Input ~ 0
+pfl_led_ch4
+Text GLabel 7500 8150 0    50   Input ~ 0
+pfl_led_ch3
+Text GLabel 7500 7900 0    50   Input ~ 0
+pfl_led_ch2
+Text GLabel 7500 7650 0    50   Input ~ 0
+pfl_led_ch1
+$Comp
+L mixer.pcb-rescue:GND-power #PWR0201
+U 1 1 607B78AC
+P 7500 7750
+F 0 "#PWR0201" H 7500 7500 50  0001 C CNN
+F 1 "GND" V 7505 7622 50  0000 R CNN
+F 2 "" H 7500 7750 50  0001 C CNN
+F 3 "" H 7500 7750 50  0001 C CNN
+	1    7500 7750
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:GND-power #PWR0202
+U 1 1 607D3D52
+P 7500 8000
+F 0 "#PWR0202" H 7500 7750 50  0001 C CNN
+F 1 "GND" V 7505 7872 50  0000 R CNN
+F 2 "" H 7500 8000 50  0001 C CNN
+F 3 "" H 7500 8000 50  0001 C CNN
+	1    7500 8000
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:GND-power #PWR0203
+U 1 1 607EFF6E
+P 7500 8250
+F 0 "#PWR0203" H 7500 8000 50  0001 C CNN
+F 1 "GND" V 7505 8122 50  0000 R CNN
+F 2 "" H 7500 8250 50  0001 C CNN
+F 3 "" H 7500 8250 50  0001 C CNN
+	1    7500 8250
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:GND-power #PWR0204
+U 1 1 6080C500
+P 7500 8500
+F 0 "#PWR0204" H 7500 8250 50  0001 C CNN
+F 1 "GND" V 7505 8372 50  0000 R CNN
+F 2 "" H 7500 8500 50  0001 C CNN
+F 3 "" H 7500 8500 50  0001 C CNN
+	1    7500 8500
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:GND-power #PWR0205
+U 1 1 60828DA3
+P 7500 8750
+F 0 "#PWR0205" H 7500 8500 50  0001 C CNN
+F 1 "GND" V 7505 8622 50  0000 R CNN
+F 2 "" H 7500 8750 50  0001 C CNN
+F 3 "" H 7500 8750 50  0001 C CNN
+	1    7500 8750
+	0    1    1    0   
+$EndComp
+Connection ~ 6950 5600
+$Comp
+L mixer.pcb-rescue:CP-Device C1
+U 1 1 606F6BA4
+P 6950 5450
+F 0 "C1" H 6832 5404 50  0001 R CNN
+F 1 "100 uF        " H 6832 5495 50  0000 L CNN
+F 2 "Capacitor_THT:CP_Radial_D10.0mm_P2.50mm" H 6988 5300 50  0001 C CNN
+F 3 "~" H 6950 5450 50  0001 C CNN
+	1    6950 5450
+	-1   0    0    1   
+$EndComp
+$Comp
+L mixer.pcb-rescue:+3.3V-power #PWR0206
+U 1 1 60764E8F
+P 6950 5600
+F 0 "#PWR0206" H 6950 5450 50  0001 C CNN
+F 1 "+3.3V" V 6965 5728 50  0000 L CNN
+F 2 "" H 6950 5600 50  0001 C CNN
+F 3 "" H 6950 5600 50  0001 C CNN
+	1    6950 5600
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	6950 5600 7500 5600
+$Comp
+L mixer.pcb-rescue:Conn_01x03-Connector_Generic NeoPixel1
+U 1 1 607646F2
+P 7700 5700
+F 0 "NeoPixel1" H 7780 5742 50  0001 L CNN
+F 1 "Conn_01x03" H 7780 5651 50  0001 L CNN
+F 2 "Connector_JST:JST_XH_B3B-XH-A_1x03_P2.50mm_Vertical" H 7700 5700 50  0001 C CNN
+F 3 "~" H 7700 5700 50  0001 C CNN
+F 4 "NeoPixel  " H 7700 5700 50  0000 L CNN "Field4"
+	1    7700 5700
+	1    0    0    -1  
+$EndComp
+Connection ~ 1250 2100
+$Comp
+L mixer.pcb-rescue:GND-power #PWR0304
+U 1 1 60448F72
+P 1250 1800
+F 0 "#PWR0304" H 1250 1550 50  0001 C CNN
+F 1 "GND" V 1255 1672 50  0000 R CNN
+F 2 "" H 1250 1800 50  0001 C CNN
+F 3 "" H 1250 1800 50  0001 C CNN
+	1    1250 1800
+	0    1    1    0   
+$EndComp
+$Comp
+L mixer.pcb-rescue:C-Device C4
+U 1 1 602DF39F
+P 1250 1950
+F 0 "C4" H 1365 1996 50  0001 L CNN
+F 1 "100 nF" H 1365 1905 50  0000 L CNN
+F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm" H 1288 1800 50  0001 C CNN
+F 3 "~" H 1250 1950 50  0001 C CNN
+	1    1250 1950
+	-1   0    0    -1  
+$EndComp
 $EndSCHEMATC

@@ -21,13 +21,13 @@ b = NetAddr.new("127.0.0.1", 7771);    // create the NetAddr
 
 (
 {
-    SendPeakRMS.kr(In.ar(8, 2), 20, 3, "/replyAddress")
+    SendPeakRMS.kr(In.ar(3, 2), 20, 3, "/replyAddress")
 }.play;
 )
 
 (
 o = OSCFunc({ |msg|
 	"peak: %, rms: %".format(msg[3], msg[4]).postln
-}, '/replyAddress', b);
+}, '/replyAddress');
 )
 o.free;

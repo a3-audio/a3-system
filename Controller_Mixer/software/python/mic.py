@@ -11,7 +11,7 @@ from pythonosc.udp_client import SimpleUDPClient
 
 
 # OSC-Clients
-osc_router = SimpleUDPClient('127.0.0.1', 9000)
+osc_router = SimpleUDPClient('192.168.43.50', 9000)
 
 
 def sendData(data):

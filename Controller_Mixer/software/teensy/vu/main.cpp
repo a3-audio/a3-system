@@ -1,65 +1,79 @@
-//#include "LedControlMS.h"
-//#include "MD_MAX72xx.h"
+//#include "LedControl.h"
  
 //pin 18 is connected to the DataIn
 //pin 14 is connected to the CLK
 //pin 15 is connected to LOAD
 
-unsigned char i;
-unsigned char j;
+/*
+ Created by Rui Santos
 
-int Max7219_pinCLK = 14;
-int Max7219_pinCS = 15;
-int Max7219_pinDIN = 18;
+ All the resources for this project:
+ https://randomnerdtutorials.com/
+*/
 
-unsigned char disp1[19][8]={0x0c,0x1e,0x3e,0x7c,0x7c,0x3e,0x1e,0x0c};
+#include "LedControl.h"
+#include "binary.h"
 
-void Write_Max7219_byte(unsigned char DATA)
-{
-  unsigned char i;
-  digitalWrite(Max7219_pinCS,LOW);
-  for(i=8;i>=1;i--)
-  {
-    digitalWrite(Max7219_pinCLK,LOW);
-    digitalWrite(Max7219_pinDIN,DATA&0x80);
-    DATA = DATA<<1;
-    digitalWrite(Max7219_pinCLK,HIGH);
-  }
+/*
+ DIN connects to pin 12
+ CLK connects to pin 11
+ CS connects to pin 10
+*/
+LedControl lc=LedControl(18,14,15,4);
+
+// delay time between faces
+unsigned long delaytime=1000;
+
+// happy face
+byte hf[8]= {B00111100,B01000010,B10100101,B10000001,B10100101,B10011001,B01000010,B00111100};
+// neutral face
+byte nf[8]={B00111100, B01000010,B10100101,B10000001,B10111101,B10000001,B01000010,B00111100};
+// sad face
+byte sf[8]= {B00111100,B01000010,B10100101,B10000001,B10011001,B10100101,B01000010,B00111100};
+
+void setup() {
+  lc.shutdown(0,false);
+  // Set brightness to a medium value
+  lc.setIntensity(0,8);
+  // Clear the display
+  lc.clearDisplay(0);
 }
 
-void Write_Max7219(unsigned char address,unsigned char dat)
-{
-  digitalWrite(Max7219_pinCS,LOW);
-  Write_Max7219_byte(address);
-  Write_Max7219_byte(dat);
-  digitalWrite(Max7219_pinCS,HIGH);
+void drawFaces(){
+  // Display sad face
+  lc.setRow(0,0,sf[0]);
+  lc.setRow(0,1,sf[1]);
+  lc.setRow(0,2,sf[2]);
+  lc.setRow(0,3,sf[3]);
+  lc.setRow(0,4,sf[4]);
+  lc.setRow(0,5,sf[5]);
+  lc.setRow(0,6,sf[6]);
+  lc.setRow(0,7,sf[7]);
+  delay(delaytime);
+
+  // Display neutral face
+  lc.setRow(0,0,nf[0]);
+  lc.setRow(0,1,nf[1]);
+  lc.setRow(0,2,nf[2]);
+  lc.setRow(0,3,nf[3]);
+  lc.setRow(0,4,nf[4]);
+  lc.setRow(0,5,nf[5]);
+  lc.setRow(0,6,nf[6]);
+  lc.setRow(0,7,nf[7]);
+  delay(delaytime);
+
+  // Display happy face
+  lc.setRow(0,0,hf[0]);
+  lc.setRow(0,1,hf[1]);
+  lc.setRow(0,2,hf[2]);
+  lc.setRow(0,3,hf[3]);
+  lc.setRow(0,4,hf[4]);
+  lc.setRow(0,5,hf[5]);
+  lc.setRow(0,6,hf[6]);
+  lc.setRow(0,7,hf[7]);
+  delay(delaytime);
 }
 
-void Init_MAX7219(void)
-{
-  Write_Max7219(0x09, 0x00);
-  Write_Max7219(0x0a, 0x03);
-  Write_Max7219(0x0b, 0x07);
-  Write_Max7219(0x0c, 0x01);
-  Write_Max7219(0x0f, 0x00);
-}
-
-void setup()
-{
-
-  pinMode(Max7219_pinCLK,OUTPUT);
-  pinMode(Max7219_pinCS,OUTPUT);
-  pinMode(Max7219_pinDIN,OUTPUT);
-  delay(50);
-  Init_MAX7219();
-}
-
-void loop()
-{
-  for(j=0;j<19;j++)
-  {
-    for(i=1;i<9;i++)
-      Write_Max7219(i,disp1[j][i-1]);
-    delay(100);
-  }
+void loop(){
+  drawFaces();
 }

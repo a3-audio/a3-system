@@ -7,6 +7,12 @@ from typing import List, Any
 from pythonosc import dispatcher
 from pythonosc import osc_server
 from pythonosc.udp_client import SimpleUDPClient
+import serial
+
+def sendData(data):
+    ser = serial.Serial('/dev/ttyACM0', 115200)
+    data += "\r\n"
+    ser.write(data.encode())
 
 # OSC-Server
 oscRouterPort = 7771
@@ -16,57 +22,58 @@ def vu_handler(address: str,
     words = address.split("/")
     vu = words[2]
 
-    value = osc_arguments[0]
+    peak = osc_arguments[0]
+    rms = osc_arguments[1]
 #   print(str(value))
 
     if vu == "1":
-#        sendData("VU1")
-        print("vu 1 - " + str(value))
+        sendData("VU1," + str(peak) + "," + str(rms))
+        print("vu1," + str(peak) + "," + str(rms))
     if vu == "2":
 #        sendData("VU2")
-        print("vu 2 - " + str(value))
+        print("vu2," + str(peak) + "," + str(rms))
     if vu == "3":
 #        sendData("VU3")
-        print("vu 3 - " + str(value))
+        print("vu3," + str(peak) + "," + str(rms))
     if vu == "4":
 #        sendData("VU4")
-        print("vu 4 - " + str(value))
+        print("vu4," + str(peak) + "," + str(rms))
     if vu == "5":
 #        sendData("VU5")
-        print("vu 5 - " + str(value))
+        print("vu5," + str(peak) + "," + str(rms))
     if vu == "6":
 #        sendData("VU6")
-        print("vu 6 - " + str(value))
+        print("vu6," + str(peak) + "," + str(rms))
     if vu == "7":
 #        sendData("VU7")
-        print("vu 7 - " + str(value))
+        print("vu7," + str(peak) + "," + str(rms))
     if vu == "8":
 #        sendData("VU8")
-        print("vu 8 - " + str(value))
+        print("vu8," + str(peak) + "," + str(rms))
     if vu == "9":
 #        sendData("VU9")
-        print("vu 9 - " + str(value))
+        print("vu9," + str(peak) + "," + str(rms))
     if vu == "10":
 #        sendData("VU10")
-        print("vu 10 - " + str(value))
+        print("vu10," + str(peak) + "," + str(rms))
     if vu == "11":
 #        sendData("VU11")
-        print("vu 11 - " + str(value))
+        print("vu11," + str(peak) + "," + str(rms))
     if vu == "12":
 #        sendData("VU12")
-        print("vu 12 - " + str(value))
+        print("vu12," + str(peak) + "," + str(rms))
     if vu == "13":
 #        sendData("VU13")
-        print("vu 13 - " + str(value))
+        print("vu13," + str(peak) + "," + str(rms))
     if vu == "14":
 #        sendData("VU14")
-        print("vu 14 - " + str(value))
+        print("vu14," + str(peak) + "," + str(rms))
     if vu == "15":
 #        sendData("VU15")
-        print("vu 15 - " + str(value))
+        print("vu15," + str(peak) + "," + str(rms))
     if vu == "16":
 #        sendData("VU16")
-        print("vu 16 - " + str(value))
+        print("vu16," + str(peak) + "," + str(rms))
 
 
 if __name__ == "__main__":

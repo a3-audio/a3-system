@@ -8,6 +8,7 @@ from pythonosc import dispatcher
 from pythonosc import osc_server
 from pythonosc.udp_client import SimpleUDPClient
 import serial
+import time
 
 def sendData(data):
     ser = serial.Serial('/dev/ttyACM0', 115200)
@@ -27,11 +28,15 @@ def vu_handler(address: str,
 #   print(str(value))
 
     if vu == "1":
-        sendData("VU1," + str(peak) + "," + str(rms))
-        print("vu1," + str(peak) + "," + str(rms))
+        sendData("VU01," + str(int(round(peak * 9))) + "," + str(int(round(rms * 9))))
+        #print("VU01," + str(int(round(peak * 12))) + "," + str(int(round(rms * 12))))
     if vu == "2":
-#        sendData("VU2")
-        print("vu2," + str(peak) + "," + str(rms))
+        sendData("VU02," + str(int(round(peak * 9))) + "," + str(int(round(rms * 9))))
+    if vu == "3":
+        sendData("VU03," + str(int(round(peak * 9))) + "," + str(int(round(rms * 9))))
+    if vu == "4":
+        sendData("VU04," + str(int(round(peak * 9))) + "," + str(int(round(rms * 9))))
+"""
     if vu == "3":
 #        sendData("VU3")
         print("vu3," + str(peak) + "," + str(rms))
@@ -74,8 +79,9 @@ def vu_handler(address: str,
     if vu == "16":
 #        sendData("VU16")
         print("vu16," + str(peak) + "," + str(rms))
+   """
 
-
+time.sleep(1)
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--ip", default="0.0.0.0", help="The ip to listen on")

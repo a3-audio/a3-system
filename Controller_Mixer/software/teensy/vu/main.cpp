@@ -1,20 +1,27 @@
-//#include "LedControl.h"
 #include <Arduino.h>
- 
+#include <LedControl.h>
+#include <binary.h>
+#include <Adafruit_NeoPixel.h>
+#ifdef __AVR__
+ #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
+#endif
+
 //pin 18 is connected to the DataIn
 //pin 14 is connected to the CLK
 //pin 15 is connected to LOAD
 
-/*
- Created by Rui Santos
+// NeoPixel
+#define npxl_pin 13
+#define npxl_leds 48
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(npxl_leds, npxl_pin, NEO_GRB + NEO_KHZ800);
 
- All the resources for this project:
- https://randomnerdtutorials.com/
-*/
+int vu_1_pxls[9] = {12,11,10,9,8,7,6,5,4}; 
+int vu_2_pxls[9] = {24,24,22,21,20,19,18,17,16}; 
+int vu_3_pxls[9] = {36,35,34,33,32,31,30,29,28}; 
+int vu_4_pxls[9] = {48,47,46,45,44,43,42,41,40}; 
 
-#include "LedControl.h"
-#include "binary.h"
 
+// Pixelmatrix
 int bar1[32][3] = {
 	{0,7,7},
 	{0,7,6},
@@ -69,17 +76,19 @@ byte sf[8]= {B00111100,B01000010,B10100101,B10000001,B10011001,B10100101,B010000
 
 void setup() {
 
-  Serial.begin(115200);                 // starting Serial
+  Serial.begin(115200);         // starting Serial
+  pixels.begin(); 		// INITIALIZE NeoPixel strip object (REQUIRED)
+  pixels.setBrightness(10);
 
   lc.shutdown(0,false);
   lc.shutdown(1,false);
   lc.shutdown(2,false);
   lc.shutdown(3,false);
   // Set brightness to a medium value
-  lc.setIntensity(0,0.1);
-  lc.setIntensity(1,0.1);
-  lc.setIntensity(2,0.1);
-  lc.setIntensity(3,0.1);
+  lc.setIntensity(0,1);
+  lc.setIntensity(1,1);
+  lc.setIntensity(2,1);
+  lc.setIntensity(3,1);
   // Clear the display
   lc.clearDisplay(0);
   lc.clearDisplay(1);
@@ -139,10 +148,15 @@ void drawHappy(){
   delay(delaytime);
 */
 
-
 void loop(){
-  clear();
+//  clear();
+  pixels.clear();
+
+
+// Pixelmatrix vu
 /*
+  lc.setRow(0,0,B00111111);
+  
   for (int i=0; i<32; i++){
     lc.setLed(bar1[i][0],bar1[i][1],bar1[i][2],1);
     Serial.print("hello");
@@ -150,21 +164,102 @@ void loop(){
 }
 */
 
-  
+
     if (Serial.available()) {
       String command = Serial.readStringUntil(',');
-      if(command.startsWith("VU1")) {
+      if(command.startsWith("VU01")) {
 	String peak = Serial.readStringUntil(',');
 	String rms = Serial.readStringUntil('\n');
 
 	int peak1 = peak.toInt();
 	int rms1 = rms.toInt();
 
-    	Serial.print(peak1 + rms1);
-  	lc.setLed(bar1[2][0],bar1[2][1],bar1[2][2],1);
-  	}
+	for(int i=0;i<9;i++){
+	  pixels.setPixelColor(vu_1_pxls[peak1], pixels.Color(255,000,000));
+	  pixels.show(); // This sends the updated pixel color to the hardware.
+	  for(int i=0;i<9;i++){
+	    if(i<rms1){
+	      pixels.setPixelColor(vu_1_pxls[i +1], pixels.Color(000,255,000));
+	      pixels.show(); // This sends the updated pixel color to the hardware.
+	    }
+	  }
+	}
+      }
+      if(command.startsWith("VU02")) {
+	String peak = Serial.readStringUntil(',');
+	String rms = Serial.readStringUntil('\n');
+
+	int peak1 = peak.toInt();
+	int rms1 = rms.toInt();
+
+	for(int i=0;i<9;i++){
+	  pixels.setPixelColor(vu_2_pxls[peak1], pixels.Color(255,000,000));
+	  pixels.show(); // This sends the updated pixel color to the hardware.
+	  for(int i=0;i<9;i++){
+	    if(i<rms1){
+	      pixels.setPixelColor(vu_2_pxls[i +1], pixels.Color(000,255,000));
+	      pixels.show(); // This sends the updated pixel color to the hardware.
+	    }
+	  }
+	}
+      }
+      if(command.startsWith("VU03")) {
+	String peak = Serial.readStringUntil(',');
+	String rms = Serial.readStringUntil('\n');
+
+	int peak1 = peak.toInt();
+	int rms1 = rms.toInt();
+
+	for(int i=0;i<9;i++){
+	  pixels.setPixelColor(vu_3_pxls[peak1], pixels.Color(255,000,000));
+	  pixels.show(); // This sends the updated pixel color to the hardware.
+	  for(int i=0;i<9;i++){
+	    if(i<rms1){
+	      pixels.setPixelColor(vu_3_pxls[i +1], pixels.Color(000,255,000));
+	      pixels.show(); // This sends the updated pixel color to the hardware.
+	    }
+	  }
+	}
+      }
+      if(command.startsWith("VU04")) {
+	String peak = Serial.readStringUntil(',');
+	String rms = Serial.readStringUntil('\n');
+
+	int peak1 = peak.toInt();
+	int rms1 = rms.toInt();
+
+	for(int i=0;i<9;i++){
+	  pixels.setPixelColor(vu_4_pxls[peak1], pixels.Color(255,000,000));
+	  pixels.show(); // This sends the updated pixel color to the hardware.
+	  for(int i=0;i<9;i++){
+	    if(i<rms1){
+	      pixels.setPixelColor(vu_4_pxls[i +1], pixels.Color(000,255,000));
+	      pixels.show(); // This sends the updated pixel color to the hardware.
+	    }
+	  }
+	}
+      }
     }
 
-  delay(500);
-  
+//    delayMicroseconds(50);
+
+
+
+
+
+//	Serial.println(rms1);
+/*	
+	for(int i=0;i<32;i++){
+	  if(i<rms1){
+	  lc.setLed(bar1[i][0],bar1[i][1],bar1[i][2],1);
+	  }else{
+	  lc.setLed(bar1[i][0],bar1[i][1],bar1[i][2],0);
+	  }
+	  delay(2);
+	}*/
+//	lc.setLed(bar1[peak1][0],bar1[peak1][1],bar1[peak1][2],1);
+  	delay(1);
+//      }
+ //   }
+
 }

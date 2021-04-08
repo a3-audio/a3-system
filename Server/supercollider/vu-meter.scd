@@ -17,7 +17,7 @@ s.boot
 s.plotTree;
 s.meter;
 
-~b = NetAddr.new("192.168.43.130", 7771);    // create the NetAddr
+~b = NetAddr.new("127.0.0.1", 7771);    // create the NetAddr
 ~b.sendMsg("/vu_1-16", "peak, rms");
 
 (

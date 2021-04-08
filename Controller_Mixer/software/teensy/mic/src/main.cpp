@@ -1,36 +1,39 @@
 #include <Arduino.h>
+#include <Adafruit_NeoPixel.h>
 
-////////////////////////////////Assigning Pins/////////////////////////////
-const int ledPin_1 = 26;
+// AAA-MIXER / Teensy Firmare for PCB v0.2
+
+// Assigning pins
+const int ledPin_1 = 26;// pfl-leds
 const int ledPin_2 = 38;
 const int ledPin_3 = 39;
 const int ledPin_4 = 40;
 const int ledPin_5 = 41;
-/*
-const int buttonPin_1 = 33;
-const int buttonPin_2 = 34;
-const int buttonPin_3 = 35;
-const int buttonPin_4 = 36;
-const int buttonPin_5 = 37;
-*/
-const int pflButtons[5] = {33, 34, 35, 36, 37}; // PFL-Button pins
-const int multiplexer[5] = {5, 6, 7, 8, 9}; // Multiplexer pins
+const int pflButtons[5] = {33, 34, 35, 36, 37}; // PFL-Button 
+const int multiplexer[5] = {5, 6, 7, 8, 9}; // Poti pins
 const int selectPins[3] = {30, 31, 32}; // Multiplexer abc
-/*
-const int vuPin_1 = 19;
-const int vuPin_2 = 20;
-const int vuPin_3 = 21;
-const int vuPin_4 = 22;
-const int vuPin_5 = 23;
-*/
-// last sent states
+const int npxl_pin = 13;
+const int npxl_leds = 48;
+
+// last sent states (potis)
 const int num_tracks = 5;
 const int num_pots = 5;
-
 int pots_sent[num_tracks][num_pots];
 int buttons_last[num_tracks];
 
-///////////////////////////////////////Setup///////////////////////////////////
+// NeoPixel
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(npxl_leds, npxl_pin, NEO_GRB + NEO_KHZ800);
+
+// NeoPixel Arrays
+String vuVars[4] = { "VU01", "VU02", "VU03", "VU04" };
+
+int vupxlstrips[4][9] = {
+{11,10,9,8,7,6,5,4,3},
+{23,22,21,20,19,18,17,16,15}, 
+{35,34,33,32,31,30,29,28,27}, 
+{47,46,45,44,43,42,41,40,39} 
+};
+
 void setup() {
 
     // initialize sent values to 0
@@ -45,7 +48,10 @@ void setup() {
         buttons_last[track] = 0;
     }
 
-    Serial.begin(115200);                 // starting Serial
+    Serial.begin(115200);       // starting Serial
+    pixels.begin(); 		// INITIALIZE NeoPixel
+    pixels.clear();
+    pixels.setBrightness(10);
 
 // Configure digital pins
     
@@ -57,24 +63,10 @@ void setup() {
     pinMode(ledPin_3, OUTPUT);            // LED
     pinMode(ledPin_4, OUTPUT);            // LED
     pinMode(ledPin_5, OUTPUT);            // LED
-    /*
-    pinMode(buttonPin_1, INPUT_PULLUP);   // Pushbutton
-    pinMode(buttonPin_2, INPUT_PULLUP);   // Pushbutton
-    pinMode(buttonPin_3, INPUT_PULLUP);   // Pushbutton
-    pinMode(buttonPin_4, INPUT_PULLUP);   // Pushbutton
-    pinMode(buttonPin_5, INPUT_PULLUP);   // Pushbutton
-    */
-/*
-// configure analog pins
-    pinMode(vuPin_1, OUTPUT);             // VU-METER
-    pinMode(vuPin_2, OUTPUT);             // VU-METER
-    pinMode(vuPin_3, OUTPUT);             // VU-METER
-    pinMode(vuPin_4, OUTPUT);             // VU-METER
-    pinMode(vuPin_5, OUTPUT);             // VU-METER
-*/
 }
-////////////////////////////////////////LOOP////////////////////////////////////
+
 void loop(){
+    pixels.clear();
     // hc4051 reading potis
     for (byte pot=0 ; pot <= 4; pot++)     
     {
@@ -165,7 +157,32 @@ void loop(){
         digitalWrite(ledPin_5, HIGH);
       }
     }
-    delay(80);
+
+    // NeoPixel Input-vu
+    if (Serial.available()) {
+      String command = Serial.readStringUntil(',');
+      for (int i =0; i<4; i++) { // filter serial inputstream VU01-VU04
+        if(command.startsWith(vuVars[i])) {
+          String peak = Serial.readStringUntil(',');
+          String rms = Serial.readStringUntil('\n');
+ 	  
+          int peak1 = peak.toInt();// convert string to int
+          int rms1 = rms.toInt();
+ 	  
+          for(int j=0;j<9;j++){// peakmeter 
+            pixels.setPixelColor(vupxlstrips[i][peak1], pixels.Color(255,000,000));
+	    for(int k=0;k<9;k++){// rms-meter
+              if(k<rms1){
+                pixels.setPixelColor(vupxlstrips[i][k], pixels.Color(000,255,000));
+              }
+            }
+          }
+        }
+      }
+    }
+
+    delayMicroseconds(20);
+    pixels.show(); // send to hardware.
 }
 
 /*

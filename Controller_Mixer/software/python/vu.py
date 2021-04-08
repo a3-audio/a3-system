@@ -28,14 +28,14 @@ def vu_handler(address: str,
 #   print(str(value))
 
     if vu == "1":
-        sendData("VU01," + str(int(round(peak * 9))) + "," + str(int(round(rms * 9))))
-        #print("VU01," + str(int(round(peak * 12))) + "," + str(int(round(rms * 12))))
+        sendData("VU01," + str(peak) + "," + str(rms))
+        #print("VU01," + str(peak) + "," + str(rms))
     if vu == "2":
-        sendData("VU02," + str(int(round(peak * 9))) + "," + str(int(round(rms * 9))))
+        sendData("VU02," + str(peak) + "," + str(rms))
     if vu == "3":
-        sendData("VU03," + str(int(round(peak * 9))) + "," + str(int(round(rms * 9))))
+        sendData("VU03," + str(peak) + "," + str(rms))
     if vu == "4":
-        sendData("VU04," + str(int(round(peak * 9))) + "," + str(int(round(rms * 9))))
+        sendData("VU04," + str(peak) + "," + str(rms))
 """
     if vu == "3":
 #        sendData("VU3")

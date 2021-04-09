@@ -25,7 +25,7 @@ def vu_handler(address: str,
 
     peak = osc_arguments[0]
     rms = osc_arguments[1]
-#   print(str(value))
+    print(str(peak) + " - " + str(rms))
 
     if vu == "1":
         sendData("VU01," + str(peak) + "," + str(rms))

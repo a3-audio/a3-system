@@ -41,17 +41,21 @@ void clear(){
 void loop(){
   clear();
 
-/*
   // Pixelmatrix Test
-  for (int i =0; i<8; i++) { // filter serial inputstream VU05-VU12
-    for (int j=0; j<32; j++){
-      lc.setLed(bar1[j][0],i,bar1[j][1],1);
+  for (int i = 0; i < 8 ; i++) {
+    for (int j = 0 ; j < 32 ; j++) {
+      int module_index = j / 8;
+      int x = i;
+      int y = j % 8;
+
+      lc.setLed(module_index, x, y, true);
       delay(5);
     }
   }
 }
-*/
 
+
+  /*
   // Serial-Input to Pixelmatrix (Output-vu)
   if (Serial.available())
   {
@@ -71,10 +75,11 @@ void loop(){
           int module_index = j / 8;
           int x = i;
           int y = j % 8;
-          lc.setLed(module_index, x, y, 1);
+          lc.setLed(module_index, x, y, true);
         }
       }
     }
   }
   delay(20);
+  */
 }	

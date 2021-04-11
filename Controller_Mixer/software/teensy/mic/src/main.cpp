@@ -183,18 +183,16 @@ void loop(){
           int peak_index = peak.toInt();// convert string to int
           int rms_index = rms.toInt();
 
-          pixels.setPixelColor(vupxlstrips[i][peak1], );
-          
           for(int j = 0 ; j < 9 ; j++) {
             uint32_t color;
-            if(k == peak_index)
+            if(j == peak_index)
               color = pixels.Color(255,0,0);
-            else if(k <= rms_index)
+            else if(j <= rms_index)
               color = pixels.Color(0,255,0);
             else
               color = pixels.Color(0,0,0);
 
-            pixels.setPixelColor(vupxlstrips[i][k], color);
+            pixels.setPixelColor(vupxlstrips[i][j], color);
           }
         }
       }

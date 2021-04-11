@@ -134,7 +134,8 @@ void loop(){
     }
 
     if (Serial.available()) {
-      String command = Serial.readStringUntil('\n');
+      String command = Serial.readStringUntil(',');
+
       if(command.startsWith("L1")) {
         digitalWrite(ledPin_1, HIGH);
         digitalWrite(ledPin_2, LOW);
@@ -170,11 +171,9 @@ void loop(){
         digitalWrite(ledPin_4, LOW);
         digitalWrite(ledPin_5, HIGH);
       }
-    }
-
-    // NeoPixel Input-vu
-    if (Serial.available()) {
-      String command = Serial.readStringUntil(',');
+      if(command.startsWith("L")) {
+        Serial.readStringUntil('\n');
+      }
 
       for (int i =0; i < 4; i++) { // filter serial inputstream VU01-VU04
         if(command.startsWith(vuVars[i])) {
@@ -199,6 +198,7 @@ void loop(){
           }
         }
       }
+
       for (int i = 0 ; i < 8 ; i++) { // filter serial inputstream VU05-VU12
         if(command.startsWith(vuVarsM[i]))
         {
@@ -224,7 +224,6 @@ void loop(){
       }
     }
 
-    delayMicroseconds(20);
     pixels.show(); // send to hardware.
 }
 

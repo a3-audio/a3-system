@@ -138,23 +138,23 @@ def serial_handler(): # dispatch from serial strem and send to osc
             if mode == "B":
                 if track == "1":
                     osc_router.send_message("/ambijockey/mic/ch/1/pfl/", value)
-                    sendData("L1")
+                    sendData("L1,")
                     print("B1")
                 if track == "2":
                     osc_router.send_message("/ambijockey/mic/ch/2/pfl/", value)
-                    sendData("L2")
+                    sendData("L2,")
                     print("B2")
                 if track == "3":
                     osc_router.send_message("/ambijockey/mic/ch/3/pfl/", value)
-                    sendData("L3")
+                    sendData("L3,")
                     print("B3")
                 if track == "4":
                     osc_router.send_message("/ambijockey/mic/ch/4/pfl/", value)
-                    sendData("L4")
+                    sendData("L4,")
                     print("B4")
                 if track == "5":
                     osc_router.send_message("/ambijockey/mic/ch/master/pfl/", value)
-                    sendData("L5")
+                    sendData("L5,")
                     print("B5")
           # Potis
             if mode == "P":

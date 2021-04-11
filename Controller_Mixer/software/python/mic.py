@@ -44,22 +44,56 @@
 
 """
 
-import serial  # pySerial https://pyserial.readthedocs.io/
-import numpy
+import math
 import time
+import argparse
+import serial  # pySerial https://pyserial.readthedocs.io/
+import numpy as np
+
+from multiprocessing import Process
+
 from pythonosc.udp_client import SimpleUDPClient
 from pythonosc import osc_server
-from typing import List, Any
 from pythonosc import dispatcher
-import argparse
-from multiprocessing import Process
-#import threading
+
+from typing import List, Any
 
 # OSC-Clients
 osc_router = SimpleUDPClient('192.168.43.50', 9001)
 
 # OSC-Server
-oscRouterPort = 7771
+osc_vu_receive_port = 7771
+
+vu_channel_to_led_count = {
+    "01" : 9,
+    "02" : 9,
+    "03" : 9,
+    "04" : 9,
+    "05" : 32,
+    "06" : 32,
+    "07" : 32,
+    "08" : 32,
+    "09" : 32,
+    "10" : 32,
+    "11" : 32,
+    "12" : 32,
+}
+
+def db_value_to_index(value: float, num_leds: int):
+    index = int(np.interp(value, [-36, 0], [0, num_leds]))
+    if index == num_leds:
+        index = num_leds - 1
+    return index
+
+def send_vu_data(prefix: str, peak_db: float, rms_db: float):
+    num_leds = vu_channel_to_led_count[vu]
+    peak_index = db_value_to_index(peak_db, num_leds)
+    rms_index = db_value_to_index(rms_db, num_leds)
+
+    print("peak: " + str(peak_db) + " " + str(peak_index))
+    print("rms: " + str(rms_db) + " " + str(rms_index))
+
+    sendData("VU" + vu + "," + str(peak_index) + "," + str(rms_index))
 
 def vu_handler(address: str,
                *osc_arguments: List[Any]) -> None:
@@ -68,34 +102,11 @@ def vu_handler(address: str,
 
     peak = osc_arguments[0]
     rms = osc_arguments[1]
-#    print(str(peak) + " - " + str(rms))
 
-    if vu == "01":
-        sendData("VU01," + str(peak) + "," + str(rms))
-        # print("VU01," + str(peak) + "," + str(rms))
-    if vu == "02":
-        sendData("VU02," + str(peak) + "," + str(rms))
-    if vu == "03":
-        sendData("VU03," + str(peak) + "," + str(rms))
-    if vu == "04":
-        sendData("VU04," + str(peak) + "," + str(rms))
-    if vu == "05":
-        sendData("VU05," + str(peak) + "," + str(rms))
-    if vu == "06":
-        sendData("VU06," + str(peak) + "," + str(rms))
-    if vu == "07":
-        sendData("VU07," + str(peak) + "," + str(rms))
-    if vu == "08":
-        sendData("VU08," + str(peak) + "," + str(rms))
-    if vu == "09":
-        sendData("VU09," + str(peak) + "," + str(rms))
-    if vu == "10":
-        sendData("VU10," + str(peak) + "," + str(rms))
-    if vu == "11":
-        sendData("VU11," + str(peak) + "," + str(rms))
-    if vu == "12":
-        sendData("VU12," + str(peak) + "," + str(rms))
-    time.sleep(10)
+    peak_db = 20 * math.log(peak)
+    rms_db  = 20 * math.log(rms)
+
+    send_vu_data(vu, peak_db, rms_db)
 
 # Serial communication
 ser = serial.Serial('/dev/ttyACM0', 115200)
@@ -225,9 +236,9 @@ if __name__ == '__main__':
     proc1.start()
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--ip", default="0.0.0.0", help="The ip to listen on")
+    parser.add_argument("--ip", default="0.0.0.0", help="The ip to listen on for VU meter messages")
     parser.add_argument("--port", type=int,
-                        default=oscRouterPort, help="The port to listen on")
+                        default=osc_vu_receive_port, help="The port to listen on for VU meter messages")
     args = parser.parse_args()
 
     dispatcher = dispatcher.Dispatcher()
@@ -236,5 +247,3 @@ if __name__ == '__main__':
     server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))
     server.serve_forever()
-
-

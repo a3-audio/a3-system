@@ -52,8 +52,6 @@ void loop(){
       delay(5);
     }
   }
-}
-
 
   /*
   // Serial-Input to Pixelmatrix (Output-vu)

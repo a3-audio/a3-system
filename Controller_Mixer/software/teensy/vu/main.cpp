@@ -65,8 +65,6 @@ void loop(){
       return;
     }
 
-    // String input = "VU05,31,31\n"
-    // String command = "VU05";
     for (int i = 0 ; i < 8 ; i++) { // filter serial inputstream VU05-VU12
       if(command.startsWith(vuVarsM[i]))
       {
@@ -75,22 +73,20 @@ void loop(){
         // String peak = "31";
         // String rms = "31";
 
-        int peak_index = peak.toInt();// convert string to int
-        //int rms1 = rms.toInt();
+        int peak_index = peak.toInt();
+        int rms_index = rms.toInt();
         //Serial.println(rms1);
 
-        // peak-meter
+        // rms-meter plus peak over all leds
         for(int j = 0 ; j < 32 ; j++){
           int module_index = j / 8;
           int x = i;
           int y = j % 8;
 
-          bool led_on = j <= peak_index;
+          bool led_on = j <= rms_index || j == peak_index;
           lc.setLed(module_index, x, y, led_on);
         }
       }
     }
   }
-
-  delay(20);
 }

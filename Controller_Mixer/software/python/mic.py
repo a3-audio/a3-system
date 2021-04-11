@@ -101,8 +101,14 @@ def vu_handler(address: str,
     vu = words[2]
 
     # divide by two to match peak-to-peak scale with rms
-    peak = osc_arguments[0] / 2
+    peak = osc_arguments[0] / 2.0
     rms = osc_arguments[1]
+
+    # clamp to above 0 to avoid numerical error
+    if peak == 0.0:
+        peak = sys.float_info.epsilon
+    if rms == 0.0:
+        rms = sys.float_info.epsilon
 
     peak_db = 20 * math.log(peak)
     rms_db  = 20 * math.log(rms)

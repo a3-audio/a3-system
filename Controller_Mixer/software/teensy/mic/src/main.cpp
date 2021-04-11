@@ -161,21 +161,19 @@ void loop(){
     // NeoPixel Input-vu
     if (Serial.available()) {
       String command = Serial.readStringUntil(',');
-      for (int i =0; i<4; i++) { // filter serial inputstream VU01-VU04
+
+      for (int i =0; i < 4; i++) { // filter serial inputstream VU01-VU04
         if(command.startsWith(vuVars[i])) {
           String peak = Serial.readStringUntil(',');
           String rms = Serial.readStringUntil('\n');
  	  
           int peak1 = peak.toInt();// convert string to int
           int rms1 = rms.toInt();
- 	  
-          for(int j=0;j<9;j++){// peakmeter 
-            pixels.setPixelColor(vupxlstrips[i][peak1], pixels.Color(255,000,000));
-	    for(int k=0;k<9;k++){// rms-meter
-              if(k<rms1){
-                pixels.setPixelColor(vupxlstrips[i][k], pixels.Color(000,255,000));
-              }
-            }
+
+          pixels.setPixelColor(vupxlstrips[i][peak1], pixels.Color(255,000,000));
+          
+          for(int k = 0 ; k < rms1 ; k++){// rms-meter
+            pixels.setPixelColor(vupxlstrips[i][k], pixels.Color(000,255,000));
           }
         }
       }

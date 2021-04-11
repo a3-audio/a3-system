@@ -41,6 +41,7 @@ void clear(){
 void loop(){
   clear();
 
+  /*
   // Pixelmatrix Test
   for (int i = 0; i < 8 ; i++) {
     for (int j = 0 ; j < 32 ; j++) {
@@ -52,8 +53,8 @@ void loop(){
       delay(5);
     }
   }
+  */
 
-  /*
   // Serial-Input to Pixelmatrix (Output-vu)
   if (Serial.available())
   {
@@ -68,6 +69,8 @@ void loop(){
         //int rms1 = rms.toInt();
         //Serial.println(rms1);
 
+        peak_index = 32;
+
         // peak-meter
         for(int j = 0 ; j <= peak_index ; j++){
           int module_index = j / 8;
@@ -78,6 +81,6 @@ void loop(){
       }
     }
   }
+
   delay(20);
-  */
 }	

@@ -43,7 +43,7 @@
         - function: daw-controller, 4ch dj-mixer style
 
 """
-
+import sys
 import math
 import time
 import argparse

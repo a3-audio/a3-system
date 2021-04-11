@@ -81,7 +81,7 @@ void loop(){
         for(int j = 0 ; j < 32 ; j++){
           int module_index = j / 8;
           int x = i;
-          int y = j % 8;
+          int y = 7 - j % 8;
 
           bool led_on = j <= rms_index || j == peak_index;
           lc.setLed(module_index, x, y, led_on);

@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
+#include <LedControl.h>
 
 // AAA-MIXER / Teensy Firmare for PCB v0.2
 
@@ -23,16 +24,19 @@ int buttons_last[num_tracks];
 
 // NeoPixel
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(npxl_leds, npxl_pin, NEO_GRB + NEO_KHZ800);
+// LED-Matrix Inputs
+int vupxlstrips[4][9] = {
+  {11,10,9,8,7,6,5,4,3},
+  {23,22,21,20,19,18,17,16,15},
+  {35,34,33,32,31,30,29,28,27},
+  {47,46,45,44,43,42,41,40,39}
+};
+
+LedControl lc=LedControl(18,14,15,4);
 
 // NeoPixel Arrays
 String vuVars[4] = { "VU01", "VU02", "VU03", "VU04" };
-
-int vupxlstrips[4][9] = {
-{11,10,9,8,7,6,5,4,3},
-{23,22,21,20,19,18,17,16,15}, 
-{35,34,33,32,31,30,29,28,27}, 
-{47,46,45,44,43,42,41,40,39} 
-};
+String vuVarsM[8] = { "VU05", "VU06", "VU07", "VU08", "VU09", "VU10", "VU11", "VU12" };
 
 void setup() {
 
@@ -63,10 +67,20 @@ void setup() {
     pinMode(ledPin_3, OUTPUT);            // LED
     pinMode(ledPin_4, OUTPUT);            // LED
     pinMode(ledPin_5, OUTPUT);            // LED
+
+    lc.shutdown(0,false);
+    lc.shutdown(1,false);
+    lc.shutdown(2,false);
+    lc.shutdown(3,false);
+
+    // Set brightness
+    lc.setIntensity(0,1);
+    lc.setIntensity(1,1);
+    lc.setIntensity(2,1);
+    lc.setIntensity(3,1);
 }
 
 void loop(){
-    pixels.clear();
     // hc4051 reading potis
     for (byte pot=0 ; pot <= 4; pot++)     
     {
@@ -167,13 +181,44 @@ void loop(){
           String peak = Serial.readStringUntil(',');
           String rms = Serial.readStringUntil('\n');
  	  
-          int peak1 = peak.toInt();// convert string to int
-          int rms1 = rms.toInt();
+          int peak_index = peak.toInt();// convert string to int
+          int rms_index = rms.toInt();
 
-          pixels.setPixelColor(vupxlstrips[i][peak1], pixels.Color(255,000,000));
+          pixels.setPixelColor(vupxlstrips[i][peak1], );
           
-          for(int k = 0 ; k < rms1 ; k++){// rms-meter
-            pixels.setPixelColor(vupxlstrips[i][k], pixels.Color(000,255,000));
+          for(int j = 0 ; j < 9 ; j++) {
+            uint32_t color;
+            if(k == peak_index)
+              color = pixels.Color(255,0,0);
+            else if(k <= rms_index)
+              color = pixels.Color(0,255,0);
+            else
+              color = pixels.Color(0,0,0);
+
+            pixels.setPixelColor(vupxlstrips[i][k], color);
+          }
+        }
+      }
+      for (int i = 0 ; i < 8 ; i++) { // filter serial inputstream VU05-VU12
+        if(command.startsWith(vuVarsM[i]))
+        {
+          String peak = Serial.readStringUntil(',');
+          String rms = Serial.readStringUntil('\n');
+          // String peak = "31";
+          // String rms = "31";
+
+          int peak_index = peak.toInt();
+          int rms_index = rms.toInt();
+          //Serial.println(rms1);
+
+          // rms-meter plus peak over all leds
+          for(int j = 0 ; j < 32 ; j++){
+            int module_index = j / 8;
+            int x = i;
+            int y = 7 - j % 8;
+
+            bool led_on = j <= rms_index || j == peak_index;
+            lc.setLed(module_index, x, y, led_on);
           }
         }
       }

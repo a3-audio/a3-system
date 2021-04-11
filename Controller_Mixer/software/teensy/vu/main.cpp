@@ -56,18 +56,24 @@ void loop(){
   */
 
   // Serial-Input to Pixelmatrix (Output-vu)
-  // if (Serial.available())
-  // {
-    // String command = Serial.readStringUntil(',');
+  if (Serial.available())
+  {
+    String command = Serial.readStringUntil(',');
+    if(!command.startsWith("VU"))
+    {
+      Serial.readStringUntil('\n');
+      return;
+    }
+
     // String input = "VU05,31,31\n"
-    String command = "VU05";
+    // String command = "VU05";
     for (int i = 0 ; i < 8 ; i++) { // filter serial inputstream VU05-VU12
       if(command.startsWith(vuVarsM[i]))
       {
-        // String peak = Serial.readStringUntil(',');
-        // String rms = Serial.readStringUntil('\n');
-        String peak = "31";
-        String rms = "31";
+        String peak = Serial.readStringUntil(',');
+        String rms = Serial.readStringUntil('\n');
+        // String peak = "31";
+        // String rms = "31";
 
         int peak_index = peak.toInt();// convert string to int
         //int rms1 = rms.toInt();

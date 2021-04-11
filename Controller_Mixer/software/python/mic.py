@@ -100,8 +100,7 @@ def vu_handler(address: str,
     words = address.split("/")
     vu = words[2]
 
-    # divide by two to match peak-to-peak scale with rms
-    peak = osc_arguments[0] / 2.0
+    peak = osc_arguments[0]
     rms = osc_arguments[1]
 
     # clamp to above 0 to avoid numerical error

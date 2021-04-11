@@ -39,7 +39,7 @@ void clear(){
 }
 
 void loop(){
-  clear();
+  // clear();
 
   /*
   // Pixelmatrix Test
@@ -80,11 +80,13 @@ void loop(){
         //Serial.println(rms1);
 
         // peak-meter
-        for(int j = 0 ; j <= peak_index ; j++){
+        for(int j = 0 ; j < 32 ; j++){
           int module_index = j / 8;
           int x = i;
           int y = j % 8;
-          lc.setLed(module_index, x, y, true);
+
+          bool led_on = j <= peak_index;
+          lc.setLed(module_index, x, y, led_on);
         }
       }
     }

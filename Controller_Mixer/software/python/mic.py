@@ -70,15 +70,32 @@ def vu_handler(address: str,
     rms = osc_arguments[1]
 #    print(str(peak) + " - " + str(rms))
 
-    if vu == "1":
+    if vu == "01":
         sendData("VU01," + str(peak) + "," + str(rms))
-        print("VU01," + str(peak) + "," + str(rms))
-    if vu == "2":
+        # print("VU01," + str(peak) + "," + str(rms))
+    if vu == "02":
         sendData("VU02," + str(peak) + "," + str(rms))
-    if vu == "3":
+    if vu == "03":
         sendData("VU03," + str(peak) + "," + str(rms))
-    if vu == "4":
+    if vu == "04":
         sendData("VU04," + str(peak) + "," + str(rms))
+    if vu == "05":
+        sendData("VU05," + str(peak) + "," + str(rms))
+    if vu == "06":
+        sendData("VU06," + str(peak) + "," + str(rms))
+    if vu == "07":
+        sendData("VU07," + str(peak) + "," + str(rms))
+    if vu == "08":
+        sendData("VU08," + str(peak) + "," + str(rms))
+    if vu == "09":
+        sendData("VU09," + str(peak) + "," + str(rms))
+    if vu == "10":
+        sendData("VU10," + str(peak) + "," + str(rms))
+    if vu == "11":
+        sendData("VU11," + str(peak) + "," + str(rms))
+    if vu == "12":
+        sendData("VU12," + str(peak) + "," + str(rms))
+    time.sleep(10)
 
 # Serial communication
 ser = serial.Serial('/dev/ttyACM0', 115200)

@@ -80,12 +80,12 @@ vu_channel_to_led_count = {
 }
 
 def db_value_to_index(value: float, num_leds: int):
-    index = int(np.interp(value, [-36, 0], [0, num_leds]))
+    index = int(np.interp(value, [-60, 0], [0, num_leds]))
     if index == num_leds:
         index = num_leds - 1
     return index
 
-def send_vu_data(prefix: str, peak_db: float, rms_db: float):
+def send_vu_data(vu: str, peak_db: float, rms_db: float):
     num_leds = vu_channel_to_led_count[vu]
     peak_index = db_value_to_index(peak_db, num_leds)
     rms_index = db_value_to_index(rms_db, num_leds)

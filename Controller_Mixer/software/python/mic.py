@@ -174,6 +174,15 @@ def serial_handler(): # dispatch from serial strem and send to osc
                     if potNr == "5":
                         osc_router.send_message("/ambijockey/mic/ch/1/volume/", value)
                         print("T" + track + " P" + potNr + " " + value)
+                    if potNr == "6":
+                        osc_router.send_message("/ambijockey/mic/ch/1/mode/", value)
+                        print("T" + track + " P" + potNr + " " + value)
+                    if potNr == "7":
+                        osc_router.send_message("/ambijockey/mic/ch/1/mode/", value)
+                        print("T" + track + " P" + potNr + " " + value)
+                    if potNr == "8":
+                        osc_router.send_message("/ambijockey/mic/ch/1/mode/", value)
+                        print("T" + track + " P" + potNr + " " + value)
                 if track == "2":
                     if potNr == "1":
                         osc_router.send_message("/ambijockey/mic/ch/2/gain/", value)
@@ -189,6 +198,15 @@ def serial_handler(): # dispatch from serial strem and send to osc
                         print("T" + track + " P" + potNr + " " + value)
                     if potNr == "5":
                         osc_router.send_message("/ambijockey/mic/ch/2/volume/", value)
+                        print("T" + track + " P" + potNr + " " + value)
+                    if potNr == "6":
+                        osc_router.send_message("/ambijockey/mic/ch/2/mode/", value)
+                        print("T" + track + " P" + potNr + " " + value)
+                    if potNr == "7":
+                        osc_router.send_message("/ambijockey/mic/ch/2/mode/", value)
+                        print("T" + track + " P" + potNr + " " + value)
+                    if potNr == "8":
+                        osc_router.send_message("/ambijockey/mic/ch/2/mode/", value)
                         print("T" + track + " P" + potNr + " " + value)
                 if track == "3":
                     if potNr == "1":
@@ -206,6 +224,15 @@ def serial_handler(): # dispatch from serial strem and send to osc
                     if potNr == "5":
                         osc_router.send_message("/ambijockey/mic/ch/3/volume/", value)
                         print("T" + track + " P" + potNr + " " + value)
+                    if potNr == "6":
+                        osc_router.send_message("/ambijockey/mic/ch/3/mode/", value)
+                        print("T" + track + " P" + potNr + " " + value)
+                    if potNr == "7":
+                        osc_router.send_message("/ambijockey/mic/ch/3/mode/", value)
+                        print("T" + track + " P" + potNr + " " + value)
+                    if potNr == "8":
+                        osc_router.send_message("/ambijockey/mic/ch/3/mode/", value)
+                        print("T" + track + " P" + potNr + " " + value)
                 if track == "4":
                     if potNr == "1":
                         osc_router.send_message("/ambijockey/mic/ch/4/gain/", value)
@@ -221,6 +248,15 @@ def serial_handler(): # dispatch from serial strem and send to osc
                         print("T" + track + " P" + potNr + " " + value)
                     if potNr == "5":
                         osc_router.send_message("/ambijockey/mic/ch/4/volume/", value)
+                        print("T" + track + " P" + potNr + " " + value)
+                    if potNr == "6":
+                        osc_router.send_message("/ambijockey/mic/ch/4/mode/", value)
+                        print("T" + track + " P" + potNr + " " + value)
+                    if potNr == "7":
+                        osc_router.send_message("/ambijockey/mic/ch/4/mode/", value)
+                        print("T" + track + " P" + potNr + " " + value)
+                    if potNr == "8":
+                        osc_router.send_message("/ambijockey/mic/ch/4/mode/", value)
                         print("T" + track + " P" + potNr + " " + value)
                 if track == "5":
                     if potNr == "1":

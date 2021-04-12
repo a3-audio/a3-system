@@ -377,7 +377,7 @@ def poti_handler(address: str,
     elif track == "master":
         if poti == "volume":
             val = numpy.interp(value, [0, 1], [0.01, 1])
-            reaper.send_message("/master/volume", val)
+            reaper.send_message("/track/" + masterbus + "/volume", val)
         if poti == "hi":
             val = numpy.interp(value, [0, 1], [0.01, 0.5])
             reaper.send_message("/track/" + masterbus + "/fxeq/hishelf/gain", val)

@@ -81,34 +81,34 @@
   </connection>
   <connection>
     <output>REAPER:out13</output>
-    <input>supernova:input_5</input>
+    <input>supernova:input_12</input>
   </connection>
   <connection>
     <output>REAPER:out14</output>
-    <input>supernova:input_6</input>
-  </connection>
-  <connection>
-    <output>REAPER:out15</output>
-    <input>supernova:input_7</input>
-  </connection>
-  <connection>
-    <output>REAPER:out16</output>
-    <input>supernova:input_8</input>
-  </connection>
-  <connection>
-    <output>REAPER:out17</output>
-    <input>supernova:input_9</input>
-  </connection>
-  <connection>
-    <output>REAPER:out18</output>
-    <input>supernova:input_10</input>
-  </connection>
-  <connection>
-    <output>REAPER:out19</output>
     <input>supernova:input_11</input>
   </connection>
   <connection>
+    <output>REAPER:out15</output>
+    <input>supernova:input_10</input>
+  </connection>
+  <connection>
+    <output>REAPER:out16</output>
+    <input>supernova:input_9</input>
+  </connection>
+  <connection>
+    <output>REAPER:out17</output>
+    <input>supernova:input_8</input>
+  </connection>
+  <connection>
+    <output>REAPER:out18</output>
+    <input>supernova:input_7</input>
+  </connection>
+  <connection>
+    <output>REAPER:out19</output>
+    <input>supernova:input_6</input>
+  </connection>
+  <connection>
     <output>REAPER:out20</output>
-    <input>supernova:input_12</input>
+    <input>supernova:input_5</input>
   </connection>
 </jmess>

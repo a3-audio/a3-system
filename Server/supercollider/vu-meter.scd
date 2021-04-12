@@ -1,4 +1,4 @@
-(
+
 Server.supernova;
 ServerOptions.new;
 t = Server(\mic, NetAddr("127.0.0.1", 9001));
@@ -11,31 +11,28 @@ t.blockSize = 64;
 //t.numWireBufs = 1024 * ~hoaNumChannels;
 t.memSize = 2.pow(18);
 t.sampleRate = 44100;
-s.boot
-)
+s.boot;
 
-s.plotTree;
-s.meter;
+~b = NetAddr.new("192.168.43.51", 7771);    // create the NetAddr
 
-~b = NetAddr.new("127.0.0.1", 7771);    // create the NetAddr
-~b.sendMsg("/vu_1-16", "peak, rms");
+s.waitForBoot({
 
-(
-{SendPeakRMS.kr(In.ar(2, 1), 20, 3, "/reply01")}.play;
-{SendPeakRMS.kr(In.ar(3, 1), 20, 3, "/reply02")}.play;
-{SendPeakRMS.kr(In.ar(4, 1), 20, 3, "/reply03")}.play;
-{SendPeakRMS.kr(In.ar(5, 1), 20, 3, "/reply04")}.play;
-{SendPeakRMS.kr(In.ar(6, 1), 20, 3, "/reply05")}.play;
-{SendPeakRMS.kr(In.ar(7, 1), 20, 3, "/reply06")}.play;
-{SendPeakRMS.kr(In.ar(8, 1), 20, 3, "/reply07")}.play;
-{SendPeakRMS.kr(In.ar(9, 1), 20, 3, "/reply08")}.play;
-{SendPeakRMS.kr(In.ar(10, 1), 20, 3, "/reply09")}.play;
-{SendPeakRMS.kr(In.ar(11, 1), 20, 3, "/reply10")}.play;
-{SendPeakRMS.kr(In.ar(12, 1), 20, 3, "/reply11")}.play;
-{SendPeakRMS.kr(In.ar(13, 1), 20, 3, "/reply12")}.play;
-)
+//~b.sendMsg("/vu_1-16", "peak, rms");
 
-(
+
+{SendPeakRMS.kr(In.ar(2, 1), 10, 3, "/reply01")}.play;
+{SendPeakRMS.kr(In.ar(3, 1), 10, 3, "/reply02")}.play;
+{SendPeakRMS.kr(In.ar(4, 1), 10, 3, "/reply03")}.play;
+{SendPeakRMS.kr(In.ar(5, 1), 10, 3, "/reply04")}.play;
+{SendPeakRMS.kr(In.ar(6, 1), 10, 3, "/reply05")}.play;
+{SendPeakRMS.kr(In.ar(7, 1), 10, 3, "/reply06")}.play;
+{SendPeakRMS.kr(In.ar(8, 1), 10, 3, "/reply07")}.play;
+{SendPeakRMS.kr(In.ar(9, 1), 10, 3, "/reply08")}.play;
+{SendPeakRMS.kr(In.ar(10, 1), 10, 3, "/reply09")}.play;
+{SendPeakRMS.kr(In.ar(11, 1), 10, 3, "/reply10")}.play;
+{SendPeakRMS.kr(In.ar(12, 1), 10, 3, "/reply11")}.play;
+{SendPeakRMS.kr(In.ar(13, 1), 10, 3, "/reply12")}.play;
+
 OSCFunc({ |msg| ~b.sendMsg("/vu/01", msg[3], msg[4]);}, '/reply01');
 OSCFunc({ |msg| ~b.sendMsg("/vu/02", msg[3], msg[4]);}, '/reply02');
 OSCFunc({ |msg| ~b.sendMsg("/vu/03", msg[3], msg[4]);}, '/reply03');
@@ -48,6 +45,7 @@ OSCFunc({ |msg| ~b.sendMsg("/vu/09", msg[3], msg[4]);}, '/reply09');
 OSCFunc({ |msg| ~b.sendMsg("/vu/10", msg[3], msg[4]);}, '/reply10');
 OSCFunc({ |msg| ~b.sendMsg("/vu/11", msg[3], msg[4]);}, '/reply11');
 OSCFunc({ |msg| ~b.sendMsg("/vu/12", msg[3], msg[4]);}, '/reply12');
-)
 
-s.freeAll;
+s.meter;
+});
+

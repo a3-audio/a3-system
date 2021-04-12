@@ -1,7 +1,7 @@
 
 Server.supernova;
 ServerOptions.new;
-t = Server(\mic, NetAddr("192.168.43.51", 9001));
+t = Server(\mic, NetAddr("127.0.0.1", 9001));
 Server.local = Server.default;
 t = Server.local.options; // Get the local server's options
 t.numInputBusChannels = 12;

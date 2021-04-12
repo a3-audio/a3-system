@@ -90,8 +90,8 @@ def send_vu_data(vu: str, peak_db: float, rms_db: float):
     peak_index = db_value_to_index(peak_db, num_leds)
     rms_index = db_value_to_index(rms_db, num_leds)
 
-    print("peak: " + str(peak_db) + " " + str(peak_index))
-    print("rms: " + str(rms_db) + " " + str(rms_index))
+#    print("peak: " + str(peak_db) + " " + str(peak_index))
+#    print("rms: " + str(rms_db) + " " + str(rms_index))
 
     sendData("VU" + vu + "," + str(peak_index) + "," + str(rms_index))
 

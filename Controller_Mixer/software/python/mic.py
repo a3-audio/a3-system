@@ -59,7 +59,7 @@ from pythonosc import dispatcher
 from typing import List, Any
 
 # OSC-Clients
-osc_router = SimpleUDPClient('192.168.43.50', 9001)
+osc_router = SimpleUDPClient('192.168.43.50', 9000)
 
 # OSC-Server
 osc_vu_receive_port = 7771

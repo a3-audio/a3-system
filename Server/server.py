@@ -30,13 +30,13 @@ CONTROLLER_MIXER POTIS              REAPER
 
 CONTROLLER_MIXER BUTTONS            REAPER
 /ambijockey/mic/ch/1-4/pfl          (Channel 1 pfl)
-/bmbijockey/mic/ch/master/pfl
+/ambijockey/mic/ch/master/pfl
 
 CONTROLLER_MOTION                   IEM COORDINATECONVERTER HOSTET BY REAPER
-/ambiJocky/motion/ch/1/pos/xyz        >>  /CoordinateConverter/1/xPos
-/ambiJocky/motion/ch/2/pos/xyz            /CoordinateConverter/1/yPos
-/ambiJocky/motion/ch/3/pos/xyz            /CoordinateConverter/1/zPos
-/ambiJocky/motion/ch/4/pos/xyz            ... same for 2-4
+/ambijockey/motion/ch/1/pos/xyz        >>  /CoordinateConverter/1/xPos
+/ambijockey/motion/ch/2/pos/xyz            /CoordinateConverter/1/yPos
+/ambijockey/motion/ch/3/pos/xyz            /CoordinateConverter/1/zPos
+/ambijockey/motion/ch/4/pos/xyz            ... same for 2-4
 
 /ambijockey/moc/ch/1-4/width/ [0-1]
 /ambijockey/moc/ch/1-4/reverb/ [0-1]

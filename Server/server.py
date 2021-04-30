@@ -383,7 +383,7 @@ def poti_handler(address: str,
             reaper.send_message("/track/" + masterbus + "/fxeq/hishelf/gain", val)
         if poti == "mid":
             val = numpy.interp(value, [0, 1], [0.01, 0.5])
-            reaper.send_message("/track/" + masterbus + "/fxeq/band/0/gain", val)
+            reaper.send_message("/track/22/volume", val)
         if poti == "lo":
             val = numpy.interp(value, [0, 1], [0.01, 0.5])
             reaper.send_message("/track/" + masterbus + "/fxeq/loshelf/gain", val)
@@ -402,35 +402,35 @@ def button_handler(address: str,
             reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
             reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
             reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
-            reaper.send_message("/track/" + mainmixbus + "/mute", 1)
+#            reaper.send_message("/track/" + mainmixbus + "/mute", 1)
 
         if button == "2":
             reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
             reaper.send_message("/track/" + dj2_pfl + "/mute", 0)
             reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
             reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
-            reaper.send_message("/track/" + mainmixbus + "/mute", 1)
+#            reaper.send_message("/track/" + mainmixbus + "/mute", 1)
 
         if button == "3":
             reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
             reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
             reaper.send_message("/track/" + dj3_pfl + "/mute", 0)
             reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
-            reaper.send_message("/track/" + mainmixbus + "/mute", 1)
+#            reaper.send_message("/track/" + mainmixbus + "/mute", 1)
 
         if button == "4":
             reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
             reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
             reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
             reaper.send_message("/track/" + dj4_pfl + "/mute", 0)
-            reaper.send_message("/track/" + mainmixbus + "/mute", 1)
+#            reaper.send_message("/track/" + mainmixbus + "/mute", 1)
 
         if button == "master":
             reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
             reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
             reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
             reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
-            reaper.send_message("/track/" + mainmixbus + "/mute", 0)
+#            reaper.send_message("/track/" + mainmixbus + "/mute", 0)
 
 
 def vu_handler(address: str,

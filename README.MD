@@ -2,14 +2,15 @@
 
 ![first ambijocky](doc/pix/gif1.gif)
 
-Goal for this project is a Hardware Controller which enables everybody, who can use a dj-mixer, to perform LIVE on a 3d-Audio-System. Therefore a working setup consists of three devices:
+## Goal for this project
+Make venues and artists fit for the future of audioplayback. That means 3d-audio and therefore compatibility to all audioformats, easy to use spatialisation interface and most flexibility at low price. Our first setup consists of three devices:
 
 ## The Audioserver
-The Audioserver is processing the analog audio and is remotecontrolled by osc. Also it sends osc data for vu-meters.
+The Audioserver is processing the analog audio, calculates the 3d-audiosphere and is remotecontrolled by osc. Also it sends osc data for vu-meters. 
 To make this work you need a solid quadcore pc running a realtime linux kernel and a software/config-stack described in Server/README.md.
 
 ## The DJ-Mixer
-The DJ-Mixer is just an osc-controller. It sends all the remotedata for eq volume gain and mix as osc to the Audioserver. It gets vu-meter levels as osc data and displays it (4 in / 8 out).
+The DJ-Mixer is just an osc-controller. It sends remotedata for eq volume gain and mix as osc to the Audioserver. It gets vu-meter levels as osc and displays it (4 in / 8 out).
 The config is described in Controller_Mixer/README.md.
 
 ## The Motion-Sampler

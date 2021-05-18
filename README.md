@@ -7,6 +7,7 @@ Make venues and artists fit for the future of audio. That means 3D-Sound and the
 
 ## A³core (The Audioserver)
 The Audioserver is processing the analog audio, calculates the 3D-Soundsphere and is remotecontrolled via osc. Also it sends osc data with peak and rms information for vu-meters to the mixer. 
+
 Server/README.md
 
 ## A³mix (The DJ-Mixer)

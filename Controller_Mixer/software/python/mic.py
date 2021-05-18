@@ -1,48 +1,5 @@
 #!/usr/bin/python
 
-""" AAA-MIX, mic.py
-- powered with PoE -> downstep to 3V inside
-- runs on raspberry pi 3b
-- raspberry is connected via usb (/dev/ttyACM0) to
-- teensy 4.1, it has
-    - 4 multiplexer hc4051 (8ch each)
-        function: audiochannel-control
-        potis
-        - gain 
-        - eq hi
-        - eq mid
-        - eq low
-        - volume
-        mode-buttons
-        - mono
-        - stereo
-        - ambionic
-    - 1 hc4051
-        function: masterchannel-control
-        potis
-        - master-volume
-        - booth-volume
-        - phones mix
-        - no headphone volume here!?:
-            we feed line-level to builtin headphone-amplifier and control it analog
-    - 5 led-buttons for heapdphones prelisten function (pfl)
-    - 1 NeoPixel-strip (ws2811 led-controller)
-        - 3 leds mode-status
-        - 9 leds input vu
-    - 9 mode-buttons, 3 per channel
-        - mono
-        - stereo
-        - 3d
-    - 1 8x32 led-matrix for output-vu
-- Open Sound Control (osc)
-    - receives osc messages from 
-        - aaa-core/vu-meter.scd 
-        - function: vu-meters
-    - sends osc messages to 
-        - aaa-core/server.py
-        - function: daw-controller, 4ch dj-mixer style
-
-"""
 import sys
 import math
 import time
@@ -275,13 +232,13 @@ def serial_handler(): # dispatch from serial strem and send to osc
                         osc_router.send_message("/ambijockey/mic/ch/master/volume/", value)
                         print("T" + track + " P" + potNr + " " + value)
                     if potNr == "2":
-                        osc_router.send_message("/ambijockey/mic/ch/master/hi/", value)
+                        osc_router.send_message("/ambijockey/mic/ch/master/booth/", value)
                         print("T" + track + " P" + potNr + " " + value)
                     if potNr == "3":
-                        osc_router.send_message("/ambijockey/mic/ch/master/mid/", value)
+                        osc_router.send_message("/ambijockey/mic/ch/master/phMix/", value)
                         print("T" + track + " P" + potNr + " " + value)
                     if potNr == "4":
-                        osc_router.send_message("/ambijockey/mic/ch/master/lo/", value)
+                        osc_router.send_message("/ambijockey/mic/ch/master/phVol/", value)
                         print("T" + track + " P" + potNr + " " + value)
 
 if __name__ == '__main__':

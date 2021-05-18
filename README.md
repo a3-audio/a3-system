@@ -18,6 +18,10 @@ Controller_Mixer/README.md
 ## The Motion-Sampler
 The Motion-Sampler is a osc-controller. It records and playback motion made by fingertip on a touchscreen. We're using it to move audiosignals in a 3d-audiosphere. You can hear the movement on headphones (by activating corresponding pfl) and you can hear it on the main speakers - live interaction. Also you can set parameters like lenghts or playmode, you can store 4 different movements per channel.
 
+Controller_Motion/README.md
+
+## Hardware
+hardware.md
 
 ## Blackboard
 We work with an agile Ticketboard integrated in github "projects".

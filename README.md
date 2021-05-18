@@ -6,7 +6,7 @@
 Make venues and artists fit for the future of audioplayback. That means 3D-Sound and therefore compatibility to all audioformats, easy to use spatialization interface, and most flexibility at a price for everybody. Our first setup consists of three devices:
 
 ## The Audioserver
-The Audioserver is processing the analog audio, calculates the 3D-Sound and is remotecontrolled by osc. Also it sends osc data with peak and rms information for vu-meters to the mixer. 
+The Audioserver is processing the analog audio, calculates the 3D-Soundsphere and is remotecontrolled by osc. Also it sends osc data with peak and rms information for vu-meters to the mixer. 
 
 Server/README.md
 
@@ -16,7 +16,7 @@ The DJ-Mixer is a osc-controller. It sends osc to the Audioserver in order to ma
 Controller_Mixer/README.md
 
 ## The Motion-Sampler
-The Motion-Sampler is a osc-controller. It records and playback motion made by fingertip on a touchscreen. We're using it to move audiosignals in a 3d-audiosphere. You can hear the movement on headphones (by activating corresponding pfl) and you can hear it on the main speakers - live interaction. Also you can set parameters like lenghts or playmode, you can store 4 different movements per channel.
+The Motion-Sampler is a osc-controller. It records and playback motion made by fingertip on a touchscreen. We're using it to move audiosignals in a 3D-Soundsphere. You can hear the movement on headphones (by activating corresponding pfl) and you can hear it on the main speakers - live interaction. Also you can set parameters like lenghts or playmode, you can store 4 different movements per channel.
 
 Controller_Motion/README.md
 

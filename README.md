@@ -27,7 +27,7 @@ Parts we used listed here: hardware.md
 We organize our tasks in a github-project:
 https://github.com/orgs/ambisonics-audio-association/projects/1
 
-We talk via mattermost, write us to get on board:
+We talk via mattermost, write us to get involved:
 r.eismann@posteo.de
 
 ## Code of conduct

@@ -1,8 +1,5 @@
 # MOTION CONTROLLER
-OSC TRANSMITTER AND PATTERNSAMPLER FOR 3-DIMENSIONAL AUDIO MOTION.
-
 ## Setup
-
 ### teensy
 software/teensy/src/main.cpp << flash it on your teensy 4.1
 

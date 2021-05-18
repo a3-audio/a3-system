@@ -1,7 +1,5 @@
 # MIXER CONTROLLER
-
 ## Setup
-
 ### teensy
 software/teensy/src/main.cpp << flash it on your teensy 4.1
 

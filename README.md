@@ -3,7 +3,7 @@
 ![first ambijocky](doc/pix/gif1.gif)
 
 ## Goal for this project
-Make venues and artists fit for the future of audioplayback. That means 3d-audio and therefore compatibility to all audioformats, easy to use spatialization interface, and most flexibility at low price. Our first setup consists of three devices:
+Make venues and artists fit for the future of audioplayback. That means 3D-Sound and therefore compatibility to all audioformats, easy to use spatialization interface, and most flexibility at a price for everybody. Our first setup consists of three devices:
 
 ## The Audioserver
 The Audioserver is processing the analog audio, calculates the 3d-audiosphere and is remotecontrolled by osc. Also it sends osc data with peak and rms information for vu-meters to the mixer. 

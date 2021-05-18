@@ -7,11 +7,8 @@
         "id": "645eb7dc8c29c385",
         "type": "leaf",
         "state": {
-          "type": "markdown",
-          "state": {
-            "file": "Controller_Motion/README.MD",
-            "mode": "source"
-          }
+          "type": "empty",
+          "state": {}
         }
       }
     ],
@@ -68,7 +65,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Controller_Motion/README.MD",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",

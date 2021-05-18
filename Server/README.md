@@ -6,7 +6,6 @@ aaa-mix 192.168.43.51 (mixer controller)
 aaa-moc 192.168.43.52 (motion controller)
 
 ## Dependences
-
 ### sudo pacman -S 
 realtime-privileges
 rtirq
@@ -40,7 +39,6 @@ usermod -aG audio aaa
 
 ## Need to flash Microcontroller via usb
 sudo chmod a+rw /dev/ttyACM0
-stat /dev/ttyACM0stat
 
 ## start
 Server/server.py
@@ -54,7 +52,7 @@ Server/server.py
 ## OSC (server.py translates incoming osc and sends it to the daw)
 TODO talk about OSC conventions / suggestion by Jendrik:
 template: /ambijockey/ch/{#}/{controller}/{function}/.../{args}
-exampel: /ambijockey/ch/1/mixer/eq/mid/[0-1]
+example: /ambijockey/ch/1/mixer/eq/mid/[0-1]
 
 SOURCE                          >>  DESTINATION
 ----------------------------------------------------------------------

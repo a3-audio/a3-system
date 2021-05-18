@@ -3,20 +3,19 @@
 ![first ambijocky](doc/pix/gif1.gif)
 
 ## Goal for this project
-Make venues and artists fit for the future of audioplayback. That means 3D-Sound and therefore compatibility to all audioformats, easy to use spatialization interface, and most flexibility at a price for everybody. Our first setup consists of three devices:
+Make venues and artists fit for the future of audio. That means 3D-Sound and therefore compatibility to all audioformats, easy to use spatialization interface, and maximum flexibility at a price for everybody. Our first setup consists of three devices:
 
 ## A³core (The Audioserver)
-The Audioserver is processing the analog audio, calculates the 3D-Soundsphere and is remotecontrolled by osc. Also it sends osc data with peak and rms information for vu-meters to the mixer. 
-
+The Audioserver is processing the analog audio, calculates the 3D-Soundsphere and is remotecontrolled via osc. Also it sends osc data with peak and rms information for vu-meters to the mixer. 
 Server/README.md
 
 ## A³mix (The DJ-Mixer)
-The DJ-Mixer is a osc-controller. It sends osc to the Audioserver in order to manipulate 3-band-eq, volume, channelgain, etc. like a normal dj-mixer would behave. It has osc-controlled vu-meters for each input and for 8 outputs (you're free to map audiochannels on it)
+The DJ-Mixer is an osc-controller. It sends osc to the Audioserver in order to manipulate 3-band-eq, volume, channelgain, etc. like a normal dj-mixer would behave. It has osc-controlled vu-meters for each input and for 8 outputs (you're free to map audiochannels on it)
 
 Controller_Mixer/README.md
 
 ## A³motion (The Motion-Sampler)
-The Motion-Sampler is a osc-controller. It records and playback motion made by fingertip on a touchscreen. We're using it to move audiosignals in a 3D-Soundsphere. You can hear the movement on headphones (by activating corresponding pfl) and you can hear it on the main speakers - live interaction. Also you can set parameters like lenghts or playmode, you can store 4 different movements per channel.
+The Motion-Sampler is an osc-controller. It records and plays back motions made by fingertip on a touchscreen. We're using it to move audiosignals in a 3D-Soundsphere. You can hear the movement on headphones (activate corresponding pfl) and you can hear it on the main speakers - live interaction. Also it has samplerfunctionality like looplenghts, playmode and visual feedback, it stores up to 4 different movements per channel.
 
 Controller_Motion/README.md
 
@@ -24,8 +23,11 @@ Controller_Motion/README.md
 Parts we used listed here: hardware.md
 
 ## Blackboard
-We work with a ticketboard integrated in github:
+We organize our tasks in a github-project:
 https://github.com/orgs/ambisonics-audio-association/projects/1
+
+We talk via mattermost, write us to get on board:
+r.eismann@posteo.de
 
 ## Code of conduct
 1. Don't panic
@@ -34,7 +36,7 @@ https://github.com/orgs/ambisonics-audio-association/projects/1
 4. Eastereggs are welcome!
 
 ## Git
-To be simple we decided to use centralized workflow, described here:
+We use the centralized workflow, described here:
 https://www.git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows
 
 1. Don't edit the main branch. Use pull requests instead

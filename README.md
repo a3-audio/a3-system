@@ -16,7 +16,7 @@ The DJ-Mixer is an osc-controller. It sends osc to the Audioserver in order to m
 Controller_Mixer/README.md
 
 ## A³motion (The Motion-Sampler)
-The Motion-Sampler is an osc-controller. It records and plays motion made by your fingertip on its touchscreen. We're using it to move audiosignals in a 3D-Soundsphere. You can hear the motion on headphones (activate corresponding pfl) and you can hear it on the main speakers - live interaction. Also it has samplerfunctionality like looplength, playmode, visual feedback and so on. It stores up to 4 different movements per channel.
+The Motion-Sampler is an osc-controller. It records and plays motion made by your fingertip on its touchscreen. We're using it to move audiosignals in a 3D-Soundsphere. You can hear the motion on headphones (activate corresponding pfl) and you can hear it on the main speakers - live interaction. Also it has samplerfunctionality like looplength, playmode, visual feedback and so on. It stores up to 4 different movements per channel, each on its own physical button.
 
 Controller_Motion/README.md
 

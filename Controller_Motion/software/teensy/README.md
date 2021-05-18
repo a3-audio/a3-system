@@ -14,8 +14,8 @@ Board Identifier:
 pio boards teensy
 
 Initialize Project:
-mkdir path_to_the_new_directory
-cd path_to_the_new_directory
+mkdir pathToProject
+cd pathToProject
 pio project init --board teensy41
 
 run project:

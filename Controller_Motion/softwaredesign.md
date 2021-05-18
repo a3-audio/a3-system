@@ -10,7 +10,7 @@ PLAYMODE
     - Audio conversion mode (Mono, Stereo, VBAP, Ambisonic)
     - BPM
     - Width
-    - Reverb
+    - Sides (3d-Boost)
     - Beat: musical rhythm notation (1/4, 1/8, 3/4...)
     - Bars: length of patternloop
 - STOP
@@ -37,7 +37,6 @@ SETUPMODE
     - IP-Address, PORT to receiver
     - Export settings to usb
 
-
 ## HARDWARE LAYOUT
 ```
  CH1 CH2 CH3 CH4
@@ -46,14 +45,14 @@ SETUPMODE
 |---------------|
 | W | W | W | W | <- POTIS FOR WIDTH
 |---------------|
-| R | R | R | R | <- POTIS FOR REVERB
+| S | S | S | S | <- POTIS FOR SIDES (3d-Boost)
 |---------------|
 |               |
 |               |
 |               |
 |               |
 | TOUCHDISLPAY  | <- FANCY VISUALISATION OF CHANNELMOVEMENT
-|               |
+|               |    
 |               |
 |               |
 |               |
@@ -70,7 +69,6 @@ SETUPMODE
 |---------------|
 ```
 
-
 ## DISPLAY LAYOUT
 The touchscreen displays a lot of information but it makes sense in order 
 to control and see all information on one fingertip.
@@ -80,12 +78,8 @@ to control and see all information on one fingertip.
         |              |             |              |                 
         v              v             v              v                 
 |-----------------------------------------------------------|         
-| MODE:   MONO | MODE:   STER | MODE:   VBAP | MODE:   AMBI |         
-| BEAT:   1/4  | BEAT:   1/4  | BEAT:   1/4  | BEAT:   1/4  |
-| BARS:   4    | BARS:   4    | BARS:   4    | BARS:   4    |    
 | WIDTH:  -    | WIDTH:  30°  | WIDTH:  20°  | WIDTH:  30°  |         
-| REVERB: -    | REVERB: 30%  | REVERB: 30%  | REVERB: 30%  | 
-| BPM:    128  | BPM:    128  | BPM:    128  | BPM:    128  |
+| SIDES: -     | SIDES: +30dB | SIDES: +30dB | SIDES: 30+dB | 
 |-----------------------------------------------------------|
 |                            ch1                            |          
 |                            sp2                            |
@@ -114,25 +108,26 @@ to control and see all information on one fingertip.
 |             sp5                         sp4               |
 |             ch1                         ch1               |
 |                                                           |    
-||1-------2-------3-------4-------5-------6-------7-------| | <- RUNTIME-EDIT: PATTERNLENGTH   
-||->->->->->->->->->                                      | | <- RUNTIME-EDIT: PATTERNPROGRESS
+|-----------------------------------------------------------|         
+| MODE:   MONO | MODE:   STER | MODE:   VBAP | MODE:   AMBI |         
+| LENGTH: 34   | LENGTH: 34   | LENGTH: 34   | LENGTH: 34   |
+| LOOP:   ONE  | LOOP:   LO0P | LOOP:   ONE  | LOOP:   ONE  |  
 |-----------------------------------------------------------|    
-| RCV:192.168.178.125:1234|SND:192.168.178.126:1232|BPM:128 | <- SYSTEMVIEW
+| RCV:192.168.178.125:1234|SND:192.168.178.126:1232|BPM:128 | <- SYSTEMINFO
 |-----------------------------------------------------------|
 
 TOUCHDISPLAY LEGEND:
 - INFOFIELD: COLORS - 4 channels, 4 infofield areas, 4 different colors
-- INFOFIELD: MODE - The Stereosource will be converted to Mono, Stereo, VBAP or Ambisonic
+- INFOFIELD: MODE - The Stereosource will be converted to Mono, Stereo, Ambisonic
 - INFOFIELD: WIDTH - How wide your sources spread in the sphere (exept monomode)
-- INFOFIELD: REVERB - An Ambisonic Reverb reflects from all directions (except monomode)
+- INFOFIELD: SIDES - Boost the sideinformation of a stereotrack because this information is what does the impact in ambisonic - concider it as 3d-boost
 - INFOFIELD: BPM - Calculated BPM for each Track, cool to run musicious motionpatterns
 - INFOFIELD: BEAT - Map motionpatterns on estimated BPM
-- INFOFIELD: BARS - Lenght of motionsequenz
+- INFOFIELD: BARS - Lenght of motionsequence
 
 - EAGLEVIEW: SP - The speakerposition
 - EAGLEVIEW: CH - The channelposition (channels are colorcoded)
 - EAGLEVIEW: LR - The width of a stereosource
-- EAGLEVIEW: .. - These thin colored lines connecting straight to corresponding infofield
 
 - SYSTEMVIEW: RCV - This device OSC input
 - SYSTEMVIEW: SND - This device OSC output
@@ -144,7 +139,7 @@ TOUCHDISPLAY LEGEND:
 ### PLAYMODE: PLAY
 - Encoder 1-4 Push: Toggle RUNTIME-EDIT Mode for this channel
 - Encoder 1-4 Double Push: Enter Setup Page 1-4
-- Buttonmatrix Push: play pattern
+- Buttonmatrix Push: play/pause pattern
 - Buttonmatrix Double Push: toggle repeat 
 
 ### PLAYMODE: RUNTIME-EDIT
@@ -159,10 +154,6 @@ TOUCHDISPLAY LEGEND:
 - Touchdisplay onRelease: Plays Motion from cachefile
 - Buttonmatrix long press: Stores cachefile to BUTTON
 - Encorder Double Push: Exit to PLAYMODE
-
-### PLAYMODE: STOP
-- Somewhere should be a resetbutton, or steady scenes in patterns?
-
 
 ## SETUPMODE
 Encoder 1-4: Double-Push. 
@@ -349,28 +340,28 @@ Stored informations:
 If folder smooth contains a .ini file and subfolders, its a bank.
 If it contains .ini file and .ptn files, its a row.
 
-└── glitter
-└── smooth
-    ├── smooth.ini
-    ├── Antropofagia
+└── playlist1
+└── playlist2
+    ├── playlist1.ini
+    ├── song1
     │   ├── layout.ini
     │   ├── drop.ptn
     │   ├── intro.ptn
     │   ├── steady.ptn
     │   └── woof.ptn
-    ├── Kaluma
+    ├── song2
     │   ├── layout.ini
     │   ├── drop.ptn
     │   ├── intro.ptn
     │   ├── steady.ptn
     │   └── woof.ptn
-    ├── LostMemory
+    ├── song3
     │   ├── layout.ini
     │   ├── drop.ptn
     │   ├── intro.ptn
     │   ├── steady.ptn
     │   └── woof.ptn
-    └── SixthSense
+    └── song4
         ├── layout.ini
         ├── drop.ptn
         ├── intro.ptn
@@ -400,21 +391,3 @@ You can store motions in pattern, pattern in rows and rows in banks banks.
 - IP-Address and Port audioengine
 - Export settings to usb
 
-## OSC
-``` 
-# TRANSMIT
-/ambijockey/moc/ch/1-4/mode/ [0-3] (Mono, Stereo, VBAP, Ambisonic)
-/ambijockey/moc/ch/1-4/motion/ xy [0-1]
-/ambijockey/moc/ch/1-4/width/ [0-1]
-/ambijockey/moc/ch/1-4/reverb/ [0-1]
-
-/ambijockey/moc/speakersetup/n [1-24]
-/ambijockey/moc/speakersetup/n/azimuth [-180-180]
-/ambijockey/moc/speakersetup/n/Distance [m]
-
-# RECEIVE
-/ambijockey/moc/ch/1-4/motion/ xy [0-1]
-/ambijockey/moc/ch/1-4/vu/ [0-1]
-/ambijockey/moc/ch/1-4/bpm/ [80-180]
-/ambijockey/moc/master/bpm/ [80-180]
-```

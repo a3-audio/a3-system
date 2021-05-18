@@ -1,3 +1,0 @@
-copy moc_tty.sh to:
-/etc/profile.d/moc_tty.sh
-cp .xinitrc ~/.xinitrc

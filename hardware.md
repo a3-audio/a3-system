@@ -1,4 +1,4 @@
-# Hardware
+# A³pandemics Hardware
 - Die Stecker die wie fur die Potis etc. wollen sind **JST XH 2.54mm**
 - [WS2811 NeoPixel LED Driver Chip](https://www.adafruit.com/product/1378)
 - [NeoPixel 5mm Through-Hole LED](https://www.adafruit.com/product/1938)

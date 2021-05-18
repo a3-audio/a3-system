@@ -6,7 +6,7 @@
 Make venues and artists fit for the future of audioplayback. That means 3D-Sound and therefore compatibility to all audioformats, easy to use spatialization interface, and most flexibility at a price for everybody. Our first setup consists of three devices:
 
 ## The Audioserver
-The Audioserver is processing the analog audio, calculates the 3d-audiosphere and is remotecontrolled by osc. Also it sends osc data with peak and rms information for vu-meters to the mixer. 
+The Audioserver is processing the analog audio, calculates the 3D-Sound and is remotecontrolled by osc. Also it sends osc data with peak and rms information for vu-meters to the mixer. 
 
 Server/README.md
 

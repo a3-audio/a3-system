@@ -21,7 +21,7 @@ The Motion-Sampler is a osc-controller. It records and playback motion made by f
 Controller_Motion/README.md
 
 ## Hardware
-hardware.md
+Parts we used are listed here: hardware.md
 
 ## Blackboard
 We work with an agile Ticketboard integrated in github "projects".
@@ -33,17 +33,16 @@ https://github.com/orgs/ambisonics-audio-association/projects/1
 1. Don't panic
 2. care the docs
 3. keep the Code clean
-4. Hinterlasse nichts, ausser deiner Wurst.
-5. Easter Eggs are welcome!
+4. Easter Eggs are welcome!
 
 
 ## Git
 To be simple we decided to use centralized workflow, described here:
 https://www.git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows
 
-1. Der Main Branch darf nicht direkt bearbeitet werden, die edits sollten immer in einem seperaten Branch gemacht werden und dann über ein pull requests zusammen gefügt werden. Die Ausnahmen bilden das [Blackboard](#Blackboard) in dieser README und die Korrektur von offensichtlichen Rechtschreibfehlern in der Doku.
+1. Don't edit the main branch. Use pull requests instead
 
-2. wenn du dir ein eigenes Setup bauen willst, erstelle dir ein Forck.
+2. If you need an own different setup forck this repo
 
 3. Clone this repo:
 git@github.com:ambisonics-audio-association/Ambijockey.git

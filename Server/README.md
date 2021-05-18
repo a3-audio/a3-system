@@ -1,4 +1,4 @@
-# Ambijocky Server README
+# A³core
 
 ## Static IP-Addresses
 aaa-core 192.168.43.50 (audioserver)

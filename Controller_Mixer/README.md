@@ -1,4 +1,4 @@
-# MIXER CONTROLLER
+# A³mix
 ## Setup
 ### teensy
 software/teensy/src/main.cpp << flash it on your teensy 4.1

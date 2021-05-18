@@ -2,68 +2,8 @@
 this version is just a steady hardcoded version of osc-router. It will
 transform into more dynamic code with external configfiles for osc in-
 and output mappings.
-
-TODO we need to talk again about the OSC addresses convention
-suggestion by Jendrik:
-template: /ambiJocky/ch/{#}/{contoler}/{funktion}/.../{args}
-exampel: /ambiJocky/ch/1/mixer/eq/mid/[0-1]
-
-TODO kick out re.match >> if parm == "xyz" etc.
-
 For now it takes OSC-Adresses, interpolates values and sends them to
 destinations:
-
-SOURCE                          >>  DESTINATION
-----------------------------------------------------------------------
-CONTROLLER_MIXER POTIS              REAPER
-/ambijockey/mic/ch/1-4/gain         (Channel 1 gain)     >>  /track/15/ie/gain
-/ambijockey/mic/ch/1-4/hi           (Channel 1 hi)       >>  /track/15/fxeq/hishelf/gain
-/ambijockey/mic/ch/1-4/mid          (Channel 1 mid)      >>  /track/15/fxeq/band/0/gain
-/ambijockey/mic/ch/1-4/lo           (Channel 1 low)      >>  /track/15/fxeq/loshelf/gain
-/ambijockey/mic/ch/1-4/volume       (Channel 1 volume)   >>  /track/14/volume
-
-CONTROLLER_MIXER POTIS              REAPER
-/ambijockey/mic/mater/volume        (Master volume)      >>  /master/volume
-/ambijockey/mic/mater/hi            (Master hi)          >>  /track/7/fxeq/hishelf/gain
-/ambijockey/mic/mater/mid           (Master mid)         >>  /track/7/fxeq/band/0/gain
-/ambijockey/mic/mater/lo            (Master low)         >>  /track/7/fxeq/loshelf/gain
-
-CONTROLLER_MIXER BUTTONS            REAPER
-/ambijockey/mic/ch/1-4/pfl          (Channel 1 pfl)
-/ambijockey/mic/ch/master/pfl
-
-CONTROLLER_MOTION                   IEM COORDINATECONVERTER HOSTET BY REAPER
-/ambijockey/motion/ch/1/pos/xyz        >>  /CoordinateConverter/1/xPos
-/ambijockey/motion/ch/2/pos/xyz            /CoordinateConverter/1/yPos
-/ambijockey/motion/ch/3/pos/xyz            /CoordinateConverter/1/zPos
-/ambijockey/motion/ch/4/pos/xyz            ... same for 2-4
-
-/ambijockey/moc/ch/1-4/width/ [0-1]
-/ambijockey/moc/ch/1-4/reverb/ [0-1]
-/ambijockey/moc/ch/1-4/mode/ [0-3] (Mono, Stereo, VBAP, Ambisonic)
-
-# RECEIVE
-/ambijockey/moc/ch/1-4/motion/ xy [0-1]
-/ambijockey/moc/ch/1-4/vu/ [0-1]
-/ambijockey/moc/ch/1-4/bpm/ [80-180]
-/ambijockey/moc/master/bpm/ [80-180]
-
-TODO rename ctrlMotion/track/1/radius to /ambiJocky/motion/ch/1/stereo/width
-/ctrlMotion/track/1/radius      >>  /CoordinateConverter/1/radius
-/ctrlMotion/track/2/radius      >>  /CoordinateConverter/2/radius
-/ctrlMotion/track/3/radius      >>  /CoordinateConverter/3/radius
-/ctrlMotion/track/4/radius      >>  /CoordinateConverter/4/radius
-
-IEM COORDINATECONVERTER             CONTROLLER_MOTION
-/CoordinateConverter/1/xPos     >>  /ambiJocky/motion/ch/1/pos/xyz [0]
-/CoordinateConverter/1/yPos     >>  /ambiJocky/motion/ch/1/pos/xyz [1]
-/CoordinateConverter/2/xPos     >>  /ambiJocky/motion/ch/2/pos/xyz [0]
-/CoordinateConverter/2/yPos     >>  /ambiJocky/motion/ch/2/pos/xyz [1]
-/CoordinateConverter/3/xPos     >>  /ambiJocky/motion/ch/3/pos/xyz [0]
-/CoordinateConverter/3/yPos     >>  /ambiJocky/motion/ch/3/pos/xyz [1]
-/CoordinateConverter/4/xPos     >>  /ambiJocky/motion/ch/4/pos/xyz [0]
-/CoordinateConverter/4/yPos     >>  /ambiJocky/motion/ch/4/pos/xyz [1]
-
 """
 
 import argparse

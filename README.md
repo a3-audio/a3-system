@@ -41,4 +41,4 @@ We use the centralized workflow, description here:
 https://www.git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows
 
 1. Don't edit the main branch. Use pull requests instead (if nobody reacts we're probably still mixing - find us on stage)
-2. If you need an own different setup forck this repo
+2. If you need an own different setup, forck this repo

@@ -29,9 +29,9 @@ https://github.com/orgs/ambisonics-audio-association/projects/1
 
 ## Code of conduct
 1. Don't panic
-2. care the docs
-3. keep the Code clean
-4. Easter Eggs are welcome!
+2. Care the docs
+3. Keep the code clean
+4. Eastereggs are welcome!
 
 ## Git
 To be simple we decided to use centralized workflow, described here:

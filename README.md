@@ -27,8 +27,14 @@ Parts we used listed here: hardware.md
 We organize our tasks in a github-project:
 https://github.com/orgs/ambisonics-audio-association/projects/1
 
-We talk via mattermost, write us to get involved:
+We talk via mattermost, and keep data in a seafilecloud, write us to get involved:
 r.eismann@posteo.de
+
+Mattermost:
+talk.lilbits.de/ambisonics
+
+Seafile:
+tinycloud.lilbits.de/Media
 
 ## Code of conduct
 1. Don't panic

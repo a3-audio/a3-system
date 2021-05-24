@@ -16,29 +16,6 @@ software/teensy/src/main.cpp << flash it on your teensy 4.1
 ## Start
 mic.py
 
-## OSC
-``` 
-# TRANSMIT
-/ambijockey/mic/ch/1-4/pfl
-/ambijockey/mic/ch/1-4/gain
-/ambijockey/mic/ch/1-4/hi
-/ambijockey/mic/ch/1-4/mid
-/ambijockey/mic/ch/1-4/lo
-/ambijockey/mic/ch/1-4/volume
-/ambijockey/mic/ch/1-4/m1
-/ambijockey/mic/ch/1-4/m2
-/ambijockey/mic/ch/1-4/m3
-
-/ambijockey/mic/ch/master/pfl
-/ambijockey/mic/ch/master/volume
-/ambijockey/mic/ch/master/booth
-/ambijockey/mic/ch/master/phMix
-/ambijockey/mic/ch/master/phVol
-
-# RECEIVE
-/vu/01-04 << input vu ff (peak/rms)
-/vu/05-12 << output vu ff (peak/rms)
-```
 
 ## Hardware
 - powered with PoE -> downstep to 3V inside

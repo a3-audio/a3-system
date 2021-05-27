@@ -36,7 +36,7 @@ receives    name
 [17-32]     reverb(ph)          
 ```
 
-## channelbus (per channel)(
+## channelbus (per channel)
 ```
 receives    name                
 --------------------------------
@@ -53,7 +53,7 @@ receives    name
 [25-40]     b-format(preF)      
 ```
 
-## basechannels
+## basechannels (per channel)
 ```
 receives    		name                
 --------------------------------

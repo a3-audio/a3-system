@@ -27,11 +27,9 @@ Parts we used listed [here](https://github.com/ambisonics-audio-association/Ambi
 ## Blackboard
 We organize our tasks in a [github-project](https://github.com/orgs/ambisonics-audio-association/projects/1)
 
-We talk via [mattermost](https://talk.lilbits.de/ambisonics), and keep data in a seafilecloud, write us to get involved:
+We talk via [mattermost](https://talk.lilbits.de/ambisonics), and keep data in a seafilecloud, [write us](mailto:r.eismann@posteo.de) to get involved.
 
-[r.eismann@posteo.de](mailto:r.eismann@posteo.de)
-
-We put Mediafiles to [Seafile](https://tinycloud.lilbits.de/Media)
+We put Mediafiles to [Seafile](https://tinycloud.lilbits.de/Media), [write us](mailto:r.eismann@posteo.de) to register an account.
 
 ## Code of conduct
 1. Don't panic

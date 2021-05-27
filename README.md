@@ -29,7 +29,7 @@ We organize our tasks in a [github-project](https://github.com/orgs/ambisonics-a
 
 We talk via [mattermost](https://talk.lilbits.de/ambisonics), and keep data in a seafilecloud, [write us](mailto:r.eismann@posteo.de) to get involved.
 
-We put Mediafiles to [Seafile](https://tinycloud.lilbits.de/Media), [write us](mailto:r.eismann@posteo.de) to register an account.
+We put Mediafiles to [Seafile](https://tinycloud.lilbits.de/Media).
 
 ## Code of conduct
 1. Don't panic

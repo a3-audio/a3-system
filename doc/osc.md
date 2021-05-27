@@ -2,8 +2,8 @@
 All parameters are normalized to float [range 0-1] 
 
 TODO talk about OSC conventions / suggestion by Jendrik:
-template: /ambijockey/ch/{#}/{controller}/{function}/.../{args}
-example: /ambijockey/ch/1/mixer/eq/mid/[0-1]
+- template: /ambijockey/ch/{#}/{controller}/{function}/.../{args}
+- example: /ambijockey/ch/1/mixer/eq/mid/[0-1]
 
 ## A³core (server.py translates incoming osc and sends to daw)
 

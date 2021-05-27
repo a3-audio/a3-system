@@ -21,10 +21,10 @@ TODO talk about OSC conventions / suggestion by Jendrik:
 | /ambijockey/mic/master/phVol | /track/i/volume | Phones volume |
 | /ambijockey/mic/ch/1-4/pfl | /track/i/mute | Channel i pfl (even/odd) |
 | /ambijockey/mic/ch/master/pfl | /track/i/mute | Master pfl (even/odd) |
-| /ambijockey/moc/ch/1-4/width | /track/i/StereoEncoder/width | Range -360|360 |
+| /ambijockey/moc/ch/1-4/width | /track/i/StereoEncoder/width | Range -360 / 360 |
 | /ambijockey/moc/ch/1-4/sides | /track/i/sides | Channel i sides |
-| /ambijockey/moc/ui/azimuth | [StereoEncoderPort]/azimuth | Range -180|180 |
-| /ambijockey/moc/ui/elevation | [StereoEncoderPort]/elevation | Range -180|180 |
+| /ambijockey/moc/ui/azimuth | [StereoEncoderPort]/azimuth | Range -180 / 180 |
+| /ambijockey/moc/ui/elevation | [StereoEncoderPort]/elevation | Range -180 / 180 |
 
 
 ## A³mic (mic.py sends potis and knobs receives vu-meters)

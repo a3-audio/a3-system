@@ -29,7 +29,7 @@ We organize our tasks in a [github-project](https://github.com/orgs/ambisonics-a
 
 We talk via [mattermost](https://talk.lilbits.de/ambisonics), and keep data in a seafilecloud, write us to get involved:
 
-[r.eismann@posteo.de](mailto:r.eismann@posteo.de?subject=register mattermost)
+[r.eismann@posteo.de](mailto:r.eismann@posteo.de)
 
 We put Mediafiles to [Seafile](https://tinycloud.lilbits.de/Media)
 

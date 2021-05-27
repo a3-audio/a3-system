@@ -46,6 +46,6 @@ example: /ambijockey/ch/1/mixer/eq/mid/[0-1]
 - /vu/rcv/05-12 << output vu ff (peak/rms)
 
 ## A³moc (serialAdapter.py)
-/ambijockey/moc/ch/1-4/motion/ xy [0-1]
-/ambijockey/moc/ch/1-4/width/ [0-1]
-/ambijockey/moc/ch/1-4/sides/ [0-1]
+- /ambijockey/moc/ch/1-4/motion/ xy [0-1]
+- /ambijockey/moc/ch/1-4/width/ [0-1]
+- /ambijockey/moc/ch/1-4/sides/ [0-1]

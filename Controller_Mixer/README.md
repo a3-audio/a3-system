@@ -1,7 +1,7 @@
 # A³mix
 ## Setup
 ### teensy
-software/teensy/src/main.cpp << flash it on your teensy 4.1
+software/teensy/src/main.cpp << flash it on your teensy 4.1 (howto: /doc/teensy_flash_fw.md)
 
 ### Raspberry
 - install raspbian
@@ -15,7 +15,6 @@ software/teensy/src/main.cpp << flash it on your teensy 4.1
 
 ## Start
 mic.py
-
 
 ## Hardware
 - powered with PoE -> downstep to 3V inside
@@ -37,11 +36,10 @@ mic.py
     - 1 hc4051
         function: masterchannel-control
         potis
-        - master-volume
-        - booth-volume
+        - master volume
+        - booth volume
         - phones mix
-        - no headphone volume here!?:
-            we feed line-level to builtin headphone-amplifier and control it analog
+        - headphones volume
     - 5 led-buttons for heapdphones prelisten function (pfl)
     - 1 NeoPixel-strip (ws2811 led-controller)
         - 3 leds mode-status
@@ -51,10 +49,12 @@ mic.py
         - stereo
         - 3d
     - 1 8x32 led-matrix for output-vu
-- Open Sound Control (osc)
-    - receives osc messages from 
-        - aaa-core/vu-meter.scd 
-        - function: vu-meters
-    - sends osc messages to 
-        - aaa-core/server.py
-        - function: daw-controller, 4ch dj-mixer style
+
+## Open Sound Control (osc)
+- receives osc messages from 
+	- aaa-core/vu-meter.scd 
+    - function: vu-meters
+- sends osc messages to 
+    - aaa-core/server.py
+    - function: daw-controller, 4ch dj-mixer style
+- messages /doc/osc.md

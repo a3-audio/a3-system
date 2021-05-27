@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "doc/osc.md",
+            "file": "Server/signalflow.md",
             "mode": "source"
           }
         }
@@ -68,7 +68,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "doc/osc.md",
+                "file": "Server/signalflow.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -88,6 +88,11 @@
   },
   "active": "645eb7dc8c29c385",
   "lastOpenFiles": [
+    "Server/signalflow.md",
+    "Server/README.md",
+    "Controller_Motion/README.md",
+    "README.md",
+    "Controller_Mixer/README.md",
     "doc/osc.md",
     "Controller_Motion/README.MD"
   ]

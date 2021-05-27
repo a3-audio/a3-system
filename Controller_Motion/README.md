@@ -32,7 +32,9 @@ software/teensy/src/main.cpp << flash it on your teensy 4.1
         function: Buttonmatrix
     - 1 NeoPixel-strip (ws2811 led-controller)
         - 16 x status leds buttonmatrix
-- Open Sound Control (osc)
-    - sends osc messages to 
-        - aaa-core/encoder 1-4
-        - function: asimuth
+
+## Open Sound Control (osc)
+- sends osc messages to 
+    - aaa-core/encoder 1-4
+    - function: asimuth
+- messages /doc/osc.md

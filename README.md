@@ -28,7 +28,8 @@ Parts we used listed [here](https://github.com/ambisonics-audio-association/Ambi
 We organize our tasks in a [github-project](https://github.com/orgs/ambisonics-audio-association/projects/1)
 
 We talk via [mattermost](https://talk.lilbits.de/ambisonics), and keep data in a seafilecloud, write us to get involved:
-r.eismann@posteo.de
+
+[r.eismann@posteo.de](mailto:r.eismann@posteo.de?subject=register mattermost)
 
 We put Mediafiles to [Seafile](https://tinycloud.lilbits.de/Media)
 

@@ -28,22 +28,22 @@ example: /ambijockey/ch/1/mixer/eq/mid/[0-1]
 
 
 ## A³mic (mic.py sends potis and knobs receives vu-meters)
-/ambijockey/mic/ch/1-4/pfl
-/ambijockey/mic/ch/1-4/gain
-/ambijockey/mic/ch/1-4/hi
-/ambijockey/mic/ch/1-4/mid
-/ambijockey/mic/ch/1-4/lo
-/ambijockey/mic/ch/1-4/volume
-/ambijockey/mic/ch/1-4/m1
-/ambijockey/mic/ch/1-4/m2
-/ambijockey/mic/ch/1-4/m3
-/ambijockey/mic/ch/master/pfl
-/ambijockey/mic/ch/master/volume
-/ambijockey/mic/ch/master/booth
-/ambijockey/mic/ch/master/phMix
-/ambijockey/mic/ch/master/phVol
-/vu/rcv/01-04 << input vu ff (peak/rms)
-/vu/rcv/05-12 << output vu ff (peak/rms)
+- /ambijockey/mic/ch/1-4/pfl
+- /ambijockey/mic/ch/1-4/gain
+- /ambijockey/mic/ch/1-4/hi
+- /ambijockey/mic/ch/1-4/mid
+- /ambijockey/mic/ch/1-4/lo
+- /ambijockey/mic/ch/1-4/volume
+- /ambijockey/mic/ch/1-4/m1
+- /ambijockey/mic/ch/1-4/m2
+- /ambijockey/mic/ch/1-4/m3
+- /ambijockey/mic/ch/master/pfl
+- /ambijockey/mic/ch/master/volume
+- /ambijockey/mic/ch/master/booth
+- /ambijockey/mic/ch/master/phMix
+- /ambijockey/mic/ch/master/phVol
+- /vu/rcv/01-04 << input vu ff (peak/rms)
+- /vu/rcv/05-12 << output vu ff (peak/rms)
 
 ## A³moc (serialAdapter.py)
 /ambijockey/moc/ch/1-4/motion/ xy [0-1]

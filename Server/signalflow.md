@@ -55,12 +55,14 @@ receives    name
 
 ## basechannels
 ```
-input       ([1,2], hw-in)
-mid         ([1],   input)
-side        ([2],   input)
-m/s         ([1,2]  mid, side)
-mono        ([1,2]  m/s)
-subwoofer   ([1,2], m/s)
-stereo      ([1,2], m/s)
-b-format    ([1,2], m/s)
+receives    		name                
+--------------------------------
+([1,2], hw-in)     	input       
+([1],   input)     	mid         
+([2],   input)     	side        
+([1,2]  mid, side) 	m/s         
+([1,2]  m/s)       	mono        
+([1,2], m/s)       	sub   
+([1,2], m/s)       	stereo      
+([1,2], m/s)       	b-format    
 ```

@@ -18,7 +18,7 @@ const int npxl_leds = 48;
 
 // last sent states (potis)
 const int num_tracks = 5;
-const int num_pots = 5;
+const int num_pots = 8;
 int pots_sent[num_tracks][num_pots];
 int buttons_last[num_tracks];
 
@@ -32,11 +32,25 @@ int vupxlstrips[4][9] = {
   {47,46,45,44,43,42,41,40,39}
 };
 
+int modePxl[4][3] = {
+  {0,1,2},
+  {12,13,14},
+  {24,25,26},
+  {36,37,38}
+};
+
 LedControl lc=LedControl(18,14,15,4);
 
 // NeoPixel Arrays
 String vuVars[4] = { "VU01", "VU02", "VU03", "VU04" };
 String vuVarsM[8] = { "VU05", "VU06", "VU07", "VU08", "VU09", "VU10", "VU11", "VU12" };
+
+String modeInput[4][3] = {
+{ "M11", "M12", "M13"},
+{ "M21", "M22", "M23"},
+{ "M31", "M32", "M33"},
+{ "M41", "M42", "M43"}
+};
 
 void setup() {
 
@@ -82,13 +96,13 @@ void setup() {
 
 void loop(){
     // hc4051 reading potis
-    for (byte pot=0 ; pot <= 4; pot++)     
+    for (byte pot=0 ; pot <= 7; pot++)     
     {
         // hc4051 pinselector abc (binary)
         for (int i=0; i<3; i++) {     
             digitalWrite(selectPins[i], pot & (1 << i)?HIGH:LOW); // select hc4051
         }
-        delayMicroseconds(50);
+        delayMicroseconds(10);
         // filter analog inputs
         for (int track=0 ; track < 5; track++) {
             int analog = analogRead(multiplexer[track]);
@@ -96,7 +110,7 @@ void loop(){
 
             // send osc when difference larger than noise on
             // last bits
-            if(abs(difference) > 6) {
+            if(abs(difference) > 8) {
                 pots_sent[track][pot] = analog;
                 float sendValue = float(analog) / 1023.f;
                 Serial.print("T");
@@ -111,7 +125,7 @@ void loop(){
             }
         }
     } 
-    delayMicroseconds(50);
+    delayMicroseconds(10);
 
     // Buttons
     for(int track = 0 ; track < num_tracks ; ++track) {
@@ -175,7 +189,53 @@ void loop(){
         Serial.readStringUntil('\n');
       }
 
-      for (int i =0; i < 4; i++) { // filter serial inputstream VU01-VU04
+      uint32_t modeColorOn;
+      uint32_t modeColorOff;
+      modeColorOn = pixels.Color(0,0,255);
+      modeColorOff = pixels.Color(0,0,0);
+      String lastModeCh1 = "M13";
+      String lastModeCh2 = "M23";
+      String lastModeCh3 = "M33";
+      String lastModeCh4 = "M43";
+
+      	for (int j = 0; j < 4; j++){
+	  if(command.startsWith(modeInput[0][j])) {
+            pixels.setPixelColor(modePxl[0][j], modeColorOn);
+	    lastModeCh1 = modeInput[0][j];
+          }
+	  if (lastModeCh1 != modeInput[0][j]){
+            pixels.setPixelColor(modePxl[0][j], modeColorOff);
+          }
+	}
+      	for (int j = 0; j < 4; j++){
+	  if(command.startsWith(modeInput[1][j])) {
+            pixels.setPixelColor(modePxl[1][j], modeColorOn);
+	    lastModeCh2 = modeInput[1][j];
+          }
+          if (lastModeCh2 != modeInput[1][j]){
+            pixels.setPixelColor(modePxl[1][j], modeColorOff);
+          }
+	}
+      	for (int j = 0; j < 4; j++){
+	  if(command.startsWith(modeInput[2][j])) {
+            pixels.setPixelColor(modePxl[2][j], modeColorOn);
+	    lastModeCh3 = modeInput[2][j];
+          }
+          if (lastModeCh3 != modeInput[2][j]){
+            pixels.setPixelColor(modePxl[2][j], modeColorOff);
+          }
+	}
+      	for (int j = 0; j < 4; j++){
+	  if(command.startsWith(modeInput[3][j])) {
+            pixels.setPixelColor(modePxl[3][j], modeColorOn);
+	    lastModeCh4 = modeInput[3][j];
+          }
+          if (lastModeCh4 != modeInput[3][j]){
+            pixels.setPixelColor(modePxl[3][j], modeColorOff);
+          }
+	}
+
+      for (int i = 0; i < 4; i++) { // filter serial inputstream VU01-VU04
         if(command.startsWith(vuVars[i])) {
           String peak = Serial.readStringUntil(',');
           String rms = Serial.readStringUntil('\n');

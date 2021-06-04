@@ -10,7 +10,7 @@ const int ledPin_2 = 38;
 const int ledPin_3 = 39;
 const int ledPin_4 = 40;
 const int ledPin_5 = 41;
-const int pflButtons[5] = {33, 34, 35, 36, 37}; // PFL-Button 
+const int pflButtons[5] = {33, 34, 35, 36, 37}; // PFL-Button
 const int multiplexer[5] = {5, 6, 7, 8, 9}; // Poti pins
 const int selectPins[3] = {30, 31, 32}; // Multiplexer abc
 const int npxl_pin = 13;
@@ -38,19 +38,14 @@ int modePxl[4][3] = {
   {24,25,26},
   {36,37,38}
 };
+const uint32_t modeColorOn = pixels.Color(0,0,255);
+const uint32_t modeColorOff = pixels.Color(0,0,0);
 
 LedControl lc=LedControl(18,14,15,4);
 
 // NeoPixel Arrays
 String vuVars[4] = { "VU01", "VU02", "VU03", "VU04" };
 String vuVarsM[8] = { "VU05", "VU06", "VU07", "VU08", "VU09", "VU10", "VU11", "VU12" };
-
-String modeInput[4][3] = {
-{ "M11", "M12", "M13"},
-{ "M21", "M22", "M23"},
-{ "M31", "M32", "M33"},
-{ "M41", "M42", "M43"}
-};
 
 void setup() {
 
@@ -71,8 +66,7 @@ void setup() {
     pixels.clear();
     pixels.setBrightness(10);
 
-// Configure digital pins
-    
+   // Configure digital pins
     for(int track = 0 ; track < num_tracks ; ++track) {
         pinMode(pflButtons[track], OUTPUT);
     }
@@ -189,51 +183,19 @@ void loop(){
         Serial.readStringUntil('\n');
       }
 
-      uint32_t modeColorOn;
-      uint32_t modeColorOff;
-      modeColorOn = pixels.Color(0,0,255);
-      modeColorOff = pixels.Color(0,0,0);
-      String lastModeCh1 = "M13";
-      String lastModeCh2 = "M23";
-      String lastModeCh3 = "M33";
-      String lastModeCh4 = "M43";
+      if(command.startsWith("M")) {
+        // parse the channel and pressed mode button index from command
+        int channel = command.charAt(1) - '1';
+        int mode_button_index = command.charAt(2) - '1';
 
-      	for (int j = 0; j < 4; j++){
-	  if(command.startsWith(modeInput[0][j])) {
-            pixels.setPixelColor(modePxl[0][j], modeColorOn);
-	    lastModeCh1 = modeInput[0][j];
-          }
-	  if (lastModeCh1 != modeInput[0][j]){
-            pixels.setPixelColor(modePxl[0][j], modeColorOff);
-          }
-	}
-      	for (int j = 0; j < 4; j++){
-	  if(command.startsWith(modeInput[1][j])) {
-            pixels.setPixelColor(modePxl[1][j], modeColorOn);
-	    lastModeCh2 = modeInput[1][j];
-          }
-          if (lastModeCh2 != modeInput[1][j]){
-            pixels.setPixelColor(modePxl[1][j], modeColorOff);
-          }
-	}
-      	for (int j = 0; j < 4; j++){
-	  if(command.startsWith(modeInput[2][j])) {
-            pixels.setPixelColor(modePxl[2][j], modeColorOn);
-	    lastModeCh3 = modeInput[2][j];
-          }
-          if (lastModeCh3 != modeInput[2][j]){
-            pixels.setPixelColor(modePxl[2][j], modeColorOff);
-          }
-	}
-      	for (int j = 0; j < 4; j++){
-	  if(command.startsWith(modeInput[3][j])) {
-            pixels.setPixelColor(modePxl[3][j], modeColorOn);
-	    lastModeCh4 = modeInput[3][j];
-          }
-          if (lastModeCh4 != modeInput[3][j]){
-            pixels.setPixelColor(modePxl[3][j], modeColorOff);
-          }
-	}
+        // loop over all buttons for this channel and toggle LED accordingly
+        for (int button = 0; button < 3; ++button) {
+          if(button == mode_button_index)
+            pixels.setPixelColor(modePxl[channel][button], modeColorOn);
+          else
+            pixels.setPixelColor(modePxl[channel][button], modeColorOff);
+        }
+      }
 
       for (int i = 0; i < 4; i++) { // filter serial inputstream VU01-VU04
         if(command.startsWith(vuVars[i])) {

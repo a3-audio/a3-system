@@ -318,15 +318,19 @@ def poti_handler(address: str,
         if poti == "volume":
             val = numpy.interp(value, [0, 1], [0.01, 1])
             reaper.send_message("/track/" + masterbus + "/volume", val)
-        if poti == "hi":
-            val = numpy.interp(value, [0, 1], [0.01, 0.5])
-            reaper.send_message("/track/" + masterbus + "/fxeq/hishelf/gain", val)
-        if poti == "mid":
-            val = numpy.interp(value, [0, 1], [0.01, 0.5])
+        if poti == "booth":
+            val = numpy.interp(value, [0, 1], [0.01, 1])
+            reaper.send_message("/track/1/volume", val)
+        if poti == "phMix":
+            val = numpy.interp(value, [0, 1], [0.01, 1])
             reaper.send_message("/track/22/volume", val)
-        if poti == "lo":
-            val = numpy.interp(value, [0, 1], [0.01, 0.5])
-            reaper.send_message("/track/" + masterbus + "/fxeq/loshelf/gain", val)
+            reaper.send_message("/track/21/volume", 1 - val)
+            reaper.send_message("/track/20/volume", 1 - val)
+            reaper.send_message("/track/19/volume", 1 - val)
+            reaper.send_message("/track/18/volume", 1 - val)
+        if poti == "phVol":
+            val = numpy.interp(value, [0, 1], [0.01, 1])
+            reaper.send_message("/track/14/volume", val)
 
 
 def button_handler(address: str,

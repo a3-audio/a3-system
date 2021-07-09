@@ -130,18 +130,18 @@ def serial_handler(): # dispatch from serial strem and send to osc
                 if potNr == "5":
                     osc_router.send_message("/ambijockey/mic/ch/1/volume/", value)
                     print("T" + track + " P" + potNr + " " + value)
-                if potNr == "6":
-                    osc_router.send_message("/ambijockey/mic/ch/1/m1/", value)
-                    sendData("M11,")
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "7":
-                    osc_router.send_message("/ambijockey/mic/ch/1/m2/", value)
-                    sendData("M12,")
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "8":
-                    osc_router.send_message("/ambijockey/mic/ch/1/m3/", value)
-                    sendData("M13,")
-                    print("T" + track + " P" + potNr + " " + value)
+                #if potNr == "6":
+                    #osc_router.send_message("/ambijockey/mic/ch/1/m1/", value)
+                    #sendData("M11,")
+                    #print("T" + track + " P" + potNr + " " + value)
+                #if potNr == "7":
+                    #osc_router.send_message("/ambijockey/mic/ch/1/m2/", value)
+                    #sendData("M12,")
+                    #print("T" + track + " P" + potNr + " " + value)
+                #if potNr == "8":
+                    #osc_router.send_message("/ambijockey/mic/ch/1/m3/", value)
+                    #sendData("M13,")
+                    #print("T" + track + " P" + potNr + " " + value)
             if track == "2":
                 if potNr == "1":
                     osc_router.send_message("/ambijockey/mic/ch/2/gain/", value)
@@ -158,18 +158,18 @@ def serial_handler(): # dispatch from serial strem and send to osc
                 if potNr == "5":
                     osc_router.send_message("/ambijockey/mic/ch/2/volume/", value)
                     print("T" + track + " P" + potNr + " " + value)
-                if potNr == "6":
-                    osc_router.send_message("/ambijockey/mic/ch/2/m1/", value)
-                    sendData("M21,")
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "7":
-                    osc_router.send_message("/ambijockey/mic/ch/2/m2/", value)
-                    sendData("M22,")
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "8":
-                    osc_router.send_message("/ambijockey/mic/ch/2/m3/", value)
-                    sendData("M23,")
-                    print("T" + track + " P" + potNr + " " + value)
+                #if potNr == "6":
+                    #osc_router.send_message("/ambijockey/mic/ch/2/m1/", value)
+                    #sendData("M21,")
+                    #print("T" + track + " P" + potNr + " " + value)
+                #if potNr == "7":
+                    #osc_router.send_message("/ambijockey/mic/ch/2/m2/", value)
+                    #sendData("M22,")
+                    #print("T" + track + " P" + potNr + " " + value)
+                #if potNr == "8":
+                    #osc_router.send_message("/ambijockey/mic/ch/2/m3/", value)
+                    #sendData("M23,")
+                    #print("T" + track + " P" + potNr + " " + value)
             if track == "3":
                 if potNr == "1":
                     osc_router.send_message("/ambijockey/mic/ch/3/gain/", value)
@@ -186,18 +186,18 @@ def serial_handler(): # dispatch from serial strem and send to osc
                 if potNr == "5":
                     osc_router.send_message("/ambijockey/mic/ch/3/volume/", value)
                     print("T" + track + " P" + potNr + " " + value)
-                if potNr == "6":
-                    osc_router.send_message("/ambijockey/mic/ch/3/m1/", value)
-                    sendData("M31,")
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "7":
-                    osc_router.send_message("/ambijockey/mic/ch/3/m2/", value)
-                    sendData("M32,")
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "8":
-                    osc_router.send_message("/ambijockey/mic/ch/3/m3/", value)
-                    sendData("M33,")
-                    print("T" + track + " P" + potNr + " " + value)
+                #if potNr == "6":
+                    #osc_router.send_message("/ambijockey/mic/ch/3/m1/", value)
+                    #sendData("M31,")
+                    #print("T" + track + " P" + potNr + " " + value)
+                #if potNr == "7":
+                    #osc_router.send_message("/ambijockey/mic/ch/3/m2/", value)
+                    #sendData("M32,")
+                    #print("T" + track + " P" + potNr + " " + value)
+                #if potNr == "8":
+                    #osc_router.send_message("/ambijockey/mic/ch/3/m3/", value)
+                    #sendData("M33,")
+                    #print("T" + track + " P" + potNr + " " + value)
             if track == "4":
                 if potNr == "1":
                     osc_router.send_message("/ambijockey/mic/ch/4/gain/", value)
@@ -214,18 +214,18 @@ def serial_handler(): # dispatch from serial strem and send to osc
                 if potNr == "5":
                     osc_router.send_message("/ambijockey/mic/ch/4/volume/", value)
                     print("T" + track + " P" + potNr + " " + value)
-                if potNr == "6":
-                    osc_router.send_message("/ambijockey/mic/ch/4/m1/", value)
-                    sendData("M41,")
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "7":
-                    osc_router.send_message("/ambijockey/mic/ch/4/m2/", value)
-                    sendData("M42,")
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "8":
-                    osc_router.send_message("/ambijockey/mic/ch/4/m3/", value)
-                    sendData("M43,")
-                    print("T" + track + " P" + potNr + " " + value)
+                #if potNr == "6":
+                    #osc_router.send_message("/ambijockey/mic/ch/4/m1/", value)
+                    #sendData("M41,")
+                    #print("T" + track + " P" + potNr + " " + value)
+                #if potNr == "7":
+                    #osc_router.send_message("/ambijockey/mic/ch/4/m2/", value)
+                    #sendData("M42,")
+                    #print("T" + track + " P" + potNr + " " + value)
+                #if potNr == "8":
+                    #osc_router.send_message("/ambijockey/mic/ch/4/m3/", value)
+                    #sendData("M43,")
+                    #print("T" + track + " P" + potNr + " " + value)
             if track == "5":
                 if potNr == "1":
                     osc_router.send_message("/ambijockey/mic/ch/master/volume/", value)

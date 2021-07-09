@@ -16,6 +16,9 @@ const int selectPins[3] = {30, 31, 32}; // Multiplexer abc
 const int npxl_pin = 13;
 const int npxl_leds = 48;
 
+const int npxl_pin_2 = 28;
+const int npxl_leds_2 = 12;
+
 // last sent states (potis)
 const int num_tracks = 5;
 const int num_pots = 8;

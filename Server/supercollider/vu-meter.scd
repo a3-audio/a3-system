@@ -9,7 +9,7 @@ t.numOutputBusChannels = 2;
 t.numAudioBusChannels = 2048 * 8;
 t.blockSize = 64;
 //t.numWireBufs = 1024 * ~hoaNumChannels;
-t.memSize = 2.pow(18);
+t.memSize = 2048;
 t.sampleRate = 44100;
 s.boot;
 

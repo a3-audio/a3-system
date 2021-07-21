@@ -260,6 +260,8 @@ def poti_handler(address: str,
         if poti == "volume":
             val = numpy.interp(value, [0, 1], [0.01, 1])
             reaper.send_message("/track/" + dj1_cb + "/volume", val)
+        if poti == "fx":
+            reaper.send_message("/track/" + dj1_in + "/fxeq/hipass/bypass", int(value))
     elif track == "2":
         if poti == "gain":
             xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]

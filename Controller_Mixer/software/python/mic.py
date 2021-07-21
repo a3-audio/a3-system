@@ -299,10 +299,10 @@ def serial_handler(): # dispatch from serial strem and send to osc
                         osc_router.send_message("/ambijockey/mic/ch/fxmode/hipass", 0)
                         osc_router.send_message("/ambijockey/mic/ch/fxmode/lopass", 1)
                 if potNr == "7":
-                    osc_router.send_message("/ambijockey/mic/fx/freq", value)
+                    osc_router.send_message("/ambijockey/mic/ch/fxfreq", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "8":
-                    osc_router.send_message("/ambijockey/mic/fx/res", value)
+                    osc_router.send_message("/ambijockey/mic/ch/fxres", value)
                     print("T" + track + " P" + potNr + " " + value)
             if track == "5":
                 if potNr == "1":

@@ -22,6 +22,7 @@ oscRouterPort = 9000
 ctrl_mixer = SimpleUDPClient('192.168.43.51', 8500)  # Set IP Adress
 ctrl_motion = SimpleUDPClient('192.168.43.52', 8700)  # Set IP Adress
 reaper = SimpleUDPClient('127.0.0.1', 9001)
+non_mixer = SimpleUDPClient('127.0.0.1', 9002)
 iem_1 = SimpleUDPClient('127.0.0.1', 1337)
 iem_2 = SimpleUDPClient('127.0.0.1', 1338)
 iem_3 = SimpleUDPClient('127.0.0.1', 1339)
@@ -261,7 +262,10 @@ def poti_handler(address: str,
             val = numpy.interp(value, [0, 1], [0.01, 1])
             reaper.send_message("/track/" + dj1_cb + "/volume", val)
         if poti == "fx":
-            reaper.send_message("/track/" + dj1_in + "/fxeq/hipass/bypass", int(value))
+        #    non_mixer.send_message("/track/" + dj1_cb + "/volume", value)
+            val = numpy.interp(value, [0, 1], [0, 0.921])
+            non_mixer.send_message("/strip/dj1/Aux%20(A)/Gain%20(dB)", float(val))
+            non_mixer.send_message("/strip/dj1/Aux%20(B)/Gain%20(dB)", float(val))
     elif track == "2":
         if poti == "gain":
             xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
@@ -333,7 +337,13 @@ def poti_handler(address: str,
         if poti == "phVol":
             val = numpy.interp(value, [0, 1], [0.01, 1])
             reaper.send_message("/track/14/volume", val)
-
+    elif track == "fxmode":
+        if poti == "lopass":
+            non_mixer.send_message("/strip/dj1hipass/Gain/Mute", float(val))
+            non_mixer.send_message("/strip/dj1hipass/Gain/Mute", float(val))
+        if poti == "hipass":
+            non_mixer.send_message("/strip/dj1lopass/Gain/Mute", float(val))
+            non_mixer.send_message("/strip/dj1lopass/Gain/Mute", float(val))
 
 def button_handler(address: str,
                    *osc_arguments: List[Any]) -> None:

@@ -272,8 +272,8 @@ def serial_handler(): # dispatch from serial strem and send to osc
                         pixels[0] = (255,0,0)
                         pixels[11] = (0,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/fx/hipass", 1)
-                        osc_router.send_message("/ambijockey/mic/fx/lopass", 0)
+                        osc_router.send_message("/ambijockey/mic/ch/fxmode/hipass", 1)
+                        osc_router.send_message("/ambijockey/mic/ch/fxmode/lopass", 0)
             if track == "4":
                 if potNr == "1":
                     osc_router.send_message("/ambijockey/mic/ch/4/gain/", value)
@@ -296,8 +296,8 @@ def serial_handler(): # dispatch from serial strem and send to osc
                         pixels[0] = (0,0,0)
                         pixels[11] = (255,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/fx/hipass", 0)
-                        osc_router.send_message("/ambijockey/mic/fx/lopass", 1)
+                        osc_router.send_message("/ambijockey/mic/ch/fxmode/hipass", 0)
+                        osc_router.send_message("/ambijockey/mic/ch/fxmode/lopass", 1)
                 if potNr == "7":
                     osc_router.send_message("/ambijockey/mic/fx/freq", value)
                     print("T" + track + " P" + potNr + " " + value)

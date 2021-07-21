@@ -22,6 +22,7 @@ oscRouterPort = 9000
 ctrl_mixer = SimpleUDPClient('192.168.43.51', 8500)  # Set IP Adress
 ctrl_motion = SimpleUDPClient('192.168.43.52', 8700)  # Set IP Adress
 reaper = SimpleUDPClient('127.0.0.1', 9001)
+non-mixer = SimpleUDPClient('127.0.0.1', 9002)
 iem_1 = SimpleUDPClient('127.0.0.1', 1337)
 iem_2 = SimpleUDPClient('127.0.0.1', 1338)
 iem_3 = SimpleUDPClient('127.0.0.1', 1339)
@@ -260,6 +261,8 @@ def poti_handler(address: str,
         if poti == "volume":
             val = numpy.interp(value, [0, 1], [0.01, 1])
             reaper.send_message("/track/" + dj1_cb + "/volume", val)
+        #if poti == "fx":
+        #    non-mixer.send_message("/track/" + dj1_cb + "/volume", value)
     elif track == "2":
         if poti == "gain":
             xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]

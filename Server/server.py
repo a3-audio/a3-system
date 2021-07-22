@@ -247,25 +247,15 @@ def poti_handler(address: str,
         if poti == "gain":
             val = numpy.interp(value, [0, 1], [0, 0.921])
             non_mixer.send_message("/strip/dj1/Gain/Gain%20(dB)", float(val))
-            #xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
-            #fp = [0, 0.44, 0.465, 0.47, 0.475, 0.48,  0.485, 0.49,  0.495, 0.5]
-            #val = numpy.interp(value, xp, fp)
-            #reaper.send_message("/track/" + dj1_in + "/gain", val)
         if poti == "hi":
             val = numpy.interp(value, [0, 1], [0, 0.921])
             non_mixer.send_message("/strip/dj1/DJ%20EQ/Hi%20gain%20(dB)", float(val))
-            #val = numpy.interp(value, [0, 1], [0.05, 0.50])
-            #reaper.send_message("/track/" + dj1_in + "/fxeq/hishelf/gain", val)
         if poti == "mid":
             val = numpy.interp(value, [0, 1], [0, 0.921])
             non_mixer.send_message("/strip/dj1/DJ%20EQ/Mid%20gain%20(dB)", float(val))
-            #val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            #reaper.send_message("/track/" + dj1_in + "/fxeq/band/0/gain", val)
         if poti == "lo":
             val = numpy.interp(value, [0, 1], [0, 0.921])
             non_mixer.send_message("/strip/dj1/DJ%20EQ/Lo%20gain%20(dB)", float(val))
-            #val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            #reaper.send_message("/track/" + dj1_in + "/fxeq/loshelf/gain", val)
         if poti == "volume":
             val = numpy.interp(value, [0, 1], [0.01, 1])
             reaper.send_message("/track/" + dj1_cb + "/volume", val)
@@ -273,76 +263,78 @@ def poti_handler(address: str,
             val = numpy.interp(value, [0, 1], [0, 0.921])
             non_mixer.send_message("/strip/dj1/Gain.1/Mute", float(value))
             non_mixer.send_message("/strip/dj1/Aux%20(A)/Gain%20(dB)", float(val))
-            non_mixer.send_message("/strip/dj1/Aux%20(B)/Gain%20(dB)", float(val))
+        if poti == "3d":
+            reaper.send_message("/track/33/mute", value)
+            reaper.send_message("/track/34/mute", 1 - value)
     elif track == "2":
         if poti == "gain":
-            xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
-            fp = [0, 0.44, 0.465, 0.47, 0.475, 0.48,  0.485, 0.49,  0.495, 0.5]
-            val = numpy.interp(value, xp, fp)
-            reaper.send_message("/track/" + dj2_in + "/gain", val)
+            val = numpy.interp(value, [0, 1], [0, 0.921])
+            non_mixer.send_message("/strip/dj2/Gain/Gain%20(dB)", float(val))
         if poti == "hi":
-            val = numpy.interp(value, [0, 1], [0, 0.50])
-            reaper.send_message("/track/" + dj2_in + "/fxeq/hishelf/gain", val)
+            val = numpy.interp(value, [0, 1], [0, 0.921])
+            non_mixer.send_message("/strip/dj2/DJ%20EQ/Hi%20gain%20(dB)", float(val))
         if poti == "mid":
-            val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/" + dj2_in + "/fxeq/band/0/gain", val)
+            val = numpy.interp(value, [0, 1], [0, 0.921])
+            non_mixer.send_message("/strip/dj2/DJ%20EQ/Mid%20gain%20(dB)", float(val))
         if poti == "lo":
-            val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/" + dj2_in + "/fxeq/loshelf/gain", val)
+            val = numpy.interp(value, [0, 1], [0, 0.921])
+            non_mixer.send_message("/strip/dj2/DJ%20EQ/Lo%20gain%20(dB)", float(val))
         if poti == "volume":
             val = numpy.interp(value, [0, 1], [0.01, 1])
             reaper.send_message("/track/" + dj2_cb + "/volume", val)
         if poti == "fx":
             val = numpy.interp(value, [0, 1], [0, 0.921])
-            non_mixer.send_message("/strip/dj2/Gain.1/Mute", float(1 - value))
+            non_mixer.send_message("/strip/dj2/Gain.1/Mute", float(value))
             non_mixer.send_message("/strip/dj2/Aux%20(A)/Gain%20(dB)", float(val))
-            non_mixer.send_message("/strip/dj2/Aux%20(B)/Gain%20(dB)", float(val))
+        if poti == "3d":
+            reaper.send_message("/track/42/mute", value)
+            reaper.send_message("/track/43/mute", 1 - value)
     elif track == "3":
         if poti == "gain":
-            xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
-            fp = [0, 0.44, 0.465, 0.47, 0.475, 0.48,  0.485, 0.49,  0.495, 0.5]
-            val = numpy.interp(value, xp, fp)
-            reaper.send_message("/track/" + dj3_in + "/gain", val)
+            val = numpy.interp(value, [0, 1], [0, 0.921])
+            non_mixer.send_message("/strip/dj3/Gain/Gain%20(dB)", float(val))
         if poti == "hi":
-            val = numpy.interp(value, [0, 1], [0, 0.50])
-            reaper.send_message("/track/" + dj3_in + "/fxeq/hishelf/gain", val)
+            val = numpy.interp(value, [0, 1], [0, 0.921])
+            non_mixer.send_message("/strip/dj3/DJ%20EQ/Hi%20gain%20(dB)", float(val))
         if poti == "mid":
-            val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/" + dj3_in + "/fxeq/band/0/gain", val)
+            val = numpy.interp(value, [0, 1], [0, 0.921])
+            non_mixer.send_message("/strip/dj3/DJ%20EQ/Mid%20gain%20(dB)", float(val))
         if poti == "lo":
-            val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/" + dj3_in + "/fxeq/loshelf/gain", val)
+            val = numpy.interp(value, [0, 1], [0, 0.921])
+            non_mixer.send_message("/strip/dj3/DJ%20EQ/Lo%20gain%20(dB)", float(val))
         if poti == "volume":
             val = numpy.interp(value, [0, 1], [0.01, 1])
             reaper.send_message("/track/" + dj3_cb + "/volume", val)
         if poti == "fx":
             val = numpy.interp(value, [0, 1], [0, 0.921])
-            non_mixer.send_message("/strip/dj3/Gain.1/Mute", float(1 - value))
+            non_mixer.send_message("/strip/dj3/Gain.1/Mute", float(value))
             non_mixer.send_message("/strip/dj3/Aux%20(A)/Gain%20(dB)", float(val))
-            non_mixer.send_message("/strip/dj3/Aux%20(B)/Gain%20(dB)", float(val))
+        if poti == "3d":
+            reaper.send_message("/track/51/mute", value)
+            reaper.send_message("/track/52/mute", 1 - value)
     elif track == "4":
         if poti == "gain":
-            xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
-            fp = [0, 0.44, 0.465, 0.47, 0.475, 0.48,  0.485, 0.49,  0.495, 0.5]
-            val = numpy.interp(value, xp, fp)
-            reaper.send_message("/track/" + dj4_in + "/gain", val)
+            val = numpy.interp(value, [0, 1], [0, 0.921])
+            non_mixer.send_message("/strip/dj4/Gain/Gain%20(dB)", float(val))
         if poti == "hi":
-            val = numpy.interp(value, [0, 1], [0, 0.50])
-            reaper.send_message("/track/" + dj4_in + "/fxeq/hishelf/gain", val)
+            val = numpy.interp(value, [0, 1], [0, 0.921])
+            non_mixer.send_message("/strip/dj4/DJ%20EQ/Hi%20gain%20(dB)", float(val))
         if poti == "mid":
-            val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/" + dj4_in + "/fxeq/band/0/gain", val)
+            val = numpy.interp(value, [0, 1], [0, 0.921])
+            non_mixer.send_message("/strip/dj4/DJ%20EQ/Mid%20gain%20(dB)", float(val))
         if poti == "lo":
-            val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/" + dj4_in + "/fxeq/loshelf/gain", val)
+            val = numpy.interp(value, [0, 1], [0, 0.921])
+            non_mixer.send_message("/strip/dj4/DJ%20EQ/Lo%20gain%20(dB)", float(val))
         if poti == "volume":
             val = numpy.interp(value, [0, 1], [0.01, 1])
             reaper.send_message("/track/" + dj4_cb + "/volume", val)
         if poti == "fx":
             val = numpy.interp(value, [0, 1], [0, 0.921])
-            non_mixer.send_message("/strip/dj4/Gain.1/Mute", float(1 - value))
+            non_mixer.send_message("/strip/dj4/Gain.1/Mute", float(value))
             non_mixer.send_message("/strip/dj4/Aux%20(A)/Gain%20(dB)", float(val))
-            non_mixer.send_message("/strip/dj4/Aux%20(B)/Gain%20(dB)", float(val))
+        if poti == "3d":
+            reaper.send_message("/track/60/mute", value)
+            reaper.send_message("/track/61/mute", 1 - value)
     elif track == "master":
         if poti == "volume":
             val = numpy.interp(value, [0, 1], [0.01, 1])
@@ -373,18 +365,29 @@ def poti_handler(address: str,
             non_mixer.send_message("/strip/dj4lopass/Gain/Mute", float(value))
     elif track == "fxparm":
         if poti == "fxfreq":
-            val = numpy.interp(value, [0, 1], [0, 0.921])
-            non_mixer.send_message("/strip/dj1hipass/Glame%20Highpass%20Filter/Cutoff%20Frequency", float(value))
-            non_mixer.send_message("/strip/dj2hipass/Glame%20Highpass%20Filter/Cutoff%20Frequency", float(value))
-            non_mixer.send_message("/strip/dj3hipass/Glame%20Highpass%20Filter/Cutoff%20Frequency", float(value))
-            non_mixer.send_message("/strip/dj4hipass/Glame%20Highpass%20Filter/Cutoff%20Frequency", float(value))
-            non_mixer.send_message("/strip/dj1lopass/Glame%20Lowpass%20Filter/Cutoff%20Frequency", float(value))
-            non_mixer.send_message("/strip/dj2lopass/Glame%20Lowpass%20Filter/Cutoff%20Frequency", float(value))
-            non_mixer.send_message("/strip/dj3lopass/Glame%20Lowpass%20Filter/Cutoff%20Frequency", float(value))
-            non_mixer.send_message("/strip/dj4lopass/Glame%20Lowpass%20Filter/Cutoff%20Frequency", float(value))
+            xp = [0, 0.01, 0.02, 0.03, 0.05, 0.08, 0.15, 0.25, 0.4, 0.6, 0.75, 0.921]
+            fp = [0, 0.01, 0.02, 0.03, 0.05, 0.08, 0.15, 0.25, 0.4, 0.6, 0.75, 0.921]
+            val = numpy.interp(value, xp, fp)
+            non_mixer.send_message("/strip/dj1hipass/LS%20Filter/Cutoff%20frequency%20(Hz)", float(val))
+            non_mixer.send_message("/strip/dj2hipass/LS%20Filter/Cutoff%20frequency%20(Hz)", float(val))
+            non_mixer.send_message("/strip/dj3hipass/LS%20Filter/Cutoff%20frequency%20(Hz)", float(val))
+            non_mixer.send_message("/strip/dj4hipass/LS%20Filter/Cutoff%20frequency%20(Hz)", float(val))
+            
+            non_mixer.send_message("/strip/dj1lopass/LS%20Filter/Cutoff%20frequency%20(Hz)", float(val))
+            non_mixer.send_message("/strip/dj2lopass/LS%20Filter/Cutoff%20frequency%20(Hz)", float(val))
+            non_mixer.send_message("/strip/dj3lopass/LS%20Filter/Cutoff%20frequency%20(Hz)", float(val))
+            non_mixer.send_message("/strip/dj4lopass/LS%20Filter/Cutoff%20frequency%20(Hz)", float(val))
         if poti == "fxres":
             val = numpy.interp(value, [0, 1], [0, 0.921])
-            #non_mixer.send_message("/strip/dj4hipass/Glame%20Highpass%20Filter/Cutoff%20Frequency", float(value))
+            non_mixer.send_message("/strip/dj1hipass/LS%20Filter/Resonance", float(val))
+            non_mixer.send_message("/strip/dj2hipass/LS%20Filter/Resonance", float(val))
+            non_mixer.send_message("/strip/dj3hipass/LS%20Filter/Resonance", float(val))
+            non_mixer.send_message("/strip/dj4hipass/LS%20Filter/Resonance", float(val))
+            
+            non_mixer.send_message("/strip/dj1lopass/LS%20Filter/Resonance", float(val))
+            non_mixer.send_message("/strip/dj2lopass/LS%20Filter/Resonance", float(val))
+            non_mixer.send_message("/strip/dj3lopass/LS%20Filter/Resonance", float(val))
+            non_mixer.send_message("/strip/dj4lopass/LS%20Filter/Resonance", float(val))
 
 def button_handler(address: str,
                    *osc_arguments: List[Any]) -> None:

@@ -116,15 +116,15 @@
     <input>Non-Mixer/dj1hipass:in-1</input>
   </connection>
   <connection>
+    <output>Non-Mixer/dj1:aux-A/out-1</output>
+    <input>Non-Mixer/dj1lopass:in-1</input>
+  </connection>
+  <connection>
     <output>Non-Mixer/dj1:aux-A/out-2</output>
     <input>Non-Mixer/dj1hipass:in-2</input>
   </connection>
   <connection>
-    <output>Non-Mixer/dj1:aux-B/out-1</output>
-    <input>Non-Mixer/dj1lopass:in-1</input>
-  </connection>
-  <connection>
-    <output>Non-Mixer/dj1:aux-B/out-2</output>
+    <output>Non-Mixer/dj1:aux-A/out-2</output>
     <input>Non-Mixer/dj1lopass:in-2</input>
   </connection>
   <connection>
@@ -140,15 +140,15 @@
     <input>Non-Mixer/dj2hipass:in-1</input>
   </connection>
   <connection>
+    <output>Non-Mixer/dj2:aux-A/out-1</output>
+    <input>Non-Mixer/dj2lopass:in-1</input>
+  </connection>
+  <connection>
     <output>Non-Mixer/dj2:aux-A/out-2</output>
     <input>Non-Mixer/dj2hipass:in-2</input>
   </connection>
   <connection>
-    <output>Non-Mixer/dj2:aux-B/out-1</output>
-    <input>Non-Mixer/dj2lopass:in-1</input>
-  </connection>
-  <connection>
-    <output>Non-Mixer/dj2:aux-B/out-2</output>
+    <output>Non-Mixer/dj2:aux-A/out-2</output>
     <input>Non-Mixer/dj2lopass:in-2</input>
   </connection>
   <connection>
@@ -164,15 +164,15 @@
     <input>Non-Mixer/dj3hipass:in-1</input>
   </connection>
   <connection>
+    <output>Non-Mixer/dj3:aux-A/out-1</output>
+    <input>Non-Mixer/dj3lopass:in-1</input>
+  </connection>
+  <connection>
     <output>Non-Mixer/dj3:aux-A/out-2</output>
     <input>Non-Mixer/dj3hipass:in-2</input>
   </connection>
   <connection>
-    <output>Non-Mixer/dj3:aux-B/out-1</output>
-    <input>Non-Mixer/dj3lopass:in-1</input>
-  </connection>
-  <connection>
-    <output>Non-Mixer/dj3:aux-B/out-2</output>
+    <output>Non-Mixer/dj3:aux-A/out-2</output>
     <input>Non-Mixer/dj3lopass:in-2</input>
   </connection>
   <connection>
@@ -188,15 +188,15 @@
     <input>Non-Mixer/dj4hipass:in-1</input>
   </connection>
   <connection>
+    <output>Non-Mixer/dj4:aux-A/out-1</output>
+    <input>Non-Mixer/dj4lopass:in-1</input>
+  </connection>
+  <connection>
     <output>Non-Mixer/dj4:aux-A/out-2</output>
     <input>Non-Mixer/dj4hipass:in-2</input>
   </connection>
   <connection>
-    <output>Non-Mixer/dj4:aux-B/out-1</output>
-    <input>Non-Mixer/dj4lopass:in-1</input>
-  </connection>
-  <connection>
-    <output>Non-Mixer/dj4:aux-B/out-2</output>
+    <output>Non-Mixer/dj4:aux-A/out-2</output>
     <input>Non-Mixer/dj4lopass:in-2</input>
   </connection>
   <connection>

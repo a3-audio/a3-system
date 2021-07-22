@@ -1,35 +1,35 @@
 <jmess>
   <connection>
     <output>system:capture_1</output>
-    <input>REAPER:in1</input>
+    <input>Non-Mixer/dj1:in-1</input>
   </connection>
   <connection>
     <output>system:capture_2</output>
-    <input>REAPER:in2</input>
+    <input>Non-Mixer/dj1:in-2</input>
   </connection>
   <connection>
     <output>system:capture_3</output>
-    <input>REAPER:in3</input>
+    <input>Non-Mixer/dj2:in-1</input>
   </connection>
   <connection>
     <output>system:capture_4</output>
-    <input>REAPER:in4</input>
+    <input>Non-Mixer/dj2:in-2</input>
   </connection>
   <connection>
     <output>system:capture_5</output>
-    <input>REAPER:in5</input>
+    <input>Non-Mixer/dj3:in-1</input>
   </connection>
   <connection>
     <output>system:capture_6</output>
-    <input>REAPER:in6</input>
+    <input>Non-Mixer/dj3:in-2</input>
   </connection>
   <connection>
     <output>system:capture_7</output>
-    <input>REAPER:in7</input>
+    <input>Non-Mixer/dj4:in-1</input>
   </connection>
   <connection>
     <output>system:capture_8</output>
-    <input>REAPER:in8</input>
+    <input>Non-Mixer/dj4:in-2</input>
   </connection>
   <connection>
     <output>REAPER:out1</output>
@@ -110,5 +110,165 @@
   <connection>
     <output>REAPER:out20</output>
     <input>supernova:input_5</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj1:aux-A/out-1</output>
+    <input>Non-Mixer/dj1hipass:in-1</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj1:aux-A/out-2</output>
+    <input>Non-Mixer/dj1hipass:in-2</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj1:aux-B/out-1</output>
+    <input>Non-Mixer/dj1lopass:in-1</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj1:aux-B/out-2</output>
+    <input>Non-Mixer/dj1lopass:in-2</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj1:out-1</output>
+    <input>REAPER:in1</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj1:out-2</output>
+    <input>REAPER:in2</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj2:aux-A/out-1</output>
+    <input>Non-Mixer/dj2hipass:in-1</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj2:aux-A/out-2</output>
+    <input>Non-Mixer/dj2hipass:in-2</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj2:aux-B/out-1</output>
+    <input>Non-Mixer/dj2lopass:in-1</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj2:aux-B/out-2</output>
+    <input>Non-Mixer/dj2lopass:in-2</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj2:out-1</output>
+    <input>REAPER:in3</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj2:out-2</output>
+    <input>REAPER:in4</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj3:aux-A/out-1</output>
+    <input>Non-Mixer/dj3hipass:in-1</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj3:aux-A/out-2</output>
+    <input>Non-Mixer/dj3hipass:in-2</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj3:aux-B/out-1</output>
+    <input>Non-Mixer/dj3lopass:in-1</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj3:aux-B/out-2</output>
+    <input>Non-Mixer/dj3lopass:in-2</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj3:out-1</output>
+    <input>REAPER:in5</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj3:out-2</output>
+    <input>REAPER:in6</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj4:aux-A/out-1</output>
+    <input>Non-Mixer/dj4hipass:in-1</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj4:aux-A/out-2</output>
+    <input>Non-Mixer/dj4hipass:in-2</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj4:aux-B/out-1</output>
+    <input>Non-Mixer/dj4lopass:in-1</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj4:aux-B/out-2</output>
+    <input>Non-Mixer/dj4lopass:in-2</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj4:out-1</output>
+    <input>REAPER:in7</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj4:out-2</output>
+    <input>REAPER:in8</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj1hipass:out-1</output>
+    <input>REAPER:in1</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj1hipass:out-2</output>
+    <input>REAPER:in2</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj2hipass:out-1</output>
+    <input>REAPER:in3</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj2hipass:out-2</output>
+    <input>REAPER:in4</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj3hipass:out-1</output>
+    <input>REAPER:in5</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj3hipass:out-2</output>
+    <input>REAPER:in6</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj4hipass:out-1</output>
+    <input>REAPER:in7</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj4hipass:out-2</output>
+    <input>REAPER:in8</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj1lopass:out-1</output>
+    <input>REAPER:in1</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj1lopass:out-2</output>
+    <input>REAPER:in2</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj2lopass:out-1</output>
+    <input>REAPER:in3</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj2lopass:out-2</output>
+    <input>REAPER:in4</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj3lopass:out-1</output>
+    <input>REAPER:in5</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj3lopass:out-2</output>
+    <input>REAPER:in6</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj4lopass:out-1</output>
+    <input>REAPER:in7</input>
+  </connection>
+  <connection>
+    <output>Non-Mixer/dj4lopass:out-2</output>
+    <input>REAPER:in8</input>
   </connection>
 </jmess>

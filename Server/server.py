@@ -374,10 +374,17 @@ def poti_handler(address: str,
     elif track == "fxparm":
         if poti == "fxfreq":
             val = numpy.interp(value, [0, 1], [0, 0.921])
+            non_mixer.send_message("/strip/dj1hipass/Glame%20Highpass%20Filter/Cutoff%20Frequency", float(value))
+            non_mixer.send_message("/strip/dj2hipass/Glame%20Highpass%20Filter/Cutoff%20Frequency", float(value))
+            non_mixer.send_message("/strip/dj3hipass/Glame%20Highpass%20Filter/Cutoff%20Frequency", float(value))
             non_mixer.send_message("/strip/dj4hipass/Glame%20Highpass%20Filter/Cutoff%20Frequency", float(value))
+            non_mixer.send_message("/strip/dj1lopass/Glame%20Lowpass%20Filter/Cutoff%20Frequency", float(value))
+            non_mixer.send_message("/strip/dj2lopass/Glame%20Lowpass%20Filter/Cutoff%20Frequency", float(value))
+            non_mixer.send_message("/strip/dj3lopass/Glame%20Lowpass%20Filter/Cutoff%20Frequency", float(value))
+            non_mixer.send_message("/strip/dj4lopass/Glame%20Lowpass%20Filter/Cutoff%20Frequency", float(value))
         if poti == "fxres":
             val = numpy.interp(value, [0, 1], [0, 0.921])
-            non_mixer.send_message("/strip/dj4hipass/Glame%20Highpass%20Filter/Cutoff%20Frequency", float(value))
+            #non_mixer.send_message("/strip/dj4hipass/Glame%20Highpass%20Filter/Cutoff%20Frequency", float(value))
 
 def button_handler(address: str,
                    *osc_arguments: List[Any]) -> None:

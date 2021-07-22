@@ -345,7 +345,7 @@ def poti_handler(address: str,
             non_mixer.send_message("/strip/dj4/Aux%20(B)/Gain%20(dB)", float(val))
         if poti == "fxfreq":
             val = numpy.interp(value, [0, 1], [0, 0.921])
-            non_mixer.send_message("/strip/dj4/hipass/Glame%20Highpass%20Filter/Cutoff%20Frequency", float(value))
+            non_mixer.send_message("/strip/dj4hipass/Glame%20Highpass%20Filter/Cutoff%20Frequency", float(value))
     elif track == "master":
         if poti == "volume":
             val = numpy.interp(value, [0, 1], [0.01, 1])

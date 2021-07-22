@@ -343,9 +343,6 @@ def poti_handler(address: str,
             non_mixer.send_message("/strip/dj4/Gain.1/Mute", float(1 - value))
             non_mixer.send_message("/strip/dj4/Aux%20(A)/Gain%20(dB)", float(val))
             non_mixer.send_message("/strip/dj4/Aux%20(B)/Gain%20(dB)", float(val))
-        if poti == "fxfreq":
-            val = numpy.interp(value, [0, 1], [0, 0.921])
-            non_mixer.send_message("/strip/dj4hipass/Glame%20Highpass%20Filter/Cutoff%20Frequency", float(value))
     elif track == "master":
         if poti == "volume":
             val = numpy.interp(value, [0, 1], [0.01, 1])
@@ -374,6 +371,13 @@ def poti_handler(address: str,
             non_mixer.send_message("/strip/dj2lopass/Gain/Mute", float(value))
             non_mixer.send_message("/strip/dj3lopass/Gain/Mute", float(value))
             non_mixer.send_message("/strip/dj4lopass/Gain/Mute", float(value))
+    elif track == "fxparm":
+        if poti == "fxfreq":
+            val = numpy.interp(value, [0, 1], [0, 0.921])
+            non_mixer.send_message("/strip/dj4hipass/Glame%20Highpass%20Filter/Cutoff%20Frequency", float(value))
+        if poti == "fxres":
+            val = numpy.interp(value, [0, 1], [0, 0.921])
+            non_mixer.send_message("/strip/dj4hipass/Glame%20Highpass%20Filter/Cutoff%20Frequency", float(value))
 
 def button_handler(address: str,
                    *osc_arguments: List[Any]) -> None:

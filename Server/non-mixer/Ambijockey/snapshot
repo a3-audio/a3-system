@@ -4,18 +4,18 @@
 	JACK_Module 0x3 create :parameter_values "0.000000:2.000000" :is_default 1 :chain 0x2 :active 1
 	Gain_Module 0x4 create :parameter_values "0.000000:0.000000" :is_default 1 :chain 0x2 :active 1
 	Plugin_Module 0x19 create :plugin_id 1901 :plugin_ins 2 :plugin_outs 2 :parameter_values "-0.703959:-0.703959:-0.004000" :is_default 0 :chain 0x2 :active 1 :number 0
-	AUX_Module 0x4D create :parameter_values "-0.004000" :is_default 0 :chain 0x2 :active 1 :number 0
-	AUX_Module 0x18C create :parameter_values "-0.004000" :is_default 0 :chain 0x2 :active 1 :number 1
+	AUX_Module 0x4D create :parameter_values "-70.000000" :is_default 0 :chain 0x2 :active 1 :number 0
+	AUX_Module 0x18C create :parameter_values "-70.000000" :is_default 0 :chain 0x2 :active 1 :number 1
 	Meter_Module 0x5 create :is_default 1 :chain 0x2 :active 1
-	Gain_Module 0x190 create :parameter_values "0.000000:1.000000" :is_default 0 :chain 0x2 :active 1 :number 1
+	Gain_Module 0x190 create :parameter_values "0.000000:0.000000" :is_default 0 :chain 0x2 :active 1 :number 1
 	JACK_Module 0x6 create :parameter_values "2.000000:0.000000" :is_default 1 :chain 0x2 :active 1
 	Mixer_Strip 0x7 create :name "dj2" :width "narrow" :tab "signal" :color 719885386 :gain_mode 0 :mute_mode 0 :group 0x0 :auto_input "" :manual_connection 0
 	Chain 0x8 create :strip 0x7 :tab "chain"
 	JACK_Module 0x9 create :parameter_values "0.000000:2.000000" :is_default 1 :chain 0x8 :active 1
 	Gain_Module 0xA create :parameter_values "0.000000:0.000000" :is_default 1 :chain 0x8 :active 1
 	Plugin_Module 0x1A create :plugin_id 1901 :plugin_ins 2 :plugin_outs 2 :parameter_values "0.000000:0.000000:0.000000" :is_default 0 :chain 0x8 :active 1 :number 0
-	AUX_Module 0x13B create :parameter_values "0.000000" :is_default 0 :chain 0x8 :active 1 :number 0
-	AUX_Module 0x18D create :parameter_values "0.000000" :is_default 0 :chain 0x8 :active 1 :number 1
+	AUX_Module 0x13B create :parameter_values "-0.004000" :is_default 0 :chain 0x8 :active 1 :number 0
+	AUX_Module 0x18D create :parameter_values "-0.004000" :is_default 0 :chain 0x8 :active 1 :number 1
 	Meter_Module 0xB create :is_default 1 :chain 0x8 :active 1
 	Gain_Module 0x191 create :parameter_values "0.000000:0.000000" :is_default 0 :chain 0x8 :active 1 :number 1
 	JACK_Module 0xC create :parameter_values "2.000000:0.000000" :is_default 1 :chain 0x8 :active 1
@@ -24,8 +24,8 @@
 	JACK_Module 0xF create :parameter_values "0.000000:2.000000" :is_default 1 :chain 0xE :active 1
 	Gain_Module 0x10 create :parameter_values "0.000000:0.000000" :is_default 1 :chain 0xE :active 1
 	Plugin_Module 0x1B create :plugin_id 1901 :plugin_ins 2 :plugin_outs 2 :parameter_values "0.000000:0.000000:0.000000" :is_default 0 :chain 0xE :active 1 :number 0
-	AUX_Module 0x13C create :parameter_values "0.000000" :is_default 0 :chain 0xE :active 1 :number 0
-	AUX_Module 0x18E create :parameter_values "0.000000" :is_default 0 :chain 0xE :active 1 :number 1
+	AUX_Module 0x13C create :parameter_values "-0.004000" :is_default 0 :chain 0xE :active 1 :number 0
+	AUX_Module 0x18E create :parameter_values "-0.004000" :is_default 0 :chain 0xE :active 1 :number 1
 	Meter_Module 0x11 create :is_default 1 :chain 0xE :active 1
 	Gain_Module 0x192 create :parameter_values "0.000000:0.000000" :is_default 0 :chain 0xE :active 1 :number 1
 	JACK_Module 0x12 create :parameter_values "2.000000:0.000000" :is_default 1 :chain 0xE :active 1

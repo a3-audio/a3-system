@@ -1,3 +1,5 @@
+# This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
+
 """
 this version is just a steady hardcoded version of osc-router. It will
 transform into more dynamic code with external configfiles for osc in-

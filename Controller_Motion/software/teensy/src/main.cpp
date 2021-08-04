@@ -1,7 +1,7 @@
+// This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
+
 /*
-
-
-um es spaeter schon zu machen:
+um es später schön zu machen:
 
 Bounce pushbutton = Bounce(PIN_BUTTON_ENCODER, 10);
 pinMode(PIN_BUTTON_ENCODER, INPUT_PULLUP);
@@ -12,8 +12,6 @@ pinMode(PIN_BUTTON_ENCODER, INPUT_PULLUP);
         // ...
     }
   }
-
-
 */
 
 #include <Arduino.h>

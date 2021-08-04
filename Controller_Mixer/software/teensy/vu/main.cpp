@@ -1,3 +1,5 @@
+// This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
+
 #include <Arduino.h>
 #include <LedControl.h>
 #include <binary.h>

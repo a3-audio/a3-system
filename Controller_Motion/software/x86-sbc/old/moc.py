@@ -1,3 +1,4 @@
+#©2021 A³ Ambisonic Audio Adventures UG (Haftungsbeschränkt). This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
 #!/usr/bin/python
 """
 Das ist unser script um die komunikation zwischen teensy und GUI herzystellen.

@@ -1,9 +1,11 @@
+©2021 A³ Ambisonic Audio Adventures UG (Haftungsbeschränkt). This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
+
 # Ambijockey
 
-![first ambijocky](doc/pix/gif1.gif)
+![first ambijockey](doc/pix/gif1.gif)
 
 ## Goal for this project
-Make venues and artists fit for the future of audio. That means 3D-Sound and therefore compatibility to all audioformats, easy to use spatialization interface, and maximum flexibility at a price for everybody. Our first setup consists of three devices:
+Make venues and artists able to play 3D-Sound. The project aims for, easy to use spatialization interface, maximum flexibility and a price for everybody. Our first setup consists of three devices:
 
 ## A³core (The Audioserver)
 The Audioserver is processing the analog audio, calculates the 3D-Soundsphere and is remotecontrolled via osc. Also it sends osc data with peak and rms information for vu-meters to the mixer. 
@@ -22,14 +24,17 @@ The Motion-Sampler is an osc-controller. It records and plays motion made by you
 [A³motion UI](https://github.com/ambisonics-audio-association/MotionControllerUI)
 
 ## Hardware
-Parts we used listed [here](https://github.com/ambisonics-audio-association/Ambijockey/blob/main/hardware.md)
+Parts we used are listed [here](https://github.com/ambisonics-audio-association/Businessplan/blob/main/recherche/parts.md)
 
 ## Blackboard
 We organize our tasks in a [github-project](https://github.com/orgs/ambisonics-audio-association/projects/1)
 
-We talk via [mattermost](https://talk.lilbits.de/ambisonics), and keep data in a seafilecloud, [write us](mailto:r.eismann@posteo.de) to get involved.
+We talk via [mattermost](https://talk.lilbits.de/ambisonics), and keep data in a seafilecloud, [write us](mailto:contact@orbitalwaves.net) to get involved.
 
 We put Mediafiles to [Seafile](https://tinycloud.lilbits.de/Media).
+
+## Contact
+[contact@orbitalwaves.net](mailto:contact@orbitalwaves.net)
 
 ## Code of conduct
 1. Don't panic

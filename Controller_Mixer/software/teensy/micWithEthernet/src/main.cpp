@@ -1,4 +1,6 @@
+// © Copyright 2021 A³ Ambisonic Audio Adventures UG (Haftungsbeschränkt). 
 // This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
+
 //////////////////////////////// OSC ROTARY MIXER /////////////////////////////////
 //
 // osc rotary mixer as it says is a piece of hardware which looks like a 4-channel

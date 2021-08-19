@@ -3,7 +3,6 @@ Description=Mixer Controller mic.py
 After=network.target
 
 [Service]
-User=aaa
 ExecStart=/usr/bin/python /home/aaa/Ambijockey/Controller_Mixer/software/python/mic.py
 [Install]
 WantedBy=multi-user-target

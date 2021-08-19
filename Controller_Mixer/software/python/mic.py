@@ -20,7 +20,7 @@ from pythonosc import dispatcher
 
 from typing import List, Any
 
-pixel_pin = board.D10
+pixel_pin = board.D18
 num_pixels = 12
 
 pixels = neopixel.NeoPixel(

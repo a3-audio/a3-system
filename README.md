@@ -6,10 +6,26 @@ This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambison
 ![first ambijockey](doc/pix/gif1.gif)
 
 ## Goal for this project
-Make venues and artists able to play 3D-Sound. The project aims for, easy to use spatialization interface, maximum flexibility and a price for everybody. Our first setup consists of three devices:
+Make venues and artists able to play 3D-Sound. The project aims for, easy to use spatialization interface, maximum flexibility and a price for everybody. 
+
+Usecases:
+* Case a) the core encodes and decodes you send separated tracks & osc
+* Case b) the core decodes your b-format-encoded audio
+* Case c) the core gets discrete channels for each speaker
+* Case d) the core simulates speakersetups for dolby or auro-3d
+* Case d) the core and our dj-setup plus a-d as „tape-in“ with mode-selection and volume on A³mix
+
+Our first setup consists of three devices:
 
 ## A³core (The Audioserver)
-The Audioserver is processing the analog audio, calculates the 3D-Soundsphere and is remotecontrolled via osc. Also it sends osc data with peak and rms information for vu-meters to the mixer. 
+The Audioserver is processing the analog audio, calculates the 3D-Soundsphere and is remotecontrolled via osc. Also it sends osc data with peak and rms information for vu-meters to the mixer.
+
+Usecases:
+* Case a) the core encodes and decodes you send separated tracks & osc
+* Case b) the core decodes your b-format-encoded audio
+* Case c) the core gets discrete channels for each speaker
+* Case d) the core simulates speakersetups for dolby or auro-3d
+* Case d) the core and our dj-setup plus a-d as „tape-in“ with mode-selection and volume on A³mix
 
 [A³core Readme](https://github.com/ambisonics-audio-association/Ambijockey/tree/main/Server#readme)
 

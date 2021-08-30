@@ -1,6 +1,3 @@
-# This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
-# © Copyright 2021 Raphael Eismann, Jendrik Bradaczek, Patric Schmitz 
-
 """
 this version is just a steady hardcoded version of osc-router. It will
 transform into more dynamic code with external configfiles for osc in-
@@ -368,8 +365,8 @@ def poti_handler(address: str,
             non_mixer.send_message("/strip/dj4lopass/Gain/Mute", float(value))
     elif track == "fxparm":
         if poti == "fxfreq":
-            xp = [0, 0.01, 0.02, 0.03, 0.05, 0.08, 0.15, 0.25, 0.4, 0.6, 0.75, 0.921]
-            fp = [0, 0.01, 0.02, 0.03, 0.05, 0.08, 0.15, 0.25, 0.4, 0.6, 0.75, 0.921]
+            xp = [0, 0.7]
+            fp = [0, 0.7]
             val = numpy.interp(value, xp, fp)
             non_mixer.send_message("/strip/dj1hipass/LS%20Filter/Cutoff%20frequency%20(Hz)", float(val))
             non_mixer.send_message("/strip/dj2hipass/LS%20Filter/Cutoff%20frequency%20(Hz)", float(val))

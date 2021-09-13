@@ -111,186 +111,186 @@ def serial_handler(): # dispatch from serial strem and send to osc
       # Buttons
         if mode == "B":
             if track == "1":
-                osc_router.send_message("/ambijockey/mic/ch/1/pfl/", value)
+                osc_router.send_message("/mic/channel/1/pfl/", value)
                 sendData("L1,")
                 print("B1")
             if track == "2":
-                osc_router.send_message("/ambijockey/mic/ch/2/pfl/", value)
+                osc_router.send_message("/mic/channel/2/pfl/", value)
                 sendData("L2,")
                 print("B2")
             if track == "3":
-                osc_router.send_message("/ambijockey/mic/ch/3/pfl/", value)
+                osc_router.send_message("/mic/channel/3/pfl/", value)
                 sendData("L3,")
                 print("B3")
             if track == "4":
-                osc_router.send_message("/ambijockey/mic/ch/4/pfl/", value)
+                osc_router.send_message("/mic/channel/4/pfl/", value)
                 sendData("L4,")
                 print("B4")
             if track == "5":
-                osc_router.send_message("/ambijockey/mic/ch/master/pfl/", value)
+                osc_router.send_message("/mic/channel/master/pfl/", value)
                 sendData("L5,")
                 print("B5")
       # Potis
         if mode == "P":
             if track == "1":
                 if potNr == "1":
-                    osc_router.send_message("/ambijockey/mic/ch/1/gain/", value)
+                    osc_router.send_message("/mic/channel/1/gain/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "2":
-                    osc_router.send_message("/ambijockey/mic/ch/1/hi/", value)
+                    osc_router.send_message("/mic/channel/1/hi/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "3":
-                    osc_router.send_message("/ambijockey/mic/ch/1/mid/", value)
+                    osc_router.send_message("/mic/channel/1/mid/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "4":
-                    osc_router.send_message("/ambijockey/mic/ch/1/lo/", value)
+                    osc_router.send_message("/mic/channel/1/lo/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "5":
-                    osc_router.send_message("/ambijockey/mic/ch/1/volume/", value)
+                    osc_router.send_message("/mic/channel/1/volume/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "6":
                     if float(value) > 0.7 and fx_state[0]==0:
                         fx_state[0] = 1
                         pixels[5] = (255,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/1/fx/", 1)
+                        osc_router.send_message("/mic/channel/1/fx/", 1)
                     elif float(value) > 0.7 and fx_state[0]==1:
                         fx_state[0] = 0
                         pixels[5] = (0,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/1/fx/", 0)
+                        osc_router.send_message("/mic/channel/1/fx/", 0)
                 if potNr == "7":
                     if float(value) > 0.7 and fx_state[1]==0:
                         fx_state[1] = 1
                         pixels[4] = (255,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/2/fx/", 1)
+                        osc_router.send_message("/mic/channel/2/fx/", 1)
                     elif float(value) > 0.7 and fx_state[1]==1:
                         fx_state[1] = 0
                         pixels[4] = (0,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/2/fx/", 0)
+                        osc_router.send_message("/mic/channel/2/fx/", 0)
                 if potNr == "8":
                     if float(value) > 0.7 and fx_state[2]==0:
                         fx_state[2] = 1
                         pixels[3] = (255,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/3/fx/", 1)
+                        osc_router.send_message("/mic/channel/3/fx/", 1)
                     elif float(value) > 0.7 and fx_state[2]==1:
                         fx_state[2] = 0
                         pixels[3] = (0,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/3/fx/", 0)
+                        osc_router.send_message("/mic/channel/3/fx/", 0)
             if track == "2":
                 if potNr == "1":
-                    osc_router.send_message("/ambijockey/mic/ch/2/gain/", value)
+                    osc_router.send_message("/mic/channel/2/gain/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "2":
-                    osc_router.send_message("/ambijockey/mic/ch/2/hi/", value)
+                    osc_router.send_message("/mic/channel/2/hi/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "3":
-                    osc_router.send_message("/ambijockey/mic/ch/2/mid/", value)
+                    osc_router.send_message("/mic/channel/2/mid/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "4":
-                    osc_router.send_message("/ambijockey/mic/ch/2/lo/", value)
+                    osc_router.send_message("/mic/channel/2/lo/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "5":
-                    osc_router.send_message("/ambijockey/mic/ch/2/volume/", value)
+                    osc_router.send_message("/mic/channel/2/volume/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "6":
                     if float(value) > 0.7 and fx_state[3]==0:
                         fx_state[3] = 1
                         pixels[2] = (255,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/4/fx/", 1)
+                        osc_router.send_message("/mic/channel/4/fx/", 1)
                     elif float(value) > 0.7 and fx_state[3]==1:
                         fx_state[3] = 0
                         pixels[2] = (0,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/4/fx/", 0)
+                        osc_router.send_message("/mic/channel/4/fx/", 0)
                 if potNr == "7":
                     if float(value) > 0.7 and fx_state[4]==0:
                         fx_state[4] = 1
                         pixels[6] = (255,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/1/3d/", 1)
+                        osc_router.send_message("/mic/channel/1/3d/", 1)
                     elif float(value) > 0.7 and fx_state[4]==1:
                         fx_state[4] = 0
                         pixels[6] = (0,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/1/3d/", 0)
+                        osc_router.send_message("/mic/channel/1/3d/", 0)
                 if potNr == "8":
                     if float(value) > 0.7 and fx_state[5]==0:
                         fx_state[5] = 1
                         pixels[7] = (255,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/2/3d/", 1)
+                        osc_router.send_message("/mic/channel/2/3d/", 1)
                     elif float(value) > 0.7 and fx_state[5]==1:
                         fx_state[5] = 0
                         pixels[7] = (0,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/2/3d/", 0)
+                        osc_router.send_message("/mic/channel/2/3d/", 0)
             if track == "3":
                 if potNr == "1":
-                    osc_router.send_message("/ambijockey/mic/ch/3/gain/", value)
+                    osc_router.send_message("/mic/channel/3/gain/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "2":
-                    osc_router.send_message("/ambijockey/mic/ch/3/hi/", value)
+                    osc_router.send_message("/mic/channel/3/hi/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "3":
-                    osc_router.send_message("/ambijockey/mic/ch/3/mid/", value)
+                    osc_router.send_message("/mic/channel/3/mid/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "4":
-                    osc_router.send_message("/ambijockey/mic/ch/3/lo/", value)
+                    osc_router.send_message("/mic/channel/3/lo/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "5":
-                    osc_router.send_message("/ambijockey/mic/ch/3/volume/", value)
+                    osc_router.send_message("/mic/channel/3/volume/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "6":
                     if float(value) > 0.7 and fx_state[6]==0:
                         fx_state[6] = 1
                         pixels[8] = (255,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/3/3d/", 1)
+                        osc_router.send_message("/mic/channel/3/3d/", 1)
                     elif float(value) > 0.7 and fx_state[6]==1:
                         fx_state[6] = 0
                         pixels[8] = (0,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/3/3d/", 0)
+                        osc_router.send_message("/mic/channel/3/3d/", 0)
                 if potNr == "7":
                     if float(value) > 0.7 and fx_state[7]==0:
                         fx_state[7] = 1
                         pixels[9] = (255,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/4/3d/", 1)
+                        osc_router.send_message("/mic/channel/4/3d/", 1)
                     elif float(value) > 0.7 and fx_state[7]==1:
                         fx_state[7] = 0
                         pixels[9] = (0,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/4/3d/", 0)
+                        osc_router.send_message("/mic/channel/4/3d/", 0)
                 if potNr == "8":
                     if float(value) > 0.7 and fx_state[8]==0:
                         fx_state[8] = 1
                         pixels[0] = (255,0,0)
                         pixels[11] = (0,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/fxmode/hipass", 1)
-                        osc_router.send_message("/ambijockey/mic/ch/fxmode/lopass", 0)
+                        osc_router.send_message("/mic/channel/fxmode/hipass", 1)
+                        osc_router.send_message("/mic/channel/fxmode/lopass", 0)
             if track == "4":
                 if potNr == "1":
-                    osc_router.send_message("/ambijockey/mic/ch/4/gain/", value)
+                    osc_router.send_message("/mic/channel/4/gain/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "2":
-                    osc_router.send_message("/ambijockey/mic/ch/4/hi/", value)
+                    osc_router.send_message("/mic/channel/4/hi/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "3":
-                    osc_router.send_message("/ambijockey/mic/ch/4/mid/", value)
+                    osc_router.send_message("/mic/channel/4/mid/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "4":
-                    osc_router.send_message("/ambijockey/mic/ch/4/lo/", value)
+                    osc_router.send_message("/mic/channel/4/lo/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "5":
-                    osc_router.send_message("/ambijockey/mic/ch/4/volume/", value)
+                    osc_router.send_message("/mic/channel/4/volume/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "6":
                     if float(value) > 0.7 and fx_state[8]==1:
@@ -298,26 +298,26 @@ def serial_handler(): # dispatch from serial strem and send to osc
                         pixels[0] = (0,0,0)
                         pixels[11] = (255,0,0)
                         pixels.show()
-                        osc_router.send_message("/ambijockey/mic/ch/fxmode/hipass", 0)
-                        osc_router.send_message("/ambijockey/mic/ch/fxmode/lopass", 1)
+                        osc_router.send_message("/mic/channel/fxmode/hipass", 0)
+                        osc_router.send_message("/mic/channel/fxmode/lopass", 1)
                 if potNr == "7":
-                    osc_router.send_message("/ambijockey/mic/ch/fxparm/fxfreq", value)
+                    osc_router.send_message("/mic/channel/fxparm/fxfreq", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "8":
-                    osc_router.send_message("/ambijockey/mic/ch/fxparm/fxres", value)
+                    osc_router.send_message("/mic/channel/fxparm/fxres", value)
                     print("T" + track + " P" + potNr + " " + value)
             if track == "5":
                 if potNr == "1":
-                    osc_router.send_message("/ambijockey/mic/ch/master/volume/", value)
+                    osc_router.send_message("/mic/channel/master/volume/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "2":
-                    osc_router.send_message("/ambijockey/mic/ch/master/booth/", value)
+                    osc_router.send_message("/mic/channel/master/booth/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "3":
-                    osc_router.send_message("/ambijockey/mic/ch/master/phMix/", value)
+                    osc_router.send_message("/mic/channel/master/phMix/", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "4":
-                    osc_router.send_message("/ambijockey/mic/ch/master/phVol/", value)
+                    osc_router.send_message("/mic/channel/master/phVol/", value)
                     print("T" + track + " P" + potNr + " " + value)
 
 if __name__ == '__main__':

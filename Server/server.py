@@ -58,14 +58,9 @@ def ctrlMotionToIem_handler(address: str,
     if track == "1":
         if param == "xyz":
             iem_1.send_message("/CoordinateConverter/xPos",
-                               numpy.interp(osc_arguments[1], [0, 1], [-1, 1]))
+                    numpy.interp(osc_arguments[1], [0, 1], [-1, 1]))
             iem_1.send_message("/CoordinateConverter/yPos",
-                               numpy.interp(osc_arguments[0], [0, 1], [1, -1]))
-            # iem_1.send_message("/CoordinateConverter/zPos", osc_arguments[2])
-        if param == "width":
-            iem_1.send_message("/CoordinateConverter/radius", osc_arguments[0])
-        if param == "reverb":
-            reaper.send_message("/track/" + dj1_in + "/fx/2/fxparam/1/value", osc_arguments[0])
+                    numpy.interp(osc_arguments[0], [0, 1], [1, -1]))
 
     if track == "2":
         match_xyz = re.match(param, "xyz")
@@ -77,7 +72,7 @@ def ctrlMotionToIem_handler(address: str,
             # iem_2.send_message("/CoordinateConverter/zPos", osc_arguments[2])
         if param == "width":
             iem_2.send_message("/CoordinateConverter/radius", osc_arguments[0])
-        if param == "reverb":
+        if param == "side":
             reaper.send_message("/track/" + dj2_in + "/fx/2/fxparam/1/value", osc_arguments[0])
 
     if track == "3":
@@ -90,7 +85,7 @@ def ctrlMotionToIem_handler(address: str,
             # iem_3.send_message("/CoordinateConverter/zPos", osc_arguments[2])
         if param == "width":
             iem_3.send_message("/CoordinateConverter/radius", osc_arguments[0])
-        if param == "reverb":
+        if param == "side":
             reaper.send_message("/track/" + dj3_in + "/fx/2/fxparam/1/value", osc_arguments[0])
 
     if track == "4":
@@ -103,7 +98,7 @@ def ctrlMotionToIem_handler(address: str,
             # iem_4.send_message("/CoordinateConverter/zPos", osc_arguments[2])
         if param == "width":
             iem_4.send_message("/CoordinateConverter/radius", osc_arguments[0])
-        if param == "reverb":
+        if param == "side":
             reaper.send_message("/track/" + dj4_in + "/fx/2/fxparam/1/value", osc_arguments[0])
 
 
@@ -237,8 +232,8 @@ class CH_handler(object):
 def poti_handler(address: str,
                  *osc_arguments: List[Any]) -> None:
     words = address.split("/")
-    track = words[4]
-    poti = words[5]
+    track = words[3]
+    poti = words[4]
 
     value = osc_arguments[0]
     print(track + "." + poti + " : " + str(value))
@@ -266,6 +261,12 @@ def poti_handler(address: str,
         if poti == "3d":
             reaper.send_message("/track/33/mute", value)
             reaper.send_message("/track/34/mute", 1 - value)
+        if poti == "width":
+            iem_1.send_message("/StereoEncoder/width", 
+                    numpy.interp(osc_arguments[0],  [0, 1], [-70, 70]))
+            print(osc_arguments[0])
+        if poti == "side":
+            reaper.send_message("/track/" + dj1_in + "/fx/2/fxparam/1/value", osc_arguments[0])
     elif track == "2":
         if poti == "gain":
             val = numpy.interp(value, [0, 1], [0, 0.921])
@@ -484,14 +485,14 @@ if __name__ == "__main__":
     ch1 = CH_handler()
 
     # Mixer-Controller
-    dispatcher.map("/ambijockey/mic/ch/*", poti_handler)
-    dispatcher.map("/ambijockey/mic/ch/*", button_handler)
+    dispatcher.map("/mic/channel/*", poti_handler)
+    dispatcher.map("/mic/channel/*", button_handler)
     dispatcher.map("/reaper/vu/*", vu_handler)
 
     # Motion-Controller
     # dispatcher.map("/CoordinateConverter/*", iemToCtrlMotion_handler)
-    dispatcher.map("/ambiJocky/motion/ch/*", ctrlMotionToIem_handler)
-    dispatcher.map("/ambijockey/moc/ch/*", ctrlMotionToIem_handler)
+    dispatcher.map("/motion/ch/*", ctrlMotionToIem_handler)
+    dispatcher.map("/moc/channel/*", ctrlMotionToIem_handler)
 
     server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))

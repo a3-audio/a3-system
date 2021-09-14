@@ -48,8 +48,8 @@ mainmixbus = "22"
 def ctrlMotionToIem_handler(address: str,
                             *osc_arguments: List[Any]) -> None:
     words = address.split("/")
-    track = words[4]
-    param = words[5]
+    track = words[3]
+    param = words[4]
 
     # print(words)
     #value = osc_arguments
@@ -111,8 +111,8 @@ val_send_ch4_xyz = [0, 0, 0]
 def iemToCtrlMotion_handler(address: str,
                             *osc_arguments: List[Any]) -> None:
     words = address.split("/")
-    track = words[2]
-    param = words[3]
+    track = words[1]
+    param = words[2]
 
     print(words)
     #value = osc_arguments[0]
@@ -130,7 +130,7 @@ def iemToCtrlMotion_handler(address: str,
                 val_send_ch1_xyz[2] = (numpy.interp(
                     osc_arguments[0], [-1, 1], [0, 1]))
             ctrl_motion.send_message(
-                "/ambiJocky/motion/ch/1/pos/xyz", val_send_ch1_xyz)
+                "/moc/channel/1/pos/xyz", val_send_ch1_xyz)
 
         if param == "radius":
             ctrl_motion.send_message(
@@ -148,7 +148,7 @@ def iemToCtrlMotion_handler(address: str,
                 val_send_ch2_xyz[2] = (numpy.interp(
                     osc_arguments[0], [-1, 1], [0, 1]))
             ctrl_motion.send_message(
-                "/ambiJocky/motion/ch/2/pos/xyz", val_send_ch2_xyz)
+                "/moc/channel/2/pos/xyz", val_send_ch2_xyz)
 
         if param == "radius":
             ctrl_motion.send_message(
@@ -166,7 +166,7 @@ def iemToCtrlMotion_handler(address: str,
                 val_send_ch3_xyz[2] = (numpy.interp(
                     osc_arguments[0], [-1, 1], [0, 1]))
             ctrl_motion.send_message(
-                "/ambiJocky/motion/ch/3/pos/xyz", val_send_ch3_xyz)
+                "/moc/channel/3/pos/xyz", val_send_ch3_xyz)
 
         if param == "radius":
             ctrl_motion.send_message(
@@ -184,7 +184,7 @@ def iemToCtrlMotion_handler(address: str,
                 val_send_ch4_xyz[2] = (numpy.interp(
                     osc_arguments[0], [-1, 1], [0, 1]))
             ctrl_motion.send_message(
-                "/ambiJocky/motion/ch/4/pos/xyz", val_send_ch4_xyz)
+                "/moc/channel/4/pos/xyz", val_send_ch4_xyz)
 
         if param == "radius":
             ctrl_motion.send_message(
@@ -193,7 +193,7 @@ def iemToCtrlMotion_handler(address: str,
 
 class CH_handler(object):
     """
-    Hier mit werden die eingehenden OSC-Messages auf die Server funtionen gemappt
+    Hiermit werden eingehende OSC-Messages auf die Server funktionen gemappt
     """
 
     def __init__(self):
@@ -236,7 +236,7 @@ def poti_handler(address: str,
     poti = words[4]
 
     value = osc_arguments[0]
-    print(track + "." + poti + " : " + str(value))
+    #print(track + "." + poti + " : " + str(value))
 
     if track == "1":
         if poti == "gain":
@@ -262,11 +262,11 @@ def poti_handler(address: str,
             reaper.send_message("/track/33/mute", value)
             reaper.send_message("/track/34/mute", 1 - value)
         if poti == "width":
-            iem_1.send_message("/StereoEncoder/width", 
-                    numpy.interp(osc_arguments[0],  [0, 1], [-70, 70]))
-            print(osc_arguments[0])
+            val = numpy.interp(value, [0, 1], [0, 1])
+            iem_1.send_message("/StereoEncoder/width", float(val))
+            #print(str(value))
         if poti == "side":
-            reaper.send_message("/track/" + dj1_in + "/fx/2/fxparam/1/value", osc_arguments[0])
+            reaper.send_message("/track/" + dj1_in + "/fx/2/fxparam/1/value", value)
     elif track == "2":
         if poti == "gain":
             val = numpy.interp(value, [0, 1], [0, 0.921])
@@ -393,8 +393,8 @@ def poti_handler(address: str,
 def button_handler(address: str,
                    *osc_arguments: List[Any]) -> None:
     words = address.split("/")
-    button = words[4]
-    mode = words[5]
+    button = words[3]
+    mode = words[4]
 
     value = osc_arguments[0]
     if mode == "pfl":
@@ -472,6 +472,48 @@ def vu_handler(address: str,
         ctrl_mixer.send_message("/track/5/vu", val)
         # print(str(value))
 
+def moc_poti_handler(address: str,
+                 *osc_arguments: List[Any]) -> None:
+    words = address.split("/")
+    track = words[3]
+    poti = words[4]
+
+    value = osc_arguments[0]
+    #print(track + "." + poti + " : " + str(value))
+
+    if track == "0":
+        if poti == "width":
+            val = numpy.interp(value, [0, 1], [-360, 360])
+            iem_1.send_message("/StereoEncoder/width", float(val))
+            print(float(value))
+        if poti == "side":
+            val = numpy.interp(value, [0, 1], [0.5, 0.65])
+            reaper.send_message("/track/" + dj1_in + "/fx/2/fxparam/1/value", val)
+    if track == "1":
+        if poti == "width":
+            val = numpy.interp(value, [0, 1], [-360, 360])
+            iem_2.send_message("/StereoEncoder/width", float(val))
+            print(float(value))
+        if poti == "side":
+            val = numpy.interp(value, [0, 1], [0.5, 0.65])
+            reaper.send_message("/track/" + dj2_in + "/fx/2/fxparam/1/value", val)
+    if track == "2":
+        if poti == "width":
+            val = numpy.interp(value, [0, 1], [-360, 360])
+            iem_3.send_message("/StereoEncoder/width", float(val))
+            print(float(value))
+        if poti == "side":
+            val = numpy.interp(value, [0, 1], [0.5, 0.65])
+            reaper.send_message("/track/" + dj3_in + "/fx/2/fxparam/1/value", val)
+    if track == "3":
+        if poti == "width":
+            val = numpy.interp(value, [0, 1], [-360, 360])
+            iem_4.send_message("/StereoEncoder/width", float(val))
+            print(float(value))
+        if poti == "side":
+            val = numpy.interp(value, [0, 1], [0.5, 0.65])
+            reaper.send_message("/track/" + dj4_in + "/fx/2/fxparam/1/value", val)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -490,9 +532,10 @@ if __name__ == "__main__":
     dispatcher.map("/reaper/vu/*", vu_handler)
 
     # Motion-Controller
+    dispatcher.map("/moc/channel/*", moc_poti_handler)
     # dispatcher.map("/CoordinateConverter/*", iemToCtrlMotion_handler)
-    dispatcher.map("/motion/ch/*", ctrlMotionToIem_handler)
-    dispatcher.map("/moc/channel/*", ctrlMotionToIem_handler)
+    # dispatcher.map("/moc/channel/*", ctrlMotionToIem_handler)
+    # dispatcher.map("/moc/channel/*", ctrlMotionToIem_handler)
 
     server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))

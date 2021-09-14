@@ -483,7 +483,7 @@ def moc_poti_handler(address: str,
 
     if track == "0":
         if poti == "width":
-            val = numpy.interp(value, [0, 1], [-360, 360])
+            val = numpy.interp(value, [0, 1], [30, 145])
             iem_1.send_message("/StereoEncoder/width", float(val))
             print(float(value))
         if poti == "side":
@@ -491,7 +491,7 @@ def moc_poti_handler(address: str,
             reaper.send_message("/track/" + dj1_in + "/fx/2/fxparam/1/value", val)
     if track == "1":
         if poti == "width":
-            val = numpy.interp(value, [0, 1], [-360, 360])
+            val = numpy.interp(value, [0, 1], [30, 145])
             iem_2.send_message("/StereoEncoder/width", float(val))
             print(float(value))
         if poti == "side":
@@ -499,7 +499,7 @@ def moc_poti_handler(address: str,
             reaper.send_message("/track/" + dj2_in + "/fx/2/fxparam/1/value", val)
     if track == "2":
         if poti == "width":
-            val = numpy.interp(value, [0, 1], [-360, 360])
+            val = numpy.interp(value, [0, 1], [30, 145])
             iem_3.send_message("/StereoEncoder/width", float(val))
             print(float(value))
         if poti == "side":
@@ -507,7 +507,7 @@ def moc_poti_handler(address: str,
             reaper.send_message("/track/" + dj3_in + "/fx/2/fxparam/1/value", val)
     if track == "3":
         if poti == "width":
-            val = numpy.interp(value, [0, 1], [-360, 360])
+            val = numpy.interp(value, [0, 1], [30, 145])
             iem_4.send_message("/StereoEncoder/width", float(val))
             print(float(value))
         if poti == "side":

@@ -419,21 +419,21 @@ def poti_handler(address: str,
             xp = [0, 1.0]
             fp = [0, 1.0]
             val = numpy.interp(value, xp, fp)
-            reaper.send_message("/track/" + dj1_in + "/fx/4/fxparam/1/value", val)
-            reaper.send_message("/track/" + dj2_in + "/fx/4/fxparam/1/value", val)
-            reaper.send_message("/track/" + dj3_in + "/fx/4/fxparam/1/value", val)
-            reaper.send_message("/track/" + dj4_in + "/fx/4/fxparam/1/value", val)
-            
-            reaper.send_message("/track/" + dj1_in + "/fx/5/fxparam/2/value", val)
-            reaper.send_message("/track/" + dj2_in + "/fx/5/fxparam/2/value", val)
-            reaper.send_message("/track/" + dj3_in + "/fx/5/fxparam/2/value", val)
-            reaper.send_message("/track/" + dj4_in + "/fx/5/fxparam/2/value", val)
-        if poti == "fxres":
-            val = numpy.interp(value, [0, 1], [0, 0.8])
             reaper.send_message("/track/" + dj1_in + "/fx/4/fxparam/2/value", val)
             reaper.send_message("/track/" + dj2_in + "/fx/4/fxparam/2/value", val)
             reaper.send_message("/track/" + dj3_in + "/fx/4/fxparam/2/value", val)
             reaper.send_message("/track/" + dj4_in + "/fx/4/fxparam/2/value", val)
+            
+            reaper.send_message("/track/" + dj1_in + "/fx/5/fxparam/1/value", val)
+            reaper.send_message("/track/" + dj2_in + "/fx/5/fxparam/1/value", val)
+            reaper.send_message("/track/" + dj3_in + "/fx/5/fxparam/1/value", val)
+            reaper.send_message("/track/" + dj4_in + "/fx/5/fxparam/1/value", val)
+        if poti == "fxres":
+            val = numpy.interp(value, [0, 1], [0, 0.8])
+            reaper.send_message("/track/" + dj1_in + "/fx/5/fxparam/2/value", val)
+            reaper.send_message("/track/" + dj2_in + "/fx/5/fxparam/2/value", val)
+            reaper.send_message("/track/" + dj3_in + "/fx/5/fxparam/2/value", val)
+            reaper.send_message("/track/" + dj4_in + "/fx/5/fxparam/2/value", val)
             
             #reaper.send_message("/track/" + dj1_in + "/fx/5/fxparam/2/value", val)
             #reaper.send_message("/track/" + dj2_in + "/fx/5/fxparam/2/value", val)

@@ -52,7 +52,7 @@ Waiting ... and use x68-architecture instead ...
 	    vm.dirty_ratio = 10
 14. Clone repo
 	sudo apt install git
-	git clone git@github.com:ambisonics-audio-association/Ambijockey.git
+	git clone git@github.com:ambisonics-audio-association/MotionControllerUI.git
 15. Setup service
 	sudo cp Ambijockey/Controller_Mixer/software/raspberry/config/etc/systemd/system/mic.service /etc/systemd/system/
 	sudo systemctl start mic.service

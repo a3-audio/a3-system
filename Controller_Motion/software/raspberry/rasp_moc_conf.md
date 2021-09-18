@@ -1,10 +1,26 @@
 This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
 © Copyright 2021 Raphael Eismann 
 
-We don't use raspberry because qt6 is not compiled for arm at the moment. 
+We don't use raspberry because pyside6 is not compiled for arm at the moment. 
 
 Waiting ... and use x68-architecture instead ...
 
+2021-09-17 found pyside6 in aarc64 repo, installing...
+
+For aarch64:
+
+
+sudo useradd -m aaa
+sudo passwd aaa
+sudo usermod -aG dialout aaa
+sudo usermod -aG sudo aaa
+qt6-tools
+python-opengl
+qt6-svg
+python-pyserial-asyncio (from aur)
+
+
+For Raspian:
 
 1. prepare a micro-sd card with raspberry os
 2. put an empty file 'ssh' to boot-partition, this enables ssh
@@ -15,7 +31,6 @@ Waiting ... and use x68-architecture instead ...
 	sudo useradd -m aaa
 	sudo passwd aaa
 	sudo usermod -aG dialout aaa
-	sudo usermod -aG users aaa
 	sudo usermod -aG sudo aaa
 	sudo usermod -aG gpio aaa
 	exit

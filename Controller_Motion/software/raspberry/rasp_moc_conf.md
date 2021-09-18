@@ -7,13 +7,29 @@ Waiting ... and use x68-architecture instead ...
 
 2021-09-17 found pyside6 in aarc64 repo, installing...
 
-For aarch64:
+2021-09-18 it runs:
 
+install aarch64:
+https://archlinuxarm.org/platforms/armv8/broadcom/raspberry-pi-3
+
+ssh into your raspi, then:
 
 sudo useradd -m aaa
 sudo passwd aaa
+
 sudo usermod -aG dialout aaa
-sudo usermod -aG sudo aaa
+sudo usermod -aG users aaa
+sudo usermod -aG tty aaa
+sudo usermod -aG uucp aaa
+sudo usermod -aG video aaa
+sudo usermod -aG wheel aaa
+sudo usermod -aG input aaa
+
+copy files from . to corresponding systemfolder
+
+sudo systemctl enable getty@tty2
+sudo systemctl enable moc
+
 qt6-tools
 python-opengl
 qt6-svg

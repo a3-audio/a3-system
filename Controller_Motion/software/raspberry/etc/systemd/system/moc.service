@@ -4,12 +4,13 @@
 [Unit]
 Description=Motion Controller UI
 After=multi-user.target
+#After=mytty.service
 DefaultDependencies=no
 
 [Service]
 User=aaa
 #Group=tty
-Environment=LANG=C
+#Environment=LANG=C
 Environment=USER=aaa
 Environment=LOGNAME=aaa
 Environment=HOME=/home/aaa
@@ -25,20 +26,21 @@ Environment=DISPLAY=:0
 
 Environment=XAUTHORITY=/home/aaa/.Xauthority
 
-#Environment=MOTD_SHOWN=pam
+Environment=MOTD_SHOWN=pam
 #Environment=SHLVL=1
+Environment=XDG_VTNR=2
 
-#Environment=PATH=/home/aaa/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/opt/vc/bin
-#Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1001/bus
-#Environment=MAIL=/var/spool/mail/aaa
-#Environment=_=/usr/bin/printenv
+Environment=PATH=/home/aaa/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/opt/vc/bin
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1001/bus
+Environment=MAIL=/var/spool/mail/aaa
+Environment=_=/usr/bin/printenv
 
-#Environment=DRAWHOME=/usr/share/opencascade/resources/DrawResources
-#Environment=DRAWDEFAULT=/usr/share/opencascade/resources/DrawResources/DrawDefault
+Environment=DRAWHOME=/usr/share/opencascade/resources/DrawResources
+Environment=DRAWDEFAULT=/usr/share/opencascade/resources/DrawResources/DrawDefault
 
-ExecStart=/usr/bin/startx 
-#Restart=always
-#RestartSec=10
+ExecStart=/usr/bin/startx -- -nocursor
+Restart=always
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target

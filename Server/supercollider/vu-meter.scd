@@ -11,7 +11,7 @@ t.numOutputBusChannels = 2;
 t.numAudioBusChannels = 2048 * 8;
 t.blockSize = 64;
 //t.numWireBufs = 1024 * ~hoaNumChannels;
-t.memSize = 2048;
+t.memSize = 512;
 t.sampleRate = 44100;
 s.boot;
 
@@ -48,6 +48,6 @@ OSCFunc({ |msg| ~b.sendMsg("/vu/10", msg[3], msg[4]);}, '/reply10');
 OSCFunc({ |msg| ~b.sendMsg("/vu/11", msg[3], msg[4]);}, '/reply11');
 OSCFunc({ |msg| ~b.sendMsg("/vu/12", msg[3], msg[4]);}, '/reply12');
 
-s.meter;
+//s.meter;
 });
 

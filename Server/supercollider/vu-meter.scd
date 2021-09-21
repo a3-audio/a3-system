@@ -8,10 +8,10 @@ Server.local = Server.default;
 t = Server.local.options; // Get the local server's options
 t.numInputBusChannels = 12;
 t.numOutputBusChannels = 2;
-t.numAudioBusChannels = 2048 * 8;
+t.numAudioBusChannels = 16;
 t.blockSize = 64;
-//t.numWireBufs = 1024 * ~hoaNumChannels;
-t.memSize = 512;
+t.numWireBufs = 32;
+t.memSize = 256;
 t.sampleRate = 44100;
 s.boot;
 
@@ -22,18 +22,18 @@ s.waitForBoot({
 //~b.sendMsg("/vu_1-16", "peak, rms");
 
 
-{SendPeakRMS.kr(In.ar(2, 1), 10, 3, "/reply01")}.play;
-{SendPeakRMS.kr(In.ar(3, 1), 10, 3, "/reply02")}.play;
-{SendPeakRMS.kr(In.ar(4, 1), 10, 3, "/reply03")}.play;
-{SendPeakRMS.kr(In.ar(5, 1), 10, 3, "/reply04")}.play;
-{SendPeakRMS.kr(In.ar(6, 1), 10, 3, "/reply05")}.play;
-{SendPeakRMS.kr(In.ar(7, 1), 10, 3, "/reply06")}.play;
-{SendPeakRMS.kr(In.ar(8, 1), 10, 3, "/reply07")}.play;
-{SendPeakRMS.kr(In.ar(9, 1), 10, 3, "/reply08")}.play;
-{SendPeakRMS.kr(In.ar(10, 1), 10, 3, "/reply09")}.play;
-{SendPeakRMS.kr(In.ar(11, 1), 10, 3, "/reply10")}.play;
-{SendPeakRMS.kr(In.ar(12, 1), 10, 3, "/reply11")}.play;
-{SendPeakRMS.kr(In.ar(13, 1), 10, 3, "/reply12")}.play;
+{SendPeakRMS.kr(In.ar(2, 1), 8, 0, "/reply01")}.play;
+{SendPeakRMS.kr(In.ar(3, 1), 8, 0, "/reply02")}.play;
+{SendPeakRMS.kr(In.ar(4, 1), 8, 0, "/reply03")}.play;
+{SendPeakRMS.kr(In.ar(5, 1), 8, 0, "/reply04")}.play;
+{SendPeakRMS.kr(In.ar(6, 1), 8, 0, "/reply05")}.play;
+{SendPeakRMS.kr(In.ar(7, 1), 8, 0, "/reply06")}.play;
+{SendPeakRMS.kr(In.ar(8, 1), 8, 0, "/reply07")}.play;
+{SendPeakRMS.kr(In.ar(9, 1), 8, 0, "/reply08")}.play;
+{SendPeakRMS.kr(In.ar(10, 1), 8, 0, "/reply09")}.play;
+{SendPeakRMS.kr(In.ar(11, 1), 8, 0, "/reply10")}.play;
+{SendPeakRMS.kr(In.ar(12, 1), 8, 0, "/reply11")}.play;
+{SendPeakRMS.kr(In.ar(13, 1), 8, 0, "/reply12")}.play;
 
 OSCFunc({ |msg| ~b.sendMsg("/vu/01", msg[3], msg[4]);}, '/reply01');
 OSCFunc({ |msg| ~b.sendMsg("/vu/02", msg[3], msg[4]);}, '/reply02');

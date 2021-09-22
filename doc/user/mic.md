@@ -1,6 +1,6 @@
 ![[a3_systen_symbol_mix.png]]
 # A³ Mix
-A Rock-Solid DJ-Mixer
+4-Channel DJ-Mixer
 
 ## Connectivity
 - Rear: 2 XLR-Inputs for Hedphonesignal from A³ Core

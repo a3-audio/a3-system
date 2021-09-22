@@ -1,54 +1,39 @@
 # A³ Pandemic
 3D-Sound Dj-Setup with Live-Panning-Interface
 
-## Quickstart
-- Plug your instruments vinylplayer, cd-deck .. to A³ Core inputs
-- Plug your speaker in 
-```
-- ch 1 > A³ Mix L
-- ch 2 > A³ Mix R
-- ch 3 > Subwoofer
-- ch 4-n > Satellite-Speakers from front-left clockwise
-```
-- Plug CAT-cable from A³ Mix to A³ Core
-- Plug CAT-cable from A³ Motion to A³ Core
-- Switch Mainpower on
-- Plug-In your headphones
-- Put on your Sunglasses
+## Design
+A³ Pandemic is designed as dj-setup with 4 stereo input-channels and a tape-in for multichannel input. It is scalable and cappable to load tons of speakers in multiple 3d-soundspheres.
 
-## Goal for this project
-- Easy to use spatialization interface
-- Maximum flexibility
-- Best Quality
-- Stability at runtime
-- Community
-- Open-Source
-- Scalability
-- Compatibility
+It consits of three devices:
 
-## Devices
-### A³ Core (The Audioserver)
-The Audioserver is processing the analog audio, calculates the 3D-Soundsphere and is remotecontrolled via osc. Also it sends osc data with peak and rms information for vu-meters to the mixer.
-
-Usecases:
-* Case a) the core encodes and decodes. You insert your Vinyl/CD-Decks etc. 
-* Case b) the core decodes your b-format-encoded audio
-* Case c) the core relays discrete channels for each speaker
-* Case d) the core simulates speakersetups for dolby or auro-3d
-* Case e) the core and our dj-setup plus a-d as „tape-in“ with mode-selection and volume on A³mix
-
+### A³ Core (The Soundserver)
+A³ Core processes analog audiosignals, calculates 3d-soundspheres and is remotecontrolled by A³ Mix and A³ Motion (or any other osc-controller). A³ Core can handle a wide range of audiohardware to fit environments like dante, madi or any class-compliant. A³ Core runs safe and stable below 3 ms input-to-output-latency.
+ Audiohardware is the limit.
+ 
 ### A³ Mix (The DJ-Mixer)
-The DJ-Mixer is an osc-controller. It sends osc to the Audioserver in order to manipulate 3-band-eq, volume, channelgain, etc. like a normal dj-mixer would behave. It has osc-controlled vu-meters for each input and for 8 outputs (you're free to map audiochannels on it)
+A³ Mix is a DJ-Mixer with 3-band-kill-eq, fx-section for hi- and lopass, 3d-toggle, multichannel vu-meter and 3d-prelisten for headphones.
 
 ### A³ Motion (The Motion-Sampler)
-The Motion-Sampler is an osc-controller. It records and plays motion made by your fingertip on its touchscreen. We're using it to move audiosignals in a 3D-Soundsphere. You can hear the motion on headphones (activate corresponding pfl) and you can hear it on the main speakers - live interaction. Also it has samplerfunctionality like looplength, playmode, visual feedback and so on. It stores up to 4 different movements per channel, each on its own physical button.
+A³ Motion records motion from touchscreen, stores them on samplepads and plays them back as loop, onshot or different mode. A³ Motion handles looplength, it syncs to bpm-clock, spread stereowidth and boost side from mid/side processing.
+It is designed to pan tracks while scratching tracks. Live dynamic track motion in a 3d-soundsphere - Brainwashing.
 
-## Usecases:
-* Case a) the core encodes and decodes you send separated tracks & osc
-* Case b) the core decodes your b-format-encoded audio
-* Case c) the core gets discrete channels for each speaker
-* Case d) the core simulates speakersetups for dolby or auro-3d
-* Case e) the core and our dj-setup plus a-d as „tape-in“ with mode-selection and volume on A³mix
+## Quickstart
+- Plug in your instruments vinyl, cd, daw ..
+- Plug in your speaker
+- Put speakers in regular circle around center
+- Plug CAT-cable from A³ Mix and A³ Motion to A³ Core
+- Plug-In your headphones
+- Power on
+
+## Goal for this project
+- Community
+- Compatibility
+- Easy to use
+- Flexibility
+- Open-Source
+- Quality
+- Rock-Solid-Stable in runtime and housing
+- Scalable
 
 ## Contact
 - [contact@orbitalwaves.net](mailto:contact@orbitalwaves.net)
@@ -62,5 +47,4 @@ We put Mediafiles to [Seafile](https://tinycloud.lilbits.de/Media).
 - Get it on kickstarter
 
 ## Support
-- For Custum-Build Customer
-- From Community
+- Community

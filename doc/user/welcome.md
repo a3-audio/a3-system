@@ -1,5 +1,5 @@
 # A³ Pandemic
-3D-Sound Dj-Setup with Live-Panning-Interface - Made for Sunglasses
+3D-Sound Dj-Setup with Live-Panning-Interface
 
 ## Quickstart
 - Plug your instruments vinylplayer, cd-deck .. to A³ Core inputs
@@ -13,6 +13,7 @@
 - Plug CAT-cable from A³ Mix to A³ Core
 - Plug CAT-cable from A³ Motion to A³ Core
 - Switch Mainpower on
+- Plug-In your headphones
 - Put on your Sunglasses
 
 ## Goal for this project

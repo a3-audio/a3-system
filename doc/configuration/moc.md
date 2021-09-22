@@ -1,39 +1,19 @@
 # A³ Motion Configuration
 ## teensy
-software/teensy/src/main.cpp << flash it on your teensy 4.1
-
-## x86-sbc
-- install a linux distro
-- clone Ambijockey repo
-	- put everything in etc to corresponding place
-	- ToDo .xinitrc is missing in the homefolder yet
-- clone MotionControllerUI repo
-	- put MotionControllerUI/moc.sh to your home directory
-
-#### requirements
-- python3
-- pyside6
-- python-osc
-
-## Start
-- login
-- startx
-- ./moc.sh
+software/teensy/src/main.cpp << [[flashTeensy]]
 
 ## Raspberry
-
-We don't use raspberry because pyside6 is not compiled for arm at the moment. 
-
+Rapha:
+We don't use raspberry cause pyside6 isn't compiled for arm at the moment. 
 Waiting ... and use x68-architecture instead ...
+2021-09-17 found pyside6 in aarc64 repo, installing... on Raspberry 3b
+2021-09-18 Yay it runs:
 
-2021-09-17 found pyside6 in aarc64 repo, installing...
-
-2021-09-18 it runs:
-
+### archlinuxarm
 install aarch64:
 https://archlinuxarm.org/platforms/armv8/broadcom/raspberry-pi-3
 
-ssh into your raspi, then:
+on your raspi:
 
 sudo useradd -m aaa
 sudo passwd aaa
@@ -43,22 +23,21 @@ sudo usermod -aG users aaa
 sudo usermod -aG tty aaa
 sudo usermod -aG uucp aaa
 sudo usermod -aG video aaa
-sudo usermod -aG wheel aaa
 sudo usermod -aG input aaa
 
-copy files from . to corresponding systemfolder
+copy files from Controller_Motion/software/raspberry to corresponding systemfolder
+
+Install
+- qt6-tools
+- python-opengl
+- qt6-svg
+- python-pyserial-asyncio (from aur)
 
 sudo systemctl enable getty@tty2
 sudo systemctl enable moc
 
-qt6-tools
-python-opengl
-qt6-svg
-python-pyserial-asyncio (from aur)
 
-
-For Raspian:
-
+### Raspbian (! pyside6 not yet in repo ... waiting !)
 1. prepare a micro-sd card with raspberry os
 2. put an empty file 'ssh' to boot-partition, this enables ssh
 3. Boot Raspberry pi 4

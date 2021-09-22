@@ -1,6 +1,6 @@
 # A³ Mix Configuration
 ## teensy
-software/teensy/src/main.cpp << flash it on your teensy 4.1 (howto: /doc/teensy_flash_fw.md)
+software/teensy/src/main.cpp << [[flashTeensy]]
 
 ## Raspberry
 - install raspbian

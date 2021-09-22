@@ -1,34 +1,40 @@
 # A³ Core Configuration
+install Archlinux-rt
 
-## Static IP-Addresses
-aaa-core 192.168.43.50 (audioserver)
-aaa-mix 192.168.43.51 (mixer controller)
-aaa-moc 192.168.43.52 (motion controller)
-
-## Dependences
-### sudo pacman -S 
+## Dependencies
+### Pacman
 realtime-privileges
 rtirq
 rtapp
-
 python3 
 python-osc
-
 jack2
 qjackctl
 aj-snapshot
 iempluginsuite 
 sc
 
-### git clone | chmod +x | move to /usr/local/bin
-https://github.com/jacktrip/jmess-jack.git
+### Pip
+numpy
+pyserial
 
-### download | tar -xf | ./install-reaper.sh | opt
+### Git
+#### jmess
+git clone https://github.com/jacktrip/jmess-jack.git
+chmod +x jmess-jack/jmess 
+mv jmess-jack/jmess /usr/local/bin
+
+#### Ambijockey
+git clone https://github.com/ambisonics-audio-association/Ambijockey.git
+
+### Reaper 
+Download Linux x86_64
 https://www.reaper.fm/download.php
 
-### pip install
-numpy 
-pyserial
+Install:
+tar -xf 
+./install-reaper.sh 
+when prompt answer opt
 
 ## Configuration
 cp /etc/dhcpcd.conf /etc/dhcpcd-bck.conf

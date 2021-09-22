@@ -1,12 +1,119 @@
-This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
-© Copyright 2021 Raphael Eismann 
-
-# MOTION CONTROLLER
-
-OSC TRANSMITTER AND PATTERNSAMPLER FOR 3-DIMENSIONAL AUDIO MOTION.
+![[a3_systen_symbol_moc.png]]
+# A³ Motion
+Touch-Motion-Sampler for Audio-Live-Panning
 
 ## OVERVIEW:
+### HARDWARE LAYOUT
+```
+ CH1 CH2 CH3 CH4
+  |   |   |   |
+  v   v   v   v
+|---------------|
+| W | W | W | W | <- POTIS FOR Encoder-Width
+|---------------|
+| S | S | S | S | <- POTIS FOR Stereo-Sides-Boost
+|---------------|
+|               |
+|               |
+|               |
+|               |
+| TOUCHDISLPAY  | <- FANCY VISUALISATION OF CHANNELMOVEMENT
+|               |    
+|               |
+|               |
+|               |
+|---------------|
+| E | E | E | E | <- ENCODER FOR menu, looplength, recordlength, record enable
+|---------------|
+| B | B | B | B | <- SAMPLEBUTTON TO STORE AND PLAY MOTION-PATTERNS
+|---------------|    |
+| B | B | B | B | <--|                        
+|---------------|    |                 THE
+| B | B | B | B | <--|            BUTTON-MATRIX 
+|---------------|    |
+| B | B | B | B | <--|
+|---------------|
+```
 
+### DISPLAY LAYOUT
+The touchscreen displays a lot of information but it makes sense in order 
+to control and see all information on one fingertip.
+
+```
+       ch1            ch2           ch3            ch4        <- AUDIOCHANNEL        
+        |              |             |              |                 
+        v              v             v              v                 
+|-----------------------------------------------------------|         
+| WIDTH:  -    | WIDTH:  30°  | WIDTH:  20°  | WIDTH:  30°  |         
+| SIDES: -     | SIDES: +30dB | SIDES: +30dB | SIDES: 30+dB | 
+|-----------------------------------------------------------|
+|                            ch1                            |          
+|                            sp2                            |
+|                      __----ch2----__                      |
+|                     L               R                     |
+|                                                           |
+|                                                           |
+|                                                           |
+|                                                           |
+|  sp1                                                 sp3  |
+|  ch1                                                 ch1  |
+|                                                           |
+|        R                                            L     |
+|         |                 CENTER                    |     | <- TOPVIEW ON STAGE
+|          |                                         |      |    
+|         ch3                                       |       |    
+|          |                                       ch4      |    
+|           |                                       |       |
+|            L                                     |        |
+|                                                 |         |
+|                                                 R         |
+|                                                           |
+|                                                           |
+|                                                           |
+|                                                           |
+|             sp5                         sp4               |
+|             ch1                         ch1               |
+|                                                           |    
+|-----------------------------------------------------------|         
+| LENGTH: 34   | LENGTH: 34   | LENGTH: 34   | LENGTH: 34   | <- LOOPMODE
+| LOOP:   ONE  | LOOP:   LO0P | LOOP:   ONE  | LOOP:   ONE  |  
+|-----------------------------------------------------------|    
+| RCV:192.168.178.125:1234|SND:192.168.178.126:1232|BPM:128 | <- SYSTEMINFO
+|-----------------------------------------------------------|
+
+TOUCHDISPLAY LEGEND:
+- INFOFIELD: COLORS - 4 channels, 4 infofield areas, 4 different colors
+- INFOFIELD: WIDTH - How wide your sources spread in the sphere (exept monomode)
+- INFOFIELD: SIDES - Boost the sideinformation of a stereotrack because this information is what does the impact in ambisonic - concider it as 3d-boost
+- INFOFIELD: BPM - Calculated BPM for each Track, cool to run musicious motionpatterns
+- INFOFIELD: BEAT - Map motionpatterns on estimated BPM
+- INFOFIELD: BARS - Lenght of motionsequence
+
+- EAGLEVIEW: SP - The speakerposition
+- EAGLEVIEW: CH - The channelposition (channels are colorcoded)
+- EAGLEVIEW: LR - The width of a stereosource
+
+- SYSTEMVIEW: RCV - This device OSC input
+- SYSTEMVIEW: SND - This device OSC output
+- SYSTEMVIEW: BPM - Master BPM
+```
+
+## Usage
+1. Push first encoder to enter recordmode for channel one
+2. A centered circle indicator shows Looplength. It is devided in 8 steps (default). Turn the encoder to change length
+4. Activate the 3d-Button on A³ Mix, channel one
+5. Now interact with the Audio-Panner by moving a finger on A³ Motion screen.
+6. A³ Motion records the last x steps
+7. A red ball indicates the position of channel one Stereo-Signal center
+8. Set Stereo-Width to widen up or narrow down the sound from Stereo to mono
+9. Set Stereosides carefully. They are effektive in 3d-Audio to boost tracks with less stereo-information than others. It can be used to create "popping out" effects. But it could also destroy the Sound - depending...
+10. Push a Sample-Button to store recorded Motion
+11. Record stops, Samplebutton indicates green steady led - "is playing"
+12. Tap the Samplebutton again to pause the loop
+13. Doubletap the button to reset the loop to step one
+14. Tap a Loopsection to change behavior of stored sample (loop, one-shot, loop-on-hold)
+
+## an early vision
 PLAYMODE
 - PLAY
 - RUNTIME-EDIT
@@ -40,102 +147,7 @@ SETUPMODE
     - IP-Address, PORT to receiver
     - Export settings to usb
 
-## HARDWARE LAYOUT
-```
- CH1 CH2 CH3 CH4
-  |   |   |   |
-  v   v   v   v
-|---------------|
-| W | W | W | W | <- POTIS FOR WIDTH
-|---------------|
-| S | S | S | S | <- POTIS FOR SIDES (3d-Boost)
-|---------------|
-|               |
-|               |
-|               |
-|               |
-| TOUCHDISLPAY  | <- FANCY VISUALISATION OF CHANNELMOVEMENT
-|               |    
-|               |
-|               |
-|               |
-|---------------|
-| E | E | E | E | <- ENCODER
-|---------------|
-| B | B | B | B | <- BUTTONS TO REC AND PLAY MOTION-PATTERNS
-|---------------|    |
-| B | B | B | B | <--|                        
-|---------------|    |                 THE
-| B | B | B | B | <--|            BUTTON-MATRIX 
-|---------------|    |
-| B | B | B | B | <--|
-|---------------|
-```
 
-## DISPLAY LAYOUT
-The touchscreen displays a lot of information but it makes sense in order 
-to control and see all information on one fingertip.
-
-```
-       ch1            ch2           ch3            ch4        <- INFOFIELDS        
-        |              |             |              |                 
-        v              v             v              v                 
-|-----------------------------------------------------------|         
-| WIDTH:  -    | WIDTH:  30°  | WIDTH:  20°  | WIDTH:  30°  |         
-| SIDES: -     | SIDES: +30dB | SIDES: +30dB | SIDES: 30+dB | 
-|-----------------------------------------------------------|
-|                            ch1                            |          
-|                            sp2                            |
-|                      __----ch2----__                      |
-|                     L               R                     |
-|                                                           |
-|                                                           |
-|                                                           |
-|                                                           |
-|  sp1                                                 sp3  |
-|  ch1                                                 ch1  |
-|                                                           |
-|        R                                            L     |
-|         |                                           |     | <- EAGLEVIEW: CURRENT SOUNDFIELD
-|          |                                         |      |    
-|         ch3                                       |       |    
-|          |                                       ch4      |    
-|           |                                       |       |
-|            L                                     |        |
-|                                                 |         |
-|                                                 R         |
-|                                                           |
-|                                                           |
-|                                                           |
-|                                                           |
-|             sp5                         sp4               |
-|             ch1                         ch1               |
-|                                                           |    
-|-----------------------------------------------------------|         
-| MODE:   MONO | MODE:   STER | MODE:   VBAP | MODE:   AMBI |         
-| LENGTH: 34   | LENGTH: 34   | LENGTH: 34   | LENGTH: 34   |
-| LOOP:   ONE  | LOOP:   LO0P | LOOP:   ONE  | LOOP:   ONE  |  
-|-----------------------------------------------------------|    
-| RCV:192.168.178.125:1234|SND:192.168.178.126:1232|BPM:128 | <- SYSTEMINFO
-|-----------------------------------------------------------|
-
-TOUCHDISPLAY LEGEND:
-- INFOFIELD: COLORS - 4 channels, 4 infofield areas, 4 different colors
-- INFOFIELD: MODE - The Stereosource will be converted to Mono, Stereo, Ambisonic
-- INFOFIELD: WIDTH - How wide your sources spread in the sphere (exept monomode)
-- INFOFIELD: SIDES - Boost the sideinformation of a stereotrack because this information is what does the impact in ambisonic - concider it as 3d-boost
-- INFOFIELD: BPM - Calculated BPM for each Track, cool to run musicious motionpatterns
-- INFOFIELD: BEAT - Map motionpatterns on estimated BPM
-- INFOFIELD: BARS - Lenght of motionsequence
-
-- EAGLEVIEW: SP - The speakerposition
-- EAGLEVIEW: CH - The channelposition (channels are colorcoded)
-- EAGLEVIEW: LR - The width of a stereosource
-
-- SYSTEMVIEW: RCV - This device OSC input
-- SYSTEMVIEW: SND - This device OSC output
-- SYSTEMVIEW: BPM - Master BPM
-```
 ## PLAYMODE
 - Encoder 1-4: Push
 

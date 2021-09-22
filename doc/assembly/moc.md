@@ -1,5 +1,7 @@
 # A³ Motion Assembly
 ## PCB
+### Mainboard
+### Buttonmatrix
 ## Hardware
 - powered with PoE -> downstep to 3V inside
 - runs on a x86-sbc

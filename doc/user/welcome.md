@@ -35,16 +35,17 @@ It is designed to pan tracks while scratching tracks. Live dynamic track motion 
 - Rock-Solid-Stable in runtime and housing
 - Scalable
 
-## Contact
-- [contact@orbitalwaves.net](mailto:contact@orbitalwaves.net)
-- [mattermost](https://talk.lilbits.de/ambisonics)
-
 ## Media
-We put Mediafiles to [Seafile](https://tinycloud.lilbits.de/Media).
+We put Mediafiles to [Seafile](https://tinycloud.lilbits.de/Media)
 
 ## Buy
 - Get a custom-build set for 5000€ (write us a message)
 - Get it on kickstarter
 
+## Contact
+- [contact@orbitalwaves.net](mailto:contact@orbitalwaves.net)
+- [mattermost](https://talk.lilbits.de/ambisonics)
+
 ## Support
+- Help-desk
 - Community

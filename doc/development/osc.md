@@ -1,14 +1,11 @@
-© Copyright 2021 A³ Ambisonic Audio Adventures UG (Haftungsbeschränkt). 
-This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
-
-# OSC A³pandemics
+# OSC A³ Pandemic
 All parameters are normalized to float [range 0-1] 
 
 TODO talk about OSC conventions / suggestion by Jendrik:
 - template: /ambijockey/ch/{#}/{controller}/{function}/.../{args}
 - example: /ambijockey/ch/1/mixer/eq/mid/[0-1]
 
-## A³core (server.py translates incoming osc and sends to daw)
+## A³ Core (server.py translates incoming osc and sends to daw)
 
 | SOURCE | DESTINATION (Reaper) | Description |
 | :------| :------------------- | :---------- |
@@ -30,7 +27,7 @@ TODO talk about OSC conventions / suggestion by Jendrik:
 | /ambijockey/moc/ui/elevation | [StereoEncoderPort]/elevation | Range -180 / 180 |
 
 
-## A³mic (mic.py sends potis and knobs receives vu-meters)
+## A³ Mix (mic.py sends potis and knobs receives vu-meters)
 - /ambijockey/mic/ch/1-4/pfl
 - /ambijockey/mic/ch/1-4/gain
 - /ambijockey/mic/ch/1-4/hi
@@ -48,7 +45,7 @@ TODO talk about OSC conventions / suggestion by Jendrik:
 - /vu/rcv/01-04 << input vu ff (peak/rms)
 - /vu/rcv/05-12 << output vu ff (peak/rms)
 
-## A³moc (serialAdapter.py)
+## A³ Motion (serialAdapter.py)
 - /ambijockey/moc/ch/1-4/motion/ xy [0-1]
 - /ambijockey/moc/ch/1-4/width/ [0-1]
 - /ambijockey/moc/ch/1-4/sides/ [0-1]

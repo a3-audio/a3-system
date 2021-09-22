@@ -1,24 +1,5 @@
-This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
-© Copyright 2021 Raphael Eismann, Jendrik Bradaczek 
-
-# A³mix
-## Setup
-### teensy
-software/teensy/src/main.cpp << flash it on your teensy 4.1 (howto: /doc/teensy_flash_fw.md)
-
-### Raspberry
-- install raspbian
-- clone Ambijockey repo
-
-#### requirements
-- python3
-- python-osc
-- pip install numpy
-- pip install process
-
-## Start
-mic.py
-
+# A³ Mix Assembly
+## PCB
 ## Hardware
 - powered with PoE -> downstep to 3V inside
 - runs on raspberry pi 3b
@@ -52,12 +33,3 @@ mic.py
         - stereo
         - 3d
     - 1 8x32 led-matrix for output-vu
-
-## Open Sound Control (osc)
-- receives osc messages from 
-	- aaa-core/vu-meter.scd 
-    - function: vu-meters
-- sends osc messages to 
-    - aaa-core/server.py
-    - function: daw-controller, 4ch dj-mixer style
-- messages /doc/osc.md

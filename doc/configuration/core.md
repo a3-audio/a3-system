@@ -1,11 +1,49 @@
-This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
-© Copyright 2021 Raphael Eismann 
+# A³ Core Configuration
 
-# server configuration
+## Static IP-Addresses
+aaa-core 192.168.43.50 (audioserver)
+aaa-mix 192.168.43.51 (mixer controller)
+aaa-moc 192.168.43.52 (motion controller)
+
+## Dependences
+### sudo pacman -S 
+realtime-privileges
+rtirq
+rtapp
+
+python3 
+python-osc
+
+jack2
+qjackctl
+aj-snapshot
+iempluginsuite 
+sc
+
+### git clone | chmod +x | move to /usr/local/bin
+https://github.com/jacktrip/jmess-jack.git
+
+### download | tar -xf | ./install-reaper.sh | opt
+https://www.reaper.fm/download.php
+
+### pip install
+numpy 
+pyserial
+
+## Configuration
+cp /etc/dhcpcd.conf /etc/dhcpcd-bck.conf
+cp config/etc/dhcpcd.conf /etc/dhcpcd.conf
+groupadd realtime
+usermod -aG realtime aaa
+usermod -aG audio aaa
+
+## Need to flash Microcontroller via usb
+sudo chmod a+rw /dev/ttyACM0
+
+## start
+Server/server.py
 
 # audioengine
-
-
 ## realtime
 
 REALTIME PRIORITY CONFIGURATION
@@ -76,3 +114,4 @@ MODE="autodec"
 In general you don't need to modify the list of applications, but if you are using Roon as control point for HQPlayer, the real player would be the last one, so we suggest to remove RoonAppliance from that list. This is true in general if you are using one of the applications in the list only as a control point.
 
 You can add a new application to the list, if you want to give realtime priority.
+

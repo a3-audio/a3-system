@@ -1,5 +1,26 @@
-This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
-© Copyright 2021 Raphael Eismann 
+# A³ Motion Configuration
+## teensy
+software/teensy/src/main.cpp << flash it on your teensy 4.1
+
+## x86-sbc
+- install a linux distro
+- clone Ambijockey repo
+	- put everything in etc to corresponding place
+	- ToDo .xinitrc is missing in the homefolder yet
+- clone MotionControllerUI repo
+	- put MotionControllerUI/moc.sh to your home directory
+
+#### requirements
+- python3
+- pyside6
+- python-osc
+
+## Start
+- login
+- startx
+- ./moc.sh
+
+## Raspberry
 
 We don't use raspberry because pyside6 is not compiled for arm at the moment. 
 

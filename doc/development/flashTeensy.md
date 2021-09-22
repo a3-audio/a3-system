@@ -1,5 +1,4 @@
-© Copyright 2021 A³ Ambisonic Audio Adventures UG (Haftungsbeschränkt). 
-This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
+# Flash Firmware to Teensy
 
 https://docs.platformio.org/en/latest/core/installation.html#system-requirements
 
@@ -9,7 +8,7 @@ virtualenv -p python3 ~/.platformio/penv
 to enter penv:
 source ~/.platformio/penv/bin/activate
 
-platformio
+## platformio
 ----------
 
 Board Identifier:

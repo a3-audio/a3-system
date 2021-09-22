@@ -1,5 +1,19 @@
-This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
-© Copyright 2021 Raphael Eismann 
+# A³ Mix Configuration
+## teensy
+software/teensy/src/main.cpp << flash it on your teensy 4.1 (howto: /doc/teensy_flash_fw.md)
+
+## Raspberry
+- install raspbian
+- clone Ambijockey repo
+
+### requirements
+- python3
+- python-osc
+- pip install numpy
+- pip install process
+
+### Start
+~/mic.py
 
 1. prepare a micro-sd card with raspberry os
 2. put an empty file 'ssh' to boot-partition, this enables ssh

@@ -41,7 +41,7 @@ We put Mediafiles to [Seafile](https://tinycloud.lilbits.de/Media)
 ## Buy
 - Get a custom-build set for 5000€ (write us a message)
 - Get it on kickstarter
-- Build your own ~1500€ without audiohardware
+- Build your own ~1700€ without audiohardware
 
 ## Contact
 - [contact@orbitalwaves.net](mailto:contact@orbitalwaves.net)

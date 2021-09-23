@@ -8,7 +8,7 @@ It consits of three devices:
 
 ### A³ Core (The Soundserver)
 A³ Core processes analog audiosignals, calculates 3d-soundspheres and is remotecontrolled by A³ Mix and A³ Motion (or any other osc-controller). A³ Core can handle a wide range of audiohardware to fit environments like dante, madi or any class-compliant. A³ Core runs safe and stable below 3 ms input-to-output-latency.
- The audiohardware is the limit.
+Audiohardware is the limit.
  
 ### A³ Mix (The DJ-Mixer)
 A³ Mix is a DJ-Mixer with 3-band-kill-eq, fx-section for hi- and lopass, 3d-toggle, multichannel vu-meter and 3d-prelisten for headphones.

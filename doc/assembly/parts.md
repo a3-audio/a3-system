@@ -236,12 +236,16 @@ Connectors and pcb-sockets
 - https://www.alternate.de/Seasonic/SSP-400ET2-Bulk-400W-PC-Netzteil/html/product/1673568
 - https://www.alternate.de/Palit/GeForce-GT-710-Grafikkarte/html/product/1250617
 - https://www.alternate.de/SanDisk/SSD-Plus-240-GB/html/product/1281937
+- https://www.alternate.de/TP-Link/TL-SG1005P-Switch/html/product/1476067
 
 ### Thomann housing (99,00 €)
 - https://www.thomann.de/intl/flyht_pro_rack_4u_double_door_profi.htm
 
+### Adapter for poe (7,35 €)
+- https://www.ebay.com.au/itm/3-Pack-micro-USB-to-USB-C-Adapter-/351653628292
+
 ## summing
-- The whole system without audiohardware  cost **1658.32 €** (plus ~20€ jst cables)
+- The whole system without audiohardware  cost **1708.57 €** (plus ~20€ jst cables)
 
 ## thomann, small audiohardware (752,90 €)
 - https://www.thomann.de/intl/rme_hdspe_raydat.htm

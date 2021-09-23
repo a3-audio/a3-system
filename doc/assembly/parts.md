@@ -241,7 +241,7 @@ Connectors and pcb-sockets
 ### Thomann housing (99,00 €)
 - https://www.thomann.de/intl/flyht_pro_rack_4u_double_door_profi.htm
 
-### Adapter for poe (7,35 €)
+### Adapter for PoE (7,35 €)
 - https://www.ebay.com.au/itm/3-Pack-micro-USB-to-USB-C-Adapter-/351653628292
 
 ## summing

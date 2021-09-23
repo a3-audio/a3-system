@@ -1,5 +1,5 @@
 ![[a3_systen_symbol_moc.png]]
-# A³ Motion
+# A³ Motion usermanual
 Touch-Motion-Sampler for Audio-Live-Panning
 
 ## OVERVIEW:

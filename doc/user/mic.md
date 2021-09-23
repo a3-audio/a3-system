@@ -1,5 +1,5 @@
 ![[a3_systen_symbol_mix.png]]
-# A³ Mix
+# A³ Mix usermanual
 4-Channel DJ-Mixer
 
 ## Connectivity

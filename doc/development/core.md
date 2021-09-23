@@ -1,11 +1,15 @@
 # A³ Core Development
 ## Python
-## Supercollider
-## Reaper
-### Signalflow
-Audio signalflow for ambijockey reaper project:
+server.py is the OSC-router 
 
-## masterbus 
+## Supercollider VU-Meter
+vu-meter.scd is a 12-Channel Jack to osc vu-meter for A³ Mix
+
+## Reaper
+pluginhost and mixerbackend
+
+### Signalflow
+Masterbus
 ```
 receives    name                
 --------------------------------
@@ -18,7 +22,7 @@ receives    name
 [21-inf]    decoderbus          
 ```
 
-## phonesbus
+Phonesbus
 ```
 receives    name                
 --------------------------------
@@ -32,7 +36,7 @@ receives    name
 -           mainmixbus
 ```
 
-## reverbbus 
+Reverbbus
 ```
 receives    name                
 --------------------------------
@@ -40,7 +44,7 @@ receives    name
 [17-32]     reverb(ph)          
 ```
 
-## channelbus (per channel)
+Channelbus
 ```
 receives    name                
 --------------------------------
@@ -57,7 +61,7 @@ receives    name
 [25-40]     b-format(preF)      
 ```
 
-## basechannels (per channel)
+Basechannels
 ```
 receives    		name                
 --------------------------------

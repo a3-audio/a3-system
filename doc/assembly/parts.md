@@ -102,7 +102,7 @@
 We're using a 7 inch capacative multitouch display:
 https://www.amazon.de/SunFounder-Raspberrry-Touchscreen-LCD-Bildschirm-kapazitivem/dp/B08VNPYQ7Y
 
-But it will be better on a 12 inch 4:3. It's hard to find fitting solutions. We found this:
+It will be better on 12 inch 4:3. It's hard to find fitting solutions. We found this:
 - https://www.ebay.ca/itm/133609187640?hash=item1f1bba6938:g:WqAAAOSwH~Rf24CJ
 - https://www.ebay.ca/itm/371570432534?hash=item568352da16:g:orIAAOSwSflbkqfI
 - https://www.embeddedpanelpc.com/sale-13883763-vga-12-15-rugged-capacitive-touch-monitor-1000cd-m2-hdmi.html
@@ -240,15 +240,16 @@ Connectors and pcb-sockets
 
 ### Thomann housing (99,00 €)
 - https://www.thomann.de/intl/flyht_pro_rack_4u_double_door_profi.htm
+- Housing for A³ Motion
+- Housing for A³ Mix
 
 ### Adapter for PoE (7,35 €)
 - https://www.ebay.com.au/itm/3-Pack-micro-USB-to-USB-C-Adapter-/351653628292
 
 ## summing
-- The whole system without audiohardware  cost **1708.57 €** (plus ~20€ jst cables)
+The whole system without audiohardware  cost **1708.57 € incl. MwSt**Copy files from Server/config to corresponding systemfolder
 
 ## thomann, small audiohardware (752,90 €)
 - https://www.thomann.de/intl/rme_hdspe_raydat.htm
 - https://www.thomann.de/intl/behringer_ada_8200_ultragain.htm
 - https://www.thomann.de/intl/pro_snake_optical_kabel_05m.htm
-

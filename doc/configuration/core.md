@@ -1,59 +1,66 @@
 # A³ Core Configuration
-install Archlinux-rt
+https://wiki.archlinux.org/title/Installation_guide
 
 ## Dependencies
-### Pacman
+### linux-rt
+https://aur.archlinux.org/packages/linux-rt/
+Put this in your /etc/pacman.conf
+```
+[realtime]
+Server = https://pkgbuild.com/~dvzrv/repos/realtime/$arch
+```
+Then update your system:
+- pacman -Syu
+
+## Configuration
+- cp /etc/dhcpcd.conf /etc/dhcpcd-bck.conf
+- cp config/etc/dhcpcd.conf /etc/dhcpcd.conf
+- user-add aaa
+- groupadd realtime
+- usermod -aG realtime aaa
+- usermod -aG audio aaa
+
+### Pacman -S 
 realtime-privileges
 rtirq
-rtapp
 python3 
 python-osc
 jack2
 qjackctl
 aj-snapshot
 iempluginsuite 
-sc
+supercollider
 
-### Pip
+### Install from AUR
+rtapp
+
+### Pip install
 numpy
 pyserial
 
-### Git
+### Git clone
 #### jmess
-git clone https://github.com/jacktrip/jmess-jack.git
-chmod +x jmess-jack/jmess 
-mv jmess-jack/jmess /usr/local/bin
+https://github.com/jacktrip/jmess-jack.git
+- chmod +x jmess-jack/jmess 
+- mv jmess-jack/jmess /usr/local/bin
 
 #### Ambijockey
-git clone https://github.com/ambisonics-audio-association/Ambijockey.git
+https://github.com/ambisonics-audio-association/Ambijockey.git
 
 ### Reaper 
 Download Linux x86_64
 https://www.reaper.fm/download.php
 
 Install:
-tar -xf 
-./install-reaper.sh 
-when prompt answer opt
+- tar -xf 
+- ./install-reaper.sh 
+- when prompt answer to install in /opt
 
-## Configuration
-cp /etc/dhcpcd.conf /etc/dhcpcd-bck.conf
-cp config/etc/dhcpcd.conf /etc/dhcpcd.conf
-groupadd realtime
-usermod -aG realtime aaa
-usermod -aG audio aaa
-
-## Need to flash Microcontroller via usb
-sudo chmod a+rw /dev/ttyACM0
-
-## start
-Server/server.py
+## To flash Microcontroller from A³ Core to usb
+- chmod a+rw /dev/ttyACM0
 
 # audioengine
-## realtime
-
-REALTIME PRIORITY CONFIGURATION
-
+## realtime priority configuration
 In Audiolinux realtime priority is assigned by 2 services: rtirq for irq priority and rtapp for application priority.
 
 1) RTIRQ configuration
@@ -121,3 +128,5 @@ In general you don't need to modify the list of applications, but if you are usi
 
 You can add a new application to the list, if you want to give realtime priority.
 
+## Start
+- Server/server.py

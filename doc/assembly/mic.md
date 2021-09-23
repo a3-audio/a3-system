@@ -1,11 +1,14 @@
 # A³ Mix Assembly
 ## PCB
+Mainboard-pcb kicad project is in the hardware-section of Ambijockey Repo. It is ready to fabricate.
+
 ## Hardware
-- powered with PoE -> downstep to 3V inside
-- runs on raspberry pi 3b
-- raspberry is connected via usb (/dev/ttyACM0) to
-- teensy 4.1, it has
-    - 4 multiplexer hc4051 (8ch each)
+- Raspberry 3b
+- Teensy 4.1
+- PoE to 5V Adapter
+- Raspberry and Teensy are connected via usb (/dev/ttyACM0)
+
+- 4 multiplexer hc4051 (8ch each)
         function: audiochannel-control
         potis
         - gain 
@@ -14,9 +17,8 @@
         - eq low
         - volume
         mode-buttons
-        - mono
-        - stereo
-        - ambionic
+        - 3d on/off
+        - fx on/off
     - 1 hc4051
         function: masterchannel-control
         potis
@@ -25,11 +27,6 @@
         - phones mix
         - headphones volume
     - 5 led-buttons for heapdphones prelisten function (pfl)
-    - 1 NeoPixel-strip (ws2811 led-controller)
-        - 3 leds mode-status
-        - 9 leds input vu
-    - 9 mode-buttons, 3 per channel
-        - mono
-        - stereo
-        - 3d
-    - 1 8x32 led-matrix for output-vu
+    - 1 NeoPixel-strip (ws2811) 9 leds input vu
+	- 1 NeoPixel-strip (ws2811) for fx and 3d-section
+    - 8x32 led-matrix for output-vu

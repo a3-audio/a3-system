@@ -2,8 +2,20 @@
 # A³ Core Usermanual
 Scalable "set and forget" soundprocessor
 
-## Custom-made
-We build A³ Core by customer needs. A³ Core can handle a wide range of audiohardware to fit every environment like dante, madi or adat. 
-The audiohardware is the limit. We tested a few old adat-cards, A³ Core runs safe below 3 ms input-to-output-latency (24ch/io).
+## audio io-layout
+It is free configurable but comes with a preset layout
 
-- Clean it regular
+### inputs
+- 1-2 = Stereo 1
+- 3-4 = Stereo 2
+- 5-6 = Stereo 3
+- 7-8 = Stereo 4
+- 9-24 = Tape-In
+
+### outputs
+- 1-2 = A³ Mix
+- 3 = Subwoofer
+- 4-n = Speaker
+
+## Service
+- Clean fan-filters regulary

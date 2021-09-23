@@ -2,22 +2,22 @@
 
 https://docs.platformio.org/en/latest/core/installation.html#system-requirements
 
-to init penv:
-virtualenv -p python3 ~/.platformio/penv
+Init penv:
+``` virtualenv -p python3 ~/.platformio/penv ```
 
-to enter penv:
-source ~/.platformio/penv/bin/activate
+Enter penv:
+``` source ~/.platformio/penv/bin/activate ``` 
 
 ## platformio
-----------
+Get board identifier:
+``` pio boards teensy ``` 
 
-Board Identifier:
-pio boards teensy
-
-Initialize Project:
+Initialize project:
+``` 
 mkdir pathToProject
 cd pathToProject
 pio project init --board teensy41
+``` 
 
-run project:
-pio run --target upload
+Upload:
+``` pio run --target upload ``` 

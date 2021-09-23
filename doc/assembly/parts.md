@@ -227,9 +227,9 @@ Connectors and pcb-sockets
 - https://www.amazon.de/AZDelivery-MAX7219-Matrix-Anzeigemodul-Arduino/dp/B07HJDV3HN
 - https://www.amazon.de/AZDelivery-Display-Arduino-Raspberry-Gratis/dp/B01L9GC470
 
-## core (575,57 €)
+## core (598,57 €)
 ### alternate pc-hardware
-- https://www.alternate.de/Inter-Tech/2U-2098-SL-Server-Geh%E4use/html/product/1544035
+- https://www.alternate.de/Chenbro/RM24100-L-Server-Geh%E4use/html/product/1251018
 - https://www.alternate.de/Intel/Core-i5-9600KF-Prozessor/html/product/1503088
 - https://www.alternate.de/ASUS/PRIME-B365-PLUS-Mainboard/html/product/1544960
 - https://www.alternate.de/Kingston-ValueRAM/SO-DIMM-16-GB-DDR4-2666-Arbeitsspeicher/html/product/1452108
@@ -237,10 +237,14 @@ Connectors and pcb-sockets
 - https://www.alternate.de/Palit/GeForce-GT-710-Grafikkarte/html/product/1250617
 - https://www.alternate.de/SanDisk/SSD-Plus-240-GB/html/product/1281937
 
-## thomann audiohardware (752,90 €)
+### Thomann housing (99,00 €)
+- https://www.thomann.de/intl/flyht_pro_rack_4u_double_door_profi.htm
+
+## summing
+- The whole system without audiohardware  cost **1658.32 €** (plus ~20€ jst cables)
+
+## thomann, small audiohardware (752,90 €)
 - https://www.thomann.de/intl/rme_hdspe_raydat.htm
 - https://www.thomann.de/intl/behringer_ada_8200_ultragain.htm
 - https://www.thomann.de/intl/pro_snake_optical_kabel_05m.htm
 
-## summing
-- The whole system inkluding audiohardware for a 5.1 setup cost 2289.22 € (without ~20€ for the jst cables)

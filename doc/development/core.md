@@ -2,7 +2,7 @@
 ## Python
 ## Supercollider
 ## Reaper
-### A³ Signalflow
+### Signalflow
 Audio signalflow for ambijockey reaper project:
 
 ## masterbus 

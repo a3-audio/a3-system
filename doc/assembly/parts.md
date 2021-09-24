@@ -238,18 +238,18 @@ Connectors and pcb-sockets
 - https://www.alternate.de/SanDisk/SSD-Plus-240-GB/html/product/1281937
 - https://www.alternate.de/TP-Link/TL-SG1005P-Switch/html/product/1476067
 
-### Thomann housing (99,00 €)
+### Housing (199,00 €)
 - https://www.thomann.de/intl/flyht_pro_rack_4u_double_door_profi.htm
-- Housing for A³ Motion
-- Housing for A³ Mix
+- Housing for A³ Motion (~50 €)
+- Housing for A³ Mix (~50 €)
 
 ### Adapter for PoE (7,35 €)
 - https://www.ebay.com.au/itm/3-Pack-micro-USB-to-USB-C-Adapter-/351653628292
 
 ## summing
-The whole system without audiohardware  cost **1708.57 € incl. MwSt**Copy files from Server/config to corresponding systemfolder
+The whole system without audiohardware  cost **1402.94 € incl. MwSt** 
 
-## thomann, small audiohardware (752,90 €)
+## small audiohardware (752,90 €)
 - https://www.thomann.de/intl/rme_hdspe_raydat.htm
 - https://www.thomann.de/intl/behringer_ada_8200_ultragain.htm
 - https://www.thomann.de/intl/pro_snake_optical_kabel_05m.htm

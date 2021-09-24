@@ -32,7 +32,7 @@ Clone repo to /home/aaa/
 git clone git@github.com:ambisonics-audio-association/MotionControllerUI.git /home/aaa
 ``` 
 
-enable services
+Enable services
 ``` 
 sudo systemctl enable getty@tty2
 sudo systemctl enable moc

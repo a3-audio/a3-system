@@ -43,7 +43,7 @@ userdel pi
 
 Copy files from Controller_Mixer/software/raspberry to corresponding systemfolder
 
-configure raspberry
+Configure raspberry
 ``` 
 raspi-config
 	3 Interface Options > P8 Remote GPIO > yes

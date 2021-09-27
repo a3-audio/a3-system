@@ -3,8 +3,8 @@
 ### Mainboard
 ### Buttonmatrix
 ## Hardware
-- powered with PoE -> downstep to 3V inside
-- runs on a x86-sbc
+- powered with PoE -> downstep to 3v on Teensy
+- runs on a raspberry 3b
 - sbc is connected via usb (/dev/ttyACM0) to
 - teensy 4.1, it has
     - 1 multiplexer hc4051 (8ch)

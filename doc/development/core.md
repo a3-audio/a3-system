@@ -1,4 +1,8 @@
 # A³ Core Development
+
+A³ Core runs archlinux and has the following tasks:
+- 
+
 ## Python
 server.py is the OSC-router 
 

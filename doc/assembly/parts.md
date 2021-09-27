@@ -227,6 +227,12 @@ Connectors and pcb-sockets
 - https://www.amazon.de/AZDelivery-MAX7219-Matrix-Anzeigemodul-Arduino/dp/B07HJDV3HN
 - https://www.amazon.de/AZDelivery-Display-Arduino-Raspberry-Gratis/dp/B01L9GC470
 
+### headphone-amp (20,68,- €)
+https://www.joom.com/en/products/605c3ea89f660501d16bd93f
+https://www.thomann.de/intl/neutrik_nmj2_hc_s.htm
+https://www.thomann.de/intl/neutrik_ncj6fis_combo.htm (2x)
+microphonecable 0.5m
+
 ## core (598,57 €)
 ### alternate pc-hardware
 - https://www.alternate.de/Chenbro/RM24100-L-Server-Geh%E4use/html/product/1251018
@@ -247,9 +253,11 @@ Connectors and pcb-sockets
 - https://www.ebay.com.au/itm/3-Pack-micro-USB-to-USB-C-Adapter-/351653628292
 
 ## summing
-The whole system without audiohardware  cost **1402.94 € incl. MwSt** 
+The whole system without audiohardware  cost **1423.62 € incl. MwSt** 
 
 ## small audiohardware (752,90 €)
 - https://www.thomann.de/intl/rme_hdspe_raydat.htm
 - https://www.thomann.de/intl/behringer_ada_8200_ultragain.htm
 - https://www.thomann.de/intl/pro_snake_optical_kabel_05m.htm
+
+## Reaper license (192,26 €)

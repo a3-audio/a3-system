@@ -1,0 +1,16 @@
+{
+    "border": "normal",
+    "current_border_width": 2,
+    "floating": "auto_off",
+    "name": "DeaDBeeF",
+    "percent": 1,
+    "swallows": [
+       {
+            "class": "^Deadbeef$",
+            "instance": "^deadbeef$",
+            "title": "^DeaDBeeF"
+       }
+    ],
+    "type": "con"
+}
+

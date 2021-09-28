@@ -5,7 +5,6 @@ https://wiki.archlinux.org/title/Installation_guide
 Follow the Professional_audio guide:
 https://wiki.archlinux.org/title/Professional_audio
 
-
 ## Root operations on A³ Core
 ``` 
 user-add -m aaa
@@ -31,12 +30,11 @@ pip install numpy pyserial
 
 install rtapp (from aur)
 
-git clone https://github.com/ambisonics-audio-association/Ambijockey.git /home/aaa
-
+git clone https://github.com/ambisonics-audio-association/Ambijockey.git /home/aaa/
 
 ```
 
-Download reaper for Linux x86_64:
+Download and activate reaper for Linux x86_64:
 https://www.reaper.fm/download.php
 
 Install reaper:
@@ -49,21 +47,39 @@ Install reaper:
 Copy files to corresponding system-folder:
 ```
 /home/aaa/Ambijockey/Server/config/
-├── aaa-connections.jmess
 ├── etc
 │   ├── dhcpcd.conf
 │   ├── rtapp
 │   │   └── rtapp.conf
-│   └── rtirq.conf
-└── usr
-    └── bin
-        └── aaa-connections.sh
+│   ├── rtirq.conf
+│   └── systemd
+│       └── system
+│           └── core.service
+├── home
+│   └── aaa
+│       ├── .config
+│       │   └── i3
+│       │       ├── config
+│       │       └── layout
+│       │           ├── workspace-10.json
+│       │           ├── workspace-7.json
+│       │           ├── workspace-8.json
+│       │           └── workspace-9.json
+│       └── .xinitrc
+├── usr
+│   └── bin
+│       └── aaa-connections.sh
+└── .xinitrc
 ```
 
 Configure:
 ```
 chmod +x /usr/bin/aaa-connections.sh
+chmod +x /home/aaa/Ambijockey/Server/startup.sh
 chmod a+rw /dev/ttyACM0
-systemctl enable server
+systemctl enable core
+systemctl enable rtirq
+systemctl enable rtapp
+
 ```
 

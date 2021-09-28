@@ -1,14 +1,19 @@
 # A³ Mix Assembly
 ## PCB
-Mainboard-pcb kicad project is in the hardware-section of Ambijockey Repo. It is ready to fabricate.
+A³ Mix Mainboard pcb is published as kicad project and ready to fabricate gerber-files. You should find all information to assemble peripherals in the circuit-diagram of kicad-project:
+```
+/home/aaa/Ambijockey/hardware/mic/a3mix-mainboard-v0.2
+```
+
+## Housing
+A³ Mix housing isn't ready yet ...
 
 ## Hardware
 - Raspberry 3b
+- powered with PoE to 5V Adapter -> downstep to 3v on Teensy
+- Raspberry and Teensy are connected via usb
 - Teensy 4.1
-- PoE to 5V Adapter
-- Raspberry and Teensy are connected via usb (/dev/ttyACM0)
-
-- 4 multiplexer hc4051 (8ch each)
+	- 4 multiplexer hc4051 (8ch each)
         function: audiochannel-control
         potis
         - gain 
@@ -16,7 +21,7 @@ Mainboard-pcb kicad project is in the hardware-section of Ambijockey Repo. It is
         - eq mid
         - eq low
         - volume
-        mode-buttons
+      - mode-buttons
         - 3d on/off
         - fx on/off
     - 1 hc4051

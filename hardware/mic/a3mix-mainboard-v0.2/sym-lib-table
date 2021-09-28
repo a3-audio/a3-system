@@ -1,0 +1,6 @@
+(sym_lib_table
+  (lib (name mixer.pcb)(type Legacy)(uri /home/ra/Ambijockey/Controller_Mixer/pcb/controller_mixer_pcb_v0.2/lib_sch/74xx.lib)(options "")(descr ""))
+  (lib (name teensy)(type Legacy)(uri /home/ra/Ambijockey/Controller_Mixer/pcb/controller_mixer_pcb_v0.2/lib_sch/teensy.lib)(options "")(descr ""))
+  (lib (name power)(type Legacy)(uri /home/ra/Ambijockey/Controller_Mixer/pcb/controller_mixer_pcb_v0.2/lib_sch/power.lib)(options "")(descr ""))
+  (lib (name mixer.pcb-rescue)(type Legacy)(uri ${KIPRJMOD}/mixer.pcb-rescue.lib)(options "")(descr ""))
+)

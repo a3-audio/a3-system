@@ -1,10 +1,11 @@
 # A³ Motion Assembly
 ## PCB
+A³ Motion
 ### Mainboard
 ### Buttonmatrix
 ## Hardware
-- powered with PoE -> downstep to 3v on Teensy
 - runs on a raspberry 3b
+- powered with PoE -> downstep to 3v on Teensy
 - sbc is connected via usb (/dev/ttyACM0) to
 - teensy 4.1, it has
     - 1 multiplexer hc4051 (8ch)

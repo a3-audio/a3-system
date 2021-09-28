@@ -1,0 +1,4 @@
+(fp_lib_table
+  (lib (name jst)(type KiCad)(uri /home/ra/Ambijockey/Controller_Mixer/pcb/controller_mixer_pcb_v0.2/lib_fp.pretty/Connector_JST.pretty)(options "")(descr ""))
+  (lib (name teensy)(type KiCad)(uri /home/ra/Ambijockey/Controller_Mixer/pcb/controller_mixer_pcb_v0.2/lib_fp.pretty/teensy.pretty)(options "")(descr ""))
+)

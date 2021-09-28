@@ -4,7 +4,6 @@ A³ Mix Mainboard pcb is published as kicad project and ready to fabricate gerbe
 ```
 /home/aaa/Ambijockey/hardware/mic/a3mix-mainboard-v0.2
 ```
-
 ## Housing
 A³ Mix housing isn't ready yet ...
 

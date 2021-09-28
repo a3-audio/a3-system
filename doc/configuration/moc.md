@@ -18,12 +18,14 @@ usermod -aG uucp aaa
 usermod -aG video aaa
 usermod -aG input aaa
 ```
-Clone repo:
+#### Clone repo:
 ```
 cd /home/aaa
-git clone git@github.com:ambisonics-audio-association/MotionControllerUI.git /home/aaa
+git clone git@github.com:ambisonics-audio-association/Ambijockey.git
+cd Ambijockey/ControllerMotion/software/
+git clone git@github.com:ambisonics-audio-association/MotionControllerUI.git
 ``` 
-Copy files to corresponding system-folder:
+#### Copy files to corresponding system-folder:
 ```
  /home/aaa/ControllerMotion/software/raspberry
     ├── boot
@@ -39,20 +41,17 @@ Copy files to corresponding system-folder:
     │   └── X11
     │       └── Xwrapper.config
 ```
-
-Install depencies:
+#### Install depencies:
 ``` 
 pacman -S qt6-tools python-opengl qt6-svg git
 python-pyserial-asyncio (from aur)
 ``` 
-
-Enable services:
+#### Enable services:
 ``` 
 sudo systemctl enable getty@tty2
 sudo systemctl enable moc
 ``` 
-
-Setup static ip-address:
+#### Setup static ip-address:
 ``` 
 mv /etc/dhcpcd.conf /etc/dhcpcd.conf.bck
 touch /etc/dhcpcd.conf
@@ -62,10 +61,9 @@ nano /etc/dhcpcd.conf
 	  static routers=192.168.43.1
 	  static domain_name_servers=192.168.43.1 8.8.8.8
 ``` 
-
-Edit raspberry config-file
+#### Edit raspberry config-file
 ```
 nano /boot/config.txt
 display_rotate=1
 dtoverlay=pi3-disable-bt
-``` 
+```

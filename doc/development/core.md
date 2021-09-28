@@ -24,10 +24,10 @@ The supercollider projectfile:
 - ```Server/supercollider/vu-meter.scd```
 
 ## Reaper Audioengine
-A³ Core runs a jack2 audioengine on top of alsa. Qjackctl may be used to patch virtual audiocables from hardware to reaper and back out. Reaper acts as the mixerbackend which does the complex routing and userinteractiontasks. It has a complex routing and bus-mapping described later. It processes the inputsignal from audiohardware and outputs calculated signals for headphones and speakers. The speaker must be placed in a most chubbiest spherical installation. Electronic corrections are possible for closer speakers.
+A³ Core runs a jack2 audio-engine on top of alsa. Qjackctl may be used to patch virtual audio-cables from hardware to reaper and back out. Reaper acts as the mixer-backend which does the complex routing and user-interaction-tasks. It has a complex routing and bus-mapping described later. It processes the input-signal from audio-hardware and outputs calculated signals for headphones and speakers. The speaker must be placed in a most chubbiest spherical installation. Electronic corrections are possible for closer speakers.
 Jmess is used to store and restore jack-connections, aj-snapshot is used to store and restore alsa-connections.
 
-The Audiohardware could be any class-compliant or compatible madi/dante card. It is connected to A³ Core via PCIe or USB. Instruments, speakers, headphones and DJ-Gear are directly plugged into A³ Core's audiohardware.
+The Audiohardware could be any class-compliant or compatible Madi/Dante card. It is connected to A³ Core via PCIe or USB. Instruments, speakers, headphones and DJ-Gear are directly plugged into A³ Core's audiohardware.
 
 The reaper pojectfile:
 - ```Server/reaper/linux/reaper_ambijockey.RPP```

@@ -1,6 +1,9 @@
 # A³ Motion Developement
 A³ Motion backend runs on ArchlinuxARM on a Raspberry 3b. As Microcontroller we're using Teensy 4.1. 
 
+## UI
+A³ Motion UI is the most potential and complex part to develop. It is in a different repository (see [[Ambijockey/doc/configuration/moc]]).
+
 ## Raspberry
 Connected to:
 - A³ Core (lan)

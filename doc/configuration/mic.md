@@ -3,8 +3,7 @@
 software/teensy/src/main.cpp << [[flashTeensy]]
 
 ## Raspberry
-Install Raspbian:
-https://www.raspberrypi.org/documentation/computers/getting-started.html
+[Install Raspbian](https://www.raspberrypi.org/documentation/computers/getting-started.html)
 
 1. put an empty file 'ssh' on Raspbian boot-partition, this enables ssh
 2. search for your raspberry ip-address ie: nmap -sn 192.168.1.0/24
@@ -23,8 +22,7 @@ usermod -aG users aaa
 usermod -aG tty aaa
 usermod -aG uucp aaa
 ```
-
-Install depencies
+#### Install depencies
 ```
 apt install python python-osc python-pip git python3-numpy
 
@@ -37,15 +35,13 @@ exit
 ssh aaa@192.168.1.x
 userdel pi
 
-``` 
-
-Clone repository:
+```
+#### Clone repository:
 ```
 cd /home/aaa
 git clone git@github.com:ambisonics-audio-association/Ambijockey.git
 ```
-
-Copy files to corresponding system-folder:
+#### Copy files to corresponding system-folder:
 ```
 ControllerMixer/software/raspberry
    └── config
@@ -55,8 +51,7 @@ ControllerMixer/software/raspberry
                └── system
                    └── mic.service
 ```
-
-Configure raspberry:
+#### Configure raspberry:
 ``` 
 raspi-config
 	3 Interface Options > P8 Remote GPIO > yes
@@ -71,8 +66,7 @@ nano .bashrc
 	export PATH="/home/aaa/.local/bin:$PATH"
 
 ``` 
-
-Setup service:
+#### Setup service:
 ``` 
 systemctl start mic.service
 systemctl enable mic.service
@@ -80,8 +74,7 @@ systemctl enable mic.service
     cd /etc/systemd/system/multi-user.target.wants
     sudo ln -s /etc/systemd/system/mic.service
 ``` 
-
-Setup static ip-address
+#### Setup static ip-address
 ``` 
 mv /etc/dhcpcd.conf /etc/dhcpcd.conf.bck
 touch /etc/dhcpcd.conf
@@ -90,11 +83,10 @@ Edit /etc/dhcpcd.conf
   static ip_address=192.168.43.51/24
   static routers=192.168.43.1
   static domain_name_servers=192.168.43.1 8.8.8.8
-``` 
-
-Not sure if we still need "fix for raspberry random hold":
-``` 
+```
+#### Not sure if we still need "fix for raspberry random hold":
+```
 nano /etc/sysctl.conf
     vm.dirty_background_ratio = 5
     vm.dirty_ratio = 10
-``` 
+```

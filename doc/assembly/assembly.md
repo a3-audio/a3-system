@@ -6,7 +6,7 @@
 - Buy parts: [[parts]]
 
 ## Hardware
-A working prototype exists. We stresstests it by using 12V car-hifi with centered downfire subwoofer on a hand-wagon at 40°C summerday. It works pretty well and meanwhile rocksolid stable.
+A working prototype exists. We stresstests it by using 12V car-hifi with 15 inch centered downfire subwoofer on hand-wagon at 40°C summerday. It works pretty well and meanwhile rocksolid stable.
 
 ## Pictures of prototype
 ### A³ Mix

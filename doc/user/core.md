@@ -1,4 +1,3 @@
-![[a3_systen_symbol_core.png]]
 # A³ Core usermanual
 Scalable "set and forget" soundprocessor
 

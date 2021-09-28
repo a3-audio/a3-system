@@ -1,12 +1,12 @@
 # A³ Pandemic Assembly
-## How to build your own
+## Build your own
 - A³ Core: [[Ambijockey/doc/assembly/core]]
 - A³ Mix: [[Ambijockey/doc/assembly/mic]]
 - A³ Motion: [[Ambijockey/doc/assembly/moc]]
 - Buy parts: [[parts]]
 
 ## Hardware
-A working prototype exists. We stresstests it by using 12V car-hifi with 15 inch centered downfire subwoofer on hand-wagon at 40°C summerday. It works pretty well and meanwhile rocksolid stable.
+A working prototype exists. We stresstests it by using 12V car-hifi with 15 inch centered downfire subwoofer and 5 jbl control one satellites on stands. We put everything on hand-wagon and played at 40°C summerday. It works pretty well and meanwhile rocksolid stable.
 
 ## Pictures of prototype
 ### A³ Mix

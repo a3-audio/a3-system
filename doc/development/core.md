@@ -1,18 +1,38 @@
 # A³ Core Development
+## Backend
+A³ Core runs archlinux with a realtimekernel. It must be well tuned to get low latency and stable audiosignals.
 
-A³ Core runs archlinux and has the following tasks:
-- 
+Connected to:
+- A³ Mix (lan)
+- Audiohardware (PCIe, usb)
+- FOH-Setup-Page (webfrontend) <- wip
 
-## Python
-server.py is the OSC-router 
+Osc communication:
+- Send to internal audio-engine
+- Send to any external target (light- or video-engine)
+- Send vu-meters to A³ Mix
+- Receive poti and buttonstates from A³ Mix and A³ Motion (or any other osc-controller)
+- Receive ambisonic-encoder parameters from A³ Motion (or any other osc-controller)
 
-## Supercollider VU-Meter
-vu-meter.scd is a 12-Channel Jack to osc vu-meter for A³ Mix
+OSC-Router:
+- ```Server/server.py```
 
-## Reaper
-pluginhost and mixerbackend
+## Supercollider VU-Meter.scd
+Acts as 12-Channel Jack client and sends vu-meter (peak and rms) via osc to A³ Mix.
 
-### Signalflow
+The supercollider projectfile:
+- ```Server/supercollider/vu-meter.scd```
+
+## Reaper Audioengine
+A³ Core runs a jack2 audioengine on top of alsa. Qjackctl may be used to patch virtual audiocables from hardware to reaper and back out. Reaper acts as the mixerbackend which does the complex routing and userinteractiontasks. It has a complex routing and bus-mapping described later. It processes the inputsignal from audiohardware and outputs calculated signals for headphones and speakers. The speaker must be placed in a most chubbiest spherical installation. Electronic corrections are possible for closer speakers.
+Jmess is used to store and restore jack-connections, aj-snapshot is used to store and restore alsa-connections.
+
+The Audiohardware could be any class-compliant or compatible madi/dante card. It is connected to A³ Core via PCIe or USB. Instruments, speakers, headphones and DJ-Gear are directly plugged into A³ Core's audiohardware.
+
+The reaper pojectfile:
+- ```Server/reaper/linux/reaper_ambijockey.RPP```
+
+### Reaper bus-mapping
 Masterbus
 ```
 receives    name                
@@ -25,7 +45,6 @@ receives    name
 [21-inf]    stereobus           
 [21-inf]    decoderbus          
 ```
-
 Phonesbus
 ```
 receives    name                
@@ -39,7 +58,6 @@ receives    name
 -           dj4-pfl
 -           mainmixbus
 ```
-
 Reverbbus
 ```
 receives    name                
@@ -47,7 +65,6 @@ receives    name
 [1-16]      reverb              
 [17-32]     reverb(ph)          
 ```
-
 Channelbus
 ```
 receives    name                
@@ -64,7 +81,6 @@ receives    name
 [23,24]     stereo(preF)        
 [25-40]     b-format(preF)      
 ```
-
 Basechannels
 ```
 receives    		name                

@@ -17,6 +17,13 @@ It has a „tape-in“ section for multichannel or stereo direct to mix bus.
 A³ Motion records motion from touchscreen, stores them on samplepads and plays them back as loop, oneshot or different mode. A³ Motion handles looplength, it syncs to bpm-clock, spreads stereowidth and boosts side from mid/side processing.
 It is designed for dynamic live interaction with audiopanning in a 3d-soundsphere while scratching tracks.
 
+## Usecases:
+- A³ Core encodes and decodes: You can preset your show with stereotracks and controlldata. You can use [osccontrol-light](https://github.com/drlight-code/osccontrol-light) vst-plugin to send osc-data from inside daw.
+- A³ Core decodes: You can pre-encode your show and just send 3rd order b-format (acn, sn3d)
+- A³ Core just routes: You get discrete channels for each speaker
+- A³ Core simulates speakersetup: You can play direct out from dolby or auro-3d decoder
+- A³ Tripple: You use A³ Mix and A³ Motion with dj-players to scratch your tracks while moving them.
+
 ## Quickstart
 - Plug in your instruments vinyl, cd, daw ..
 - Plug in your speaker
@@ -25,12 +32,10 @@ It is designed for dynamic live interaction with audiopanning in a 3d-soundspher
 - Plug-In your headphones
 - Power on
 
-## Usecase:
-1. A³ Core encodes and decodes: You can preset your show with stereotracks and controlldata. You can use [osccontrol-light](https://github.com/drlight-code/osccontrol-light) vst-plugin to send osc-data from inside daw.
-2. A³ Core decodes: You can pre-encode your show and just send 3rd order b-format (ACN, SN3D)
-3. A³ Core just routes: You get discrete channels for each speaker
-4. A³ Core simulates speakersetup: You can play direct out from dolby or auro-3d decoder
-5. A³ Tripple: You use A³ Mix and A³ Motion with dj-players to scratch your tracks while moving them.
+## In depth
+- Asembly: [[assembly]]
+- Configuration: [[configuration]]
+- Development: [[development]]
 
 ## Goal for this project
 - 3d-sound everywhere
@@ -51,10 +56,16 @@ We put Mediafiles to [Seafile](https://tinycloud.lilbits.de/Media)
 - Get it on kickstarter
 - Build your own ~1500€ without audiohardware
 
-## Contact
-- [contact@orbitalwaves.net](mailto:contact@orbitalwaves.net)
-- [mattermost](https://talk.lilbits.de/ambisonics)
+## Git
+A³ Pandemic Mainrepo:
+https://github.com/ambisonics-audio-association/Ambijockey
+A³ Moc UI-Repo:
+https://github.com/ambisonics-audio-association/MotionControllerUI
 
 ## Support
 - Help-desk
 - Community
+
+## Contact
+- [contact@orbitalwaves.net](mailto:contact@orbitalwaves.net)
+- [mattermost](https://talk.lilbits.de/ambisonics)

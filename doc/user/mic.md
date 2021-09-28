@@ -1,6 +1,6 @@
 ![[a3_systen_symbol_mix.png]]
 # A³ Mix usermanual
-4-Channel DJ-Mixer
+4-Channel DJ-Mixer-OSC-Controller with buttons for fx-engine and 3d-toggle. Builtin headphone-amp and jacks to feed (xlr) and receive (jack).
 
 ## Connectivity
 - Rear: 2 XLR-Inputs for Hedphonesignal from A³ Core

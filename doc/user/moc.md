@@ -1,6 +1,6 @@
 ![[a3_systen_symbol_moc.png]]
 # A³ Motion usermanual
-Touch-Motion-Sampler for Audio-Live-Panning
+A³ Motion is a Touch-Motion-Sampler for Audio-Live-Panning. It has a touchdisplay which lets you control audiosources as balls in listening area. You can record and store motions on samplebanks. Map them on buttons to interact pause/play/oneshot in livesituations.
 
 ## OVERVIEW:
 ### HARDWARE LAYOUT

@@ -3,7 +3,7 @@
 4-Channel DJ-Mixer-OSC-Controller with buttons for fx-engine and 3d-toggle. Builtin headphone-amp and jacks to feed (xlr) and receive (jack).
 
 ## Connectivity
-- Rear: 2 XLR-Inputs for Hedphonesignal from A³ Core
+- Rear: 2 XLR-Inputs for Headphone-signal from A³ Core
 - Rear: 1 Cat for PoE and Communication with A³ Core (LAN)
 - Front: Headphone jack 6.3mm
 
@@ -12,7 +12,7 @@
 - Poti: Kill-EQ-Hi
 - Poti: Kill-EQ-Mid
 - Poti: Kill-EQ-Low
-- Button: Prelisten channel on heapdphone (pfl)
+- Button: Prelisten channel on headphone (pfl)
 - Poti: Channel volume
 
 ## Mastersection

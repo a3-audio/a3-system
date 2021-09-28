@@ -1,12 +1,12 @@
 # A³ Motion Configuration
-## teensy
+## Teensy
 software/teensy/src/main.cpp << [[flashTeensy]]
 
 ## Raspberry
 install aarch64:
 https://archlinuxarm.org/platforms/armv8/broadcom/raspberry-pi-3
 
-On raspi:
+### Root operations on raspberry
 ```
 useradd -m aaa
 passwd aaa
@@ -18,27 +18,41 @@ usermod -aG uucp aaa
 usermod -aG video aaa
 usermod -aG input aaa
 ```
+Clone repo:
+```
+cd /home/aaa
+git clone git@github.com:ambisonics-audio-association/MotionControllerUI.git /home/aaa
+``` 
+Copy files to corresponding system-folder:
+```
+ /home/aaa/ControllerMotion/software/raspberry
+    ├── boot
+    │   ├── cmdline.txt
+    │   └── config.txt
+    ├── etc
+    │   ├── sudoers
+    │   ├── systemd
+    │   │   ├── getty@tty2.service.d
+    │   │   │   └── override.conf
+    │   │   └── system
+    │   │       └── moc.service
+    │   └── X11
+    │       └── Xwrapper.config
+```
 
-Copy files from Controller_Motion/software/raspberry to corresponding systemfolder
-
-Install depencies
+Install depencies:
 ``` 
 pacman -S qt6-tools python-opengl qt6-svg git
 python-pyserial-asyncio (from aur)
 ``` 
 
-Clone repo to /home/aaa/
-``` 
-git clone git@github.com:ambisonics-audio-association/MotionControllerUI.git /home/aaa
-``` 
-
-Enable services
+Enable services:
 ``` 
 sudo systemctl enable getty@tty2
 sudo systemctl enable moc
 ``` 
 
-Setup static ip-address
+Setup static ip-address:
 ``` 
 mv /etc/dhcpcd.conf /etc/dhcpcd.conf.bck
 touch /etc/dhcpcd.conf
@@ -49,8 +63,9 @@ nano /etc/dhcpcd.conf
 	  static domain_name_servers=192.168.43.1 8.8.8.8
 ``` 
 
-Edit /boot/config.txt
-``` 
+Edit raspberry config-file
+```
+nano /boot/config.txt
 display_rotate=1
 dtoverlay=pi3-disable-bt
 ``` 

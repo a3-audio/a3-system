@@ -18,4 +18,4 @@ It is free configurable but comes with a preset layout for your venue. Connect D
 - 4-n = Speaker
 
 ## Service
-- Clean fan-filters regulary
+- Clean fan-filters regularly

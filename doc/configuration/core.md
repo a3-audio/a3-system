@@ -2,7 +2,11 @@
 Install Archlinux:
 https://wiki.archlinux.org/title/Installation_guide
 
-On A³ Core
+Follow the Professional_audio guide:
+https://wiki.archlinux.org/title/Professional_audio
+
+
+## Root operations on A³ Core
 ``` 
 user-add -m aaa
 groupadd realtime
@@ -42,10 +46,23 @@ Install reaper:
 - when prompt answer to install in /opt
 ```
 
-Copy files from Server/config to corresponding systemfolder
+Copy files to corresponding system-folder:
+```
+/home/aaa/Ambijockey/Server/config/
+├── aaa-connections.jmess
+├── etc
+│   ├── dhcpcd.conf
+│   ├── rtapp
+│   │   └── rtapp.conf
+│   └── rtirq.conf
+└── usr
+    └── bin
+        └── aaa-connections.sh
+```
 
 Configure:
 ```
+chmod +x /usr/bin/aaa-connections.sh
 chmod a+rw /dev/ttyACM0
 systemctl enable server
 ```

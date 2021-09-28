@@ -1,6 +1,6 @@
 ![[a3_systen_symbol_moc.png]]
 # A³ Motion usermanual
-A³ Motion is a Touch-Motion-Sampler for Audio-Live-Panning. It has a touchdisplay which lets you control audiosources as balls in listening area. You can record and store motions on samplebanks. Map them on buttons to interact pause/play/oneshot in livesituations.
+A³ Motion is a Touch-Motion-Sampler for Audio-Live-Panning. It has a touchdisplay which lets you control audio-sources as balls in listening area. You can record and store motions on samplebanks. Map them on buttons to interact pause/play/one-shot in live-situations.
 
 ## OVERVIEW:
 ### HARDWARE LAYOUT
@@ -47,16 +47,16 @@ to control and see all information on one fingertip.
 | WIDTH:  -    | WIDTH:  30°  | WIDTH:  20°  | WIDTH:  30°  |         
 | SIDES: -     | SIDES: +30dB | SIDES: +30dB | SIDES: 30+dB | 
 |-----------------------------------------------------------|
-|                            ch1                            |          
-|                            sp2                            |
+|                                                           |          
+|                                                           |
 |                      __----ch2----__                      |
 |                     L               R                     |
 |                                                           |
 |                                                           |
 |                                                           |
 |                                                           |
-|  sp1                                                 sp3  |
-|  ch1                                                 ch1  |
+|                                                           |
+|                                                           |
 |                                                           |
 |        R                                            L     |
 |         |                 CENTER                    |     | <- TOPVIEW ON STAGE
@@ -71,8 +71,8 @@ to control and see all information on one fingertip.
 |                                                           |
 |                                                           |
 |                                                           |
-|             sp5                         sp4               |
-|             ch1                         ch1               |
+|                                                           |
+|                                                           |
 |                                                           |    
 |-----------------------------------------------------------|         
 | LENGTH: 34   | LENGTH: 34   | LENGTH: 34   | LENGTH: 34   | <- LOOPMODE
@@ -80,7 +80,7 @@ to control and see all information on one fingertip.
 |-----------------------------------------------------------|    
 | RCV:192.168.178.125:1234|SND:192.168.178.126:1232|BPM:128 | <- SYSTEMINFO
 |-----------------------------------------------------------|
-
+```
 TOUCHDISPLAY LEGEND:
 - INFOFIELD: COLORS - 4 channels, 4 infofield areas, 4 different colors
 - INFOFIELD: WIDTH - How wide your sources spread in the sphere (exept monomode)
@@ -96,24 +96,26 @@ TOUCHDISPLAY LEGEND:
 - SYSTEMVIEW: RCV - This device OSC input
 - SYSTEMVIEW: SND - This device OSC output
 - SYSTEMVIEW: BPM - Master BPM
-```
+
 
 ## Usage
 1. Push first encoder to enter recordmode for channel one
-2. A centered circle indicator shows Looplength. It is devided in 8 steps (default). Turn the encoder to change length
+2. A centered circle indicator shows loop-length. It is divided in 8 steps (default). Turn the encoder to change length
 4. Activate the 3d-Button on A³ Mix, channel one
 5. Now interact with the Audio-Panner by moving a finger on A³ Motion screen.
 6. A³ Motion records the last x steps
 7. A red ball indicates the position of channel one Stereo-Signal center
 8. Set Stereo-Width to widen up or narrow down the sound from Stereo to mono
-9. Set Stereosides carefully. They are effektive in 3d-Audio to boost tracks with less stereo-information than others. It can be used to create "popping out" effects. But it could also destroy the Sound - depending...
-10. Push a Sample-Button to store recorded Motion
-11. Record stops, Samplebutton indicates green steady led - "is playing"
-12. Tap the Samplebutton again to pause the loop
-13. Doubletap the button to reset the loop to step one
-14. Tap a Loopsection to change behavior of stored sample (loop, one-shot, loop-on-hold)
+9. Set Stereo-sides carefully. They are effective in 3d-Audio to boost tracks with less stereo-information than others. It can be used to create "popping out" effects. But it could also destroy the Sound - depending...
+10. Push a sample-Button to store recorded Motion
+11. Record stops, sample-button indicates green steady led - "is playing"
+12. Tap the sample-button again to pause the loop
+13. Double-tap the button to reset the loop to step one
+14. Tap a Loop-section to change behavior of stored sample (loop, one-shot, loop-on-hold)
 
-## an early vision
+-------------------------
+
+# an early vision
 PLAYMODE
 - PLAY
 - RUNTIME-EDIT
@@ -122,7 +124,7 @@ PLAYMODE
     - Width
     - Sides (3d-Boost)
     - Beat: musical rhythm notation (1/4, 1/8, 3/4...)
-    - Bars: length of patternloop
+    - Bars: length of pattern-loop
 - STOP
 
 SETUPMODE
@@ -134,18 +136,18 @@ SETUPMODE
         - Adjust position: azimuth, distance, elevation
     - Save and load, ask to enter new name or overwrite
 - HEADPHONESETUP
-    - Headphone sounds more realistic with fitting hrtf filtercurve
+    - Headphone sounds more realistic with fitting hrtf filter-curve
     - Select and load Preset
 - PATTERNEDITOR
     - Select bank
     - Edit bank: touch a row or pattern to open "select -> Save -> bank/row/pattern dialog""
     - Save /bank/row/pattern
-    - Load selection to buttonmatrix
+    - Load selection to button-matrix
 - OPTIONS
     - Brightness
     - IP-Address, PORT this device
     - IP-Address, PORT to receiver
-    - Export settings to usb
+    - Export settings to USB
 
 
 ## PLAYMODE
@@ -154,21 +156,21 @@ SETUPMODE
 ### PLAYMODE: PLAY
 - Encoder 1-4 Push: Toggle RUNTIME-EDIT Mode for this channel
 - Encoder 1-4 Double Push: Enter Setup Page 1-4
-- Buttonmatrix Push: play/pause pattern
-- Buttonmatrix Double Push: toggle repeat 
+- Button-matrix Push: play/pause pattern
+- Button-matrix Double Push: toggle repeat 
 
 ### PLAYMODE: RUNTIME-EDIT
 - Encoder - Push: Toggle through INFOFIELD-options
 - Encoder - Turn: Adjust option
     - MODE: mono, stereo, vbap, ambisonic
     - BEAT: 1/4, 1/8, 1/16, 2/3, ... 
-    - BARS: length of patternloop
+    - BARS: length of pattern-loop
     - WIDTH: Spread stereo
-    - REVERB: Adjust reverblevel
-- Touchdisplay onTouch: Records Motion to cachefile
-- Touchdisplay onRelease: Plays Motion from cachefile
-- Buttonmatrix long press: Stores cachefile to BUTTON
-- Encorder Double Push: Exit to PLAYMODE
+    - REVERB: Adjust reverb-level
+- Touchdisplay on-Touch: Records Motion to cache-file
+- Touchdisplay on-Release: Plays Motion from cache
+- Button-matrix long press: Stores cache to BUTTON
+- Encoder Double Push: Exit to PLAYMODE
 
 ## SETUPMODE
 Encoder 1-4: Double-Push. 
@@ -186,10 +188,10 @@ Encoder 2: Double-Push
 - Encoder 4 Turn: Set Distance for selected output
 
 ### SPEAKERSETUP: SAVE AND LOAD
-- Display Button SAVE: SAVE TO .. overlay
-- Display Button DISCARD: Discard changes
-- Display Button ENABLE: Upload Speakerlayout to Audioengine
-- Display Button EXIT: Return to PLAYMODE and open dialog "save changes?" [yes, dismiss]
+- Display button SAVE: SAVE TO .. overlay
+- Display button DISCARD: Discard changes
+- Display button ENABLE: Upload speaker-layout to audio-engine
+- Display button EXIT: Return to PLAYMODE and open dialog "save changes?" [yes, dismiss]
 ```
 |-----------------------------------------------|
 | SPEAKERSETUP                                  | <- SPEAKERSETUP: SELECT PRESET
@@ -277,7 +279,7 @@ Encoder 4: Double-Push
 ### PATTERNEDITOR: SAVE AND LOAD
 - Display Button SAVE: SAVE TO .. overlay
 - Display Button DISCARD: Discard changes
-- Display Button ENABLE: Upload patternlayout to audioengine
+- Display Button ENABLE: Upload pattern-layout to audio-engine
 - Display Button EXIT: Return to PLAYMODE and open dialog "save changes?" [yes, dismiss]
 
 ```

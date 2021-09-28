@@ -3,14 +3,14 @@
 software/teensy/src/main.cpp << [[flashTeensy]]
 
 ## Raspberry
-Install raspbian:
+Install Raspbian:
 https://www.raspberrypi.org/documentation/computers/getting-started.html
 
-1. put an empty file 'ssh' on raspbian boot-partition, this enables ssh
-2. search for your rasp ip-address ie: nmap -sn 192.168.1.0/24
+1. put an empty file 'ssh' on Raspbian boot-partition, this enables ssh
+2. search for your raspberry ip-address ie: nmap -sn 192.168.1.0/24
 3. ssh pi@192.168.1.x (pass= raspberry) 
 
-On raspi: 
+### Root operations on raspberry: 
 ```
 apt update
 apt upgrade
@@ -32,8 +32,6 @@ pip install numpy process pyserial python-osc rpi_ws281x adafruit-circuitpython-
 
 apt purge bluez pi-bluetooth
 
-git clone git@github.com:ambisonics-audio-association/Ambijockey.git
-
 exit
 
 ssh aaa@192.168.1.x
@@ -41,9 +39,24 @@ userdel pi
 
 ``` 
 
-Copy files from Controller_Mixer/software/raspberry to corresponding systemfolder
+Clone repository:
+```
+cd /home/aaa
+git clone git@github.com:ambisonics-audio-association/Ambijockey.git
+```
 
-Configure raspberry
+Copy files to corresponding system-folder:
+```
+ControllerMixer/software/raspberry
+   └── config
+       └── etc
+           ├── dhcpcd.conf
+           └── systemd
+               └── system
+                   └── mic.service
+```
+
+Configure raspberry:
 ``` 
 raspi-config
 	3 Interface Options > P8 Remote GPIO > yes
@@ -59,10 +72,8 @@ nano .bashrc
 
 ``` 
 
-Setup service
+Setup service:
 ``` 
-cp Ambijockey/Controller_Mixer/software/raspberry/config/etc/systemd/system/mic.service /etc/systemd/system/
-	
 systemctl start mic.service
 systemctl enable mic.service
   if 'systemctl enable mic.service' throws an error 'invalid argument'
@@ -81,7 +92,7 @@ Edit /etc/dhcpcd.conf
   static domain_name_servers=192.168.43.1 8.8.8.8
 ``` 
 
-Not shure if we still need "fix for raspi random hold":
+Not sure if we still need "fix for raspberry random hold":
 ``` 
 nano /etc/sysctl.conf
     vm.dirty_background_ratio = 5

@@ -1,8 +1,12 @@
 # A³ Motion Assembly
 ## PCB
-A³ Motion
 ### Mainboard
+![[a3motion-schematic.jpg]]
+![[a3motion-pcb-design.jpg]]
 ### Buttonmatrix
+![[a3motion-buttons-schematic.jpg]]
+![[a3motion-buttons-pcb-design.jpg]]
+
 ## Hardware
 - runs on a raspberry 3b
 - powered with PoE -> downstep to 3v on Teensy

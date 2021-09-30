@@ -11,6 +11,6 @@ On each device runs a pythonscript which sends and receives OSC (Open Sound Cont
 - Flash Teensy: [[flashTeensy]]
 
 ## Next steps
-- Migrate audioengine from reaper to supercollider
-- Modularize channelstrips on A³ Mix
+- Migrate audio-engine from reaper to supercollider
+- Modularize channel-strips on A³ Mix
 - Adding functions to A³ Motion

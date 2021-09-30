@@ -13,7 +13,7 @@ Osc communication:
 - Receive peak and rms
 - Send poti- and buttonstates 
 
-Script:
+Python-script:
 -  ```Controller_Mixer/software/python/mix.py```
 
 ##### Teensy

@@ -4,6 +4,7 @@ A³ Core runs archlinux with a realtimekernel. It must be well tuned to get low 
 
 Connected to:
 - A³ Mix (lan)
+- A³ Motion (lan)
 - Audiohardware (PCIe, usb)
 - FOH-Setup-Page (webfrontend) <- wip
 
@@ -14,7 +15,9 @@ Osc communication:
 - Receive poti and buttonstates from A³ Mix and A³ Motion (or any other osc-controller)
 - Receive ambisonic-encoder parameters from A³ Motion (or any other osc-controller)
 
-OSC-Router:
+We use a python-script as "OSC-Router". It is the core-place for routing osc-data from and to every controller. It should be handy to edit even you don't know a lot about.
+
+The script:
 - ```Server/server.py```
 
 ## Supercollider VU-Meter.scd
@@ -27,7 +30,10 @@ The supercollider projectfile:
 A³ Core runs a jack2 audio-engine on top of alsa. Qjackctl may be used to patch virtual audio-cables from hardware to reaper and back out. Reaper acts as the mixer-backend which does the complex routing and user-interaction-tasks. It has a complex routing and bus-mapping described later. It processes the input-signal from audio-hardware and outputs calculated signals for headphones and speakers. The speaker must be placed in a most chubbiest spherical installation. Electronic corrections are possible for closer speakers.
 Jmess is used to store and restore jack-connections, aj-snapshot is used to store and restore alsa-connections.
 
-The Audiohardware could be any class-compliant or compatible Madi/Dante card. It is connected to A³ Core via PCIe or USB. Instruments, speakers, headphones and DJ-Gear are directly plugged into A³ Core's audiohardware.
+The audio-hardware could be any class-compliant or compatible Madi/Dante card. It is connected to A³ Core via PCIe or USB. Instruments, speakers, headphones and DJ-Gear are directly plugged into A³ Core's audiohardware.
+
+Configure A³Core for your audio-hardware edit:
+```Server/config/.xinitrc```
 
 The reaper pojectfile:
 - ```Server/reaper/linux/reaper_ambijockey.RPP```

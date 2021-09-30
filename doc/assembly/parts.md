@@ -102,7 +102,7 @@
 We're using a 7 inch capacative multitouch display:
 https://www.amazon.de/SunFounder-Raspberrry-Touchscreen-LCD-Bildschirm-kapazitivem/dp/B08VNPYQ7Y
 
-It will be better on 12 inch 4:3. It's hard to find fitting solutions. We found this:
+It will be better on 10-12 inch 4:3. It's hard to find solutions. We found this:
 - https://www.ebay.ca/itm/133609187640?hash=item1f1bba6938:g:WqAAAOSwH~Rf24CJ
 - https://www.ebay.ca/itm/371570432534?hash=item568352da16:g:orIAAOSwSflbkqfI
 - https://www.embeddedpanelpc.com/sale-13883763-vga-12-15-rugged-capacitive-touch-monitor-1000cd-m2-hdmi.html

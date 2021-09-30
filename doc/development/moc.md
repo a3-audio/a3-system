@@ -16,7 +16,7 @@ Osc-communication:
 - Send azimuth/elevation
 - Receive bpm
 
-Script:
+Python- script:
 - ```Controller_Motion/software/MotionControllerUI/moc_ui.py```
 
 ## Teensy

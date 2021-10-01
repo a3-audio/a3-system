@@ -8,7 +8,8 @@
 ![[a3motion-buttons-pcb-design.jpg]]
 
 ## Hardware
-- runs on a raspberry 3b
+
+- runs on a Raspberry Pi 3 Model B
 - powered with PoE -> downstep to 3v on Teensy
 - sbc is connected via usb (/dev/ttyACM0) to
 - teensy 4.1, it has
@@ -18,3 +19,4 @@
         function: Buttonmatrix
     - 1 NeoPixel-strip (ws2811 led-controller)
         - 16 x status leds buttonmatrix
+  

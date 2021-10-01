@@ -1,15 +1,15 @@
 # A³ Mix Configuration
-## teensy
+## Teensy
 software/teensy/src/main.cpp << [[flashTeensy]]
 
-## Raspberry
+## Raspberry Pi 3 Model B
 [Install Raspbian](https://www.raspberrypi.org/documentation/computers/getting-started.html)
 
 1. put an empty file 'ssh' on Raspbian boot-partition, this enables ssh
-2. search for your raspberry ip-address ie: nmap -sn 192.168.1.0/24
+2. search for your Raspberry ip-address ie: nmap -sn 192.168.1.0/24
 3. ssh pi@192.168.1.x (pass= raspberry) 
 
-### Root operations on raspberry: 
+### Root operations on the Raspberry: 
 ```
 apt update
 apt upgrade
@@ -51,7 +51,7 @@ ControllerMixer/software/raspberry
                └── system
                    └── mic.service
 ```
-#### Configure raspberry:
+#### Configure the Raspberry:
 ``` 
 raspi-config
 	3 Interface Options > P8 Remote GPIO > yes
@@ -84,7 +84,7 @@ Edit /etc/dhcpcd.conf
   static routers=192.168.43.1
   static domain_name_servers=192.168.43.1 8.8.8.8
 ```
-#### Not sure if we still need "fix for raspberry random hold":
+#### Not sure if we still need "fix for Raspberry random hold":
 ```
 nano /etc/sysctl.conf
     vm.dirty_background_ratio = 5

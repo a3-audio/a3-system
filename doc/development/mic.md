@@ -1,22 +1,22 @@
 # A³ Mix Development
-### A³ Mix
-A³ Mix backend runs a Raspbian on a Raspberry model 4b. As Microcontroller we're using the Teensy 4.1.
+## A³ Mix
+A³ Mix backend runs a Raspbian on a Raspberry Pi 4 Model B. As Microcontroller we're using the Teensy 4.1.
 
-##### Raspberry
+## Raspberry
 Connected to:
-- A³ Core (lan)
+- A³ Core (LAN)
 - Teensy (serial usb)
 - State-leds (neoPixel gpio)
 - Headphones-amp (usb)
 
-Osc communication:
+OSC communication:
 - Receive peak and rms
 - Send poti- and buttonstates 
 
 Python-script:
 -  ```Controller_Mixer/software/python/mix.py```
 
-##### Teensy
+## Teensy
 Connected to:
 - Mainboard
 	- Potis (ic: hc4051)

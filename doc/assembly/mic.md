@@ -11,7 +11,7 @@ A³ Mix Mainboard pcb is published as kicad project. It comes with ready to fabr
 A³ Mix housing isn't ready yet ...
 
 ## Hardware
-- Raspberry 3b
+- Raspberry Pi 3 Model B
 - powered with PoE to 5V Adapter -> downstep to 3v on Teensy
 - Raspberry and Teensy are connected via usb
 - Teensy 4.1

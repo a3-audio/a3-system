@@ -1,9 +1,6 @@
-This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
-© Copyright 2021 A³ Raphael Eismann, Jendrik Bradaczek 
-
 # Ambijockey
 ![[Ambijockey/doc/pix/a3_logo_ligth.png]]
-
+![[gif1.gif]]
 ## Goal for this project
 Worlds first 3D-Sound-System for DJ's and Liveact's
 

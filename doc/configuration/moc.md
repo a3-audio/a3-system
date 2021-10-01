@@ -2,7 +2,7 @@
 ## Teensy
 software/teensy/src/main.cpp << [[flashTeensy]]
 
-## Raspberry
+## Raspberry Pi 3 Model B
 install aarch64:
 https://archlinuxarm.org/platforms/armv8/broadcom/raspberry-pi-3
 
@@ -61,7 +61,7 @@ nano /etc/dhcpcd.conf
 	  static routers=192.168.43.1
 	  static domain_name_servers=192.168.43.1 8.8.8.8
 ``` 
-#### Edit raspberry config-file
+#### Edit the Raspberry config-file
 ```
 nano /boot/config.txt
 display_rotate=1

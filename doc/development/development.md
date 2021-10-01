@@ -1,6 +1,6 @@
 # A³ Pandemic Development
 ## Software-Architecture
-A³ Core, A³ Mix, A³ Motion are connected via lan to the same network.
+A³ Core, A³ Mix, A³ Motion are connected via LAN to the same network.
 On each device runs a pythonscript which sends and receives OSC (Open Sound Control).
 
 ## HowTo
@@ -11,6 +11,6 @@ On each device runs a pythonscript which sends and receives OSC (Open Sound Cont
 - Flash Teensy: [[flashTeensy]]
 
 ## Next steps
-- Migrate audio-engine from reaper to supercollider
+- Migrate audio-engine from Reaper to Supercollider
 - Modularize channel-strips on A³ Mix
 - Adding functions to A³ Motion

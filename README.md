@@ -2,10 +2,10 @@ This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambison
 © Copyright 2021 A³ Raphael Eismann, Jendrik Bradaczek 
 
 # Ambijockey
-![first ambijockey](doc/pix/gif1.gif)
+![[Ambijockey/doc/pix/a3_logo_ligth.png]]
 
 ## Goal for this project
-Make venues and artists able to play 3D-Sound. The project aims for, easy to use spatialization interface, maximum flexibility and a price for everybody. 
+Worlds first 3D-Sound-System for DJ's and Liveact's
 
 ## Git
 We use centralized workflow:
@@ -14,9 +14,9 @@ https://www.git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows
 1. Don't edit the main branch. Use pull requests instead (if nobody reacts we're probably still mixing - find us on stage)
 2. If you need an own different setup, forck this repo
 
-A³ Pandemic Mainrepo:
+A³ Pandemic Main:
 https://github.com/ambisonics-audio-association/Ambijockey
-A³ Moc UI-Repo:
+A³ Motion controller-UI:
 https://github.com/ambisonics-audio-association/MotionControllerUI
 
 ## Blackboard

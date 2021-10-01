@@ -1,5 +1,4 @@
 # Ambijockey
-![[gif1.gif]]
 ![Ambijockey/doc/pix/a3_logo_ligth.png](Ambijockey/doc/pix/a3_logo_ligth.png)
 
 ## Goal for this project
@@ -9,8 +8,8 @@ Worlds first 3D-Sound-System for DJ's and Liveact's
 We use centralized workflow:
 https://www.git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows
 
-1. Don't edit the main branch. Use pull requests instead (if nobody reacts we're probably still mixing - find us on stage)
-2. If you need an own different setup, forck this repo
+1. Don't edit the mainbranch. Use pull requests instead (if nobody reacts we're probably still mixing - find us on stage)
+2. If you need an own different setup, fork this repo
 
 A³ Pandemic Main:
 https://github.com/ambisonics-audio-association/Ambijockey

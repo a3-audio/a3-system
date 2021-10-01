@@ -2,6 +2,9 @@
 
 https://docs.platformio.org/en/latest/core/installation.html#system-requirements
 
+## On Raspberry
+```pip install platformio```
+
 Init penv:
 ``` virtualenv -p python3 ~/.platformio/penv ```
 

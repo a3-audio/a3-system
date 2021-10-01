@@ -6,7 +6,7 @@
 - Buy parts: [[parts]]
 
 ## Hardware
-A working prototype exists. We stresstests it by using 12V car-hifi with 15 inch centered downfire subwoofer and 5 jbl control one satellites on stands. We put everything on hand-wagon and played at 40°C summerday. It works pretty well and meanwhile rocksolid stable.
+A working prototype exists. We applied intensive stress tests by using 12V car-hifi with 15 inch centered Downfire subwoofer and 5 JBL Control One satellites on stands. We put everything on a hand-wagon and played at 40°C on a summerday in a fieldtest. It works pretty well and meanwhile was a rocksolid and stable experience.
 
 ## Pictures of prototype
 ### A³ Mix

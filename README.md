@@ -1,6 +1,7 @@
 # Ambijockey
 ![[Ambijockey/doc/pix/a3_logo_ligth.png]]
 ![[gif1.gif]]
+![Ambijockey/doc/pix/a3_logo_ligth.png](Ambijockey/doc/pix/a3_logo_ligth.png)
 ## Goal for this project
 Worlds first 3D-Sound-System for DJ's and Liveact's
 

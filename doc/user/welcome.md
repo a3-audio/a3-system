@@ -52,15 +52,15 @@ It is designed for dynamic live interaction with audio-panning in a 3d-sound-sph
 We put Media-files to [Seafile](https://tinycloud.lilbits.de/Media)
 
 ## Buy
-- Get a custom-build set: 5500€ (without audio-hardware)
+- Get a custom-build set: 6410€ (without audio-hardware)
 - Get it on Kickstarter: depends on community
-- Build your own: ~1500€ (without audio-hardware)
+- Build your own: ~1720€ (without audio-hardware)
 - Buy audio-hardware: 750-35000€ (see [[parts]])
 - Maintenance and Service Subscriptions: 100€ / Month
 
 ## Rent
-- Rent A³ Pandemic set 325-650€ per day (without speakers)
-- Rent A³ Speakers set  325-60000€ per Event (without show)
+- Rent A³ Pandemic set 320-640€ per day (without speakers)
+- Rent A³ Speakers set  320-60000€ per Event (without show)
 - Rent A³ Show 20000-350000€
 
 ## Git

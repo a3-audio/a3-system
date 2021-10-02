@@ -120,7 +120,17 @@ Connectors and pcb-sockets
 - SanDisk Extreme 64 GB microSDXC, Speicherkarte
 	- https://www.alternate.de/SanDisk/Extreme-64-GB-microSDXC-Speicherkarte/html/product/1507259
 
---------------------------------------------------------------------
+### Adapter for PoE (7,35 €)
+- https://www.ebay.com.au/itm/3-Pack-micro-USB-to-USB-C-Adapter-/351653628292
+
+### Housing (~50 €)
+
+### PCB's (50 €)
+- Mainboard 25 €
+- Buttonmatrix 25 €
+
+-----------------------------------------------------------------
+
 ## A³ Mix
 ## digikey (251,83 €)
 http://www.digikey.de/short/9hm90rmj
@@ -227,13 +237,21 @@ Connectors and pcb-sockets
 - https://www.amazon.de/AZDelivery-MAX7219-Matrix-Anzeigemodul-Arduino/dp/B07HJDV3HN
 - https://www.amazon.de/AZDelivery-Display-Arduino-Raspberry-Gratis/dp/B01L9GC470
 
-### headphone-amp (20,68,- €)
+### headphone-amp (20,68 €)
 https://www.joom.com/en/products/605c3ea89f660501d16bd93f
 https://www.thomann.de/intl/neutrik_nmj2_hc_s.htm
 https://www.thomann.de/intl/neutrik_ncj6fis_combo.htm (2x)
 microphonecable 0.5m
 
-## core (598,57 €)
+### Adapter for PoE (7,35 €)
+- https://www.ebay.com.au/itm/3-Pack-micro-USB-to-USB-C-Adapter-/351653628292
+
+### Housing (~50 €)
+### Mainboard (50 €)
+
+-----------------------------------------------------------------
+
+## A³ Core (598,57 €)
 ### alternate pc-hardware
 - https://www.alternate.de/Chenbro/RM24100-L-Server-Geh%E4use/html/product/1251018
 - https://www.alternate.de/Intel/Core-i5-9600KF-Prozessor/html/product/1503088
@@ -244,20 +262,20 @@ microphonecable 0.5m
 - https://www.alternate.de/SanDisk/SSD-Plus-240-GB/html/product/1281937
 - https://www.alternate.de/TP-Link/TL-SG1005P-Switch/html/product/1476067
 
-### Housing (199,00 €)
+
+### Reaper license (192,26 €)
+
+### Housing (99,00 €)
 - https://www.thomann.de/intl/flyht_pro_rack_4u_double_door_profi.htm
-- Housing for A³ Motion (~50 €)
-- Housing for A³ Mix (~50 €)
 
-### Adapter for PoE (7,35 €)
-- https://www.ebay.com.au/itm/3-Pack-micro-USB-to-USB-C-Adapter-/351653628292
+## Summing
+### A³ Motion 413,07 €
+### A³ Mix  420,83 €
+### A³ Core 889.83 €
 
-## summing
-The whole system without audiohardware  cost **1423.62 € incl. MwSt** 
+### A³ Pandemic **1723.22 € incl. MwSt** 
 
 ## small audiohardware (752,90 €)
 - https://www.thomann.de/intl/rme_hdspe_raydat.htm
 - https://www.thomann.de/intl/behringer_ada_8200_ultragain.htm
 - https://www.thomann.de/intl/pro_snake_optical_kabel_05m.htm
-
-## Reaper license (192,26 €)

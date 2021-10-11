@@ -1,47 +1,20 @@
-This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
-© Copyright 2021 A³ Raphael Eismann, Jendrik Bradaczek 
-
 # Ambijockey
-
-![first ambijockey](doc/pix/gif1.gif)
+![Ambijockey/doc/pix/a3_logo_ligth.png](Ambijockey/doc/pix/a3_logo_ligth.png)
 
 ## Goal for this project
-Make venues and artists able to play 3D-Sound. The project aims for, easy to use spatialization interface, maximum flexibility and a price for everybody. 
+Worlds first 3D-Sound-System for DJ's and Liveact's
 
-Usecases:
-* Case a) the core encodes and decodes you send separated tracks & osc
-* Case b) the core decodes your b-format-encoded audio
-* Case c) the core gets discrete channels for each speaker
-* Case d) the core simulates speakersetups for dolby or auro-3d
-* Case d) the core and our dj-setup plus a-d as „tape-in“ with mode-selection and volume on A³mix
+## Git
+We use centralized workflow:
+https://www.git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows
 
-Our first setup consists of three devices:
+1. Don't edit the mainbranch. Use pull requests instead (if nobody reacts we're probably still mixing - find us on stage)
+2. If you need an own different setup, fork this repo
 
-## A³core (The Audioserver)
-The Audioserver is processing the analog audio, calculates the 3D-Soundsphere and is remotecontrolled via osc. Also it sends osc data with peak and rms information for vu-meters to the mixer.
-
-Usecases:
-* Case a) the core encodes and decodes you send separated tracks & osc
-* Case b) the core decodes your b-format-encoded audio
-* Case c) the core gets discrete channels for each speaker
-* Case d) the core simulates speakersetups for dolby or auro-3d
-* Case d) the core and our dj-setup plus a-d as „tape-in“ with mode-selection and volume on A³mix
-
-[A³core Readme](https://github.com/ambisonics-audio-association/Ambijockey/tree/main/Server#readme)
-
-## A³mix (The DJ-Mixer)
-The DJ-Mixer is an osc-controller. It sends osc to the Audioserver in order to manipulate 3-band-eq, volume, channelgain, etc. like a normal dj-mixer would behave. It has osc-controlled vu-meters for each input and for 8 outputs (you're free to map audiochannels on it)
-
-[A³mix Readme](https://github.com/ambisonics-audio-association/Ambijockey/blob/main/Controller_Mixer/README.md)
-
-## A³motion (The Motion-Sampler)
-The Motion-Sampler is an osc-controller. It records and plays motion made by your fingertip on its touchscreen. We're using it to move audiosignals in a 3D-Soundsphere. You can hear the motion on headphones (activate corresponding pfl) and you can hear it on the main speakers - live interaction. Also it has samplerfunctionality like looplength, playmode, visual feedback and so on. It stores up to 4 different movements per channel, each on its own physical button.
-
-[A³motion](https://github.com/ambisonics-audio-association/Ambijockey/blob/main/Controller_Motion/README.md)
-[A³motion UI](https://github.com/ambisonics-audio-association/MotionControllerUI)
-
-## Hardware
-Parts we used are listed [here](https://github.com/ambisonics-audio-association/Businessplan/blob/main/recherche/parts.md)
+A³ Pandemic Main:
+https://github.com/ambisonics-audio-association/Ambijockey
+A³ Motion controller-UI:
+https://github.com/ambisonics-audio-association/MotionControllerUI
 
 ## Blackboard
 We organize our tasks in a [github-project](https://github.com/orgs/ambisonics-audio-association/projects/1)
@@ -53,14 +26,11 @@ We put Mediafiles to [Seafile](https://tinycloud.lilbits.de/Media).
 ## Contact
 [contact@orbitalwaves.net](mailto:contact@orbitalwaves.net)
 
-## Code of conduct
+### Code of conduct
 1. Don't panic
 2. Care the docs
 3. Keep the code clean
 4. Eastereggs are welcome!
 
-## Git
-We use the centralized workflow, description [here](https://www.git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows)
-
-1. Don't edit the main branch. Use pull requests instead (if nobody reacts we're probably still mixing - find us on stage)
-2. If you need an own different setup, forck this repo
+## Docs
+- [[welcome]]

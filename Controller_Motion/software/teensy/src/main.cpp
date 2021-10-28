@@ -228,7 +228,7 @@ void receivePixels(){
       int blue  = Serial.readStringUntil('\n').toInt();
 
       strip.clear();
-      strip.setPixelColor(pixNum1, strip.Color(green, red, blue));
+      strip.setPixelColor(pixNum, strip.Color(green, red, blue));
       strip.show(); // This sends the updated pixel color to the hardware.
     }
   }

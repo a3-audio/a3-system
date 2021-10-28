@@ -23,7 +23,7 @@ Environment=XDG_SESSION_TYPE=tty
 Environment=XDG_SESSION_ID=3
 Environment=XDG_RUNTIME_DIR=/run/user/1001
 Environment=DISPLAY=:0
-
+Environment=WorkingDirectory=/home/aaa/Ambijockey/Controller_Motion/software/MotionControllerUI
 Environment=XAUTHORITY=/home/aaa/.Xauthority
 
 Environment=MOTD_SHOWN=pam

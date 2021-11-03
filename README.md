@@ -1,10 +1,10 @@
 # A³ Ambisonic Audio Adventures
 Intuitive Open Source interface for live interaction with 3d-audio.
 
-Keys:
-- Realtime DSP audio backend
+## Keys
 - Motion Controller UI
 - DJ-Mixer Controller
+- Realtime DSP audio backend
 
 ## Homepage
 - https://staging.orbitalwaves.net/
@@ -20,12 +20,12 @@ Keys:
 - https://github.com/ambisonic-audio-adventures/homepage
 
 ## Contact
-- Tickets [github-project](https://github.com/orgs/ambisonic-audio-adventures/projects/1)
-- Talks [mattermost](https://talk.lilbits.de/ambisonics)
+- Ticket [github-project](https://github.com/orgs/ambisonic-audio-adventures/projects/1)
+- Talk [mattermost](https://talk.lilbits.de/ambisonics)
 - Multimedia [Seafile](https://tinycloud.lilbits.de/d/7475495ddee04d428073/)
 - E-Mail [contact@orbitalwaves.net](mailto:contact@orbitalwaves.net)
 
-### Code of conduct
+## Code of conduct
 1. Don't panic
 2. Care the docs
 3. Keep the code clean

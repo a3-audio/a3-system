@@ -2,9 +2,6 @@
 	path = Controller_Motion/software/MotionControllerUI
 	url = git@github.com:ambisonics-audio-association/MotionControllerUI.git
     branch = main
-
-
 [submodule "hardware"]
 	path = hardware
 	url = git@github.com:ambisonic-audio-adventures/hardware.git
-	barnch = main

@@ -164,6 +164,12 @@ void initBtnEncoder()
   }
 }
 
+void initLEDs()
+{
+    strip.clear();
+    strip.show();
+}
+
 void sendBtnEncoder()
 {
   for (byte i = 0; i < 4; i++)
@@ -227,7 +233,6 @@ void receivePixels(){
       int green = Serial.readStringUntil(',').toInt();
       int blue  = Serial.readStringUntil('\n').toInt();
 
-      strip.clear();
       strip.setPixelColor(pixNum, strip.Color(green, red, blue));
       strip.show(); // This sends the updated pixel color to the hardware.
     }
@@ -249,6 +254,7 @@ void setup()
   initBtnMatrix();
   initBtnEncoder();
   initPoti();
+  initLEDs();
 
   strip.begin();
 

@@ -113,7 +113,8 @@ def set_filters() -> None:
                        f"{channel_infos[channel_index].track_input}"
                        f"/fx/{fx_index}/bypass")
 
-            reaper.send_message(message, float(bypass_active))
+            # reaper expects 1 for "plugin active" and 0 for bypass
+            reaper.send_message(message, float(not bypass_active))
 
 
 def param_handler_channel(channel_index: int, parameter: str,
@@ -258,7 +259,6 @@ def button_handler(address: str,
 
             elif parameter == "fx":
                 channel_infos[channel_index].fx_enabled = bool(value)
-                print(f'fx for channel {channel_index+1}: {bool(value)}')
                 set_filters()
 
             elif parameter == "3d":

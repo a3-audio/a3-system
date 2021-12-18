@@ -253,13 +253,11 @@ def button_handler(address: str,
             muted = section != str(channel_index)
             reaper.send_message(f"/track/{track_pfl}/mute", muted)
 
-        elif parameter == "fx":
-            if section == str(channel_index):
+        if section == str(channel_index):
+            if parameter == "fx":
                 channel_infos[channel_index].fx_enabled = bool(value)
                 set_filters()
-
-        elif parameter == "3d":
-            if section == str(channel_index):
+            elif parameter == "3d":
                 track_stereo = channel_infos[channel_index].track_stereo
                 track_3d = channel_infos[channel_index].track_3d
                 reaper.send_message(f"/track/{track_stereo}/mute", value)

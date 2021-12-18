@@ -226,7 +226,7 @@ def param_handler(address: str,
     print(section + "." + parameter + " : " + str(value))
 
     for channel_index in range(4):
-        if section == str(channel_index):
+        if section == str(channel_index+1):
             param_handler_channel(channel_index, parameter, value)
 
     if section == "master":
@@ -250,10 +250,10 @@ def button_handler(address: str,
     for channel_index in range(4):
         if parameter == "pfl":
             track_pfl = channel_infos[channel_index].track_pfl
-            muted = section != str(channel_index)
+            muted = section != str(channel_index+1)
             reaper.send_message(f"/track/{track_pfl}/mute", muted)
 
-        if section == str(channel_index):
+        if section == str(channel_index+1):
             if parameter == "fx":
                 channel_infos[channel_index].fx_enabled = bool(value)
                 set_filters()
@@ -276,7 +276,7 @@ def moc_poti_handler(address: str, *osc_arguments: List[Any]) -> None:
     # print(track + "." + poti + " : " + str(value))
 
     for channel_index in range(4):
-        if section == str(channel_index):
+        if section == str(channel_index+1):
             if parameter == "width":
                 val = np.interp(value, [0, 1], [30, 145])
                 udp_client = udp_clients_iem[channel_index]

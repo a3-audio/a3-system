@@ -251,7 +251,7 @@ def button_handler(address: str,
         if parameter == "pfl":
             track_pfl = channel_infos[channel_index].track_pfl
             muted = section != str(channel_index+1)
-            reaper.send_message(f"/track/{track_pfl}/mute", muted)
+            reaper.send_message(f"/track/{track_pfl}/mute", float(muted))
 
         if section == str(channel_index+1):
             if parameter == "fx":
@@ -260,8 +260,10 @@ def button_handler(address: str,
             elif parameter == "3d":
                 track_stereo = channel_infos[channel_index].track_stereo
                 track_3d = channel_infos[channel_index].track_3d
-                reaper.send_message(f"/track/{track_stereo}/mute", value)
-                reaper.send_message(f"/track/{track_3d}/mute", 1 - value)
+                reaper.send_message(
+                    f"/track/{track_stereo}/mute", float(value))
+                reaper.send_message(
+                    f"/track/{track_3d}/mute", float(1 - value))
 
 
 def moc_poti_handler(address: str, *osc_arguments: List[Any]) -> None:

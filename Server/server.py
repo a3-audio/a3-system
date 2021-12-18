@@ -248,15 +248,18 @@ def button_handler(address: str,
     assert type(value) == float
 
     for channel_index in range(4):
-        if parameter == "pfl":
-            track_pfl = channel_infos[channel_index].track_pfl
-            muted = section != str(channel_index+1)
-            reaper.send_message(f"/track/{track_pfl}/mute", float(muted))
-
         if section == str(channel_index+1):
-            if parameter == "fx":
+            if parameter == "pfl":
+                channel_infos[channel_index].pfl_enabled = (
+                    not channel_infos[channel_index].pfl_enabled)
+                track_pfl = channel_infos[channel_index].track_pfl
+                muted = not channel_infos[channel_index].pfl_enabled
+                reaper.send_message(f"/track/{track_pfl}/mute", float(muted))
+
+            elif parameter == "fx":
                 channel_infos[channel_index].fx_enabled = bool(value)
                 set_filters()
+
             elif parameter == "3d":
                 track_stereo = channel_infos[channel_index].track_stereo
                 track_3d = channel_infos[channel_index].track_3d

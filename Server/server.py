@@ -258,6 +258,7 @@ def button_handler(address: str,
 
             elif parameter == "fx":
                 channel_infos[channel_index].fx_enabled = bool(value)
+                print(f'fx for channel {channel_index+1}: {bool(value)}')
                 set_filters()
 
             elif parameter == "3d":

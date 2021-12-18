@@ -60,7 +60,7 @@ class ChannelInfo:
 
     fx_enabled: bool = False
     pfl_enabled: bool = False
-    position_xyz: List[int] = [0, 0, 0]
+    position_xyz: tuple[int, int, int] = (0, 0, 0)
 
 
 channel_infos = (

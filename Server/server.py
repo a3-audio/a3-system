@@ -1,585 +1,331 @@
+# This file is part of A³Pandemic.
+
+# A³Pandemic is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# A³Pandemic is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with A³Pandemic.  If not, see <https://www.gnu.org/licenses/>.
+
+# © Copyright 2021 Raphael Eismann, Patric Schmitz
+
 """
-this version is just a steady hardcoded version of osc-router. It will
+This version is a static hardcoded version of osc-router. It will
 transform into more dynamic code with external configfiles for osc in-
-and output mappings.
-For now it takes OSC-Adresses, interpolates values and sends them to
-destinations:
+and output mappings.  For now it takes OSC adresses, interpolates
+values and sends them to destinations.
 """
 
 import argparse
-import math
-import numpy
-import re
+import numpy as np
+# import re
+
 from typing import List, Any
-from pythonosc import dispatcher
+
+from enum import Enum
+from dataclasses import dataclass
+
+from pythonosc import dispatcher  # type: ignore
 from pythonosc import osc_server
-from pythonosc.udp_client import SimpleUDPClient
+from pythonosc.udp_client import SimpleUDPClient  # type: ignore
 
-# OSC-Server
-oscRouterPort = 9000
+# OSC server config
+OSC_ROUTER_PORT: int = 9000
 
-# OSC-Clients
-ctrl_mixer = SimpleUDPClient('192.168.43.51', 8500)  # Set IP Adress
-ctrl_motion = SimpleUDPClient('192.168.43.52', 8700)  # Set IP Adress
+FX_INDEX_HIPASS: int = 4
+FX_INDEX_LOPASS: int = 5
+
+
+# OSC clients
+ctrl_mixer = SimpleUDPClient('192.168.43.51', 8500)
+ctrl_motion = SimpleUDPClient('192.168.43.52', 8700)
 reaper = SimpleUDPClient('127.0.0.1', 9001)
-non_mixer = SimpleUDPClient('127.0.0.1', 9002)
-iem_1 = SimpleUDPClient('127.0.0.1', 1337)
-iem_2 = SimpleUDPClient('127.0.0.1', 1338)
-iem_3 = SimpleUDPClient('127.0.0.1', 1339)
-iem_4 = SimpleUDPClient('127.0.0.1', 1340)
 
-# reaper channelnumbers
-masterbus = "6"  # mastervolume is controlled by /master/volume
-dj1_cb = "26"  # cb = channelbus
-dj1_in = "27"  # in = input
-dj2_cb = "35"
-dj2_in = "36"
-dj3_cb = "44"
-dj3_in = "45"
-dj4_cb = "53"
-dj4_in = "54"
-dj1_pfl = "18"
-dj2_pfl = "19"
-dj3_pfl = "20"
-dj4_pfl = "21"
-mainmixbus = "22"
-
-fxmodeval = "0"
-fxstate1 = "0"
-fxstate2 = "0"
-fxstate3 = "0"
-fxstate4 = "0"
-
-def sethipass():
-    global fxmodeval
-    if fxmodeval == "1":
-        global fxstate1
-        global fxstate2
-        global fxstate3
-        global fxstate4
-        reaper.send_message("/track/" + dj1_in + "/fx/4/bypass", fxstate1)
-        reaper.send_message("/track/" + dj2_in + "/fx/4/bypass", fxstate2)
-        reaper.send_message("/track/" + dj3_in + "/fx/4/bypass", fxstate3)
-        reaper.send_message("/track/" + dj4_in + "/fx/4/bypass", fxstate4)
-        reaper.send_message("/track/" + dj1_in + "/fx/5/bypass", 0)
-        reaper.send_message("/track/" + dj2_in + "/fx/5/bypass", 0)
-        reaper.send_message("/track/" + dj3_in + "/fx/5/bypass", 0)
-        reaper.send_message("/track/" + dj4_in + "/fx/5/bypass", 0)
-
-def setlopass():
-    global fxmodeval
-    if fxmodeval == "0":
-        global fxstate1
-        global fxstate2
-        global fxstate3
-        global fxstate4
-        reaper.send_message("/track/" + dj1_in + "/fx/5/bypass", fxstate1)
-        reaper.send_message("/track/" + dj2_in + "/fx/5/bypass", fxstate2)
-        reaper.send_message("/track/" + dj3_in + "/fx/5/bypass", fxstate3)
-        reaper.send_message("/track/" + dj4_in + "/fx/5/bypass", fxstate4)
-        reaper.send_message("/track/" + dj1_in + "/fx/4/bypass", 0)
-        reaper.send_message("/track/" + dj2_in + "/fx/4/bypass", 0)
-        reaper.send_message("/track/" + dj3_in + "/fx/4/bypass", 0)
-        reaper.send_message("/track/" + dj4_in + "/fx/4/bypass", 0)
-
-def ctrlMotionToIem_handler(address: str,
-                            *osc_arguments: List[Any]) -> None:
-    words = address.split("/")
-    track = words[3]
-    param = words[4]
-
-    # print(words)
-    #value = osc_arguments
-    #print("/ctrlMotion/track/" + track + "/" + param + "/ : " + str(value))
-
-    if track == "1":
-        if param == "xyz":
-            iem_1.send_message("/CoordinateConverter/xPos",
-                    numpy.interp(osc_arguments[1], [0, 1], [-1, 1]))
-            iem_1.send_message("/CoordinateConverter/yPos",
-                    numpy.interp(osc_arguments[0], [0, 1], [1, -1]))
-
-    if track == "2":
-        match_xyz = re.match(param, "xyz")
-        if match_xyz:
-            iem_2.send_message("/CoordinateConverter/xPos",
-                               numpy.interp(osc_arguments[1], [0, 1], [-1, 1]))
-            iem_2.send_message("/CoordinateConverter/yPos",
-                               numpy.interp(osc_arguments[0], [0, 1], [1, -1]))
-            # iem_2.send_message("/CoordinateConverter/zPos", osc_arguments[2])
-        if param == "width":
-            iem_2.send_message("/CoordinateConverter/radius", osc_arguments[0])
-        if param == "side":
-            reaper.send_message("/track/" + dj2_in + "/fx/2/fxparam/1/value", osc_arguments[0])
-
-    if track == "3":
-        match_xyz = re.match(param, "xyz")
-        if match_xyz:
-            iem_3.send_message("/CoordinateConverter/xPos",
-                               numpy.interp(osc_arguments[1], [0, 1], [-1, 1]))
-            iem_3.send_message("/CoordinateConverter/yPos",
-                               numpy.interp(osc_arguments[0], [0, 1], [1, -1]))
-            # iem_3.send_message("/CoordinateConverter/zPos", osc_arguments[2])
-        if param == "width":
-            iem_3.send_message("/CoordinateConverter/radius", osc_arguments[0])
-        if param == "side":
-            reaper.send_message("/track/" + dj3_in + "/fx/2/fxparam/1/value", osc_arguments[0])
-
-    if track == "4":
-        match_xyz = re.match(param, "xyz")
-        if match_xyz:
-            iem_4.send_message("/CoordinateConverter/xPos",
-                               numpy.interp(osc_arguments[1], [0, 1], [-1, 1]))
-            iem_4.send_message("/CoordinateConverter/yPos",
-                               numpy.interp(osc_arguments[0], [0, 1], [1, -1]))
-            # iem_4.send_message("/CoordinateConverter/zPos", osc_arguments[2])
-        if param == "width":
-            iem_4.send_message("/CoordinateConverter/radius", osc_arguments[0])
-        if param == "side":
-            reaper.send_message("/track/" + dj4_in + "/fx/2/fxparam/1/value", osc_arguments[0])
+udp_clients_iem = tuple(SimpleUDPClient('127.0.0.1', 1337 + index)
+                        for index in range(4))
 
 
-val_send_ch1_xyz = [0, 0, 0]
-val_send_ch2_xyz = [0, 0, 0]
-val_send_ch3_xyz = [0, 0, 0]
-val_send_ch4_xyz = [0, 0, 0]
+@dataclass
+class MasterInfo:
+    track_masterbus: int = 6
+    track_mainmixbus: int = 22
+    track_booth: int = 1
+    track_phones: int = 14
+
+    class FXMode(Enum):
+        LOW_PASS = 0
+        HIGH_PASS = 1
+    fx_mode: FXMode = FXMode.LOW_PASS
 
 
-def iemToCtrlMotion_handler(address: str,
-                            *osc_arguments: List[Any]) -> None:
-    words = address.split("/")
-    track = words[1]
-    param = words[2]
-
-    print(words)
-    #value = osc_arguments[0]
-    #print("/CoordinateConverter/" + track + "/" + param + " : " + str(value))
-
-    if track == "1":
-        if (param == "xPos" or param == "yPos" or param == "yPos"):
-            if param == "xPos":
-                val_send_ch1_xyz[1] = (numpy.interp(
-                    osc_arguments[0], [-1, 1], [0, 1]))
-            if param == "yPos":
-                val_send_ch1_xyz[0] = (numpy.interp(
-                    osc_arguments[0], [-1, 1], [1, 0]))
-            else:
-                val_send_ch1_xyz[2] = (numpy.interp(
-                    osc_arguments[0], [-1, 1], [0, 1]))
-            ctrl_motion.send_message(
-                "/moc/channel/1/pos/xyz", val_send_ch1_xyz)
-
-        if param == "radius":
-            ctrl_motion.send_message(
-                "/ctrlMotion/track/1/width", osc_arguments[0])
-
-    if track == "2":
-        if (param == "xPos" or param == "yPos" or param == "yPos"):
-            if param == "xPos":
-                val_send_ch2_xyz[1] = (numpy.interp(
-                    osc_arguments[0], [-1, 1], [0, 1]))
-            if param == "yPos":
-                val_send_ch2_xyz[0] = (numpy.interp(
-                    osc_arguments[0], [-1, 1], [1, 0]))
-            else:
-                val_send_ch2_xyz[2] = (numpy.interp(
-                    osc_arguments[0], [-1, 1], [0, 1]))
-            ctrl_motion.send_message(
-                "/moc/channel/2/pos/xyz", val_send_ch2_xyz)
-
-        if param == "radius":
-            ctrl_motion.send_message(
-                "/ctrlMotion/track/2/width", osc_arguments[0])
-
-    if track == "3":
-        if (param == "xPos" or param == "yPos" or param == "yPos"):
-            if param == "xPos":
-                val_send_ch3_xyz[1] = (numpy.interp(
-                    osc_arguments[0], [-1, 1], [0, 1]))
-            if param == "yPos":
-                val_send_ch3_xyz[0] = (numpy.interp(
-                    osc_arguments[0], [-1, 1], [1, 0]))
-            else:
-                val_send_ch3_xyz[2] = (numpy.interp(
-                    osc_arguments[0], [-1, 1], [0, 1]))
-            ctrl_motion.send_message(
-                "/moc/channel/3/pos/xyz", val_send_ch3_xyz)
-
-        if param == "radius":
-            ctrl_motion.send_message(
-                "/ctrlMotion/track/3/width", osc_arguments[0])
-
-    if track == "4":
-        if (param == "xPos" or param == "yPos" or param == "yPos"):
-            if param == "xPos":
-                val_send_ch4_xyz[1] = (numpy.interp(
-                    osc_arguments[0], [-1, 1], [0, 1]))
-            if param == "yPos":
-                val_send_ch4_xyz[0] = (numpy.interp(
-                    osc_arguments[0], [-1, 1], [1, 0]))
-            else:
-                val_send_ch4_xyz[2] = (numpy.interp(
-                    osc_arguments[0], [-1, 1], [0, 1]))
-            ctrl_motion.send_message(
-                "/moc/channel/4/pos/xyz", val_send_ch4_xyz)
-
-        if param == "radius":
-            ctrl_motion.send_message(
-                "/ctrlMotion/track/4/width", osc_arguments[0])
+master_info = MasterInfo()
 
 
-class CH_handler(object):
-    """
-    Hiermit werden eingehende OSC-Messages auf die Server funktionen gemappt
-    """
+@dataclass
+class ChannelInfo:
+    track_input: int
+    track_stereo: int
+    track_3d: int
+    track_channelbus: int
+    track_pfl: int
 
-    def __init__(self):
-        pass
+    fx_enabled: bool = False
+    pfl_enabled: bool = False
+    position_xyz: tuple[int, int, int] = (0, 0, 0)
 
-    def msg_in(self, address: str, *osc_args: List[Any]) -> None:
-        """
-        docstring
-        """
-        words = address.split("/")
-        ch = words[2]
-        ch_nr = int(ch[len(ch)-1])
-        contoler = words[3]
-        ctr_function = []
-        for i in range(4, len(words)):
-            ctr_function.append(words[i])
 
-        # Motion-Controller
-        if contoler == "motion":
-            if ctr_function[0] == "reset":
-                pass
-            elif ctr_function[0] == "pos":
-                if ctr_function[1] == "cartesian":
-                    print(osc_args)
-                elif ctr_function[1] == "polar":
-                    pass
-            elif ctr_function[0] == "pos_x":
-                pass
-            elif ctr_function[0] == "pos_y":
-                pass
-            elif ctr_function[0] == "pos_r":
-                pass
-            elif ctr_function[0] == "pos_t":
-                pass
+channel_infos = (
+    # Channel 1
+    ChannelInfo(
+        track_input=27,
+        track_stereo=33,
+        track_3d=34,
+        track_channelbus=26,
+        track_pfl=18,
+    ),
+    # Channel 2
+    ChannelInfo(
+        track_input=36,
+        track_stereo=42,
+        track_3d=43,
+        track_channelbus=35,
+        track_pfl=19,
+    ),
+    # Channel 3
+    ChannelInfo(
+        track_input=45,
+        track_stereo=51,
+        track_3d=52,
+        track_channelbus=44,
+        track_pfl=20,
+    ),
+    # Channel 4
+    ChannelInfo(
+        track_input=54,
+        track_stereo=60,
+        track_3d=61,
+        track_channelbus=53,
+        track_pfl=21,
+    ),
+)
 
-def poti_handler(address: str,
-                 *osc_arguments: List[Any]) -> None:
-    words = address.split("/")
-    track = words[3]
-    poti = words[4]
 
-    value = osc_arguments[0]
-    print(track + "." + poti + " : " + str(value))
+def set_filters() -> None:
+    for channel_index in range(4):
+        for fx_index, bypass_active in (
+                (FX_INDEX_LOPASS,
+                 (not channel_infos[channel_index].fx_enabled or
+                  master_info.fx_mode == MasterInfo.FXMode.HIGH_PASS)),
+                (FX_INDEX_HIPASS,
+                 (not channel_infos[channel_index].fx_enabled or
+                  master_info.fx_mode == MasterInfo.FXMode.LOW_PASS))):
 
-    if track == "1":
-        if poti == "gain":
-            xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
-            fp = [0, 0.44, 0.465, 0.47, 0.475, 0.48,  0.485, 0.49,  0.495, 0.5]
-            val = numpy.interp(value, xp, fp)
-            reaper.send_message("/track/" + dj1_in + "/gain", val)
-        if poti == "hi":
-            val = numpy.interp(value, [0, 1], [0.05, 0.50])
-            reaper.send_message("/track/" + dj1_in + "/fxeq/hishelf/gain", val)
-        if poti == "mid":
-            val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/" + dj1_in + "/fxeq/band/0/gain", val)
-        if poti == "lo":
-            val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/" + dj1_in + "/fxeq/loshelf/gain", val)
-        if poti == "volume":
-            val = numpy.interp(value, [0, 1], [0.01, 1])
-            reaper.send_message("/track/" + dj1_cb + "/volume", val)
-        if poti == "fx": # its the fx-button
-            global fxstate1
-            fxstate1 = value
-            sethipass()
-            setlopass()
-        if poti == "3d":
-            reaper.send_message("/track/33/mute", value)
-            reaper.send_message("/track/34/mute", 1 - value)
-        if poti == "width":
-            val = numpy.interp(value, [0, 1], [0, 1])
-            iem_1.send_message("/StereoEncoder/width", float(val))
-            #print(str(value))
-        if poti == "side":
-            reaper.send_message("/track/" + dj1_in + "/fx/2/fxparam/1/value", value)
-    elif track == "2":
-        if poti == "gain":
-            xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
-            fp = [0, 0.44, 0.465, 0.47, 0.475, 0.48,  0.485, 0.49,  0.495, 0.5]
-            val = numpy.interp(value, xp, fp)
-            reaper.send_message("/track/" + dj2_in + "/gain", val)
-        if poti == "hi":
-            val = numpy.interp(value, [0, 1], [0, 0.50])
-            reaper.send_message("/track/" + dj2_in + "/fxeq/hishelf/gain", val)
-        if poti == "mid":
-            val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/" + dj2_in + "/fxeq/band/0/gain", val)
-        if poti == "lo":
-            val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/" + dj2_in + "/fxeq/loshelf/gain", val)
-        if poti == "volume":
-            val = numpy.interp(value, [0, 1], [0.01, 1])
-            reaper.send_message("/track/" + dj2_cb + "/volume", val)
-        if poti == "fx":
-            global fxstate2
-            fxstate2 = value
-            sethipass()
-            setlopass()
-        if poti == "3d":
-            reaper.send_message("/track/42/mute", value)
-            reaper.send_message("/track/43/mute", 1 - value)
-    elif track == "3":
-        if poti == "gain":
-            xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
-            fp = [0, 0.44, 0.465, 0.47, 0.475, 0.48,  0.485, 0.49,  0.495, 0.5]
-            val = numpy.interp(value, xp, fp)
-            reaper.send_message("/track/" + dj3_in + "/gain", val)
-        if poti == "hi":
-            val = numpy.interp(value, [0, 1], [0, 0.50])
-            reaper.send_message("/track/" + dj3_in + "/fxeq/hishelf/gain", val)
-        if poti == "mid":
-            val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/" + dj3_in + "/fxeq/band/0/gain", val)
-        if poti == "lo":
-            val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/" + dj3_in + "/fxeq/loshelf/gain", val)
-        if poti == "volume":
-            val = numpy.interp(value, [0, 1], [0.01, 1])
-            reaper.send_message("/track/" + dj3_cb + "/volume", val)
-        if poti == "fx":
-            global fxstate3
-            fxstate3 = value
-            sethipass()
-            setlopass()
-        if poti == "3d":
-            reaper.send_message("/track/51/mute", value)
-            reaper.send_message("/track/52/mute", 1 - value)
-    elif track == "4":
-        if poti == "gain":
-            xp = [0, 0.01,  0.3,  0.4,   0.5,  0.6,   0.7,  0.8,   0.9,  1.0]
-            fp = [0, 0.44, 0.465, 0.47, 0.475, 0.48,  0.485, 0.49,  0.495, 0.5]
-            val = numpy.interp(value, xp, fp)
-            reaper.send_message("/track/" + dj4_in + "/gain", val)
-        if poti == "hi":
-            val = numpy.interp(value, [0, 1], [0, 0.50])
-            reaper.send_message("/track/" + dj4_in + "/fxeq/hishelf/gain", val)
-        if poti == "mid":
-            val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/" + dj4_in + "/fxeq/band/0/gain", val)
-        if poti == "lo":
-            val = numpy.interp(value, [0, 1], [0.01, 0.50])
-            reaper.send_message("/track/" + dj4_in + "/fxeq/loshelf/gain", val)
-        if poti == "volume":
-            val = numpy.interp(value, [0, 1], [0.01, 1])
-            reaper.send_message("/track/" + dj4_cb + "/volume", val)
-        if poti == "fx":
-            global fxstate4
-            fxstate4 = value
-            sethipass()
-            setlopass()
-        if poti == "3d":
-            reaper.send_message("/track/60/mute", value)
-            reaper.send_message("/track/61/mute", 1 - value)
-    elif track == "master":
-        if poti == "volume":
-            val = numpy.interp(value, [0, 1], [0.01, 1])
-            reaper.send_message("/track/" + masterbus + "/volume", val)
-        if poti == "booth":
-            val = numpy.interp(value, [0, 1], [0.01, 1])
-            reaper.send_message("/track/1/volume", val)
-        if poti == "phMix":
-            val = numpy.interp(value, [0, 1], [0.01, 1])
-            reaper.send_message("/track/22/volume", val)
-            reaper.send_message("/track/21/volume", 1 - val)
-            reaper.send_message("/track/20/volume", 1 - val)
-            reaper.send_message("/track/19/volume", 1 - val)
-            reaper.send_message("/track/18/volume", 1 - val)
-        if poti == "phVol":
-            val = numpy.interp(value, [0, 1], [0.01, 1])
-            reaper.send_message("/track/14/volume", val)
-    elif track == "fxmode":
-        if poti == "hipass":
-            if value == 1:
-                global fxmodeval
-                fxmodeval = "1"
-                sethipass()
-                setlopass()
-        if poti == "lopass":
-            if value == 1:
-                fxmodeval = "0"
-                sethipass()
-                setlopass()
-    elif track == "fxparm":
-        if poti == "fxfreq":
-            xp = [0, 1.0]
-            fp = [0, 1.0]
-            val = numpy.interp(value, xp, fp)
-            reaper.send_message("/track/" + dj1_in + "/fx/4/fxparam/2/value", val)
-            reaper.send_message("/track/" + dj2_in + "/fx/4/fxparam/2/value", val)
-            reaper.send_message("/track/" + dj3_in + "/fx/4/fxparam/2/value", val)
-            reaper.send_message("/track/" + dj4_in + "/fx/4/fxparam/2/value", val)
-            
-            reaper.send_message("/track/" + dj1_in + "/fx/5/fxparam/1/value", val)
-            reaper.send_message("/track/" + dj2_in + "/fx/5/fxparam/1/value", val)
-            reaper.send_message("/track/" + dj3_in + "/fx/5/fxparam/1/value", val)
-            reaper.send_message("/track/" + dj4_in + "/fx/5/fxparam/1/value", val)
-        if poti == "fxres":
-            val = numpy.interp(value, [0, 1], [0, 0.8])
-            reaper.send_message("/track/" + dj1_in + "/fx/5/fxparam/2/value", val)
-            reaper.send_message("/track/" + dj2_in + "/fx/5/fxparam/2/value", val)
-            reaper.send_message("/track/" + dj3_in + "/fx/5/fxparam/2/value", val)
-            reaper.send_message("/track/" + dj4_in + "/fx/5/fxparam/2/value", val)
-            
-            #reaper.send_message("/track/" + dj1_in + "/fx/5/fxparam/2/value", val)
-            #reaper.send_message("/track/" + dj2_in + "/fx/5/fxparam/2/value", val)
-            #reaper.send_message("/track/" + dj3_in + "/fx/5/fxparam/2/value", val)
-            #reaper.send_message("/track/" + dj4_in + "/fx/5/fxparam/2/value", val)
+            message = ("/track/"
+                       f"{channel_infos[channel_index].track_input}"
+                       f"/fx/{fx_index}/bypass")
+
+            # reaper expects 1 for "plugin active" and 0 for bypass
+            reaper.send_message(message, float(not bypass_active))
+
+
+def param_handler_channel(channel_index: int, parameter: str,
+                          value: float) -> None:
+
+    track_input = channel_infos[channel_index].track_input
+
+    if parameter == "gain":
+        # ad hoc mapping function that smoothly approximates the
+        # trial-and-error value mapping for prototype 0.1 with wrong
+        # poti weighting in hardware.
+        val = value ** (1/16) * 0.5
+        reaper.send_message(f"/track/{track_input}/gain", val)
+
+    elif parameter == "hi":
+        val = np.interp(value, [0, 1], [0.05, 0.50])
+        reaper.send_message(f"/track/{track_input}/fxeq/hishelf/gain", val)
+
+    elif parameter == "mid":
+        val = np.interp(value, [0, 1], [0.01, 0.50])
+        reaper.send_message(f"/track/{track_input}/fxeq/band/0/gain", val)
+
+    elif parameter == "lo":
+        val = np.interp(value, [0, 1], [0.01, 0.50])
+        reaper.send_message(f"/track/{track_input}/fxeq/loshelf/gain", val)
+
+    elif parameter == "volume":
+        val = np.interp(value, [0, 1], [0.01, 1])
+        track_channelbus = channel_infos[channel_index].track_channelbus
+        reaper.send_message(f"/track/{track_channelbus}/volume", val)
+
+    elif parameter == "width":
+        udp_client = udp_clients_iem[channel_index]
+        udp_client.send_message("/StereoEncoder/width", value)
+        # print(str(value))
+
+    elif parameter == "side":
+        reaper.send_message(
+            f"/track/{track_input}/fx/2/fxparam/1/value", value)
+
+
+def param_handler_master(parameter: str, value: float) -> None:
+
+    if parameter == "volume":
+        val = np.interp(value, [0, 1], [0.01, 1])
+        track = master_info.track_masterbus
+        reaper.send_message(f"/track/{track}/volume", val)
+
+    if parameter == "booth":
+        val = np.interp(value, [0, 1], [0.01, 1])
+        track = master_info.track_booth
+        reaper.send_message(f"/track/{track}/volume", val)
+
+    if parameter == "phMix":
+        val = np.interp(value, [0, 1], [0.01, 1])
+        track_mainmixbus = master_info.track_mainmixbus
+        reaper.send_message(f"/track/{track_mainmixbus}/volume", val)
+        for channel_index in range(4):
+            track_pfl = channel_infos[channel_index].track_pfl
+            reaper.send_message(f"/track/{track_pfl}/volume", 1 - val)
+
+    if parameter == "phVol":
+        val = np.interp(value, [0, 1], [0.01, 1])
+        track_phones = master_info.track_phones
+        reaper.send_message(f"/track/{track_phones}/volume", val)
+
+
+def param_handler_fx(section: str, parameter: str, value: float) -> None:
+
+    if section == "fxmode" and value == 1:
+        if parameter == "hipass":
+            master_info.fx_mode = MasterInfo.FXMode.HIGH_PASS
+        elif parameter == "lopass":
+            master_info.fx_mode = MasterInfo.FXMode.LOW_PASS
+        set_filters()
+
+    elif section == "fxparm":
+        if parameter == "fxfreq":
+            for channel_index in range(4):
+                track_input = channel_infos[channel_index].track_input
+                reaper.send_message(
+                    f"/track/{track_input}"  # Hi-Pass Freq
+                    f"/fx/{FX_INDEX_HIPASS}/fxparam/7/value", value)
+                reaper.send_message(
+                    f"/track/{track_input}"  # Lo-Pass Freq
+                    f"/fx/{FX_INDEX_LOPASS}/fxparam/2/value", value)
+
+        if parameter == "fxres":
+            val = np.interp(value, [0, 1], [0, 0.8])
+            for channel_index in range(4):
+                track_input = channel_infos[channel_index].track_input
+                reaper.send_message(
+                    f"/track/{track_input}"  # Hi-pass Resonance
+                    f"/fx/{FX_INDEX_HIPASS}/fxparam/8/value", val)
+                reaper.send_message(
+                    f"/track/{track_input}"  # Lo-Pass Resonance
+                    f"/fx/{FX_INDEX_LOPASS}/fxparam/3/value", val)
+
+
+def param_handler(address: str,
+                  *osc_arguments: List[Any]) -> None:
+
+    words: List[str] = address.split("/")
+    section: str = words[3]
+    parameter: str = words[4]
+
+    #  mypy 0.920 reports a false positive, retest!
+    value: float = float(osc_arguments[0])  # type: ignore
+    assert type(value) == float
+    print(section + "." + parameter + " : " + str(value))
+
+    for channel_index in range(4):
+        if section == str(channel_index+1):
+            param_handler_channel(channel_index, parameter, value)
+
+    if section == "master":
+        param_handler_master(parameter, value)
+
+    elif section.startswith("fx"):
+        param_handler_fx(section, parameter, value)
+
 
 def button_handler(address: str,
                    *osc_arguments: List[Any]) -> None:
+
+    words: List[str] = address.split("/")
+    section: str = words[3]
+    parameter: str = words[4]
+
+    #  mypy 0.920 reports a false positive, retest!
+    value: float = float(osc_arguments[0])  # type: ignore
+    assert type(value) == float
+
+    for channel_index in range(4):
+        if section == str(channel_index+1):
+            if parameter == "pfl":
+                channel_infos[channel_index].pfl_enabled = (
+                    not channel_infos[channel_index].pfl_enabled)
+                track_pfl = channel_infos[channel_index].track_pfl
+                muted = not channel_infos[channel_index].pfl_enabled
+                reaper.send_message(f"/track/{track_pfl}/mute", float(muted))
+
+            elif parameter == "fx":
+                channel_infos[channel_index].fx_enabled = bool(value)
+                set_filters()
+
+            elif parameter == "3d":
+                track_stereo = channel_infos[channel_index].track_stereo
+                track_3d = channel_infos[channel_index].track_3d
+                reaper.send_message(
+                    f"/track/{track_stereo}/mute", float(value))
+                reaper.send_message(
+                    f"/track/{track_3d}/mute", float(1 - value))
+
+
+def moc_poti_handler(address: str, *osc_arguments: List[Any]) -> None:
+
     words = address.split("/")
-    button = words[3]
-    mode = words[4]
+    section = words[3]
+    parameter = words[4]
 
-    value = osc_arguments[0]
-    if mode == "pfl":
-        if button == "1":
-            reaper.send_message("/track/" + dj1_pfl + "/mute", 0)
-            reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
-            reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
-            reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
-#            reaper.send_message("/track/" + mainmixbus + "/mute", 1)
+    #  mypy 0.920 reports a false positive, retest!
+    value: float = float(osc_arguments[0])  # type: ignore
+    assert type(value) == float
+    # print(track + "." + poti + " : " + str(value))
 
-        if button == "2":
-            reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
-            reaper.send_message("/track/" + dj2_pfl + "/mute", 0)
-            reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
-            reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
-#            reaper.send_message("/track/" + mainmixbus + "/mute", 1)
-
-        if button == "3":
-            reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
-            reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
-            reaper.send_message("/track/" + dj3_pfl + "/mute", 0)
-            reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
-#            reaper.send_message("/track/" + mainmixbus + "/mute", 1)
-
-        if button == "4":
-            reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
-            reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
-            reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
-            reaper.send_message("/track/" + dj4_pfl + "/mute", 0)
-#            reaper.send_message("/track/" + mainmixbus + "/mute", 1)
-
-        if button == "master":
-            reaper.send_message("/track/" + dj1_pfl + "/mute", 1)
-            reaper.send_message("/track/" + dj2_pfl + "/mute", 1)
-            reaper.send_message("/track/" + dj3_pfl + "/mute", 1)
-            reaper.send_message("/track/" + dj4_pfl + "/mute", 1)
-#            reaper.send_message("/track/" + mainmixbus + "/mute", 0)
-
-
-def vu_handler(address: str,
-               *osc_arguments: List[Any]) -> None:
-    words = address.split("/")
-    vu = words[3]
-
-    value = osc_arguments[0]
-
-    if vu == "1":
-        fp = [0, 0.05, 0.10, 0.15, 0.20, 0.40, 0.60, 0.65, 0.75, 0.90]
-        xp = [0, 0.25, 0.30, 0.37, 0.43, 0.50, 0.55, 0.58, 0.60, 0.64]
-        val = numpy.interp(value, xp, fp)
-        ctrl_mixer.send_message("/track/1/vu", val)
-        # print(str(value))
-    if vu == "2":
-        fp = [0, 0.05, 0.10, 0.15, 0.20, 0.40, 0.60, 0.65, 0.75, 0.90]
-        xp = [0, 0.25, 0.30, 0.37, 0.43, 0.50, 0.55, 0.58, 0.60, 0.64]
-        val = numpy.interp(value, xp, fp)
-        ctrl_mixer.send_message("/track/2/vu", val)
-        # print(str(value))
-    if vu == "3":
-        fp = [0, 0.05, 0.10, 0.15, 0.20, 0.40, 0.60, 0.65, 0.75, 0.90]
-        xp = [0, 0.25, 0.30, 0.37, 0.43, 0.50, 0.55, 0.58, 0.60, 0.64]
-        val = numpy.interp(value, xp, fp)
-        ctrl_mixer.send_message("/track/3/vu", val)
-        # print(str(value))
-    if vu == "4":
-        fp = [0, 0.05, 0.10, 0.15, 0.20, 0.40, 0.60, 0.65, 0.75, 0.90]
-        xp = [0, 0.25, 0.30, 0.37, 0.43, 0.50, 0.55, 0.58, 0.60, 0.64]
-        val = numpy.interp(value, xp, fp)
-        ctrl_mixer.send_message("/track/4/vu", val)
-        # print(str(value))
-    if vu == "5":
-        fp = [0, 0.05, 0.10, 0.15, 0.20, 0.40, 0.60, 0.65, 0.75, 0.90]
-        xp = [0, 0.25, 0.30, 0.37, 0.43, 0.50, 0.55, 0.58, 0.60, 0.64]
-        val = numpy.interp(value, xp, fp)
-        ctrl_mixer.send_message("/track/5/vu", val)
-        # print(str(value))
-
-def moc_poti_handler(address: str,
-                 *osc_arguments: List[Any]) -> None:
-    words = address.split("/")
-    track = words[3]
-    poti = words[4]
-
-    value = osc_arguments[0]
-    #print(track + "." + poti + " : " + str(value))
-
-    if track == "0":
-        if poti == "width":
-            val = numpy.interp(value, [0, 1], [30, 145])
-            iem_1.send_message("/StereoEncoder/width", float(val))
-            print(float(value))
-        if poti == "side":
-            val = numpy.interp(value, [0, 1], [0.5, 0.65])
-            reaper.send_message("/track/" + dj1_in + "/fx/2/fxparam/1/value", val)
-    if track == "1":
-        if poti == "width":
-            val = numpy.interp(value, [0, 1], [30, 145])
-            iem_2.send_message("/StereoEncoder/width", float(val))
-            print(float(value))
-        if poti == "side":
-            val = numpy.interp(value, [0, 1], [0.5, 0.65])
-            reaper.send_message("/track/" + dj2_in + "/fx/2/fxparam/1/value", val)
-    if track == "2":
-        if poti == "width":
-            val = numpy.interp(value, [0, 1], [30, 145])
-            iem_3.send_message("/StereoEncoder/width", float(val))
-            print(float(value))
-        if poti == "side":
-            val = numpy.interp(value, [0, 1], [0.5, 0.65])
-            reaper.send_message("/track/" + dj3_in + "/fx/2/fxparam/1/value", val)
-    if track == "3":
-        if poti == "width":
-            val = numpy.interp(value, [0, 1], [30, 145])
-            iem_4.send_message("/StereoEncoder/width", float(val))
-            print(float(value))
-        if poti == "side":
-            val = numpy.interp(value, [0, 1], [0.5, 0.65])
-            reaper.send_message("/track/" + dj4_in + "/fx/2/fxparam/1/value", val)
+    for channel_index in range(4):
+        if section == str(channel_index+1):
+            if parameter == "width":
+                val = np.interp(value, [0, 1], [30, 145])
+                udp_client = udp_clients_iem[channel_index]
+                udp_client.send_message("/StereoEncoder/width", val)
+                # print(value)
+            if parameter == "side":
+                val = np.interp(value, [0, 1], [0.5, 0.65])
+                track_input = channel_infos[channel_index].track_input
+                reaper.send_message(
+                    f"/track/{track_input}/fx/2/fxparam/1/value", val)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--ip", default="0.0.0.0", help="The ip to listen on")
     parser.add_argument("--port", type=int,
-                        default=oscRouterPort, help="The port to listen on")
+                        default=OSC_ROUTER_PORT, help="The port to listen on")
     args = parser.parse_args()
 
     dispatcher = dispatcher.Dispatcher()
     #  dispatcher.map("/track/*", print)
-    ch1 = CH_handler()
 
     # Mixer-Controller
-    dispatcher.map("/mic/channel/*", poti_handler)
+    dispatcher.map("/mic/channel/*", param_handler)
     dispatcher.map("/mic/channel/*", button_handler)
-    dispatcher.map("/reaper/vu/*", vu_handler)
+    # dispatcher.map("/reaper/vu/*", vu_handler)
 
     # Motion-Controller
     dispatcher.map("/moc/channel/*", moc_poti_handler)
@@ -590,3 +336,164 @@ if __name__ == "__main__":
     server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))
     server.serve_forever()
+
+
+# def vu_handler(address: str, *osc_arguments: List[Any]) -> None:
+
+#     words = address.split("/")
+#     section: str = words[3]
+
+#     #  mypy 0.920 reports a false positive, retest!
+#     value: float = float(osc_arguments[0])  # type: ignore
+#     assert type(value) == float
+
+#     fp = [0, 0.05, 0.10, 0.15, 0.20, 0.40, 0.60, 0.65, 0.75, 0.90]
+#     xp = [0, 0.25, 0.30, 0.37, 0.43, 0.50, 0.55, 0.58, 0.60, 0.64]
+#     val = np.interp(value, xp, fp)
+#     ctrl_mixer.send_message(f"/track/{section}/vu", val)
+#     # print(str(value))
+
+
+# def ctrlMotionToIem_handler(address: str,
+#                             *osc_arguments: List[Any]) -> None:
+#     words = address.split("/")
+#     track = words[3]
+#     param = words[4]
+
+#     # print(words)
+#     # value = osc_arguments
+#     # print("/ctrlMotion/track/" + track + "/" + param + "/ : " + str(value))
+
+#     if track == "1":
+#         if param == "xyz":
+#             iem_1.send_message("/CoordinateConverter/xPos",
+#                                np.interp(osc_arguments[1], [0, 1], [-1, 1]))
+#             iem_1.send_message("/CoordinateConverter/yPos",
+#                                np.interp(osc_arguments[0], [0, 1], [1, -1]))
+
+#     if track == "2":
+#         match_xyz = re.match(param, "xyz")
+#         if match_xyz:
+#             iem_2.send_message("/CoordinateConverter/xPos",
+#                                np.interp(osc_arguments[1], [0, 1], [-1, 1]))
+#             iem_2.send_message("/CoordinateConverter/yPos",
+#                                np.interp(osc_arguments[0], [0, 1], [1, -1]))
+#             # iem_2.send_message("/CoordinateConverter/zPos", osc_arguments[2])
+#         if param == "width":
+#             iem_2.send_message("/CoordinateConverter/radius", osc_arguments[0])
+#         if param == "side":
+#             reaper.send_message("/track/" + dj2_in + "/fx/2/fxparam/1/value",
+#                                 osc_arguments[0])
+
+#     if track == "3":
+#         match_xyz = re.match(param, "xyz")
+#         if match_xyz:
+#             iem_3.send_message("/CoordinateConverter/xPos",
+#                                np.interp(osc_arguments[1], [0, 1], [-1, 1]))
+#             iem_3.send_message("/CoordinateConverter/yPos",
+#                                np.interp(osc_arguments[0], [0, 1], [1, -1]))
+#             # iem_3.send_message("/CoordinateConverter/zPos", osc_arguments[2])
+#         if param == "width":
+#             iem_3.send_message("/CoordinateConverter/radius", osc_arguments[0])
+#         if param == "side":
+#             reaper.send_message("/track/" + dj3_in + "/fx/2/fxparam/1/value",
+#                                 osc_arguments[0])
+
+#     if track == "4":
+#         match_xyz = re.match(param, "xyz")
+#         if match_xyz:
+#             iem_4.send_message("/CoordinateConverter/xPos",
+#                                np.interp(osc_arguments[1], [0, 1], [-1, 1]))
+#             iem_4.send_message("/CoordinateConverter/yPos",
+#                                np.interp(osc_arguments[0], [0, 1], [1, -1]))
+#             # iem_4.send_message("/CoordinateConverter/zPos", osc_arguments[2])
+#         if param == "width":
+#             iem_4.send_message("/CoordinateConverter/radius", osc_arguments[0])
+#         if param == "side":
+#             reaper.send_message("/track/" + dj4_in + "/fx/2/fxparam/1/value",
+#                                 osc_arguments[0])
+
+
+# def iemToCtrlMotion_handler(address: str,
+#                             *osc_arguments: List[Any]) -> None:
+#     words = address.split("/")
+#     track = words[1]
+#     param = words[2]
+
+#     print(words)
+#     # value = osc_arguments[0]
+#     # print("/CoordinateConverter/" + track + "/" + param + " : " + str(value))
+
+#     if track == "1":
+#         if (param == "xPos" or param == "yPos" or param == "yPos"):
+#             if param == "xPos":
+#                 val_send_ch1_xyz[1] = (np.interp(
+#                     osc_arguments[0], [-1, 1], [0, 1]))
+#             if param == "yPos":
+#                 val_send_ch1_xyz[0] = (np.interp(
+#                     osc_arguments[0], [-1, 1], [1, 0]))
+#             else:
+#                 val_send_ch1_xyz[2] = (np.interp(
+#                     osc_arguments[0], [-1, 1], [0, 1]))
+#             ctrl_motion.send_message(
+#                 "/moc/channel/1/pos/xyz", val_send_ch1_xyz)
+
+#         if param == "radius":
+#             ctrl_motion.send_message(
+#                 "/ctrlMotion/track/1/width", osc_arguments[0])
+
+#     if track == "2":
+#         if (param == "xPos" or param == "yPos" or param == "yPos"):
+#             if param == "xPos":
+#                 val_send_ch2_xyz[1] = (np.interp(
+#                     osc_arguments[0], [-1, 1], [0, 1]))
+#             if param == "yPos":
+#                 val_send_ch2_xyz[0] = (np.interp(
+#                     osc_arguments[0], [-1, 1], [1, 0]))
+#             else:
+#                 val_send_ch2_xyz[2] = (np.interp(
+#                     osc_arguments[0], [-1, 1], [0, 1]))
+#             ctrl_motion.send_message(
+#                 "/moc/channel/2/pos/xyz", val_send_ch2_xyz)
+
+#         if param == "radius":
+#             ctrl_motion.send_message(
+#                 "/ctrlMotion/track/2/width", osc_arguments[0])
+
+#     if track == "3":
+#         if (param == "xPos" or param == "yPos" or param == "yPos"):
+#             if param == "xPos":
+#                 val_send_ch3_xyz[1] = (np.interp(
+#                     osc_arguments[0], [-1, 1], [0, 1]))
+#             if param == "yPos":
+#                 val_send_ch3_xyz[0] = (np.interp(
+#                     osc_arguments[0], [-1, 1], [1, 0]))
+#             else:
+#                 val_send_ch3_xyz[2] = (np.interp(
+#                     osc_arguments[0], [-1, 1], [0, 1]))
+#             ctrl_motion.send_message(
+#                 "/moc/channel/3/pos/xyz", val_send_ch3_xyz)
+
+#         if param == "radius":
+#             ctrl_motion.send_message(
+#                 "/ctrlMotion/track/3/width", osc_arguments[0])
+
+#     if track == "4":
+#         if (param == "xPos" or param == "yPos" or param == "yPos"):
+#             if param == "xPos":
+#                 val_send_ch4_xyz[1] = (np.interp(
+#                     osc_arguments[0], [-1, 1], [0, 1]))
+#             if param == "yPos":
+#                 val_send_ch4_xyz[0] = (np.interp(
+#                     osc_arguments[0], [-1, 1], [1, 0]))
+#             else:
+#                 val_send_ch4_xyz[2] = (np.interp(
+#                     osc_arguments[0], [-1, 1], [0, 1]))
+#             ctrl_motion.send_message(
+#                 "/moc/channel/4/pos/xyz", val_send_ch4_xyz)
+
+#         if param == "radius":
+#             ctrl_motion.send_message(
+#                 "/ctrlMotion/track/4/width", osc_arguments[0])
+
+

@@ -109,9 +109,9 @@ def set_filters() -> None:
                  (not channel_infos[channel_index].fx_enabled or
                   master_info.fx_mode == MasterInfo.FXMode.LOW_PASS))):
 
-            message = "/track/"
-            f"{channel_infos[channel_index].track_input}"
-            f"/fx/{fx_index}/bypass"
+            message = ("/track/"
+                       f"{channel_infos[channel_index].track_input}"
+                       f"/fx/{fx_index}/bypass")
 
             reaper.send_message(message, float(bypass_active))
 

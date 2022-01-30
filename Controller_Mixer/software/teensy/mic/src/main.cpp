@@ -1,36 +1,42 @@
 // This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
 // © Copyright 2021 Raphael Eismann, Patric Schmitz 
 
+// Made for A³-Mix PCB v0.2 
+
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
 #include <LedControl.h>
 
-// AAA-MIXER / Teensy Firmare for PCB v0.2
+//////////// PIN ASSIGNMENTS //////////////
 
-// Assigning pins
-const int ledPin_1 = 26;// pfl-leds
-const int ledPin_2 = 38;
-const int ledPin_3 = 39;
-const int ledPin_4 = 40;
-const int ledPin_5 = 41;
-const int pflButtons[5] = {33, 34, 35, 36, 37}; // PFL-Button
-const int multiplexer[5] = {5, 6, 7, 8, 9}; // Poti pins
+const int ledPin_1 = 26;// pfl-led
+const int ledPin_2 = 38;// pfl-led
+const int ledPin_3 = 39;// pfl-led
+const int ledPin_4 = 40;// pfl-led
+const int ledPin_5 = 41;// pfl-led
+const int pflButtons[5] = {33, 34, 35, 36, 37};
+
+const int multiplexer[6] = {5, 6, 7, 8, 9, 13}; // Channelpotis [1-4], Masterpotis [5], fx buttons [6]
+const int multiplexer_enc = 12; // Encoderswitches (digital)
 const int selectPins[3] = {30, 31, 32}; // Multiplexer abc
-const int npxl_pin = 13;
-const int npxl_leds = 48;
 
-const int npxl_pin_2 = 28;
-const int npxl_leds_2 = 12;
+const int display_sda1 = 17;
+const int display_scl1 = 16;
+const int display_sda2 = 25;
+const int display_scl2 = 24;
 
 // last sent states (potis)
-const int num_tracks = 5;
+const int num_tracks = 6;
 const int num_pots = 8;
 int pots_sent[num_tracks][num_pots];
 int buttons_last[num_tracks];
 
-// NeoPixel
+// vu-meter neopixel
+const int npxl_pin = 13; // pcb pin
+const int npxl_leds = 48;// striplength
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(npxl_leds, npxl_pin, NEO_GRB + NEO_KHZ800);
-// LED-Matrix Inputs
+const uint32_t modeColorOn = pixels.Color(0,0,255);
+const uint32_t modeColorOff = pixels.Color(0,0,0);
 int vupxlstrips[4][9] = {
   {11,10,9,8,7,6,5,4,3},
   {23,22,21,20,19,18,17,16,15},
@@ -38,20 +44,40 @@ int vupxlstrips[4][9] = {
   {47,46,45,44,43,42,41,40,39}
 };
 
+// LED-Matrix
+LedControl lc=LedControl(18,14,15,4); // led-matrix pins
 int modePxl[4][3] = {
   {0,1,2},
   {12,13,14},
   {24,25,26},
   {36,37,38}
 };
-const uint32_t modeColorOn = pixels.Color(0,0,255);
-const uint32_t modeColorOff = pixels.Color(0,0,0);
-
-LedControl lc=LedControl(18,14,15,4);
 
 // NeoPixel Arrays
 String vuVars[4] = { "VU01", "VU02", "VU03", "VU04" };
 String vuVarsM[8] = { "VU05", "VU06", "VU07", "VU08", "VU09", "VU10", "VU11", "VU12" };
+
+// fx mode buttons are connected to $multiplexer [1,2] last physical connector on chip
+// fx potis are connected to $multiplexer channel [3,4] last physical connector on chip
+
+// Rotary Encoder
+const int rEnc0_DT = 0;
+const int rEnc0_clk = 1;
+const int rEnc1_DT = 2;
+const int rEnc1_clk = 3;
+const int rEnc2_DT = 4;
+const int rEnc2_clk = 5;
+const int rEnc3_DT = 6;
+const int rEnc3_clk = 7;
+const int rEnc4_DT = 8;
+const int rEnc4_clk = 9;
+const int rEnc5_DT = 10;
+const int rEnc6_clk = 11;
+
+const int spare_1 = 28;
+const int spare_2 = 29;
+
+////////////// LOOP ////////////////
 
 void setup() {
 
@@ -104,7 +130,7 @@ void loop(){
         }
         delayMicroseconds(10);
         // filter analog inputs
-        for (int track=0 ; track < 5; track++) {
+        for (int track=0 ; track < 6; track++) {
             int analog = analogRead(multiplexer[track]);
             int difference = pots_sent[track][pot] - analog;
 
@@ -155,28 +181,28 @@ void loop(){
         digitalWrite(ledPin_2, LOW);
         digitalWrite(ledPin_3, LOW);
         digitalWrite(ledPin_4, LOW);
-        digitalWrite(ledPin_5, LOW);
+	digitalWrite(ledPin_5, LOW);
       }
       if(command.startsWith("L2")) {
         digitalWrite(ledPin_1, LOW);
         digitalWrite(ledPin_2, HIGH);
         digitalWrite(ledPin_3, LOW);
         digitalWrite(ledPin_4, LOW);
-        digitalWrite(ledPin_5, LOW);
+	digitalWrite(ledPin_5, LOW);
       }
       if(command.startsWith("L3")) {
         digitalWrite(ledPin_1, LOW);
         digitalWrite(ledPin_2, LOW);
         digitalWrite(ledPin_3, HIGH);
         digitalWrite(ledPin_4, LOW);
-        digitalWrite(ledPin_5, LOW);
+	digitalWrite(ledPin_5, LOW);
       }
       if(command.startsWith("L4")) {
         digitalWrite(ledPin_1, LOW);
         digitalWrite(ledPin_2, LOW);
         digitalWrite(ledPin_3, LOW);
         digitalWrite(ledPin_4, HIGH);
-        digitalWrite(ledPin_5, LOW);
+	digitalWrite(ledPin_5, LOW);
       }
       if(command.startsWith("L5")) {
         digitalWrite(ledPin_1, LOW);

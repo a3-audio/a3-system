@@ -148,39 +148,14 @@ def serial_handler(): # dispatch from serial strem and send to osc
                 if potNr == "5":
                     osc_router.send_message("/mic/channel/1/volume/", value)
                     print("T" + track + " P" + potNr + " " + value)
-                if potNr == "6":
-                    if float(value) > 0.7 and fx_state[0]==0:
-                        fx_state[0] = 1
-                        pixels[5] = (255,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/1/fx/", 1)
-                    elif float(value) > 0.7 and fx_state[0]==1:
-                        fx_state[0] = 0
-                        pixels[5] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/1/fx/", 0)
-                if potNr == "7":
-                    if float(value) > 0.7 and fx_state[1]==0:
-                        fx_state[1] = 1
-                        pixels[4] = (255,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/2/fx/", 1)
-                    elif float(value) > 0.7 and fx_state[1]==1:
-                        fx_state[1] = 0
-                        pixels[4] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/2/fx/", 0)
                 if potNr == "8":
-                    if float(value) > 0.7 and fx_state[2]==0:
-                        fx_state[2] = 1
-                        pixels[3] = (255,0,0)
+                    if float(value) > 0.7 and fx_state[8]==0:
+                        fx_state[8] = 1
+                        pixels[0] = (255,0,0)
+                        pixels[11] = (0,0,0)
                         pixels.show()
-                        osc_router.send_message("/mic/channel/3/fx/", 1)
-                    elif float(value) > 0.7 and fx_state[2]==1:
-                        fx_state[2] = 0
-                        pixels[3] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/3/fx/", 0)
+                        osc_router.send_message("/mic/channel/fxmode/hipass", 1)
+                        osc_router.send_message("/mic/channel/fxmode/lopass", 0)
             if track == "2":
                 if potNr == "1":
                     osc_router.send_message("/mic/channel/2/gain/", value)
@@ -197,39 +172,14 @@ def serial_handler(): # dispatch from serial strem and send to osc
                 if potNr == "5":
                     osc_router.send_message("/mic/channel/2/volume/", value)
                     print("T" + track + " P" + potNr + " " + value)
-                if potNr == "6":
-                    if float(value) > 0.7 and fx_state[3]==0:
-                        fx_state[3] = 1
-                        pixels[2] = (255,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/4/fx/", 1)
-                    elif float(value) > 0.7 and fx_state[3]==1:
-                        fx_state[3] = 0
-                        pixels[2] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/4/fx/", 0)
-                if potNr == "7":
-                    if float(value) > 0.7 and fx_state[4]==0:
-                        fx_state[4] = 1
-                        pixels[6] = (255,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/1/3d/", 1)
-                    elif float(value) > 0.7 and fx_state[4]==1:
-                        fx_state[4] = 0
-                        pixels[6] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/1/3d/", 0)
                 if potNr == "8":
-                    if float(value) > 0.7 and fx_state[5]==0:
-                        fx_state[5] = 1
-                        pixels[7] = (255,0,0)
+                    if float(value) > 0.7 and fx_state[8]==1:
+                        fx_state[8] = 0
+                        pixels[0] = (0,0,0)
+                        pixels[11] = (255,0,0)
                         pixels.show()
-                        osc_router.send_message("/mic/channel/2/3d/", 1)
-                    elif float(value) > 0.7 and fx_state[5]==1:
-                        fx_state[5] = 0
-                        pixels[7] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/2/3d/", 0)
+                        osc_router.send_message("/mic/channel/fxmode/hipass", 0)
+                        osc_router.send_message("/mic/channel/fxmode/lopass", 1)
             if track == "3":
                 if potNr == "1":
                     osc_router.send_message("/mic/channel/3/gain/", value)
@@ -246,36 +196,9 @@ def serial_handler(): # dispatch from serial strem and send to osc
                 if potNr == "5":
                     osc_router.send_message("/mic/channel/3/volume/", value)
                     print("T" + track + " P" + potNr + " " + value)
-                if potNr == "6":
-                    if float(value) > 0.7 and fx_state[6]==0:
-                        fx_state[6] = 1
-                        pixels[8] = (255,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/3/3d/", 1)
-                    elif float(value) > 0.7 and fx_state[6]==1:
-                        fx_state[6] = 0
-                        pixels[8] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/3/3d/", 0)
-                if potNr == "7":
-                    if float(value) > 0.7 and fx_state[7]==0:
-                        fx_state[7] = 1
-                        pixels[9] = (255,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/4/3d/", 1)
-                    elif float(value) > 0.7 and fx_state[7]==1:
-                        fx_state[7] = 0
-                        pixels[9] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/4/3d/", 0)
                 if potNr == "8":
-                    if float(value) > 0.7 and fx_state[8]==0:
-                        fx_state[8] = 1
-                        pixels[0] = (255,0,0)
-                        pixels[11] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/fxmode/hipass", 1)
-                        osc_router.send_message("/mic/channel/fxmode/lopass", 0)
+                    osc_router.send_message("/mic/channel/fxparm/fxfreq", value)
+                    print("T" + track + " P" + potNr + " " + value)
             if track == "4":
                 if potNr == "1":
                     osc_router.send_message("/mic/channel/4/gain/", value)
@@ -291,17 +214,6 @@ def serial_handler(): # dispatch from serial strem and send to osc
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "5":
                     osc_router.send_message("/mic/channel/4/volume/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "6":
-                    if float(value) > 0.7 and fx_state[8]==1:
-                        fx_state[8] = 0
-                        pixels[0] = (0,0,0)
-                        pixels[11] = (255,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/fxmode/hipass", 0)
-                        osc_router.send_message("/mic/channel/fxmode/lopass", 1)
-                if potNr == "7":
-                    osc_router.send_message("/mic/channel/fxparm/fxfreq", value)
                     print("T" + track + " P" + potNr + " " + value)
                 if potNr == "8":
                     osc_router.send_message("/mic/channel/fxparm/fxres", value)
@@ -319,6 +231,95 @@ def serial_handler(): # dispatch from serial strem and send to osc
                 if potNr == "4":
                     osc_router.send_message("/mic/channel/master/phVol/", value)
                     print("T" + track + " P" + potNr + " " + value)
+            if track == "6":
+                if potNr == "1":
+                    if float(value) > 0.7 and fx_state[0]==0:
+                        fx_state[0] = 1
+                        pixels[5] = (255,0,0)
+                        pixels.show()
+                        osc_router.send_message("/mic/channel/1/fx/", 1)
+                    elif float(value) > 0.7 and fx_state[0]==1:
+                        fx_state[0] = 0
+                        pixels[5] = (0,0,0)
+                        pixels.show()
+                        osc_router.send_message("/mic/channel/1/fx/", 0)
+                if potNr == "2":
+                    if float(value) > 0.7 and fx_state[1]==0:
+                        fx_state[1] = 1
+                        pixels[4] = (255,0,0)
+                        pixels.show()
+                        osc_router.send_message("/mic/channel/2/fx/", 1)
+                    elif float(value) > 0.7 and fx_state[1]==1:
+                        fx_state[1] = 0
+                        pixels[4] = (0,0,0)
+                        pixels.show()
+                        osc_router.send_message("/mic/channel/2/fx/", 0)
+                if potNr == "3":
+                    if float(value) > 0.7 and fx_state[2]==0:
+                        fx_state[2] = 1
+                        pixels[3] = (255,0,0)
+                        pixels.show()
+                        osc_router.send_message("/mic/channel/3/fx/", 1)
+                    elif float(value) > 0.7 and fx_state[2]==1:
+                        fx_state[2] = 0
+                        pixels[3] = (0,0,0)
+                        pixels.show()
+                        osc_router.send_message("/mic/channel/3/fx/", 0)
+                if potNr == "4":
+                    if float(value) > 0.7 and fx_state[3]==0:
+                        fx_state[3] = 1
+                        pixels[2] = (255,0,0)
+                        pixels.show()
+                        osc_router.send_message("/mic/channel/4/fx/", 1)
+                    elif float(value) > 0.7 and fx_state[3]==1:
+                        fx_state[3] = 0
+                        pixels[2] = (0,0,0)
+                        pixels.show()
+                        osc_router.send_message("/mic/channel/4/fx/", 0)
+                if potNr == "5":
+                    if float(value) > 0.7 and fx_state[4]==0:
+                        fx_state[4] = 1
+                        pixels[6] = (255,0,0)
+                        pixels.show()
+                        osc_router.send_message("/mic/channel/1/3d/", 1)
+                    elif float(value) > 0.7 and fx_state[4]==1:
+                        fx_state[4] = 0
+                        pixels[6] = (0,0,0)
+                        pixels.show()
+                        osc_router.send_message("/mic/channel/1/3d/", 0)
+                if potNr == "6":
+                    if float(value) > 0.7 and fx_state[5]==0:
+                        fx_state[5] = 1
+                        pixels[7] = (255,0,0)
+                        pixels.show()
+                        osc_router.send_message("/mic/channel/2/3d/", 1)
+                    elif float(value) > 0.7 and fx_state[5]==1:
+                        fx_state[5] = 0
+                        pixels[7] = (0,0,0)
+                        pixels.show()
+                        osc_router.send_message("/mic/channel/2/3d/", 0)
+                if potNr == "7":
+                    if float(value) > 0.7 and fx_state[6]==0:
+                        fx_state[6] = 1
+                        pixels[8] = (255,0,0)
+                        pixels.show()
+                        osc_router.send_message("/mic/channel/3/3d/", 1)
+                    elif float(value) > 0.7 and fx_state[6]==1:
+                        fx_state[6] = 0
+                        pixels[8] = (0,0,0)
+                        pixels.show()
+                        osc_router.send_message("/mic/channel/3/3d/", 0)
+                if potNr == "8":
+                    if float(value) > 0.7 and fx_state[7]==0:
+                        fx_state[7] = 1
+                        pixels[9] = (255,0,0)
+                        pixels.show()
+                        osc_router.send_message("/mic/channel/4/3d/", 1)
+                    elif float(value) > 0.7 and fx_state[7]==1:
+                        fx_state[7] = 0
+                        pixels[9] = (0,0,0)
+                        pixels.show()
+                        osc_router.send_message("/mic/channel/4/3d/", 0)
 
 if __name__ == '__main__':
 

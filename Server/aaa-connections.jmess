@@ -65,50 +65,50 @@
   </connection>
   <connection>
     <output>REAPER:out9</output>
-    <input>supernova:input_1</input>
+    <input>SuperCollider:in_1</input>
   </connection>
   <connection>
     <output>REAPER:out10</output>
-    <input>supernova:input_2</input>
+    <input>SuperCollider:in_2</input>
   </connection>
   <connection>
     <output>REAPER:out11</output>
-    <input>supernova:input_3</input>
+    <input>SuperCollider:in_3</input>
   </connection>
   <connection>
     <output>REAPER:out12</output>
-    <input>supernova:input_4</input>
+    <input>SuperCollider:in_4</input>
   </connection>
   <connection>
     <output>REAPER:out13</output>
-    <input>supernova:input_12</input>
+    <input>SuperCollider:in_12</input>
   </connection>
   <connection>
     <output>REAPER:out14</output>
-    <input>supernova:input_11</input>
+    <input>SuperCollider:in_11</input>
   </connection>
   <connection>
     <output>REAPER:out15</output>
-    <input>supernova:input_10</input>
+    <input>SuperCollider:in_10</input>
   </connection>
   <connection>
     <output>REAPER:out16</output>
-    <input>supernova:input_9</input>
+    <input>SuperCollider:in_9</input>
   </connection>
   <connection>
     <output>REAPER:out17</output>
-    <input>supernova:input_8</input>
+    <input>SuperCollider:in_8</input>
   </connection>
   <connection>
     <output>REAPER:out18</output>
-    <input>supernova:input_7</input>
+    <input>SuperCollider:in_7</input>
   </connection>
   <connection>
     <output>REAPER:out19</output>
-    <input>supernova:input_6</input>
+    <input>SuperCollider:in_6</input>
   </connection>
   <connection>
     <output>REAPER:out20</output>
-    <input>supernova:input_5</input>
+    <input>SuperCollider:in_5</input>
   </connection>
 </jmess>

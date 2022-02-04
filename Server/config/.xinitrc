@@ -32,7 +32,7 @@ fi
 # Edit line to fit your audio-hardware. Find out with:
 # cat /proc/asound/cards
 
-exec /usr/bin/jackd -a -dalsa -dhw:USBStreamer -r44100 -p64 -P -i8 -o8 -na3jack &
+exec /usr/bin/jackd -R -a a -dalsa -dhw:USBStreamer -r48000 -p64 -n2 -P -i8 -o8 -na3jack &
 
 # No autoconnect(-a): On
 # Driver(-d): alsa

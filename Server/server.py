@@ -38,8 +38,8 @@ from pythonosc.udp_client import SimpleUDPClient  # type: ignore
 # OSC server config
 OSC_ROUTER_PORT: int = 9000
 
-FX_INDEX_HIPASS: int = 4
-FX_INDEX_LOPASS: int = 5
+FX_INDEX_HIPASS: int = 3
+FX_INDEX_LOPASS: int = 4
 
 
 # OSC clients
@@ -53,10 +53,10 @@ udp_clients_iem = tuple(SimpleUDPClient('127.0.0.1', 1337 + index)
 
 @dataclass
 class MasterInfo:
-    track_masterbus: int = 6
-    track_mainmixbus: int = 22
-    track_booth: int = 1
-    track_phones: int = 14
+    track_masterbus: int = 1
+    track_mainmixbus: int = 12
+    track_booth: int = 100
+    track_phones: int = 5
 
     class FXMode(Enum):
         LOW_PASS = 0
@@ -83,35 +83,35 @@ class ChannelInfo:
 channel_infos = (
     # Channel 1
     ChannelInfo(
-        track_input=27,
-        track_stereo=33,
-        track_3d=34,
-        track_channelbus=26,
-        track_pfl=18,
+        track_input=14,
+        track_stereo=15,
+        track_3d=16,
+        track_channelbus=13,
+        track_pfl=8,
     ),
     # Channel 2
     ChannelInfo(
-        track_input=36,
-        track_stereo=42,
-        track_3d=43,
-        track_channelbus=35,
-        track_pfl=19,
+        track_input=18,
+        track_stereo=19,
+        track_3d=20,
+        track_channelbus=17,
+        track_pfl=9,
     ),
     # Channel 3
     ChannelInfo(
-        track_input=45,
-        track_stereo=51,
-        track_3d=52,
-        track_channelbus=44,
-        track_pfl=20,
+        track_input=22,
+        track_stereo=23,
+        track_3d=24,
+        track_channelbus=21,
+        track_pfl=10,
     ),
     # Channel 4
     ChannelInfo(
-        track_input=54,
-        track_stereo=60,
-        track_3d=61,
-        track_channelbus=53,
-        track_pfl=21,
+        track_input=26,
+        track_stereo=27,
+        track_3d=28,
+        track_channelbus=25,
+        track_pfl=11,
     ),
 )
 
@@ -144,7 +144,9 @@ def param_handler_channel(channel_index: int, parameter: str,
         # trial-and-error value mapping for prototype 0.1 with wrong
         # poti weighting in hardware.
         val = value ** (1/16) * 0.5
-        reaper.send_message(f"/track/{track_input}/gain", val)
+        # reaper.send_message(f"/track/{track_input}/gain", val)
+        reaper.send_message(
+            f"/track/{track_input}/fx/1/fxparam/1/value", val)
 
     elif parameter == "hi":
         val = np.interp(value, [0, 1], [0.05, 0.50])

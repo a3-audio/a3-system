@@ -174,20 +174,6 @@ void loop(){
     if (Serial.available()) {
       String command = Serial.readStringUntil(',');
 
-      if(command.startsWith("PFL")) {
-        //int track_index = command.charAt(1) - '1';
-        //int mute_index = command.charAt(2) - '1';
-	String track = Serial.readStringUntil(',');
-        String mute = Serial.readStringUntil('\n');
-        int track_index = track.toInt();
-        int mute_index = mute.toInt();
-
-        for (int button = 0; button < 3; ++button) {
-          if(button == track_index)
-            digitalWrite(pflleds[track_index], pinstates[mute_index]);
-        }
-      }
-      
       if(command.startsWith("M")) {
         // parse the channel and pressed mode button index from command
         int channel = command.charAt(1) - '1';
@@ -247,27 +233,22 @@ void loop(){
           }
         }
       }
+      pixels.show(); // send to hardware.
 
-/*
       if(command.startsWith("PFL")) {
-        String track = Serial.readStringUntil(',');
+        //int track_index = command.charAt(1) - '1';
+        //int mute_index = command.charAt(2) - '1';
+	String track = Serial.readStringUntil(',');
         String mute = Serial.readStringUntil('\n');
-        if(track.startsWith("1")) {
-          if(mute.startsWith("1")) {
-            digitalWrite(ledPin_1, HIGH);
-          }
-	  if(mute.startsWith("0")) {
-            digitalWrite(ledPin_1, LOW);
-          }
+        int track_index = track.toInt();
+        int mute_index = mute.toInt();
+
+        for (int button = 0; button < 3; ++button) {
+          if(button == track_index)
+            digitalWrite(pflleds[track_index], pinstates[mute_index]);
         }
       }
-*/
     }
-    pixels.show(); // send to hardware.
-    
-
-    
-    
 }
 
 /*

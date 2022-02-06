@@ -90,7 +90,7 @@ def vu_handler(address: str,
     send_vu_data(vu, peak_db, rms_db)
 
 def send_pfl_leds_data(track: str, mute: float):
-    sendData("PFL," + track + "," + str(mute))
+    sendData("PFL" + str(track) + "," + str(mute))
     print(track)
     print(mute)
 

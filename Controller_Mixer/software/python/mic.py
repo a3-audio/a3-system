@@ -89,6 +89,20 @@ def vu_handler(address: str,
 
     send_vu_data(vu, peak_db, rms_db)
 
+def send_pfl_leds_data(track: str, mute: float):
+    sendData("PFL," + track + "," + str(mute))
+    print(track)
+    print(mute)
+
+def pfl_leds_handler(address: str,
+               *osc_arguments: List[Any]) -> None:
+    words = address.split("/")
+    track = words[2]
+
+    mute = osc_arguments[0]
+    send_pfl_leds_data(track, mute)
+    
+
 # Serial communication
 ser = serial.Serial('/dev/ttyACM0', 115200)
 ser.flush()
@@ -334,6 +348,7 @@ if __name__ == '__main__':
 
     dispatcher = dispatcher.Dispatcher()
     dispatcher.map("/vu/*", vu_handler)
+    dispatcher.map("/mute/*", pfl_leds_handler)
     
     server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))

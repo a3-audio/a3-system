@@ -172,48 +172,24 @@ void loop(){
 
         buttons_last[track] = digital;
     }
-
+    
+    //PFL-Leds
     if (Serial.available()) {
       String command = Serial.readStringUntil(',');
-
-      if(command.startsWith("L1")) {
-        digitalWrite(ledPin_1, HIGH);
-        digitalWrite(ledPin_2, LOW);
-        digitalWrite(ledPin_3, LOW);
-        digitalWrite(ledPin_4, LOW);
-	digitalWrite(ledPin_5, LOW);
+      String track = Serial.readStringUntil(',');
+      String mute = Serial.readStringUntil('\n');
+ 
+      if(command.startsWith("PFL")) {
+        if(track.startsWith(1)) {
+	  if(mute.startsWith(1)) {
+            digitalWrite(ledPin_1, HIGH);
+          }
+	  if(mute.startsWith(0)) {
+            digitalWrite(ledPin_1, LOW);
+          }
+	}
       }
-      if(command.startsWith("L2")) {
-        digitalWrite(ledPin_1, LOW);
-        digitalWrite(ledPin_2, HIGH);
-        digitalWrite(ledPin_3, LOW);
-        digitalWrite(ledPin_4, LOW);
-	digitalWrite(ledPin_5, LOW);
-      }
-      if(command.startsWith("L3")) {
-        digitalWrite(ledPin_1, LOW);
-        digitalWrite(ledPin_2, LOW);
-        digitalWrite(ledPin_3, HIGH);
-        digitalWrite(ledPin_4, LOW);
-	digitalWrite(ledPin_5, LOW);
-      }
-      if(command.startsWith("L4")) {
-        digitalWrite(ledPin_1, LOW);
-        digitalWrite(ledPin_2, LOW);
-        digitalWrite(ledPin_3, LOW);
-        digitalWrite(ledPin_4, HIGH);
-	digitalWrite(ledPin_5, LOW);
-      }
-      if(command.startsWith("L5")) {
-        digitalWrite(ledPin_1, LOW);
-        digitalWrite(ledPin_2, LOW);
-        digitalWrite(ledPin_3, LOW);
-        digitalWrite(ledPin_4, LOW);
-        digitalWrite(ledPin_5, HIGH);
-      }
-      if(command.startsWith("L")) {
-        Serial.readStringUntil('\n');
-      }
+      
 
       if(command.startsWith("M")) {
         // parse the channel and pressed mode button index from command

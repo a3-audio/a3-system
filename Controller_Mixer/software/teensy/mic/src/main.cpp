@@ -8,13 +8,9 @@
 #include <LedControl.h>
 
 //////////// PIN ASSIGNMENTS //////////////
-
-const int ledPin_1 = 26;// pfl-led
-const int ledPin_2 = 38;// pfl-led
-const int ledPin_3 = 39;// pfl-led
-const int ledPin_4 = 40;// pfl-led
-const int ledPin_5 = 41;// pfl-led
-const int pflButtons[5] = {33, 34, 35, 36, 37};
+const uint8_t pinstates[2] = { HIGH, LOW };
+const int pflleds[4] = {26, 38, 39, 40};
+const int pflButtons[4] = {33, 34, 35, 36};
 
 const int multiplexer[6] = {5, 6, 7, 8, 9, 13}; // Channelpotis [1-4], Masterpotis [5], fx buttons [6]
 const int multiplexer_enc = 12; // Encoderswitches (digital)
@@ -28,6 +24,8 @@ const int display_scl2 = 24;
 // last sent states (potis)
 const int num_tracks = 6;
 const int num_pots = 8;
+const int num_pfl_tracks = 4;
+
 int pots_sent[num_tracks][num_pots];
 int buttons_last[num_tracks];
 
@@ -72,7 +70,7 @@ const int rEnc3_clk = 7;
 const int rEnc4_DT = 8;
 const int rEnc4_clk = 9;
 const int rEnc5_DT = 10;
-const int rEnc6_clk = 11;
+const int rEnc5_clk = 11;
 
 const int spare_1 = 28;
 const int spare_2 = 29;
@@ -98,16 +96,16 @@ void setup() {
     pixels.clear();
     pixels.setBrightness(10);
 
-   // Configure digital pins
-    for(int track = 0 ; track < num_tracks ; ++track) {
+    // Configure digital pins
+    // pfl buttons
+    for(int track = 0 ; track < num_pfl_tracks ; ++track) {
         pinMode(pflButtons[track], OUTPUT);
     }
-    pinMode(ledPin_1, OUTPUT);            // LED
-    pinMode(ledPin_2, OUTPUT);            // LED
-    pinMode(ledPin_3, OUTPUT);            // LED
-    pinMode(ledPin_4, OUTPUT);            // LED
-    pinMode(ledPin_5, OUTPUT);            // LED
-
+    //pfl leds
+    for(int track = 0 ; track < num_pfl_tracks ; ++track) {
+        pinMode(pflleds[track], OUTPUT);
+    }
+    	
     lc.shutdown(0,false);
     lc.shutdown(1,false);
     lc.shutdown(2,false);
@@ -153,8 +151,8 @@ void loop(){
     } 
     delayMicroseconds(10);
 
-    // Buttons
-    for(int track = 0 ; track < num_tracks ; ++track) {
+    // PFL Buttons
+    for(int track = 0 ; track < num_pfl_tracks ; ++track) {
         int digital = digitalRead(pflButtons[track]);
 
         // on rising edge send toggle
@@ -175,45 +173,6 @@ void loop(){
 
     if (Serial.available()) {
       String command = Serial.readStringUntil(',');
-
-      if(command.startsWith("L1")) {
-        digitalWrite(ledPin_1, HIGH);
-        digitalWrite(ledPin_2, LOW);
-        digitalWrite(ledPin_3, LOW);
-        digitalWrite(ledPin_4, LOW);
-	digitalWrite(ledPin_5, LOW);
-      }
-      if(command.startsWith("L2")) {
-        digitalWrite(ledPin_1, LOW);
-        digitalWrite(ledPin_2, HIGH);
-        digitalWrite(ledPin_3, LOW);
-        digitalWrite(ledPin_4, LOW);
-	digitalWrite(ledPin_5, LOW);
-      }
-      if(command.startsWith("L3")) {
-        digitalWrite(ledPin_1, LOW);
-        digitalWrite(ledPin_2, LOW);
-        digitalWrite(ledPin_3, HIGH);
-        digitalWrite(ledPin_4, LOW);
-	digitalWrite(ledPin_5, LOW);
-      }
-      if(command.startsWith("L4")) {
-        digitalWrite(ledPin_1, LOW);
-        digitalWrite(ledPin_2, LOW);
-        digitalWrite(ledPin_3, LOW);
-        digitalWrite(ledPin_4, HIGH);
-	digitalWrite(ledPin_5, LOW);
-      }
-      if(command.startsWith("L5")) {
-        digitalWrite(ledPin_1, LOW);
-        digitalWrite(ledPin_2, LOW);
-        digitalWrite(ledPin_3, LOW);
-        digitalWrite(ledPin_4, LOW);
-        digitalWrite(ledPin_5, HIGH);
-      }
-      if(command.startsWith("L")) {
-        Serial.readStringUntil('\n');
-      }
 
       if(command.startsWith("M")) {
         // parse the channel and pressed mode button index from command
@@ -274,9 +233,22 @@ void loop(){
           }
         }
       }
-    }
+      pixels.show(); // send to hardware.
 
-    pixels.show(); // send to hardware.
+      if(command.startsWith("PFL")) {
+        //int track_index = command.charAt(1) - '1';
+        //int mute_index = command.charAt(2) - '1';
+	String track = Serial.readStringUntil(',');
+        String mute = Serial.readStringUntil('\n');
+        int track_index = track.toInt();
+        int mute_index = mute.toInt();
+
+        for (int button = 0; button < 3; ++button) {
+          if(button == track_index)
+            digitalWrite(pflleds[track_index], pinstates[mute_index]);
+        }
+      }
+    }
 }
 
 /*
@@ -297,3 +269,44 @@ void loop(){
   }
 */
 
+/*
+      if(command.startsWith("L1")) {
+        digitalWrite(ledPin_1, HIGH);
+        digitalWrite(ledPin_2, LOW);
+        digitalWrite(ledPin_3, LOW);
+        digitalWrite(ledPin_4, LOW);
+	digitalWrite(ledPin_5, LOW);
+      }
+      if(command.startsWith("L2")) {
+        digitalWrite(ledPin_1, LOW);
+        digitalWrite(ledPin_2, HIGH);
+        digitalWrite(ledPin_3, LOW);
+        digitalWrite(ledPin_4, LOW);
+	digitalWrite(ledPin_5, LOW);
+      }
+      if(command.startsWith("L3")) {
+        digitalWrite(ledPin_1, LOW);
+        digitalWrite(ledPin_2, LOW);
+        digitalWrite(ledPin_3, HIGH);
+        digitalWrite(ledPin_4, LOW);
+	digitalWrite(ledPin_5, LOW);
+      }
+      if(command.startsWith("L4")) {
+        digitalWrite(ledPin_1, LOW);
+        digitalWrite(ledPin_2, LOW);
+        digitalWrite(ledPin_3, LOW);
+        digitalWrite(ledPin_4, HIGH);
+	digitalWrite(ledPin_5, LOW);
+      }
+      if(command.startsWith("L5")) {
+        digitalWrite(ledPin_1, LOW);
+        digitalWrite(ledPin_2, LOW);
+        digitalWrite(ledPin_3, LOW);
+        digitalWrite(ledPin_4, LOW);
+        digitalWrite(ledPin_5, HIGH);
+      }
+      if(command.startsWith("L")) {
+        Serial.readStringUntil('\n');
+      }
+
+*/

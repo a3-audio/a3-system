@@ -43,7 +43,9 @@ FX_INDEX_LOPASS: int = 4
 
 
 # OSC clients
-ctrl_mixer = SimpleUDPClient('192.168.43.51', 8500)
+#ctrl_mixer = SimpleUDPClient('192.168.43.101', 8500)
+ctrl_mixer = SimpleUDPClient('192.168.43.51', 7771)
+#ctrl_mixer = SimpleUDPClient('192.168.43.51', 8500)
 ctrl_motion = SimpleUDPClient('192.168.43.52', 8700)
 reaper = SimpleUDPClient('127.0.0.1', 9001)
 
@@ -279,7 +281,7 @@ def button_handler(address: str,
                 track_pfl = channel_infos[channel_index].track_pfl
                 muted = not channel_infos[channel_index].pfl_enabled
                 reaper.send_message(f"/track/{track_pfl}/mute", float(muted))
-                ctrl_mixer.send_message(f"/track/{track_pfl}/mute", float(muted))
+                ctrl_mixer.send_message(f"/mute/{channel_index+1}", float(muted))
 
             elif parameter == "fx":
                 channel_infos[channel_index].fx_enabled = bool(value)

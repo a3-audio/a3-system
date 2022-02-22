@@ -182,10 +182,7 @@ void loop(){
         int track_index = track.toInt();
         int mute_index = mute.toInt();
 
-//for (int button = 0; button < 3; ++button) {
-        //if(button == track_index)
-        digitalWrite(pflleds[track_index], pinstates[mute_index]);
-  //      }
+        digitalWrite(pflleds[track_index -1], pinstates[mute_index]);
       }
       
       if(command.startsWith("M")) {

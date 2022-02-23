@@ -173,35 +173,15 @@ void loop(){
 
     if (Serial.available()) {
       String command = Serial.readStringUntil(',');
-
+/*
       if(command.startsWith("PFL")) {
-        //int track_index = command.charAt(1) - '1';
-        //int mute_index = command.charAt(2) - '1';
 	String track = Serial.readStringUntil(',');
         String mute = Serial.readStringUntil('\n');
         int track_index = track.toInt();
         int mute_index = mute.toInt();
-
-//for (int button = 0; button < 3; ++button) {
-        //if(button == track_index)
         digitalWrite(pflleds[track_index], pinstates[mute_index]);
-  //      }
       }
-      
-      if(command.startsWith("M")) {
-        // parse the channel and pressed mode button index from command
-        int channel = command.charAt(1) - '1';
-        int mode_button_index = command.charAt(2) - '1';
-
-        // loop over all buttons for this channel and toggle LED accordingly
-        for (int button = 0; button < 3; ++button) {
-          if(button == mode_button_index)
-            pixels.setPixelColor(modePxl[channel][button], modeColorOn);
-          else
-            pixels.setPixelColor(modePxl[channel][button], modeColorOff);
-        }
-      }
-
+*/    
       for (int i = 0; i < 4; i++) { // filter serial inputstream VU01-VU04
         if(command.startsWith(vuVars[i])) {
           String peak = Serial.readStringUntil(',');
@@ -247,7 +227,29 @@ void loop(){
           }
         }
       }
+    pixels.show(); // send to hardware.
+}
 
+
+
+
+
+
+/*
+      if(command.startsWith("M")) {
+        // parse the channel and pressed mode button index from command
+        int channel = command.charAt(1) - '1';
+        int mode_button_index = command.charAt(2) - '1';
+
+        // loop over all buttons for this channel and toggle LED accordingly
+        for (int button = 0; button < 3; ++button) {
+          if(button == mode_button_index)
+            pixels.setPixelColor(modePxl[channel][button], modeColorOn);
+          else
+            pixels.setPixelColor(modePxl[channel][button], modeColorOff);
+        }
+      }
+*/
 /*
       if(command.startsWith("PFL")) {
         String track = Serial.readStringUntil(',');
@@ -263,12 +265,6 @@ void loop(){
       }
 */
     }
-    pixels.show(); // send to hardware.
-    
-
-    
-    
-}
 
 /*
   // Button 5

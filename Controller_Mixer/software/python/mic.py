@@ -89,19 +89,19 @@ def vu_handler(address: str,
 
     send_vu_data(vu, peak_db, rms_db)
 
+"""
 def send_pfl_leds_data(track: str, mute: float):
     sendData("PFL" + str(track) + "," + str(mute))
-    print(track)
-    print(mute)
+    print("PFL" + str(track) + "," + str(mute))
 
 def pfl_leds_handler(address: str,
                *osc_arguments: List[Any]) -> None:
     words = address.split("/")
     track = words[2]
 
-    mute = osc_arguments[0]
+    mute = int(osc_arguments[0])
     send_pfl_leds_data(track, mute)
-    
+""" 
 
 # Serial communication
 ser = serial.Serial('/dev/ttyACM0', 115200)
@@ -111,7 +111,7 @@ def sendData(data): # send Serial data
     data += "\r\n"
     ser.write(data.encode())
 
-def serial_handler(): # dispatch from serial strem and send to osc
+def serial_handler(): # dispatch from serial stream and send to osc
 
     while True:
         line = ser.readline().decode('utf-8').rstrip()

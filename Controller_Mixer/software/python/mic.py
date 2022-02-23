@@ -348,7 +348,7 @@ if __name__ == '__main__':
 
     dispatcher = dispatcher.Dispatcher()
     dispatcher.map("/vu/*", vu_handler)
-    dispatcher.map("/mute/*", pfl_leds_handler)
+    #dispatcher.map("/mute/*", pfl_leds_handler)
     
     server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))

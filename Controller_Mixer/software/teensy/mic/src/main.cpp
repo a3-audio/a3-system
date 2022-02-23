@@ -75,8 +75,6 @@ const int rEnc5_clk = 11;
 const int spare_1 = 28;
 const int spare_2 = 29;
 
-////////////// LOOP ////////////////
-
 void setup() {
 
     // initialize sent values to 0
@@ -179,7 +177,7 @@ void loop(){
         String mute = Serial.readStringUntil('\n');
         int track_index = track.toInt();
         int mute_index = mute.toInt();
-        digitalWrite(pflleds[track_index], pinstates[mute_index]);
+        digitalWrite(pflleds[track_index -1], pinstates[mute_index]);
       }
 */    
       for (int i = 0; i < 4; i++) { // filter serial inputstream VU01-VU04

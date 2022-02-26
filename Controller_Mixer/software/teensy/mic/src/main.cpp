@@ -8,10 +8,21 @@
 #include <Adafruit_NeoPixel.h>
 #include <LedControl.h>
 
+#include <Bounce.h>
+
 //////////// PIN ASSIGNMENTS //////////////
 const uint8_t pinstates[2] = { HIGH, LOW };
-const int pflleds[4] = {26, 38, 39, 40};
-const int pflButtons[4] = {33, 34, 35, 36};
+const int pflleds [] = {26, 38, 39, 40};
+const int pflButtonPins [] = {33, 34, 35, 36};
+
+const int debounce_ms = 10; // 10 ms debounce
+Bounce pflButtons [] = {
+    Bounce(pflButtonPins[0], debounce_ms),
+    Bounce(pflButtonPins[1], debounce_ms),
+    Bounce(pflButtonPins[2], debounce_ms),
+    Bounce(pflButtonPins[3], debounce_ms)
+};
+
 
 const int multiplexer[6] = {5, 6, 7, 8, 9, 13}; // Channelpotis [1-4], Masterpotis [5], fx buttons [6]
 const int multiplexer_enc = 12; // Encoderswitches (digital)
@@ -28,14 +39,12 @@ const int num_pots = 8;
 const int num_pfl_tracks = 4;
 
 int pots_sent[num_tracks][num_pots];
-int buttons_last[num_tracks];
 
 // vu-meter neopixel
 const int npxl_pin = 13; // pcb pin
 const int npxl_leds = 48;// striplength
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(npxl_leds, npxl_pin, NEO_GRB + NEO_KHZ800);
-const uint32_t modeColorOn = pixels.Color(0,0,255);
-const uint32_t modeColorOff = pixels.Color(0,0,0);
+
 int vupxlstrips[4][9] = {
     {11,10,9,8,7,6,5,4,3},
     {23,22,21,20,19,18,17,16,15},
@@ -85,11 +94,6 @@ void setup() {
         }
     }
 
-    // initialize button state to 0
-    for(int track = 0 ; track < num_tracks ; ++track) {
-        buttons_last[track] = 0;
-    }
-
     Serial.begin(115200);       // starting Serial
     pixels.begin(); 		// INITIALIZE NeoPixel
     pixels.clear();
@@ -98,7 +102,7 @@ void setup() {
     // Configure digital pins
     // pfl buttons
     for(int track = 0 ; track < num_pfl_tracks ; ++track) {
-        pinMode(pflButtons[track], INPUT);
+        pinMode(pflButtonPins[track], INPUT);
     }
     //pfl leds
     for(int track = 0 ; track < num_pfl_tracks ; ++track) {
@@ -152,10 +156,10 @@ void loop(){
 
     // PFL Buttons
     for(int track = 0 ; track < num_pfl_tracks ; ++track) {
-        int digital = digitalRead(pflButtons[track]);
+        pflButtons[track].update();
 
         // on rising edge send toggle
-        if(digital == 1 && buttons_last[track] == 0) {
+        if(pflButtons[track].risingEdge()) {
             Serial.print("T");
             Serial.print(":");
             Serial.print(track+1);
@@ -166,8 +170,6 @@ void loop(){
             Serial.print(":");
             Serial.println("0");
         }
-
-        buttons_last[track] = digital;
     }
 
     if (Serial.available()) {

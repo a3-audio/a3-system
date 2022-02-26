@@ -1,7 +1,8 @@
-// This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
-// © Copyright 2021 Raphael Eismann, Patric Schmitz 
+// This file is a part of A³Mix.
+// License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
+// © Copyright 2021-2022 Raphael Eismann, Patric Schmitz
 
-// Made for A³-Mix PCB v0.2 
+// Made for A³Mix PCB v0.2
 
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
@@ -36,19 +37,19 @@ Adafruit_NeoPixel pixels = Adafruit_NeoPixel(npxl_leds, npxl_pin, NEO_GRB + NEO_
 const uint32_t modeColorOn = pixels.Color(0,0,255);
 const uint32_t modeColorOff = pixels.Color(0,0,0);
 int vupxlstrips[4][9] = {
-  {11,10,9,8,7,6,5,4,3},
-  {23,22,21,20,19,18,17,16,15},
-  {35,34,33,32,31,30,29,28,27},
-  {47,46,45,44,43,42,41,40,39}
+    {11,10,9,8,7,6,5,4,3},
+    {23,22,21,20,19,18,17,16,15},
+    {35,34,33,32,31,30,29,28,27},
+    {47,46,45,44,43,42,41,40,39}
 };
 
 // LED-Matrix
 LedControl lc=LedControl(18,14,15,4); // led-matrix pins
 int modePxl[4][3] = {
-  {0,1,2},
-  {12,13,14},
-  {24,25,26},
-  {36,37,38}
+    {0,1,2},
+    {12,13,14},
+    {24,25,26},
+    {36,37,38}
 };
 
 // NeoPixel Arrays
@@ -97,13 +98,13 @@ void setup() {
     // Configure digital pins
     // pfl buttons
     for(int track = 0 ; track < num_pfl_tracks ; ++track) {
-        pinMode(pflButtons[track], OUTPUT);
+        pinMode(pflButtons[track], INPUT);
     }
     //pfl leds
     for(int track = 0 ; track < num_pfl_tracks ; ++track) {
         pinMode(pflleds[track], OUTPUT);
     }
-    	
+
     lc.shutdown(0,false);
     lc.shutdown(1,false);
     lc.shutdown(2,false);
@@ -118,10 +119,10 @@ void setup() {
 
 void loop(){
     // hc4051 reading potis
-    for (byte pot=0 ; pot <= 7; pot++)     
+    for (byte pot=0 ; pot <= 7; pot++)
     {
         // hc4051 pinselector abc (binary)
-        for (int i=0; i<3; i++) {     
+        for (int i=0; i<3; i++) {
             digitalWrite(selectPins[i], pot & (1 << i)?HIGH:LOW); // select hc4051
         }
         delayMicroseconds(10);
@@ -146,7 +147,7 @@ void loop(){
                 Serial.println(sendValue);
             }
         }
-    } 
+    }
     delayMicroseconds(10);
 
     // PFL Buttons
@@ -170,156 +171,60 @@ void loop(){
     }
 
     if (Serial.available()) {
-      String command = Serial.readStringUntil(',');
-/*
-      if(command.startsWith("PFL")) {
-	String track = Serial.readStringUntil(',');
-        String mute = Serial.readStringUntil('\n');
-        int track_index = track.toInt();
-        int mute_index = mute.toInt();
-        digitalWrite(pflleds[track_index -1], pinstates[mute_index]);
-      }
-*/    
-      for (int i = 0; i < 4; i++) { // filter serial inputstream VU01-VU04
-        if(command.startsWith(vuVars[i])) {
-          String peak = Serial.readStringUntil(',');
-          String rms = Serial.readStringUntil('\n');
- 	  
-          int peak_index = peak.toInt();// convert string to int
-          int rms_index = rms.toInt();
+        String command = Serial.readStringUntil(',');
 
-          for(int j = 0 ; j < 9 ; j++) {
-            uint32_t color;
-            if(j == peak_index)
-              color = pixels.Color(255,0,0);
-            else if(j <= rms_index)
-              color = pixels.Color(0,255,0);
-            else
-              color = pixels.Color(0,0,0);
-
-            pixels.setPixelColor(vupxlstrips[i][j], color);
-          }
+        if(command.startsWith("PFL")) {
+            String mute = Serial.readStringUntil('\n');
+            int track_index = command.substring(3, 4).toInt();
+            int mute_index = mute.toInt();
+            digitalWrite(pflleds[track_index - 1], pinstates[mute_index]);
         }
-      }
 
-      for (int i = 0 ; i < 8 ; i++) { // filter serial inputstream VU05-VU12
-        if(command.startsWith(vuVarsM[i]))
-        {
-          String peak = Serial.readStringUntil(',');
-          String rms = Serial.readStringUntil('\n');
-          // String peak = "31";
-          // String rms = "31";
+        for (int i = 0; i < 4; i++) { // filter serial inputstream VU01-VU04
+            if(command.startsWith(vuVars[i])) {
+                String peak = Serial.readStringUntil(',');
+                String rms = Serial.readStringUntil('\n');
 
-          int peak_index = peak.toInt();
-          int rms_index = rms.toInt();
-          //Serial.println(rms1);
+                int peak_index = peak.toInt();// convert string to int
+                int rms_index = rms.toInt();
 
-          // rms-meter plus peak over all leds
-          for(int j = 0 ; j < 32 ; j++){
-            int module_index = j / 8;
-            int x = i;
-            int y = 7 - j % 8;
+                for(int j = 0 ; j < 9 ; j++) {
+                    uint32_t color;
+                    if(j == peak_index)
+                        color = pixels.Color(255,0,0);
+                    else if(j <= rms_index)
+                        color = pixels.Color(0,255,0);
+                    else
+                        color = pixels.Color(0,0,0);
 
-            bool led_on = j <= rms_index || j == peak_index;
-            lc.setLed(module_index, x, y, led_on);
-          }
+                    pixels.setPixelColor(vupxlstrips[i][j], color);
+                }
+            }
         }
-      }
-    pixels.show(); // send to hardware.
-}
 
+        for (int i = 0 ; i < 8 ; i++) { // filter serial inputstream VU05-VU12
+            if(command.startsWith(vuVarsM[i]))
+            {
+                String peak = Serial.readStringUntil(',');
+                String rms = Serial.readStringUntil('\n');
+                // String peak = "31";
+                // String rms = "31";
 
+                int peak_index = peak.toInt();
+                int rms_index = rms.toInt();
+                //Serial.println(rms1);
 
+                // rms-meter plus peak over all leds
+                for(int j = 0 ; j < 32 ; j++){
+                    int module_index = j / 8;
+                    int x = i;
+                    int y = 7 - j % 8;
 
-
-
-/*
-      if(command.startsWith("M")) {
-        // parse the channel and pressed mode button index from command
-        int channel = command.charAt(1) - '1';
-        int mode_button_index = command.charAt(2) - '1';
-
-        // loop over all buttons for this channel and toggle LED accordingly
-        for (int button = 0; button < 3; ++button) {
-          if(button == mode_button_index)
-            pixels.setPixelColor(modePxl[channel][button], modeColorOn);
-          else
-            pixels.setPixelColor(modePxl[channel][button], modeColorOff);
+                    bool led_on = j <= rms_index || j == peak_index;
+                    lc.setLed(module_index, x, y, led_on);
+                }
+            }
         }
-      }
-*/
-/*
-      if(command.startsWith("PFL")) {
-        String track = Serial.readStringUntil(',');
-        String mute = Serial.readStringUntil('\n');
-        if(track.startsWith("1")) {
-          if(mute.startsWith("1")) {
-            digitalWrite(ledPin_1, HIGH);
-          }
-	  if(mute.startsWith("0")) {
-            digitalWrite(ledPin_1, LOW);
-          }
-        }
-      }
-*/
+        pixels.show(); // send to hardware.
     }
-
-/*
-  // Button 5
-  buttonState_5 = digitalRead(buttonPin_5);
-  if(buttonState_5 == LOW && x_5 == 1)
-  {
-  digitalWrite(ledPin_5, HIGH);
-  delay(btn_delay);
-  x_5 = 0;
-  Serial.print("btn 5");
-  }
-  else if (buttonState_5 == LOW && x_5 == 0)
-  {
-  digitalWrite(ledPin_5, LOW);
-  delay(btn_delay);
-  x_5 = 1;
-  }
-*/
-
-/*
-      if(command.startsWith("L1")) {
-        digitalWrite(ledPin_1, HIGH);
-        digitalWrite(ledPin_2, LOW);
-        digitalWrite(ledPin_3, LOW);
-        digitalWrite(ledPin_4, LOW);
-	digitalWrite(ledPin_5, LOW);
-      }
-      if(command.startsWith("L2")) {
-        digitalWrite(ledPin_1, LOW);
-        digitalWrite(ledPin_2, HIGH);
-        digitalWrite(ledPin_3, LOW);
-        digitalWrite(ledPin_4, LOW);
-	digitalWrite(ledPin_5, LOW);
-      }
-      if(command.startsWith("L3")) {
-        digitalWrite(ledPin_1, LOW);
-        digitalWrite(ledPin_2, LOW);
-        digitalWrite(ledPin_3, HIGH);
-        digitalWrite(ledPin_4, LOW);
-	digitalWrite(ledPin_5, LOW);
-      }
-      if(command.startsWith("L4")) {
-        digitalWrite(ledPin_1, LOW);
-        digitalWrite(ledPin_2, LOW);
-        digitalWrite(ledPin_3, LOW);
-        digitalWrite(ledPin_4, HIGH);
-	digitalWrite(ledPin_5, LOW);
-      }
-      if(command.startsWith("L5")) {
-        digitalWrite(ledPin_1, LOW);
-        digitalWrite(ledPin_2, LOW);
-        digitalWrite(ledPin_3, LOW);
-        digitalWrite(ledPin_4, LOW);
-        digitalWrite(ledPin_5, HIGH);
-      }
-      if(command.startsWith("L")) {
-        Serial.readStringUntil('\n');
-      }
-
-*/
+}

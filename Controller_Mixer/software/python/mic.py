@@ -89,10 +89,11 @@ def vu_handler(address: str,
 
     send_vu_data(vu, peak_db, rms_db)
 
-"""
+
 def send_pfl_leds_data(track: str, mute: float):
-    sendData("PFL" + str(track) + "," + str(mute))
-    print("PFL" + str(track) + "," + str(mute))
+    message = "PFL" + str(track) + "," + str(mute)
+    sendData(message)
+    print(message)
 
 def pfl_leds_handler(address: str,
                *osc_arguments: List[Any]) -> None:
@@ -101,7 +102,7 @@ def pfl_leds_handler(address: str,
 
     mute = int(osc_arguments[0])
     send_pfl_leds_data(track, mute)
-""" 
+
 
 # Serial communication
 ser = serial.Serial('/dev/ttyACM0', 115200)
@@ -126,23 +127,18 @@ def serial_handler(): # dispatch from serial stream and send to osc
         if mode == "B":
             if track == "1":
                 osc_router.send_message("/mic/channel/1/pfl/", value)
-                sendData("L1,")
                 print("B1")
             if track == "2":
                 osc_router.send_message("/mic/channel/2/pfl/", value)
-                sendData("L2,")
                 print("B2")
             if track == "3":
                 osc_router.send_message("/mic/channel/3/pfl/", value)
-                sendData("L3,")
                 print("B3")
             if track == "4":
                 osc_router.send_message("/mic/channel/4/pfl/", value)
-                sendData("L4,")
                 print("B4")
             if track == "5":
                 osc_router.send_message("/mic/channel/master/pfl/", value)
-                sendData("L5,")
                 print("B5")
       # Potis
         if mode == "P":
@@ -348,8 +344,8 @@ if __name__ == '__main__':
 
     dispatcher = dispatcher.Dispatcher()
     dispatcher.map("/vu/*", vu_handler)
-    #dispatcher.map("/mute/*", pfl_leds_handler)
-    
+    dispatcher.map("/mute/*", pfl_leds_handler)
+
     server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))
     server.serve_forever()

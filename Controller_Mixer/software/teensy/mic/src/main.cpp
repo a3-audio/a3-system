@@ -10,12 +10,13 @@
 
 #include <Bounce.h>
 
+const int debounce_ms = 10; // 10 ms debounce
+
 //////////// PIN ASSIGNMENTS //////////////
 const uint8_t pinstates[2] = { HIGH, LOW };
 const int pflleds [] = {26, 38, 39, 40};
 const int pflButtonPins [] = {33, 34, 35, 36};
 
-const int debounce_ms = 10; // 10 ms debounce
 Bounce pflButtons [] = {
     Bounce(pflButtonPins[0], debounce_ms),
     Bounce(pflButtonPins[1], debounce_ms),
@@ -23,10 +24,28 @@ Bounce pflButtons [] = {
     Bounce(pflButtonPins[3], debounce_ms)
 };
 
-
-const int multiplexer[6] = {5, 6, 7, 8, 9, 13}; // Channelpotis [1-4], Masterpotis [5], fx buttons [6]
+const int multiplexer[6] = {5, 6, 7, 8, 9}; // Channelpotis [1-4], Masterpotis [5]
 const int multiplexer_enc = 12; // Encoderswitches (digital)
 const int selectPins[3] = {30, 31, 32}; // Multiplexer abc
+
+// track the bounce state for 8 buttons on the multiplexer, which are
+// all connected to the same teensy pin.
+const int PIN_MULTIPLEX_MODE_FX = 27;
+Bounce buttonsMultiplexModeFx [] = {
+    Bounce(PIN_MULTIPLEX_MODE_FX, debounce_ms),
+    Bounce(PIN_MULTIPLEX_MODE_FX, debounce_ms),
+    Bounce(PIN_MULTIPLEX_MODE_FX, debounce_ms),
+    Bounce(PIN_MULTIPLEX_MODE_FX, debounce_ms),
+    Bounce(PIN_MULTIPLEX_MODE_FX, debounce_ms),
+    Bounce(PIN_MULTIPLEX_MODE_FX, debounce_ms),
+    Bounce(PIN_MULTIPLEX_MODE_FX, debounce_ms),
+    Bounce(PIN_MULTIPLEX_MODE_FX, debounce_ms),
+};
+
+const int PIN_FX_HIGHPASS = 28;
+const int PIN_FX_LOWPASS = 29;
+Bounce buttonFxHighPass(PIN_FX_HIGHPASS, debounce_ms);
+Bounce buttonFxLowPass(PIN_FX_LOWPASS, debounce_ms);
 
 const int display_sda1 = 17;
 const int display_scl1 = 16;
@@ -109,6 +128,9 @@ void setup() {
         pinMode(pflleds[track], OUTPUT);
     }
 
+    pinMode(PIN_FX_HIGHPASS, INPUT);
+    pinMode(PIN_FX_LOWPASS, INPUT);
+
     lc.shutdown(0,false);
     lc.shutdown(1,false);
     lc.shutdown(2,false);
@@ -123,35 +145,58 @@ void setup() {
 
 void loop(){
     // hc4051 reading potis
-    for (byte pot=0 ; pot < 8 ; ++pot)
+    for (byte pin=0 ; pin < 8 ; ++pin)
     {
         // hc4051 pinselector abc (binary)
         for (int i=0; i<3; i++) {
-            digitalWrite(selectPins[i], pot & (1 << i) ? HIGH : LOW); // select hc4051
+            digitalWrite(selectPins[i], pin & (1 << i) ? HIGH : LOW); // select hc4051
         }
         delayMicroseconds(10);
         // filter analog inputs
-        for (int track=0 ; track < 6; track++) {
-            int analog = analogRead(multiplexer[track]);
-            int difference = pots_sent[track][pot] - analog;
+
+        // the four tracks [0-3] and the master section [4] are read
+        // as fully analog inputs.
+        for (int section=0 ; section < 5; section++) {
+            int analog = analogRead(multiplexer[section]);
+            int difference = pots_sent[section][pin] - analog;
 
             // send osc when difference larger than noise on
             // last bits
+            // @TODO this needs to be solved in hardware!
             if(abs(difference) > 8) {
-                pots_sent[track][pot] = analog;
+                pots_sent[section][pin] = analog;
                 float sendValue = float(analog) / 1023.f;
                 Serial.print("T");
                 Serial.print(":");
-                Serial.print(track+1);
+                Serial.print(section+1);
                 Serial.print(":");
                 Serial.print("P");
                 Serial.print(":");
-                Serial.print(pot+1);
+                Serial.print(pin+1);
                 Serial.print(":");
-                Serial.println(sendValue);
+                Serial.println(sendValue, 6);
             }
         }
+
+        // read mode and fx buttons as section 6
+        if(buttonsMultiplexModeFx[pin].update()) {
+          Serial.print("T:6:P:");
+          Serial.print(pin+1);
+          Serial.print(":");
+          Serial.println(buttonsMultiplexModeFx[pin].risingEdge() ? "1" : "0");
+        }
     }
+
+    // read hi/lowpass fx mode buttons
+    buttonFxHighPass.update();
+    buttonFxLowPass.update();
+    if(buttonFxHighPass.risingEdge())  {
+      Serial.println("FX_MODE:HIGH_PASS");
+    }
+    else if(buttonFxLowPass.risingEdge()) {
+      Serial.println("FX_MODE:LOW_PASS");
+    }
+
     delayMicroseconds(10);
 
     // PFL Buttons

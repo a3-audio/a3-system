@@ -27,6 +27,12 @@ pixels = neopixel.NeoPixel(
     pixel_pin, num_pixels, brightness=0.2, auto_write=False
 )
 
+pixel_fx_mode_highpass = 0
+pixel_fx_mode_lowpass = 11
+
+color_led_on = (255,0,0)
+color_led_off = (0,0,0)
+
 def pixel_color(r,g,b):
     pixels.fill((r,g,b))
     pixels.show()
@@ -118,12 +124,27 @@ def serial_handler(): # dispatch from serial stream and send to osc
         line = ser.readline().decode('utf-8').rstrip()
 
         words = line.split(":")
+
+        # fx mode buttons
+        if words[0] == "FX_MODE":
+            print("fx mode switch")
+            high_pass = words[1] == "HIGH_PASS"
+
+            pixels[pixel_fx_mode_highpass] = color_led_on if high_pass else color_led_off
+            pixels[pixel_fx_mode_lowpass] = color_led_off if high_pass else color_led_on
+            pixels.show()
+
+            osc_router.send_message("/mic/channel/fxmode/hipass", 1 if high_pass else 0)
+            osc_router.send_message("/mic/channel/fxmode/lopass", 0 if high_pass else 1)
+
+            continue
+
         track = words[1]
         mode = words[2]
         potNr = words[3]
         value = words[4]
 
-      # Buttons
+        # Buttons
         if mode == "B":
             if track == "1":
                 osc_router.send_message("/mic/channel/1/pfl/", value)
@@ -140,7 +161,7 @@ def serial_handler(): # dispatch from serial stream and send to osc
             if track == "5":
                 osc_router.send_message("/mic/channel/master/pfl/", value)
                 print("B5")
-      # Potis
+        # Potis
         if mode == "P":
             if track == "1":
                 if potNr == "1":
@@ -158,14 +179,7 @@ def serial_handler(): # dispatch from serial stream and send to osc
                 if potNr == "5":
                     osc_router.send_message("/mic/channel/1/volume/", value)
                     print("T" + track + " P" + potNr + " " + value)
-                if potNr == "8":
-                    if float(value) > 0.7 and fx_state[8]==0:
-                        fx_state[8] = 1
-                        pixels[0] = (255,0,0)
-                        pixels[11] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/fxmode/hipass", 1)
-                        osc_router.send_message("/mic/channel/fxmode/lopass", 0)
+
             if track == "2":
                 if potNr == "1":
                     osc_router.send_message("/mic/channel/2/gain/", value)
@@ -182,14 +196,7 @@ def serial_handler(): # dispatch from serial stream and send to osc
                 if potNr == "5":
                     osc_router.send_message("/mic/channel/2/volume/", value)
                     print("T" + track + " P" + potNr + " " + value)
-                if potNr == "8":
-                    if float(value) > 0.7 and fx_state[8]==1:
-                        fx_state[8] = 0
-                        pixels[0] = (0,0,0)
-                        pixels[11] = (255,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/fxmode/hipass", 0)
-                        osc_router.send_message("/mic/channel/fxmode/lopass", 1)
+
             if track == "3":
                 if potNr == "1":
                     osc_router.send_message("/mic/channel/3/gain/", value)
@@ -209,6 +216,7 @@ def serial_handler(): # dispatch from serial stream and send to osc
                 if potNr == "8":
                     osc_router.send_message("/mic/channel/fxparm/fxfreq", value)
                     print("T" + track + " P" + potNr + " " + value)
+
             if track == "4":
                 if potNr == "1":
                     osc_router.send_message("/mic/channel/4/gain/", value)

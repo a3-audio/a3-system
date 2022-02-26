@@ -123,11 +123,11 @@ void setup() {
 
 void loop(){
     // hc4051 reading potis
-    for (byte pot=0 ; pot <= 7; pot++)
+    for (byte pot=0 ; pot < 8 ; ++pot)
     {
         // hc4051 pinselector abc (binary)
         for (int i=0; i<3; i++) {
-            digitalWrite(selectPins[i], pot & (1 << i)?HIGH:LOW); // select hc4051
+            digitalWrite(selectPins[i], pot & (1 << i) ? HIGH : LOW); // select hc4051
         }
         delayMicroseconds(10);
         // filter analog inputs
@@ -219,8 +219,8 @@ void loop(){
                 // rms-meter plus peak over all leds
                 for(int j = 0 ; j < 32 ; j++){
                     int module_index = j / 8;
-                    int x = i;
-                    int y = 7 - j % 8;
+                    int x = 8 - 1 - i;
+                    int y = 8 - 1 - j % 8;
 
                     bool led_on = j <= rms_index || j == peak_index;
                     lc.setLed(module_index, x, y, led_on);

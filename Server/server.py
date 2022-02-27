@@ -43,7 +43,9 @@ FX_INDEX_LOPASS: int = 4
 
 
 # OSC clients
-ctrl_mixer = SimpleUDPClient('192.168.43.51', 8500)
+#ctrl_mixer = SimpleUDPClient('192.168.43.101', 8500)
+ctrl_mixer = SimpleUDPClient('192.168.43.51', 7771)
+#ctrl_mixer = SimpleUDPClient('192.168.43.51', 8500)
 ctrl_motion = SimpleUDPClient('192.168.43.52', 8700)
 reaper = SimpleUDPClient('127.0.0.1', 9001)
 
@@ -74,6 +76,7 @@ class ChannelInfo:
     track_3d: int
     track_channelbus: int
     track_pfl: int
+    track_bformat: int
 
     fx_enabled: bool = False
     pfl_enabled: bool = False
@@ -88,6 +91,7 @@ channel_infos = (
         track_3d=16,
         track_channelbus=13,
         track_pfl=8,
+        track_bformat=16,
     ),
     # Channel 2
     ChannelInfo(
@@ -96,6 +100,7 @@ channel_infos = (
         track_3d=20,
         track_channelbus=17,
         track_pfl=9,
+        track_bformat=20,
     ),
     # Channel 3
     ChannelInfo(
@@ -104,6 +109,7 @@ channel_infos = (
         track_3d=24,
         track_channelbus=21,
         track_pfl=10,
+        track_bformat=24,
     ),
     # Channel 4
     ChannelInfo(
@@ -112,6 +118,7 @@ channel_infos = (
         track_3d=28,
         track_channelbus=25,
         track_pfl=11,
+        track_bformat=28,
     ),
 )
 
@@ -173,7 +180,6 @@ def param_handler_channel(channel_index: int, parameter: str,
     elif parameter == "side":
         reaper.send_message(
             f"/track/{track_input}/fx/2/fxparam/1/value", value)
-
 
 def param_handler_master(parameter: str, value: float) -> None:
 
@@ -275,6 +281,7 @@ def button_handler(address: str,
                 track_pfl = channel_infos[channel_index].track_pfl
                 muted = not channel_infos[channel_index].pfl_enabled
                 reaper.send_message(f"/track/{track_pfl}/mute", float(muted))
+                ctrl_mixer.send_message(f"/mute/{channel_index+1}", float(muted))
 
             elif parameter == "fx":
                 channel_infos[channel_index].fx_enabled = bool(value)
@@ -310,8 +317,10 @@ def moc_poti_handler(address: str, *osc_arguments: List[Any]) -> None:
             if parameter == "side":
                 val = np.interp(value, [0, 1], [0.5, 0.65])
                 track_input = channel_infos[channel_index].track_input
+                track_channelbus = channel_infos[channel_index].track_channelbus
                 reaper.send_message(
-                    f"/track/{track_input}/fx/2/fxparam/1/value", val)
+                    #f"/track/{track_input}/fx/2/fxparam/1/value", val)
+                    f"/track/{track_channelbus}/send/8/volume", value) # reverb send
 
 
 if __name__ == "__main__":

@@ -81,34 +81,34 @@
   </connection>
   <connection>
     <output>REAPER:out13</output>
-    <input>SuperCollider:in_12</input>
+    <input>SuperCollider:in_5</input>
   </connection>
   <connection>
     <output>REAPER:out14</output>
-    <input>SuperCollider:in_11</input>
-  </connection>
-  <connection>
-    <output>REAPER:out15</output>
-    <input>SuperCollider:in_10</input>
-  </connection>
-  <connection>
-    <output>REAPER:out16</output>
-    <input>SuperCollider:in_9</input>
-  </connection>
-  <connection>
-    <output>REAPER:out17</output>
-    <input>SuperCollider:in_8</input>
-  </connection>
-  <connection>
-    <output>REAPER:out18</output>
-    <input>SuperCollider:in_7</input>
-  </connection>
-  <connection>
-    <output>REAPER:out19</output>
     <input>SuperCollider:in_6</input>
   </connection>
   <connection>
+    <output>REAPER:out15</output>
+    <input>SuperCollider:in_7</input>
+  </connection>
+  <connection>
+    <output>REAPER:out16</output>
+    <input>SuperCollider:in_8</input>
+  </connection>
+  <connection>
+    <output>REAPER:out17</output>
+    <input>SuperCollider:in_9</input>
+  </connection>
+  <connection>
+    <output>REAPER:out18</output>
+    <input>SuperCollider:in_10</input>
+  </connection>
+  <connection>
+    <output>REAPER:out19</output>
+    <input>SuperCollider:in_11</input>
+  </connection>
+  <connection>
     <output>REAPER:out20</output>
-    <input>SuperCollider:in_5</input>
+    <input>SuperCollider:in_12</input>
   </connection>
 </jmess>

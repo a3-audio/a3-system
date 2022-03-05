@@ -14,12 +14,12 @@ Controller_Motion/Hardware/controller_motion_pcb/controller_motion_pcb.kicad_pcb
 
 /Controller_Motion/software/teensy/include
 /Controller_Motion/software/teensy/lib
-/Controller_Motion/software/teensy/platformio.ini
 /Controller_Motion/software/teensy/test
+/Controller_Motion/software/teensy/.pio
 
 /Controller_Mixer/software/teensy/mic/include
+/Controller_Mixer/software/teensy/mic/.pio
 /Controller_Mixer/software/teensy/mic/lib
-/Controller_Mixer/software/teensy/mic/platformio.ini
 /Controller_Mixer/software/teensy/mic/test
 
 Server/reaper/linux/reaper_ambijockey.RPP-bak

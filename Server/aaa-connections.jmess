@@ -40,30 +40,6 @@
     <input>system:playback_2</input>
   </connection>
   <connection>
-    <output>REAPER:out3</output>
-    <input>system:playback_3</input>
-  </connection>
-  <connection>
-    <output>REAPER:out4</output>
-    <input>system:playback_4</input>
-  </connection>
-  <connection>
-    <output>REAPER:out5</output>
-    <input>system:playback_5</input>
-  </connection>
-  <connection>
-    <output>REAPER:out6</output>
-    <input>system:playback_6</input>
-  </connection>
-  <connection>
-    <output>REAPER:out7</output>
-    <input>system:playback_7</input>
-  </connection>
-  <connection>
-    <output>REAPER:out8</output>
-    <input>system:playback_8</input>
-  </connection>
-  <connection>
     <output>REAPER:out9</output>
     <input>SuperCollider:in_1</input>
   </connection>
@@ -110,5 +86,29 @@
   <connection>
     <output>REAPER:out20</output>
     <input>SuperCollider:in_12</input>
+  </connection>
+  <connection>
+    <output>REAPER:out21</output>
+    <input>system:playback_3</input>
+  </connection>
+  <connection>
+    <output>REAPER:out22</output>
+    <input>system:playback_4</input>
+  </connection>
+  <connection>
+    <output>REAPER:out23</output>
+    <input>system:playback_5</input>
+  </connection>
+  <connection>
+    <output>REAPER:out24</output>
+    <input>system:playback_6</input>
+  </connection>
+  <connection>
+    <output>REAPER:out25</output>
+    <input>system:playback_7</input>
+  </connection>
+  <connection>
+    <output>REAPER:out26</output>
+    <input>system:playback_8</input>
   </connection>
 </jmess>

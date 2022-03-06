@@ -56,9 +56,9 @@ udp_clients_iem = tuple(SimpleUDPClient('127.0.0.1', 1337 + index)
 @dataclass
 class MasterInfo:
     track_masterbus: int = 1
-    track_mainmixbus: int = 12
-    track_booth: int = 100
-    track_phones: int = 5
+    track_mainmixbus: int = 16
+    track_booth: int = 5
+    track_phones: int = 9
 
     class FXMode(Enum):
         LOW_PASS = 0
@@ -86,39 +86,39 @@ class ChannelInfo:
 channel_infos = (
     # Channel 1
     ChannelInfo(
-        track_input=14,
-        track_stereo=15,
-        track_3d=16,
-        track_channelbus=13,
-        track_pfl=8,
-        track_bformat=16,
-    ),
-    # Channel 2
-    ChannelInfo(
         track_input=18,
         track_stereo=19,
         track_3d=20,
         track_channelbus=17,
-        track_pfl=9,
+        track_pfl=12,
         track_bformat=20,
     ),
-    # Channel 3
+    # Channel 2
     ChannelInfo(
         track_input=22,
         track_stereo=23,
         track_3d=24,
         track_channelbus=21,
-        track_pfl=10,
+        track_pfl=13,
         track_bformat=24,
     ),
-    # Channel 4
+    # Channel 3
     ChannelInfo(
         track_input=26,
         track_stereo=27,
         track_3d=28,
         track_channelbus=25,
-        track_pfl=11,
+        track_pfl=14,
         track_bformat=28,
+    ),
+    # Channel 4
+    ChannelInfo(
+        track_input=30,
+        track_stereo=31,
+        track_3d=32,
+        track_channelbus=29,
+        track_pfl=15,
+        track_bformat=32,
     ),
 )
 
@@ -186,12 +186,16 @@ def param_handler_master(parameter: str, value: float) -> None:
     if parameter == "volume":
         val = np.interp(value, [0, 1], [0.01, 1])
         track = master_info.track_masterbus
+        track_b = master_info.track_booth
         reaper.send_message(f"/track/{track}/volume", val)
+        reaper.send_message(f"/track/{track_b}/volume", val)
 
     if parameter == "booth":
         val = np.interp(value, [0, 1], [0.01, 1])
         track = master_info.track_booth
-        reaper.send_message(f"/track/{track}/volume", val)
+        reaper.send_message(f"/track/{track + 1}/volume", val)
+        reaper.send_message(f"/track/{track + 2}/volume", val)
+        reaper.send_message(f"/track/{track + 3}/volume", val)
 
     if parameter == "phMix":
         val = np.interp(value, [0, 1], [0.01, 1])

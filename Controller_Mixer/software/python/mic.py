@@ -60,6 +60,16 @@ vu_channel_to_led_count = {
     "12" : 32,
 }
 
+analog_pots_per_channel_to_osc_param = {
+    "1": "gain",
+    "2": "hi",
+    "3": "mid",
+    "4": "lo",
+    "5": "volume",
+}
+
+time_last_receive = 0
+
 def db_value_to_index(value: float, num_leds: int):
     index = int(np.interp(value, [-60, 0], [0, num_leds]))
     if index == num_leds:
@@ -123,6 +133,14 @@ def serial_handler(): # dispatch from serial stream and send to osc
     while True:
         line = ser.readline().decode('utf-8').rstrip()
 
+        # global time_last_receive
+        # current_time_ns = time.clock_gettime_ns(time.CLOCK_REALTIME)
+        # delta_time_ms = (current_time_ns - time_last_receive)/1e6
+        # if delta_time_ms < 10:
+        #     continue
+        # print(f'time delta: {delta_time_ms}')
+        # time_last_receive = current_time_ns
+
         words = line.split(":")
 
         # fx mode buttons
@@ -163,79 +181,12 @@ def serial_handler(): # dispatch from serial stream and send to osc
                 print("B5")
         # Potis
         if mode == "P":
-            if track == "1":
-                if potNr == "1":
-                    osc_router.send_message("/mic/channel/1/gain/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "2":
-                    osc_router.send_message("/mic/channel/1/hi/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "3":
-                    osc_router.send_message("/mic/channel/1/mid/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "4":
-                    osc_router.send_message("/mic/channel/1/lo/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "5":
-                    osc_router.send_message("/mic/channel/1/volume/", value)
-                    print("T" + track + " P" + potNr + " " + value)
+            track_nr = int(track)
+            if track_nr >= 1 and track_nr <= 4:
+                if potNr in analog_pots_per_channel_to_osc_param:
+                    osc_router.send_message("/mic/channel/" + str(track_nr) + "/" +
+                                            analog_pots_per_channel_to_osc_param[potNr] + "/", value)
 
-            if track == "2":
-                if potNr == "1":
-                    osc_router.send_message("/mic/channel/2/gain/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "2":
-                    osc_router.send_message("/mic/channel/2/hi/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "3":
-                    osc_router.send_message("/mic/channel/2/mid/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "4":
-                    osc_router.send_message("/mic/channel/2/lo/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "5":
-                    osc_router.send_message("/mic/channel/2/volume/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-
-            if track == "3":
-                if potNr == "1":
-                    osc_router.send_message("/mic/channel/3/gain/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "2":
-                    osc_router.send_message("/mic/channel/3/hi/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "3":
-                    osc_router.send_message("/mic/channel/3/mid/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "4":
-                    osc_router.send_message("/mic/channel/3/lo/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "5":
-                    osc_router.send_message("/mic/channel/3/volume/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "8":
-                    osc_router.send_message("/mic/channel/fxparm/fxfreq", value)
-                    print("T" + track + " P" + potNr + " " + value)
-
-            if track == "4":
-                if potNr == "1":
-                    osc_router.send_message("/mic/channel/4/gain/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "2":
-                    osc_router.send_message("/mic/channel/4/hi/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "3":
-                    osc_router.send_message("/mic/channel/4/mid/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "4":
-                    osc_router.send_message("/mic/channel/4/lo/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "5":
-                    osc_router.send_message("/mic/channel/4/volume/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "8":
-                    osc_router.send_message("/mic/channel/fxparm/fxres", value)
-                    print("T" + track + " P" + potNr + " " + value)
             if track == "5":
                 if potNr == "1":
                     osc_router.send_message("/mic/channel/master/volume/", value)
@@ -249,6 +200,13 @@ def serial_handler(): # dispatch from serial stream and send to osc
                 if potNr == "4":
                     osc_router.send_message("/mic/channel/master/phVol/", value)
                     print("T" + track + " P" + potNr + " " + value)
+                if potNr == "7":
+                    osc_router.send_message("/mic/channel/fxparm/fxfreq", value)
+                    print("T" + track + " P" + potNr + " " + value)
+                if potNr == "8":
+                    osc_router.send_message("/mic/channel/fxparm/fxres", value)
+                    print("T" + track + " P" + potNr + " " + value)
+
             if track == "6":
                 if potNr == "1":
                     if float(value) > 0.7 and fx_state[0]==0:

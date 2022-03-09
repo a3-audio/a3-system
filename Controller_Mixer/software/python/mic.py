@@ -79,6 +79,9 @@ master_pots_to_osc_message = {
     "8": "/mic/channel/fxparm/fxres",
 }
 
+# fx ledstrip remapping
+fx_and_mode_leds = [5,4,3,2,6,7,8,9]
+
 time_last_receive = 0
 
 def db_value_to_index(value: float, num_leds: int):
@@ -205,95 +208,26 @@ def serial_handler(): # dispatch from serial stream and send to osc
                 if potNr in master_pots_to_osc_message:
                     osc_router.send_message(master_pots_to_osc_message[potNr], value)
 
+            # fx and 3d buttons
             if track == "6":
-                if potNr == "1":
-                    if float(value) > 0.7 and fx_state[0]==0:
-                        fx_state[0] = 1
-                        pixels[5] = (255,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/1/fx/", 1)
-                    elif float(value) > 0.7 and fx_state[0]==1:
-                        fx_state[0] = 0
-                        pixels[5] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/1/fx/", 0)
-                if potNr == "2":
-                    if float(value) > 0.7 and fx_state[1]==0:
-                        fx_state[1] = 1
-                        pixels[4] = (255,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/2/fx/", 1)
-                    elif float(value) > 0.7 and fx_state[1]==1:
-                        fx_state[1] = 0
-                        pixels[4] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/2/fx/", 0)
-                if potNr == "3":
-                    if float(value) > 0.7 and fx_state[2]==0:
-                        fx_state[2] = 1
-                        pixels[3] = (255,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/3/fx/", 1)
-                    elif float(value) > 0.7 and fx_state[2]==1:
-                        fx_state[2] = 0
-                        pixels[3] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/3/fx/", 0)
-                if potNr == "4":
-                    if float(value) > 0.7 and fx_state[3]==0:
-                        fx_state[3] = 1
-                        pixels[2] = (255,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/4/fx/", 1)
-                    elif float(value) > 0.7 and fx_state[3]==1:
-                        fx_state[3] = 0
-                        pixels[2] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/4/fx/", 0)
-                if potNr == "5":
-                    if float(value) > 0.7 and fx_state[4]==0:
-                        fx_state[4] = 1
-                        pixels[6] = (255,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/1/3d/", 1)
-                    elif float(value) > 0.7 and fx_state[4]==1:
-                        fx_state[4] = 0
-                        pixels[6] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/1/3d/", 0)
-                if potNr == "6":
-                    if float(value) > 0.7 and fx_state[5]==0:
-                        fx_state[5] = 1
-                        pixels[7] = (255,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/2/3d/", 1)
-                    elif float(value) > 0.7 and fx_state[5]==1:
-                        fx_state[5] = 0
-                        pixels[7] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/2/3d/", 0)
-                if potNr == "7":
-                    if float(value) > 0.7 and fx_state[6]==0:
-                        fx_state[6] = 1
-                        pixels[8] = (255,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/3/3d/", 1)
-                    elif float(value) > 0.7 and fx_state[6]==1:
-                        fx_state[6] = 0
-                        pixels[8] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/3/3d/", 0)
-                if potNr == "8":
-                    if float(value) > 0.7 and fx_state[7]==0:
-                        fx_state[7] = 1
-                        pixels[9] = (255,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/4/3d/", 1)
-                    elif float(value) > 0.7 and fx_state[7]==1:
-                        fx_state[7] = 0
-                        pixels[9] = (0,0,0)
-                        pixels.show()
-                        osc_router.send_message("/mic/channel/4/3d/", 0)
+                for i in range(8):
+                    if potNr == str(i+1):
+                        if float(value) > 0.7 and fx_state[i]==0:
+                            fx_state[i] = 1
+                            pixels[fx_and_mode_leds[i]] = (255,0,0)
+                            pixels.show()
+                            if i <= 3:
+                                osc_router.send_message("/mic/channel/" + str(i+1) + "/fx/", 1)
+                            else:
+                                osc_router.send_message("/mic/channel/" + str(i-3) + "/3d/", 1)
+                        elif float(value) > 0.7 and fx_state[i]==1:
+                            fx_state[i] = 0
+                            pixels[fx_and_mode_leds[i]] = (0,0,0)
+                            pixels.show()
+                            if i <= 3:
+                                osc_router.send_message("/mic/channel/" + str(i+1) + "/fx/", 0)
+                            else:
+                                osc_router.send_message("/mic/channel/" + str(i-3) + "/3d/", 0)
 
 if __name__ == '__main__':
 

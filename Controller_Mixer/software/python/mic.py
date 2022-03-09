@@ -60,12 +60,23 @@ vu_channel_to_led_count = {
     "12" : 32,
 }
 
+# channel strips 1-4
 analog_pots_per_channel_to_osc_param = {
     "1": "gain",
     "2": "hi",
     "3": "mid",
     "4": "lo",
     "5": "volume",
+}
+
+# master section pots
+master_pots_to_osc_message = {
+    "1": "/mic/channel/master/volume/",
+    "2": "/mic/channel/master/booth/",
+    "3": "/mic/channel/master/phMix/",
+    "4": "/mic/channel/master/phVol/",
+    "7": "/mic/channel/fxparm/fxfreq",
+    "8": "/mic/channel/fxparm/fxres",
 }
 
 time_last_receive = 0
@@ -182,30 +193,17 @@ def serial_handler(): # dispatch from serial stream and send to osc
         # Potis
         if mode == "P":
             track_nr = int(track)
+
+            # the 4 channel strips
             if track_nr >= 1 and track_nr <= 4:
                 if potNr in analog_pots_per_channel_to_osc_param:
                     osc_router.send_message("/mic/channel/" + str(track_nr) + "/" +
                                             analog_pots_per_channel_to_osc_param[potNr] + "/", value)
 
-            if track == "5":
-                if potNr == "1":
-                    osc_router.send_message("/mic/channel/master/volume/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "2":
-                    osc_router.send_message("/mic/channel/master/booth/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "3":
-                    osc_router.send_message("/mic/channel/master/phMix/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "4":
-                    osc_router.send_message("/mic/channel/master/phVol/", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "7":
-                    osc_router.send_message("/mic/channel/fxparm/fxfreq", value)
-                    print("T" + track + " P" + potNr + " " + value)
-                if potNr == "8":
-                    osc_router.send_message("/mic/channel/fxparm/fxres", value)
-                    print("T" + track + " P" + potNr + " " + value)
+            # pots in the master section
+            if track_nr == 5:
+                if potNr in master_pots_to_osc_message:
+                    osc_router.send_message(master_pots_to_osc_message[potNr], value)
 
             if track == "6":
                 if potNr == "1":

@@ -256,7 +256,7 @@ def param_handler(address: str,
     print(section + "." + parameter + " : " + str(value))
 
     for channel_index in range(4):
-        if section == str(channel_index+1):
+        if section == str(channel_index):
             param_handler_channel(channel_index, parameter, value)
 
     if section == "master":
@@ -312,7 +312,7 @@ def moc_poti_handler(address: str, *osc_arguments: List[Any]) -> None:
     # print(track + "." + poti + " : " + str(value))
 
     for channel_index in range(4):
-        if section == str(channel_index+1):
+        if section == str(channel_index):
             if parameter == "width":
                 val = np.interp(value, [0, 1], [30, 145])
                 udp_client = udp_clients_iem[channel_index]

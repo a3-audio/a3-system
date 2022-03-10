@@ -285,7 +285,7 @@ def button_handler(address: str,
                 track_pfl = channel_infos[channel_index].track_pfl
                 muted = not channel_infos[channel_index].pfl_enabled
                 reaper.send_message(f"/track/{track_pfl}/mute", float(muted))
-                ctrl_mixer.send_message(f"/mute/{channel_index}", float(muted))
+                ctrl_mixer.send_message(f"/pfl_led/{channel_index}", float(muted))
 
             elif parameter == "fx":
                 channel_infos[channel_index].fx_enabled = bool(value)

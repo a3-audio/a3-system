@@ -79,6 +79,15 @@ master_pots_to_osc_message = {
     "8": "/mic/channel/fxparm/fxres",
 }
 
+# fx_and_3d_mode_button_split
+fx_and_3d_mode_name = {
+    "1": "fx",
+    "2": "3d",
+}
+
+# split multiplexer in two sections for fx mode and 3d mode buttons
+fx_and_3d_mode_button_multiplexer_split = [1,2,3,4,1,2,3,4]
+
 # fx ledstrip remapping
 fx_and_mode_leds = [5,4,3,2,6,7,8,9]
 
@@ -212,22 +221,25 @@ def serial_handler(): # dispatch from serial stream and send to osc
             if track == "6":
                 for i in range(8):
                     if potNr == str(i+1):
-                        if float(value) > 0.7 and fx_state[i]==0:
+                        if int(value) and fx_state[i]==0:
                             fx_state[i] = 1
                             pixels[fx_and_mode_leds[i]] = (255,0,0)
                             pixels.show()
                             if i <= 3:
-                                osc_router.send_message("/mic/channel/" + str(i+1) + "/fx/", 1)
+                                osc_router.send_message("/mic/channel/" + str(fx_and_3d_mode_button_multiplexer_split[i]) + "/fx/", value)
                             else:
-                                osc_router.send_message("/mic/channel/" + str(i-3) + "/3d/", 1)
-                        elif float(value) > 0.7 and fx_state[i]==1:
+                                osc_router.send_message("/mic/channel/" + str(fx_and_3d_mode_button_multiplexer_split[i]) + "/3d/", value)
+                        elif int(value) and fx_state[i]==1:
                             fx_state[i] = 0
                             pixels[fx_and_mode_leds[i]] = (0,0,0)
                             pixels.show()
                             if i <= 3:
-                                osc_router.send_message("/mic/channel/" + str(i+1) + "/fx/", 0)
+                                osc_router.send_message("/mic/channel/" + str(fx_and_3d_mode_button_multiplexer_split[i]) + "/fx/", value)
                             else:
-                                osc_router.send_message("/mic/channel/" + str(i-3) + "/3d/", 0)
+                                osc_router.send_message("/mic/channel/" + str(fx_and_3d_mode_button_multiplexer_split[i]) + "/3d/", value)
+
+
+# " str(fx_and_3d_mode_name) "
 
 if __name__ == '__main__':
 

@@ -87,7 +87,7 @@ int vupxlstrips[4][9] = {
 };
 
 // LED-Matrix
-LedControl lc=LedControl(18,14,15,4); // led-matrix pins
+LedControl lc = LedControl(18,14,15,4); // led-matrix pins
 int modePxl[4][3] = {
     {0,1,2},
     {12,13,14},
@@ -96,28 +96,25 @@ int modePxl[4][3] = {
 };
 
 // NeoPixel Arrays
-String vuVars[4] = { "VU01", "VU02", "VU03", "VU04" };
-String vuVarsM[8] = { "VU05", "VU06", "VU07", "VU08", "VU09", "VU10", "VU11", "VU12" };
+String vuVars[4] = { "VU00", "VU01", "VU02", "VU03" };
+String vuVarsM[8] = { "VU04", "VU05", "VU06", "VU07", "VU08", "VU09", "VU10", "VU11" };
 
-// fx mode buttons are connected to $multiplexer [1,2] last physical connector on chip
-// fx potis are connected to $multiplexer channel [3,4] last physical connector on chip
+// Rotary Encoder pin mapping
+// const int rEnc0_DT = 0;
+// const int rEnc0_clk = 1;
+// const int rEnc1_DT = 2;
+// const int rEnc1_clk = 3;
+// const int rEnc2_DT = 4;
+// const int rEnc2_clk = 5;
+// const int rEnc3_DT = 6;
+// const int rEnc3_clk = 7;
+// const int rEnc4_DT = 8;
+// const int rEnc4_clk = 9;
+// const int rEnc5_DT = 10;
+// const int rEnc5_clk = 11;
 
-// Rotary Encoder
-const int rEnc0_DT = 0;
-const int rEnc0_clk = 1;
-const int rEnc1_DT = 2;
-const int rEnc1_clk = 3;
-const int rEnc2_DT = 4;
-const int rEnc2_clk = 5;
-const int rEnc3_DT = 6;
-const int rEnc3_clk = 7;
-const int rEnc4_DT = 8;
-const int rEnc4_clk = 9;
-const int rEnc5_DT = 10;
-const int rEnc5_clk = 11;
-
-const int spare_1 = 28;
-const int spare_2 = 29;
+// const int spare_1 = 28;
+// const int spare_2 = 29;
 
 void setup() {
 
@@ -237,54 +234,39 @@ void loop(){
             digitalWrite(PINS_LED_PER_CHANNEL[channel_index], pin_states[led_on]);
         }
 
-        // njomnjomnjom
-        Serial.readStringUntil('\n');
+        if(command.equals("VU")) {
+            int vu_index = Serial.readStringUntil(':').toInt();
+            int peak_index = Serial.readStringUntil(':').toInt();
+            int rms_index = Serial.readStringUntil('\n').toInt();
 
-        // for (int i = 0; i < 4; i++) { // filter serial inputstream VU01-VU04
-        //     if(command.startsWith(vuVars[i])) {
-        //         String peak = Serial.readStringUntil(':');
-        //         String rms = Serial.readStringUntil('\n');
+            if(vu_index >= 0 && vu_index < 4) {
+                int i = vu_index;
+                for(int j = 0 ; j < 9 ; j++) {
+                    uint32_t color;
+                    if(j == peak_index)
+                        color = pixels.Color(255,0,0);
+                    else if(j <= rms_index)
+                        color = pixels.Color(0,255,0);
+                    else
+                        color = pixels.Color(0,0,0);
 
-        //         int peak_index = peak.toInt();// convert string to int
-        //         int rms_index = rms.toInt();
+                    pixels.setPixelColor(vupxlstrips[i][j], color);
+                }
+            }
+            else if(vu_index >= 4 && vu_index < 12) {
+                // rms-meter plus peak over all leds
+                int i = vu_index - 4;
+                for(int j = 0 ; j < 32 ; j++){
+                    int module_index = j / 8;
+                    int x = 8 - 1 - i;
+                    int y = 8 - 1 - j % 8;
 
-        //         for(int j = 0 ; j < 9 ; j++) {
-        //             uint32_t color;
-        //             if(j == peak_index)
-        //                 color = pixels.Color(255,0,0);
-        //             else if(j <= rms_index)
-        //                 color = pixels.Color(0,255,0);
-        //             else
-        //                 color = pixels.Color(0,0,0);
+                    bool led_on = j <= rms_index || j == peak_index;
+                    lc.setLed(module_index, x, y, led_on);
+                }
+            }
+        }
 
-        //             pixels.setPixelColor(vupxlstrips[i][j], color);
-        //         }
-        //     }
-        // }
-
-        // for (int i = 0 ; i < 8 ; i++) { // filter serial inputstream VU05-VU12
-        //     if(command.startsWith(vuVarsM[i]))
-        //     {
-        //         String peak = Serial.readStringUntil(':');
-        //         String rms = Serial.readStringUntil('\n');
-        //         // String peak = "31";
-        //         // String rms = "31";
-
-        //         int peak_index = peak.toInt();
-        //         int rms_index = rms.toInt();
-        //         //Serial.println(rms1);
-
-        //         // rms-meter plus peak over all leds
-        //         for(int j = 0 ; j < 32 ; j++){
-        //             int module_index = j / 8;
-        //             int x = 8 - 1 - i;
-        //             int y = 8 - 1 - j % 8;
-
-        //             bool led_on = j <= rms_index || j == peak_index;
-        //             lc.setLed(module_index, x, y, led_on);
-        //         }
-        //     }
-        // }
-        pixels.show(); // send to hardware.
+        pixels.show();
     }
 }

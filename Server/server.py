@@ -279,7 +279,7 @@ def button_handler(address: str,
 
     for channel_index in range(4):
         if section == str(channel_index):
-            if parameter == "pfl":
+            if parameter == "pfl" and value == 1:
                 channel_infos[channel_index].pfl_enabled = (
                     not channel_infos[channel_index].pfl_enabled)
                 track_pfl = channel_infos[channel_index].track_pfl

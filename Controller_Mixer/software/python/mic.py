@@ -1,5 +1,5 @@
 # This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
-# © Copyright 2021 Raphael Eismann, Jendrik Bradaczek 
+# © Copyright 2021-2022 Patric Schmitz, Raphael Eismann, Jendrik Bradaczek
 #!/usr/bin/python
 
 import sys
@@ -69,7 +69,7 @@ analog_pots_per_channel_to_osc_param = {
     "5": "volume",
 }
 
-# master section pots
+# master section pots mapping
 master_pots_to_osc_message = {
     "1": "/mic/channel/master/volume/",
     "2": "/mic/channel/master/booth/",
@@ -79,14 +79,18 @@ master_pots_to_osc_message = {
     "8": "/mic/channel/fxparm/fxres",
 }
 
-# fx_and_3d_mode_button_split
-fx_and_3d_mode_name = {
-    "1": "fx",
-    "2": "3d",
+# fx and 3d mode button mapping
+fx_3d_mode_buttons_to_osc_message = {
+    "1": "/mic/channel/1/fx",
+    "2": "/mic/channel/2/fx",
+    "3": "/mic/channel/3/fx",
+    "4": "/mic/channel/4/fx",
+    "5": "/mic/channel/1/3d",
+    "6": "/mic/channel/2/3d",
+    "7": "/mic/channel/3/3d",
+    "8": "/mic/channel/4/3d",
 }
 
-# split multiplexer in two sections for fx mode and 3d mode buttons
-fx_and_3d_mode_button_multiplexer_split = [1,2,3,4,1,2,3,4]
 
 # fx ledstrip remapping
 fx_and_mode_leds = [5,4,3,2,6,7,8,9]
@@ -219,27 +223,9 @@ def serial_handler(): # dispatch from serial stream and send to osc
 
             # fx and 3d buttons
             if track == "6":
-                for i in range(8):
-                    if potNr == str(i+1):
-                        if int(value) and fx_state[i]==0:
-                            fx_state[i] = 1
-                            pixels[fx_and_mode_leds[i]] = (255,0,0)
-                            pixels.show()
-                            if i <= 3:
-                                osc_router.send_message("/mic/channel/" + str(fx_and_3d_mode_button_multiplexer_split[i]) + "/fx/", value)
-                            else:
-                                osc_router.send_message("/mic/channel/" + str(fx_and_3d_mode_button_multiplexer_split[i]) + "/3d/", value)
-                        elif int(value) and fx_state[i]==1:
-                            fx_state[i] = 0
-                            pixels[fx_and_mode_leds[i]] = (0,0,0)
-                            pixels.show()
-                            if i <= 3:
-                                osc_router.send_message("/mic/channel/" + str(fx_and_3d_mode_button_multiplexer_split[i]) + "/fx/", value)
-                            else:
-                                osc_router.send_message("/mic/channel/" + str(fx_and_3d_mode_button_multiplexer_split[i]) + "/3d/", value)
+                if potNr in fx_3d_mode_buttons_to_osc_message:
+                    osc_router.send_message(fx_3d_mode_buttons_to_osc_message[potNr], value)
 
-
-# " str(fx_and_3d_mode_name) "
 
 if __name__ == '__main__':
 

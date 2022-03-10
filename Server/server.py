@@ -78,8 +78,9 @@ class ChannelInfo:
     track_pfl: int
     track_bformat: int
 
-    fx_enabled: bool = False
-    pfl_enabled: bool = False
+    toggle_fx: bool = False
+    toggle_pfl: bool = False
+    toggle_3d: bool = False
     position_xyz: tuple[int, int, int] = (0, 0, 0)
 
 
@@ -127,10 +128,10 @@ def set_filters() -> None:
     for channel_index in range(4):
         for fx_index, bypass_active in (
                 (FX_INDEX_LOPASS,
-                 (not channel_infos[channel_index].fx_enabled or
+                 (not channel_infos[channel_index].toggle_fx or
                   master_info.fx_mode == MasterInfo.FXMode.HIGH_PASS)),
                 (FX_INDEX_HIPASS,
-                 (not channel_infos[channel_index].fx_enabled or
+                 (not channel_infos[channel_index].toggle_fx or
                   master_info.fx_mode == MasterInfo.FXMode.LOW_PASS))):
 
             message = ("/track/"
@@ -280,24 +281,32 @@ def button_handler(address: str,
     for channel_index in range(4):
         if section == str(channel_index):
             if parameter == "pfl" and value == 1:
-                channel_infos[channel_index].pfl_enabled = (
-                    not channel_infos[channel_index].pfl_enabled)
+                channel_infos[channel_index].toggle_pfl = (
+                    not channel_infos[channel_index].toggle_pfl)
                 track_pfl = channel_infos[channel_index].track_pfl
-                muted = not channel_infos[channel_index].pfl_enabled
+                muted = not channel_infos[channel_index].toggle_pfl
                 reaper.send_message(f"/track/{track_pfl}/mute", float(muted))
-                ctrl_mixer.send_message(f"/pfl_led/{channel_index}", float(muted))
+                ctrl_mixer.send_message(f"/channel/{channel_index}/led/pfl", float(muted))
 
-            elif parameter == "fx":
-                channel_infos[channel_index].fx_enabled = bool(value)
+            elif parameter == "fx" and value == 1:
+                channel_infos[channel_index].toggle_fx = (
+                    not channel_infos[channel_index].toggle_fx)
+                is_enabled = channel_infos[channel_index].toggle_fx
+                ctrl_mixer.send_message(f"/channel/{channel_index}/led/fx", float(is_enabled))
                 set_filters()
 
-            elif parameter == "3d":
+            elif parameter == "3d" and value == 1:
+                channel_infos[channel_index].toggle_3d = (
+                    not channel_infos[channel_index].toggle_3d)
                 track_stereo = channel_infos[channel_index].track_stereo
                 track_3d = channel_infos[channel_index].track_3d
+
+                is_enabled = channel_infos[channel_index].toggle_3d
+                ctrl_mixer.send_message(f"/channel/{channel_index}/led/3d", float(is_enabled))
                 reaper.send_message(
-                    f"/track/{track_stereo}/mute", float(value))
+                    f"/track/{track_stereo}/mute", float(is_enabled))
                 reaper.send_message(
-                    f"/track/{track_3d}/mute", float(1 - value))
+                    f"/track/{track_3d}/mute", float(not is_enabled))
 
 
 def moc_poti_handler(address: str, *osc_arguments: List[Any]) -> None:

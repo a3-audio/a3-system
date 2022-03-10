@@ -65,10 +65,10 @@ const int num_pots = 8;
 int pots_sent[num_tracks][num_pots];
 
 const std::array<std::string, 6> track_names = {
+    "0",
     "1",
     "2",
     "3",
-    "4",
     "master",
     "fx",
 };
@@ -158,9 +158,6 @@ void setup() {
 void loop(){
     // first read per-track button 0 directly (no mux)
     for(int channel = 0 ; channel < num_channels ; ++channel) {
-        button_0_per_channel[channel].update();
-
-        // on rising edge send toggle
         if(button_0_per_channel[channel].update()) {
             Serial.print("T");
             Serial.print(":");

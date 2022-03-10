@@ -62,33 +62,33 @@ vu_channel_to_led_count = {
 
 # channel strips 1-4
 analog_pots_per_channel_to_osc_param = {
-    "1": "gain",
-    "2": "hi",
-    "3": "mid",
-    "4": "lo",
-    "5": "volume",
+    "0": "gain",
+    "1": "hi",
+    "2": "mid",
+    "3": "lo",
+    "4": "volume",
 }
 
 # master section pots mapping
 master_pots_to_osc_message = {
-    "1": "/mic/channel/master/volume/",
-    "2": "/mic/channel/master/booth/",
-    "3": "/mic/channel/master/phMix/",
-    "4": "/mic/channel/master/phVol/",
-    "7": "/mic/channel/fxparm/fxfreq",
-    "8": "/mic/channel/fxparm/fxres",
+    "0": "/mic/channel/master/volume",
+    "1": "/mic/channel/master/booth",
+    "2": "/mic/channel/master/phMix",
+    "3": "/mic/channel/master/phVol",
+    "6": "/mic/channel/fxparm/fxfreq",
+    "7": "/mic/channel/fxparm/fxres",
 }
 
 # fx and 3d mode button mapping
 fx_3d_mode_buttons_to_osc_message = {
+    "0": "/mic/channel/0/fx",
     "1": "/mic/channel/1/fx",
     "2": "/mic/channel/2/fx",
     "3": "/mic/channel/3/fx",
-    "4": "/mic/channel/4/fx",
+    "4": "/mic/channel/0/3d",
     "5": "/mic/channel/1/3d",
     "6": "/mic/channel/2/3d",
     "7": "/mic/channel/3/3d",
-    "8": "/mic/channel/4/3d",
 }
 
 
@@ -133,18 +133,20 @@ def vu_handler(address: str,
     send_vu_data(vu, peak_db, rms_db)
 
 
-def send_pfl_leds_data(track: str, mute: float):
-    message = "PFL" + str(track) + "," + str(mute)
+def send_pfl_leds_data(track: str, pfl_led_on: int):
+    message = "PFL" + str(track) + "," + str(pfl_led_on)
     sendData(message)
     print(message)
 
-def pfl_leds_handler(address: str,
+def pfl_led_handler(address: str,
                *osc_arguments: List[Any]) -> None:
-    words = address.split("/")
-    track = words[2]
+    print(f'pfl_led_handler: {address}')
 
-    mute = int(osc_arguments[0])
-    send_pfl_leds_data(track, mute)
+    words = address.split("/")
+    channel = words[2]
+
+    pfl_led_on = int(osc_arguments[0])
+    send_pfl_leds_data(channel, pfl_led_on)
 
 
 # Serial communication
@@ -168,63 +170,52 @@ def serial_handler(): # dispatch from serial stream and send to osc
         # print(f'time delta: {delta_time_ms}')
         # time_last_receive = current_time_ns
 
+        print(line)
+
         words = line.split(":")
 
-        # fx mode buttons
-        if words[0] == "FX_MODE":
-            print("fx mode switch")
-            high_pass = words[1] == "HIGH_PASS"
+        # # fx mode buttons
+        # if words[0] == "FX_MODE":
+        #     print("fx mode switch")
+        #     high_pass = words[1] == "HIGH_PASS"
 
-            pixels[pixel_fx_mode_highpass] = color_led_on if high_pass else color_led_off
-            pixels[pixel_fx_mode_lowpass] = color_led_off if high_pass else color_led_on
-            pixels.show()
+        #     pixels[pixel_fx_mode_highpass] = color_led_on if high_pass else color_led_off
+        #     pixels[pixel_fx_mode_lowpass] = color_led_off if high_pass else color_led_on
+        #     pixels.show()
 
-            osc_router.send_message("/mic/channel/fxmode/hipass", 1 if high_pass else 0)
-            osc_router.send_message("/mic/channel/fxmode/lopass", 0 if high_pass else 1)
+        #     osc_router.send_message("/mic/channel/fxmode/hipass", 1 if high_pass else 0)
+        #     osc_router.send_message("/mic/channel/fxmode/lopass", 0 if high_pass else 1)
 
-            continue
+        #     continue
 
         track = words[1]
         mode = words[2]
-        potNr = words[3]
+        index = words[3]
         value = words[4]
 
         # Buttons
         if mode == "B":
-            if track == "1":
-                osc_router.send_message("/mic/channel/1/pfl/", value)
-                print("B1")
-            if track == "2":
-                osc_router.send_message("/mic/channel/2/pfl/", value)
-                print("B2")
-            if track == "3":
-                osc_router.send_message("/mic/channel/3/pfl/", value)
-                print("B3")
-            if track == "4":
-                osc_router.send_message("/mic/channel/4/pfl/", value)
-                print("B4")
-            if track == "5":
-                osc_router.send_message("/mic/channel/master/pfl/", value)
-                print("B5")
+            osc_router.send_message("/mic/channel/" + track + "/pfl", value)
+            print("B" + track)
+
         # Potis
         if mode == "P":
-            track_nr = int(track)
-
             # the 4 channel strips
-            if track_nr >= 1 and track_nr <= 4:
-                if potNr in analog_pots_per_channel_to_osc_param:
-                    osc_router.send_message("/mic/channel/" + str(track_nr) + "/" +
-                                            analog_pots_per_channel_to_osc_param[potNr] + "/", value)
+            channel_names = map(str, range(4))
+            if track in channel_names:
+                if index in analog_pots_per_channel_to_osc_param:
+                    osc_router.send_message("/mic/channel/" + track + "/" +
+                                            analog_pots_per_channel_to_osc_param[index], value)
 
             # pots in the master section
-            if track_nr == 5:
-                if potNr in master_pots_to_osc_message:
-                    osc_router.send_message(master_pots_to_osc_message[potNr], value)
+            if track == "master":
+                if index in master_pots_to_osc_message:
+                    osc_router.send_message(master_pots_to_osc_message[index], value)
 
             # fx and 3d buttons
-            if track == "6":
-                if potNr in fx_3d_mode_buttons_to_osc_message:
-                    osc_router.send_message(fx_3d_mode_buttons_to_osc_message[potNr], value)
+            if track == "fx":
+                if index in fx_3d_mode_buttons_to_osc_message:
+                    osc_router.send_message(fx_3d_mode_buttons_to_osc_message[index], value)
 
 
 if __name__ == '__main__':
@@ -240,7 +231,7 @@ if __name__ == '__main__':
 
     dispatcher = dispatcher.Dispatcher()
     dispatcher.map("/vu/*", vu_handler)
-    dispatcher.map("/mute/*", pfl_leds_handler)
+    dispatcher.map("/pfl_led/*", pfl_led_handler)
 
     server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))

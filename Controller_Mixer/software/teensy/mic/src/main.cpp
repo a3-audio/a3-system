@@ -12,7 +12,7 @@
 
 #include <Bounce.h>
 
-const int debounce_ms = 10; // 10 ms debounce
+const int debounce_ms = 10;
 const uint8_t pin_states[2] = { HIGH, LOW };
 
 //////////// PIN ASSIGNMENTS //////////////
@@ -229,60 +229,62 @@ void loop(){
     delayMicroseconds(10);
 
     if (Serial.available()) {
-        String command = Serial.readStringUntil(',');
+        String command = Serial.readStringUntil(':');
 
-        if(command.startsWith("PFL")) {
-            String mute = Serial.readStringUntil('\n');
-            int track_index = command.substring(3, 4).toInt();
-            int mute_index = mute.toInt();
-            digitalWrite(PINS_LED_PER_CHANNEL[track_index], pin_states[mute_index]);
+        if(command.equals("LED")) {
+            int channel_index = Serial.readStringUntil(':').toInt();
+            int led_on = Serial.readStringUntil('\n').toInt();
+            digitalWrite(PINS_LED_PER_CHANNEL[channel_index], pin_states[led_on]);
         }
 
-        for (int i = 0; i < 4; i++) { // filter serial inputstream VU01-VU04
-            if(command.startsWith(vuVars[i])) {
-                String peak = Serial.readStringUntil(',');
-                String rms = Serial.readStringUntil('\n');
+        // njomnjomnjom
+        Serial.readStringUntil('\n');
 
-                int peak_index = peak.toInt();// convert string to int
-                int rms_index = rms.toInt();
+        // for (int i = 0; i < 4; i++) { // filter serial inputstream VU01-VU04
+        //     if(command.startsWith(vuVars[i])) {
+        //         String peak = Serial.readStringUntil(':');
+        //         String rms = Serial.readStringUntil('\n');
 
-                for(int j = 0 ; j < 9 ; j++) {
-                    uint32_t color;
-                    if(j == peak_index)
-                        color = pixels.Color(255,0,0);
-                    else if(j <= rms_index)
-                        color = pixels.Color(0,255,0);
-                    else
-                        color = pixels.Color(0,0,0);
+        //         int peak_index = peak.toInt();// convert string to int
+        //         int rms_index = rms.toInt();
 
-                    pixels.setPixelColor(vupxlstrips[i][j], color);
-                }
-            }
-        }
+        //         for(int j = 0 ; j < 9 ; j++) {
+        //             uint32_t color;
+        //             if(j == peak_index)
+        //                 color = pixels.Color(255,0,0);
+        //             else if(j <= rms_index)
+        //                 color = pixels.Color(0,255,0);
+        //             else
+        //                 color = pixels.Color(0,0,0);
 
-        for (int i = 0 ; i < 8 ; i++) { // filter serial inputstream VU05-VU12
-            if(command.startsWith(vuVarsM[i]))
-            {
-                String peak = Serial.readStringUntil(',');
-                String rms = Serial.readStringUntil('\n');
-                // String peak = "31";
-                // String rms = "31";
+        //             pixels.setPixelColor(vupxlstrips[i][j], color);
+        //         }
+        //     }
+        // }
 
-                int peak_index = peak.toInt();
-                int rms_index = rms.toInt();
-                //Serial.println(rms1);
+        // for (int i = 0 ; i < 8 ; i++) { // filter serial inputstream VU05-VU12
+        //     if(command.startsWith(vuVarsM[i]))
+        //     {
+        //         String peak = Serial.readStringUntil(':');
+        //         String rms = Serial.readStringUntil('\n');
+        //         // String peak = "31";
+        //         // String rms = "31";
 
-                // rms-meter plus peak over all leds
-                for(int j = 0 ; j < 32 ; j++){
-                    int module_index = j / 8;
-                    int x = 8 - 1 - i;
-                    int y = 8 - 1 - j % 8;
+        //         int peak_index = peak.toInt();
+        //         int rms_index = rms.toInt();
+        //         //Serial.println(rms1);
 
-                    bool led_on = j <= rms_index || j == peak_index;
-                    lc.setLed(module_index, x, y, led_on);
-                }
-            }
-        }
+        //         // rms-meter plus peak over all leds
+        //         for(int j = 0 ; j < 32 ; j++){
+        //             int module_index = j / 8;
+        //             int x = 8 - 1 - i;
+        //             int y = 8 - 1 - j % 8;
+
+        //             bool led_on = j <= rms_index || j == peak_index;
+        //             lc.setLed(module_index, x, y, led_on);
+        //         }
+        //     }
+        // }
         pixels.show(); // send to hardware.
     }
 }

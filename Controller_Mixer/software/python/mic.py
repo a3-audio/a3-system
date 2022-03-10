@@ -30,6 +30,9 @@ pixels = neopixel.NeoPixel(
 pixel_fx_mode_highpass = 0
 pixel_fx_mode_lowpass = 11
 
+pixels_fx_toggle = [5, 4, 3, 2]
+pixels_3d_toggle = [6, 7, 8, 9]
+
 color_led_on = (255,0,0)
 color_led_off = (0,0,0)
 
@@ -67,6 +70,12 @@ analog_pots_per_channel_to_osc_param = {
     "2": "mid",
     "3": "lo",
     "4": "volume",
+}
+
+button_per_channel_to_osc_param = {
+    "0": "pfl",
+    "1": "fx",
+    "2": "3d",
 }
 
 # master section pots mapping
@@ -111,7 +120,7 @@ def send_vu_data(vu: str, peak_db: float, rms_db: float):
 #    print("peak: " + str(peak_db) + " " + str(peak_index))
 #    print("rms: " + str(rms_db) + " " + str(rms_index))
 
-    sendData("VU" + vu + "," + str(peak_index) + "," + str(rms_index))
+    sendData("VU:" + vu + ":" + str(peak_index) + ":" + str(rms_index))
 
 def vu_handler(address: str,
                *osc_arguments: List[Any]) -> None:
@@ -133,20 +142,30 @@ def vu_handler(address: str,
     send_vu_data(vu, peak_db, rms_db)
 
 
-def send_pfl_leds_data(track: str, pfl_led_on: int):
-    message = "PFL" + str(track) + "," + str(pfl_led_on)
+def send_pfl_leds_data(channel: str, pfl_led_on: int):
+    message = "LED:" + str(channel) + ":" + str(pfl_led_on)
     sendData(message)
     print(message)
 
-def pfl_led_handler(address: str,
+def led_handler(address: str,
                *osc_arguments: List[Any]) -> None:
-    print(f'pfl_led_handler: {address}')
+    print(f'led_handler: {address}')
 
     words = address.split("/")
     channel = words[2]
+    led_type = words[4]
+    led_on = int(osc_arguments[0])
 
-    pfl_led_on = int(osc_arguments[0])
-    send_pfl_leds_data(channel, pfl_led_on)
+    print(f'toggling {led_type} led for channel {channel}: {led_on}')
+
+    if led_type == "pfl":
+        send_pfl_leds_data(channel, led_on)
+    elif led_type == "fx":
+        pixels[pixels_fx_toggle[int(channel)]] = color_led_on if led_on else color_led_off
+        pixels.show()
+    elif led_type == "3d":
+        pixels[pixels_3d_toggle[int(channel)]] = color_led_on if led_on else color_led_off
+        pixels.show()
 
 
 # Serial communication
@@ -195,7 +214,8 @@ def serial_handler(): # dispatch from serial stream and send to osc
 
         # Buttons
         if mode == "B":
-            osc_router.send_message("/mic/channel/" + track + "/pfl", value)
+            osc_router.send_message("/mic/channel/" + track + "/" +
+                                    button_per_channel_to_osc_param[index], value)
             print("B" + track)
 
         # Potis
@@ -231,7 +251,7 @@ if __name__ == '__main__':
 
     dispatcher = dispatcher.Dispatcher()
     dispatcher.map("/vu/*", vu_handler)
-    dispatcher.map("/pfl_led/*", pfl_led_handler)
+    dispatcher.map("/channel/*/led/*", led_handler)
 
     server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))

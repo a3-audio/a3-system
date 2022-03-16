@@ -13,20 +13,22 @@ s.boot;
 
 s.waitForBoot({
 
-//~mic.sendMsg("/vu_1-16", "peak, rms");
+//SendPeakRMS.ar(sig, replyRate: 20.0, peakLag: 3, cmdName: '/reply', replyID: -1)
 
-{SendPeakRMS.ar(In.ar(2, 1), 10, 3, "/reply0")}.play;
-{SendPeakRMS.ar(In.ar(3, 1), 10, 3, "/reply1")}.play;
-{SendPeakRMS.ar(In.ar(4, 1), 10, 3, "/reply2")}.play;
-{SendPeakRMS.ar(In.ar(5, 1), 10, 3, "/reply3")}.play;
-{SendPeakRMS.ar(In.ar(6, 1), 10, 5, "/reply4")}.play;
-{SendPeakRMS.ar(In.ar(7, 1), 10, 5, "/reply5")}.play;
-{SendPeakRMS.ar(In.ar(8, 1), 10, 5, "/reply6")}.play;
-{SendPeakRMS.ar(In.ar(9, 1), 10, 5, "/reply7")}.play;
-{SendPeakRMS.ar(In.ar(10, 1), 10, 5, "/reply8")}.play;
-{SendPeakRMS.ar(In.ar(11, 1), 10, 5, "/reply9")}.play;
-{SendPeakRMS.ar(In.ar(12, 1), 10, 5, "/reply10")}.play;
-{SendPeakRMS.ar(In.ar(13, 1), 10, 5, "/reply11")}.play;
+{SendPeakRMS.ar(In.ar(2, 1), 20, 3, "/reply0")}.play;
+{SendPeakRMS.ar(In.ar(3, 1), 20, 3, "/reply1")}.play;
+{SendPeakRMS.ar(In.ar(4, 1), 20, 3, "/reply2")}.play;
+{SendPeakRMS.ar(In.ar(5, 1), 20, 3, "/reply3")}.play;
+{SendPeakRMS.ar(In.ar(6, 1), 20, 5, "/reply4")}.play;
+{SendPeakRMS.ar(In.ar(7, 1), 20, 5, "/reply5")}.play;
+{SendPeakRMS.ar(In.ar(8, 1), 20, 5, "/reply6")}.play;
+{SendPeakRMS.ar(In.ar(9, 1), 20, 5, "/reply7")}.play;
+{SendPeakRMS.ar(In.ar(10, 1), 20, 5, "/reply8")}.play;
+{SendPeakRMS.ar(In.ar(11, 1), 20, 5, "/reply9")}.play;
+{SendPeakRMS.ar(In.ar(12, 1), 20, 5, "/reply10")}.play;
+{SendPeakRMS.ar(In.ar(13, 1), 20, 5, "/reply11")}.play;
+
+//~mic.sendMsg("/vu_1-16", "peak, rms");
 
 OSCFunc({ |msg| ~mic.sendMsg("/vu/0", msg[3], msg[4]);}, '/reply0');
 OSCFunc({ |msg| ~mic.sendMsg("/vu/1", msg[3], msg[4]);}, '/reply1');

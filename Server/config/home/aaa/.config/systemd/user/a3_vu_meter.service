@@ -1,0 +1,17 @@
+[Unit]                                                                                     
+Description=Supercollider crossover
+After=jack.service
+
+[Service]
+Type=idle
+PrivateTmp=true
+#ExecStartPre=/bin/sleep 2
+WorkingDirectory=/home/aaa/Ambijockey/Server/supercollider
+#Environment="QT_QPA_PLATFORM=minimal"
+Environment=QT_QPA_PLATFORM=offscreen
+ExecStart=/usr/bin/sclang /home/aaa/Ambijockey/Server/supercollider/vu-meter.scd
+LimitRTPRIO=85
+
+[Install]
+#WantedBy=default.target
+WantedBy=default.target

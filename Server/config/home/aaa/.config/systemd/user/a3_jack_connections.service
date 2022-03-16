@@ -1,0 +1,13 @@
+[Unit]
+Description=a3_jack_connections
+After=a3_vu_meter.service a3_reaper.service
+
+[Service]
+Type=idle
+PrivateTmp=true
+ExecStartPre=/bin/sleep 5
+WorkingDirectory=/home/aaa/Ambijockey/Server/
+ExecStart=/usr/bin/jmess -Dc a3_connections.jmess
+
+[Install]
+WantedBy=default.target

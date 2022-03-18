@@ -42,9 +42,7 @@ FX_INDEX_LOPASS: int = 4
 
 
 # OSC clients
-#osc_mic = SimpleUDPClient('192.168.43.101', 8500)
 osc_mic = SimpleUDPClient('192.168.43.51', 7771)
-#osc_mic = SimpleUDPClient('192.168.43.51', 8500)
 osc_moc = SimpleUDPClient('192.168.43.52', 8700)
 osc_reaper = SimpleUDPClient('127.0.0.1', 9001)
 
@@ -58,6 +56,7 @@ class MasterInfo:
     track_mainmixbus: int = 16
     track_booth: int = 5
     track_phones: int = 9
+    track_reverb_aux_nr: int = 11
 
     class FXMode(Enum):
         LOW_PASS = 0
@@ -72,7 +71,6 @@ master_info = MasterInfo()
 class ChannelInfo:
     track_input: int
     track_stereo: int
-    track_3d: int
     track_channelbus: int
     track_pfl: int
     track_bformat: int
@@ -86,39 +84,35 @@ class ChannelInfo:
 channel_infos = (
     # Channel 1
     ChannelInfo(
-        track_input=18,
+        track_input=20,
         track_stereo=19,
-        track_3d=20,
+        track_bformat=18,
         track_channelbus=17,
         track_pfl=12,
-        track_bformat=20,
     ),
     # Channel 2
     ChannelInfo(
-        track_input=22,
+        track_input=24,
         track_stereo=23,
-        track_3d=24,
+        track_bformat=22,
         track_channelbus=21,
         track_pfl=13,
-        track_bformat=24,
     ),
     # Channel 3
     ChannelInfo(
-        track_input=26,
+        track_input=28,
         track_stereo=27,
-        track_3d=28,
+        track_bformat=26,
         track_channelbus=25,
         track_pfl=14,
-        track_bformat=28,
     ),
     # Channel 4
     ChannelInfo(
-        track_input=30,
+        track_input=32,
         track_stereo=31,
-        track_3d=32,
+        track_bformat=30,
         track_channelbus=29,
         track_pfl=15,
-        track_bformat=32,
     ),
 )
 
@@ -236,14 +230,14 @@ def osc_handler_channel(address: str,
         channel_infos[channel_index].toggle_3d = (
             not channel_infos[channel_index].toggle_3d)
         track_stereo = channel_infos[channel_index].track_stereo
-        track_3d = channel_infos[channel_index].track_3d
+        track_bformat = channel_infos[channel_index].track_bformat
 
         is_enabled = channel_infos[channel_index].toggle_3d
         osc_mic.send_message(f"/channel/{channel_index}/led/3d", float(is_enabled))
         osc_reaper.send_message(
             f"/track/{track_stereo}/mute", float(is_enabled))
         osc_reaper.send_message(
-            f"/track/{track_3d}/mute", float(not is_enabled))
+            f"/track/{track_bformat}/mute", float(not is_enabled))
 
 
 def osc_handler_master(address: str,
@@ -338,7 +332,7 @@ def moc_poti_handler(address: str, *osc_arguments: List[Any]) -> None:
     for channel_index in range(4):
         if section == str(channel_index):
             if parameter == "width":
-                val = np.interp(value, [0, 1], [30, 145])
+                val = np.interp(value, [0, 1], [5, 160])
                 udp_client = udp_clients_iem[channel_index]
                 udp_client.send_message("/StereoEncoder/width", val)
                 # print(value)
@@ -348,7 +342,7 @@ def moc_poti_handler(address: str, *osc_arguments: List[Any]) -> None:
                 track_channelbus = channel_infos[channel_index].track_channelbus
                 osc_reaper.send_message(
                     #f"/track/{track_input}/fx/2/fxparam/1/value", val)
-                    f"/track/{track_channelbus}/send/8/volume", value) # reverb send
+                    f"/track/{track_channelbus}/send/{track_reverb_aux_nr}/volume", value) # reverb aux send
 
 
 if __name__ == "__main__":
@@ -365,7 +359,7 @@ if __name__ == "__main__":
     dispatcher.map("/fx/*", osc_handler_fx)
 
     # # Motion-Controller
-    # dispatcher.map("/moc/track/*", moc_poti_handler)
+    # # dispatcher.map("/moc/channel/*", moc_poti_handler)
     # # dispatcher.map("/CoordinateConverter/*", iemToCtrlMotion_handler)
     # # dispatcher.map("/moc/channel/*", ctrlMotionToIem_handler)
     # # dispatcher.map("/moc/channel/*", ctrlMotionToIem_handler)

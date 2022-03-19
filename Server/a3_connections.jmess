@@ -4,12 +4,20 @@
     <input>REAPER:in1</input>
   </connection>
   <connection>
+    <output>system:capture_1</output>
+    <input>SuperCollider:in_1</input>
+  </connection>
+  <connection>
     <output>system:capture_2</output>
     <input>REAPER:in2</input>
   </connection>
   <connection>
     <output>system:capture_3</output>
     <input>REAPER:in3</input>
+  </connection>
+  <connection>
+    <output>system:capture_3</output>
+    <input>SuperCollider:in_2</input>
   </connection>
   <connection>
     <output>system:capture_4</output>
@@ -20,12 +28,20 @@
     <input>REAPER:in5</input>
   </connection>
   <connection>
+    <output>system:capture_5</output>
+    <input>SuperCollider:in_3</input>
+  </connection>
+  <connection>
     <output>system:capture_6</output>
     <input>REAPER:in6</input>
   </connection>
   <connection>
     <output>system:capture_7</output>
     <input>REAPER:in7</input>
+  </connection>
+  <connection>
+    <output>system:capture_7</output>
+    <input>SuperCollider:in_4</input>
   </connection>
   <connection>
     <output>system:capture_8</output>
@@ -38,22 +54,6 @@
   <connection>
     <output>REAPER:out2</output>
     <input>system:playback_2</input>
-  </connection>
-  <connection>
-    <output>REAPER:out9</output>
-    <input>SuperCollider:in_1</input>
-  </connection>
-  <connection>
-    <output>REAPER:out10</output>
-    <input>SuperCollider:in_2</input>
-  </connection>
-  <connection>
-    <output>REAPER:out11</output>
-    <input>SuperCollider:in_3</input>
-  </connection>
-  <connection>
-    <output>REAPER:out12</output>
-    <input>SuperCollider:in_4</input>
   </connection>
   <connection>
     <output>REAPER:out13</output>

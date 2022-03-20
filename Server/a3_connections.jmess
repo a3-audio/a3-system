@@ -52,15 +52,15 @@
     <input>system:playback_1</input>
   </connection>
   <connection>
+    <output>REAPER:out1</output>
+    <input>SuperCollider:in_5</input>
+  </connection>
+  <connection>
     <output>REAPER:out2</output>
     <input>system:playback_2</input>
   </connection>
   <connection>
-    <output>REAPER:out13</output>
-    <input>SuperCollider:in_5</input>
-  </connection>
-  <connection>
-    <output>REAPER:out14</output>
+    <output>REAPER:out2</output>
     <input>SuperCollider:in_6</input>
   </connection>
   <connection>

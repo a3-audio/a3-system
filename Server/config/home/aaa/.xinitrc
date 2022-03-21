@@ -49,8 +49,25 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
 fi
 #export PATH="/home/aaa/Ambijockey/Server/config/autostart:$PATH"
 #export QT_QPA_PLATFORM=offscreen
-exec /usr/bin/jackd -n aaa -R -P70 -aa -dalsa -dhw:USBStreamer -r44100 -p64 -i8 -o8 -n3 &
+#exec /usr/bin/jackd -R -dalsa -dhw:USBStreamer -r48000 -p128 -n2 &
+#exec /usr/bin/jackd -R -P70 -aa -dalsa -dhw:USBStreamer -r44100 -p64 -i8 -o8 -n2 &
+#exec /usr/bin/jackd -aa -dalsa -dhw:USBStreamer -r44100 -p64 -i8 -o8 -n2 -R &
 #eval $(ssh-agent -s)
-sleep 3
-exec x11vnc &
+
+# old exec /usr/bin/jackd -R -aa -dalsa -dhw:USBStreamer -r48000 -p64 -n2 -P -i8 -o8 -na3jack &
+# exec /usr/bin/jackd -R -aa -dalsa -dhw:USBStreamer -r44100 -p64 -n2 -i8 -o8 -na3jack &
+
+# No autoconnect(-a): On
+# Driver(-d): alsa
+# Samplerate(-r): 44100
+# Periods(-p): 64
+# Realtime-Mode(-P): On
+# Inputs(-i): 8
+# Outputs(-o): 8
+# Jack-Servername(-n): a3jack
+
+
+#sleep 3
+#exec x11vnc &
+#sleep 3
 exec i3

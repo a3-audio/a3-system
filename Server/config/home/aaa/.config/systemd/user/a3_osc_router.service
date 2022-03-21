@@ -1,0 +1,17 @@
+[Unit]                                                                                     
+Description=a3_reaper
+After=jack.service
+
+[Service]
+Type=idle
+PrivateTmp=true
+#ExecStartPre=/bin/sleep 2
+#WorkingDirectory=/home/ra/skripte
+#Environment="QT_QPA_PLATFORM=minimal"
+#Environment=QT_QPA_PLATFORM=offscreen
+ExecStart=/usr/bin/python /home/aaa/Ambijockey/Server/a3_osc_router.py
+LimitRTPRIO=70
+
+[Install]
+#WantedBy=default.target
+WantedBy=default.target

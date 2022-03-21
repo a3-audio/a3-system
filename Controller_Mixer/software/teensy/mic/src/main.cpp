@@ -4,48 +4,53 @@
 
 // Made for A³Mix PCB v0.2
 
+#include <array>
+
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
 #include <LedControl.h>
 
 #include <Bounce.h>
 
-const int debounce_ms = 10; // 10 ms debounce
+const int debounce_ms = 10;
+const uint8_t pin_states[2] = { HIGH, LOW };
 
 //////////// PIN ASSIGNMENTS //////////////
-const uint8_t pinstates[2] = { HIGH, LOW };
-const int pflleds [] = {26, 38, 39, 40};
-const int pflButtonPins [] = {33, 34, 35, 36};
 
-Bounce pflButtons [] = {
-    Bounce(pflButtonPins[0], debounce_ms),
-    Bounce(pflButtonPins[1], debounce_ms),
-    Bounce(pflButtonPins[2], debounce_ms),
-    Bounce(pflButtonPins[3], debounce_ms)
+const int PINS_LED_PER_CHANNEL [] = {26, 38, 39, 40};
+const int PINS_BUTTON_0_PER_CHANNEL [] = {33, 34, 35, 36};
+Bounce button_0_per_channel [] = {
+    Bounce(PINS_BUTTON_0_PER_CHANNEL[0], debounce_ms),
+    Bounce(PINS_BUTTON_0_PER_CHANNEL[1], debounce_ms),
+    Bounce(PINS_BUTTON_0_PER_CHANNEL[2], debounce_ms),
+    Bounce(PINS_BUTTON_0_PER_CHANNEL[3], debounce_ms)
 };
 
-const int multiplexer[6] = {5, 6, 7, 8, 9}; // Channelpotis [1-4], Masterpotis [5]
+const int multiplexer[6] = {5, 6, 7, 8, 9}; // Channel pots [0-3],
+                                            // Master pots [4]
 const int multiplexer_enc = 12; // Encoderswitches (digital)
 const int selectPins[3] = {30, 31, 32}; // Multiplexer abc
 
 // track the bounce state for 8 buttons on the multiplexer, which are
 // all connected to the same teensy pin.
-const int PIN_MULTIPLEX_MODE_FX = 27;
-Bounce buttonsMultiplexModeFx [] = {
-    Bounce(PIN_MULTIPLEX_MODE_FX, debounce_ms),
-    Bounce(PIN_MULTIPLEX_MODE_FX, debounce_ms),
-    Bounce(PIN_MULTIPLEX_MODE_FX, debounce_ms),
-    Bounce(PIN_MULTIPLEX_MODE_FX, debounce_ms),
-    Bounce(PIN_MULTIPLEX_MODE_FX, debounce_ms),
-    Bounce(PIN_MULTIPLEX_MODE_FX, debounce_ms),
-    Bounce(PIN_MULTIPLEX_MODE_FX, debounce_ms),
-    Bounce(PIN_MULTIPLEX_MODE_FX, debounce_ms),
+const int PIN_BUTTONS_1_2_MULTIPLEX_PER_CHANNEL = 27;
+Bounce buttons_1_2_multiplex_per_channel [] = {
+    Bounce(PIN_BUTTONS_1_2_MULTIPLEX_PER_CHANNEL, debounce_ms),
+    Bounce(PIN_BUTTONS_1_2_MULTIPLEX_PER_CHANNEL, debounce_ms),
+    Bounce(PIN_BUTTONS_1_2_MULTIPLEX_PER_CHANNEL, debounce_ms),
+    Bounce(PIN_BUTTONS_1_2_MULTIPLEX_PER_CHANNEL, debounce_ms),
+    Bounce(PIN_BUTTONS_1_2_MULTIPLEX_PER_CHANNEL, debounce_ms),
+    Bounce(PIN_BUTTONS_1_2_MULTIPLEX_PER_CHANNEL, debounce_ms),
+    Bounce(PIN_BUTTONS_1_2_MULTIPLEX_PER_CHANNEL, debounce_ms),
+    Bounce(PIN_BUTTONS_1_2_MULTIPLEX_PER_CHANNEL, debounce_ms),
 };
 
-const int PIN_FX_HIGHPASS = 28;
-const int PIN_FX_LOWPASS = 29;
-Bounce buttonFxHighPass(PIN_FX_HIGHPASS, debounce_ms);
-Bounce buttonFxLowPass(PIN_FX_LOWPASS, debounce_ms);
+const int num_fx_buttons = 2;
+const int PINS_BUTTON_FX [] = {28, 29};
+Bounce buttons_fx [] = {
+    Bounce(PINS_BUTTON_FX[0], debounce_ms),
+    Bounce(PINS_BUTTON_FX[1], debounce_ms),
+};
 
 const int display_sda1 = 17;
 const int display_scl1 = 16;
@@ -53,11 +58,21 @@ const int display_sda2 = 25;
 const int display_scl2 = 24;
 
 // last sent states (potis)
-const int num_tracks = 6;
+const int num_channels = 4;
+const int num_tracks = 6; // including master and fx sections
 const int num_pots = 8;
-const int num_pfl_tracks = 4;
 
 int pots_sent[num_tracks][num_pots];
+
+const std::array<std::string, 6> track_names = {
+    "0",
+    "1",
+    "2",
+    "3",
+    "master",
+    "fx",
+};
+
 
 // vu-meter neopixel
 const int npxl_pin = 13; // pcb pin
@@ -72,7 +87,7 @@ int vupxlstrips[4][9] = {
 };
 
 // LED-Matrix
-LedControl lc=LedControl(18,14,15,4); // led-matrix pins
+LedControl lc = LedControl(18,14,15,4); // led-matrix pins
 int modePxl[4][3] = {
     {0,1,2},
     {12,13,14},
@@ -81,28 +96,25 @@ int modePxl[4][3] = {
 };
 
 // NeoPixel Arrays
-String vuVars[4] = { "VU01", "VU02", "VU03", "VU04" };
-String vuVarsM[8] = { "VU05", "VU06", "VU07", "VU08", "VU09", "VU10", "VU11", "VU12" };
+String vuVars[4] = { "VU00", "VU01", "VU02", "VU03" };
+String vuVarsM[8] = { "VU04", "VU05", "VU06", "VU07", "VU08", "VU09", "VU10", "VU11" };
 
-// fx mode buttons are connected to $multiplexer [1,2] last physical connector on chip
-// fx potis are connected to $multiplexer channel [3,4] last physical connector on chip
+// Rotary Encoder pin mapping
+// const int rEnc0_DT = 0;
+// const int rEnc0_clk = 1;
+// const int rEnc1_DT = 2;
+// const int rEnc1_clk = 3;
+// const int rEnc2_DT = 4;
+// const int rEnc2_clk = 5;
+// const int rEnc3_DT = 6;
+// const int rEnc3_clk = 7;
+// const int rEnc4_DT = 8;
+// const int rEnc4_clk = 9;
+// const int rEnc5_DT = 10;
+// const int rEnc5_clk = 11;
 
-// Rotary Encoder
-const int rEnc0_DT = 0;
-const int rEnc0_clk = 1;
-const int rEnc1_DT = 2;
-const int rEnc1_clk = 3;
-const int rEnc2_DT = 4;
-const int rEnc2_clk = 5;
-const int rEnc3_DT = 6;
-const int rEnc3_clk = 7;
-const int rEnc4_DT = 8;
-const int rEnc4_clk = 9;
-const int rEnc5_DT = 10;
-const int rEnc5_clk = 11;
-
-const int spare_1 = 28;
-const int spare_2 = 29;
+// const int spare_1 = 28;
+// const int spare_2 = 29;
 
 void setup() {
 
@@ -118,18 +130,15 @@ void setup() {
     pixels.clear();
     pixels.setBrightness(10);
 
-    // Configure digital pins
-    // pfl buttons
-    for(int track = 0 ; track < num_pfl_tracks ; ++track) {
-        pinMode(pflButtonPins[track], INPUT);
-    }
-    //pfl leds
-    for(int track = 0 ; track < num_pfl_tracks ; ++track) {
-        pinMode(pflleds[track], OUTPUT);
+    // Configure per-channel digital pins
+    for(int channel = 0 ; channel < num_channels ; ++channel) {
+        pinMode(PINS_BUTTON_0_PER_CHANNEL[channel], INPUT);
+        pinMode(PINS_LED_PER_CHANNEL[channel], OUTPUT);
     }
 
-    pinMode(PIN_FX_HIGHPASS, INPUT);
-    pinMode(PIN_FX_LOWPASS, INPUT);
+    for(int button = 0 ; button < num_fx_buttons ; ++button) {
+        pinMode(PINS_BUTTON_FX[button], INPUT);
+    }
 
     lc.shutdown(0,false);
     lc.shutdown(1,false);
@@ -144,7 +153,20 @@ void setup() {
 }
 
 void loop(){
-    // hc4051 reading potis
+    // first read per-track button 0 directly (no mux)
+    for(int channel = 0 ; channel < num_channels ; ++channel) {
+        if(button_0_per_channel[channel].update()) {
+            Serial.print("T");
+            Serial.print(":");
+            Serial.print(channel);
+            Serial.print(":");
+            Serial.print("B");
+            Serial.print(":0:");
+            Serial.println(button_0_per_channel[channel].risingEdge() ? "1" : "0");
+        }
+    }
+
+    // read pots and fx/3d buttons via hc4051 multiplexer
     for (byte pin=0 ; pin < 8 ; ++pin)
     {
         // hc4051 pinselector abc (binary)
@@ -152,89 +174,73 @@ void loop(){
             digitalWrite(selectPins[i], pin & (1 << i) ? HIGH : LOW); // select hc4051
         }
         delayMicroseconds(10);
-        // filter analog inputs
 
-        // the four tracks [0-3] and the master section [4] are read
+        // the four tracks [0-3] and the master track [4] are read
         // as fully analog inputs.
-        for (int section=0 ; section < 5; section++) {
-            int analog = analogRead(multiplexer[section]);
-            int difference = pots_sent[section][pin] - analog;
+        for (int track=0 ; track < 5; ++track) {
+            int analog = analogRead(multiplexer[track]);
+            int difference = pots_sent[track][pin] - analog;
 
+            // filter analog inputs
             // send osc when difference larger than noise on
             // last bits
             // @TODO this needs to be solved in hardware!
             if(abs(difference) > 8) {
-                pots_sent[section][pin] = analog;
+                pots_sent[track][pin] = analog;
                 float sendValue = float(analog) / 1023.f;
                 Serial.print("T");
                 Serial.print(":");
-                Serial.print(section+1);
+                Serial.print(track_names[track].c_str());
                 Serial.print(":");
                 Serial.print("P");
                 Serial.print(":");
-                Serial.print(pin+1);
+                Serial.print(pin);
                 Serial.print(":");
                 Serial.println(sendValue, 6);
             }
         }
 
-        // read mode and fx buttons as section 6
-        if(buttonsMultiplexModeFx[pin].update()) {
-          Serial.print("T:6:P:");
-          Serial.print(pin+1);
-          Serial.print(":");
-          Serial.println(buttonsMultiplexModeFx[pin].risingEdge() ? "1" : "0");
+        // read buttons 1, 2 per channel
+        if(buttons_1_2_multiplex_per_channel[pin].update()) {
+            Serial.print("T:");
+            Serial.print(pin%4);
+            Serial.print(":B:");
+            Serial.print(1 + pin/4);
+            Serial.print(":");
+            Serial.println(buttons_1_2_multiplex_per_channel[pin].risingEdge() ? "1" : "0");
         }
     }
 
-    // read hi/lowpass fx mode buttons
-    buttonFxHighPass.update();
-    buttonFxLowPass.update();
-    if(buttonFxHighPass.risingEdge())  {
-      Serial.println("FX_MODE:HIGH_PASS");
-    }
-    else if(buttonFxLowPass.risingEdge()) {
-      Serial.println("FX_MODE:LOW_PASS");
+    // read buttons separately for FX track [5]
+    for(int button = 0 ; button < num_fx_buttons ; ++button) {
+        if(buttons_fx[button].update()) {
+            Serial.print("T:");
+            Serial.print(track_names[5].c_str());
+            Serial.print(":B:");
+            Serial.print(button);
+            Serial.print(":");
+            Serial.println(buttons_fx[button].risingEdge() ? "1" : "0");
+        }
     }
 
     delayMicroseconds(10);
 
-    // PFL Buttons
-    for(int track = 0 ; track < num_pfl_tracks ; ++track) {
-        pflButtons[track].update();
-
-        // on rising edge send toggle
-        if(pflButtons[track].risingEdge()) {
-            Serial.print("T");
-            Serial.print(":");
-            Serial.print(track+1);
-            Serial.print(":");
-            Serial.print("B");
-            Serial.print(":");
-            Serial.print("0");
-            Serial.print(":");
-            Serial.println("0");
-        }
-    }
-
     if (Serial.available()) {
-        String command = Serial.readStringUntil(',');
+        String command = Serial.readStringUntil(':');
 
-        if(command.startsWith("PFL")) {
-            String mute = Serial.readStringUntil('\n');
-            int track_index = command.substring(3, 4).toInt();
-            int mute_index = mute.toInt();
-            digitalWrite(pflleds[track_index - 1], pinstates[mute_index]);
+        if(command.equals("LED")) {
+            int channel_index = Serial.readStringUntil(':').toInt();
+            int led_on = Serial.readStringUntil('\n').toInt();
+            digitalWrite(PINS_LED_PER_CHANNEL[channel_index], pin_states[led_on]);
         }
 
-        for (int i = 0; i < 4; i++) { // filter serial inputstream VU01-VU04
-            if(command.startsWith(vuVars[i])) {
-                String peak = Serial.readStringUntil(',');
-                String rms = Serial.readStringUntil('\n');
+        if(command.equals("VU")) {
+            int vu_index = Serial.readStringUntil(':').toInt();
+            int peak_index = Serial.readStringUntil(':').toInt();
+            int rms_index = Serial.readStringUntil('\n').toInt();
 
-                int peak_index = peak.toInt();// convert string to int
-                int rms_index = rms.toInt();
-
+            if(vu_index >= 0 && vu_index < 4) {
+                int i = vu_index;
                 for(int j = 0 ; j < 9 ; j++) {
                     uint32_t color;
                     if(j == peak_index)
@@ -247,21 +253,9 @@ void loop(){
                     pixels.setPixelColor(vupxlstrips[i][j], color);
                 }
             }
-        }
-
-        for (int i = 0 ; i < 8 ; i++) { // filter serial inputstream VU05-VU12
-            if(command.startsWith(vuVarsM[i]))
-            {
-                String peak = Serial.readStringUntil(',');
-                String rms = Serial.readStringUntil('\n');
-                // String peak = "31";
-                // String rms = "31";
-
-                int peak_index = peak.toInt();
-                int rms_index = rms.toInt();
-                //Serial.println(rms1);
-
+            else if(vu_index >= 4 && vu_index < 12) {
                 // rms-meter plus peak over all leds
+                int i = vu_index - 4;
                 for(int j = 0 ; j < 32 ; j++){
                     int module_index = j / 8;
                     int x = 8 - 1 - i;
@@ -272,6 +266,7 @@ void loop(){
                 }
             }
         }
-        pixels.show(); // send to hardware.
+
+        pixels.show();
     }
 }

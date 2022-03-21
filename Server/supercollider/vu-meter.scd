@@ -1,5 +1,5 @@
 // This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
-// © Copyright 2021 Raphael Eismann 
+// © Copyright 2021-2022 Raphael Eismann
 
 s.options.numInputBusChannels  = 12;
 s.options.numOutputBusChannels = 2;
@@ -9,51 +9,38 @@ s.options.numBuffers = 4096;
 
 s.boot;
 
-~b = NetAddr.new("192.168.43.51", 7771);    // create the NetAddr
-~c = NetAddr.new("192.168.43.101", 1999);    // create the NetAddr
+~mic = NetAddr.new("192.168.43.51", 7771);    // create the NetAddr
 
 s.waitForBoot({
 
-//~b.sendMsg("/vu_1-16", "peak, rms");
+//SendPeakRMS.ar(sig, replyRate: 20.0, peakLag: 3, cmdName: '/reply', replyID: -1)
 
-{SendPeakRMS.ar(In.ar(2, 1), 10, 3, "/reply01")}.play;
-{SendPeakRMS.ar(In.ar(3, 1), 10, 3, "/reply02")}.play;
-{SendPeakRMS.ar(In.ar(4, 1), 10, 3, "/reply03")}.play;
-{SendPeakRMS.ar(In.ar(5, 1), 10, 3, "/reply04")}.play;
-{SendPeakRMS.ar(In.ar(6, 1), 10, 5, "/reply05")}.play;
-{SendPeakRMS.ar(In.ar(7, 1), 10, 5, "/reply06")}.play;
-{SendPeakRMS.ar(In.ar(8, 1), 10, 5, "/reply07")}.play;
-{SendPeakRMS.ar(In.ar(9, 1), 10, 5, "/reply08")}.play;
-{SendPeakRMS.ar(In.ar(10, 1), 10, 5, "/reply09")}.play;
-{SendPeakRMS.ar(In.ar(11, 1), 10, 5, "/reply10")}.play;
-{SendPeakRMS.ar(In.ar(12, 1), 10, 5, "/reply11")}.play;
-{SendPeakRMS.ar(In.ar(13, 1), 10, 5, "/reply12")}.play;
+{SendPeakRMS.ar(In.ar(2, 1), 30, 5, "/reply0")}.play;
+{SendPeakRMS.ar(In.ar(3, 1), 30, 5, "/reply1")}.play;
+{SendPeakRMS.ar(In.ar(4, 1), 30, 5, "/reply2")}.play;
+{SendPeakRMS.ar(In.ar(5, 1), 30, 5, "/reply3")}.play;
+{SendPeakRMS.ar(In.ar(6, 1), 30, 5, "/reply4")}.play;
+{SendPeakRMS.ar(In.ar(7, 1), 30, 5, "/reply5")}.play;
+{SendPeakRMS.ar(In.ar(8, 1), 30, 5, "/reply6")}.play;
+{SendPeakRMS.ar(In.ar(9, 1), 30, 5, "/reply7")}.play;
+{SendPeakRMS.ar(In.ar(10, 1), 30, 4, "/reply8")}.play;
+{SendPeakRMS.ar(In.ar(11, 1), 30, 4, "/reply9")}.play;
+{SendPeakRMS.ar(In.ar(12, 1), 30, 4, "/reply10")}.play;
+{SendPeakRMS.ar(In.ar(13, 1), 30, 4, "/reply11")}.play;
 
-OSCFunc({ |msg| ~b.sendMsg("/vu/01", msg[3], msg[4]);}, '/reply01');
-OSCFunc({ |msg| ~b.sendMsg("/vu/02", msg[3], msg[4]);}, '/reply02');
-OSCFunc({ |msg| ~b.sendMsg("/vu/03", msg[3], msg[4]);}, '/reply03');
-OSCFunc({ |msg| ~b.sendMsg("/vu/04", msg[3], msg[4]);}, '/reply04');
-OSCFunc({ |msg| ~b.sendMsg("/vu/05", msg[3], msg[4]);}, '/reply05');
-OSCFunc({ |msg| ~b.sendMsg("/vu/06", msg[3], msg[4]);}, '/reply06');
-OSCFunc({ |msg| ~b.sendMsg("/vu/07", msg[3], msg[4]);}, '/reply07');
-OSCFunc({ |msg| ~b.sendMsg("/vu/08", msg[3], msg[4]);}, '/reply08');
-OSCFunc({ |msg| ~b.sendMsg("/vu/09", msg[3], msg[4]);}, '/reply09');
-OSCFunc({ |msg| ~b.sendMsg("/vu/10", msg[3], msg[4]);}, '/reply10');
-OSCFunc({ |msg| ~b.sendMsg("/vu/11", msg[3], msg[4]);}, '/reply11');
-OSCFunc({ |msg| ~b.sendMsg("/vu/12", msg[3], msg[4]);}, '/reply12');
+//~mic.sendMsg("/vu_1-16", "peak, rms");
 
-//OSCFunc({ |msg| ~c.sendMsg("/vu/01", msg[3], msg[4]);}, '/reply01');
-//OSCFunc({ |msg| ~c.sendMsg("/vu/02", msg[3], msg[4]);}, '/reply02');
-//OSCFunc({ |msg| ~c.sendMsg("/vu/03", msg[3], msg[4]);}, '/reply03');
-//OSCFunc({ |msg| ~c.sendMsg("/vu/04", msg[3], msg[4]);}, '/reply04');
-//OSCFunc({ |msg| ~c.sendMsg("/vu/05", msg[3], msg[4]);}, '/reply05');
-//OSCFunc({ |msg| ~c.sendMsg("/vu/06", msg[3], msg[4]);}, '/reply06');
-//OSCFunc({ |msg| ~c.sendMsg("/vu/07", msg[3], msg[4]);}, '/reply07');
-//OSCFunc({ |msg| ~c.sendMsg("/vu/08", msg[3], msg[4]);}, '/reply08');
-//OSCFunc({ |msg| ~c.sendMsg("/vu/09", msg[3], msg[4]);}, '/reply09');
-//OSCFunc({ |msg| ~c.sendMsg("/vu/10", msg[3], msg[4]);}, '/reply10');
-//OSCFunc({ |msg| ~c.sendMsg("/vu/11", msg[3], msg[4]);}, '/reply11');
-//OSCFunc({ |msg| ~c.sendMsg("/vu/12", msg[3], msg[4]);}, '/reply12');
-//s.meter;
+OSCFunc({ |msg| ~mic.sendMsg("/vu/0", msg[3], msg[4]);}, '/reply0');
+OSCFunc({ |msg| ~mic.sendMsg("/vu/1", msg[3], msg[4]);}, '/reply1');
+OSCFunc({ |msg| ~mic.sendMsg("/vu/2", msg[3], msg[4]);}, '/reply2');
+OSCFunc({ |msg| ~mic.sendMsg("/vu/3", msg[3], msg[4]);}, '/reply3');
+OSCFunc({ |msg| ~mic.sendMsg("/vu/4", msg[3], msg[4]);}, '/reply4');
+OSCFunc({ |msg| ~mic.sendMsg("/vu/5", msg[3], msg[4]);}, '/reply5');
+OSCFunc({ |msg| ~mic.sendMsg("/vu/6", msg[3], msg[4]);}, '/reply6');
+OSCFunc({ |msg| ~mic.sendMsg("/vu/7", msg[3], msg[4]);}, '/reply7');
+OSCFunc({ |msg| ~mic.sendMsg("/vu/8", msg[3], msg[4]);}, '/reply8');
+OSCFunc({ |msg| ~mic.sendMsg("/vu/9", msg[3], msg[4]);}, '/reply9');
+OSCFunc({ |msg| ~mic.sendMsg("/vu/10", msg[3], msg[4]);}, '/reply10');
+OSCFunc({ |msg| ~mic.sendMsg("/vu/11", msg[3], msg[4]);}, '/reply11');
 });
 

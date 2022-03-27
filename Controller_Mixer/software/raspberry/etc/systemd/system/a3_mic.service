@@ -1,0 +1,11 @@
+[Unit]
+Description=A3 Mixer Controller
+After=network.target
+
+[Service]
+User=aaa
+Environment="PATH=/home/aaa/.local/bin:$PATH"
+ExecStart=/usr/bin/python /home/aaa/Ambijockey/Controller_Mixer/software/python/mic.py
+
+[Install]
+WantedBy=multi-user.target

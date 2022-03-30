@@ -61,7 +61,6 @@ const int display_scl2 = 24;
 const int num_channels = 4;
 const int num_tracks = 6; // including master and fx sections
 const int num_pots = 8;
-
 int pots_sent[num_tracks][num_pots];
 
 const std::array<std::string, 6> track_names = {
@@ -72,7 +71,6 @@ const std::array<std::string, 6> track_names = {
     "master",
     "fx",
 };
-
 
 // vu-meter neopixel
 const int npxl_pin = 13; // pcb pin
@@ -86,7 +84,7 @@ int vupxlstrips[4][9] = {
     {47,46,45,44,43,42,41,40,39}
 };
 
-// LED-Matrix
+// LED matrix
 LedControl lc = LedControl(18,14,15,4); // led-matrix pins
 int modePxl[4][3] = {
     {0,1,2},
@@ -94,10 +92,6 @@ int modePxl[4][3] = {
     {24,25,26},
     {36,37,38}
 };
-
-// NeoPixel Arrays
-String vuVars[4] = { "VU00", "VU01", "VU02", "VU03" };
-String vuVarsM[8] = { "VU04", "VU05", "VU06", "VU07", "VU08", "VU09", "VU10", "VU11" };
 
 // Rotary Encoder pin mapping
 // const int rEnc0_DT = 0;
@@ -116,7 +110,8 @@ String vuVarsM[8] = { "VU04", "VU05", "VU06", "VU07", "VU08", "VU09", "VU10", "V
 // const int spare_1 = 28;
 // const int spare_2 = 29;
 
-void setup() {
+void setup()
+{
 
     // initialize sent values to 0
     for(int track = 0 ; track < num_tracks ; ++track) {
@@ -152,7 +147,8 @@ void setup() {
     lc.setIntensity(3,1);
 }
 
-void loop(){
+void loop()
+{
     // first read per-track button 0 directly (no mux)
     for(int channel = 0 ; channel < num_channels ; ++channel) {
         if(button_0_per_channel[channel].update()) {
@@ -239,6 +235,7 @@ void loop(){
             int peak_index = Serial.readStringUntil(':').toInt();
             int rms_index = Serial.readStringUntil('\n').toInt();
 
+            // per-channel VU meters
             if(vu_index >= 0 && vu_index < 4) {
                 int i = vu_index;
                 for(int j = 0 ; j < 9 ; j++) {
@@ -253,12 +250,13 @@ void loop(){
                     pixels.setPixelColor(vupxlstrips[i][j], color);
                 }
             }
+            // output VU meters
             else if(vu_index >= 4 && vu_index < 12) {
                 // rms-meter plus peak over all leds
-                int i = vu_index - 4;
+                int output_vu_index = vu_index - 4;
                 for(int j = 0 ; j < 32 ; j++){
                     int module_index = j / 8;
-                    int x = 8 - 1 - i;
+                    int x = 8 - 1 - output_vu_index;
                     int y = 8 - 1 - j % 8;
 
                     bool led_on = j <= rms_index || j == peak_index;

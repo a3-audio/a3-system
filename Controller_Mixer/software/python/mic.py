@@ -125,8 +125,8 @@ def vu_handler(address: str,
     if rms == 0.0:
         rms = sys.float_info.epsilon
 
-    peak_db = 20 * math.log(peak)
-    rms_db  = 20 * math.log(rms)
+    peak_db = 20 * math.log(peak, 10)
+    rms_db  = 20 * math.log(rms, 10)
 
     send_vu_data(vu, peak_db, rms_db)
 

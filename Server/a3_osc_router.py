@@ -80,7 +80,6 @@ class ChannelInfo:
     toggle_3d: bool = False
     position_xyz: tuple[int, int, int] = (0, 0, 0)
 
-
 channel_infos = (
     # Channel 1
     ChannelInfo(
@@ -203,13 +202,16 @@ def osc_handler_channel(address: str,
             osc_reaper.send_message(f"/track/{track_input}/fxeq/loshelf/gain", val)
 
     elif parameter == "width":
+        val = np.interp(value, [0, 1], [0.01, 179])
         udp_client = udp_clients_iem[channel_index]
-        udp_client.send_message("/StereoEncoder/width", value)
+        udp_client.send_message("/StereoEncoder/width", val)
         # print(str(value))
 
-    elif parameter == "side":
+    elif parameter == "reverb":
+        track_channelbus = channel_infos[channel_index].track_channelbus
+        reverb_value = master_info.track_reverb_aux_nr
         osc_reaper.send_message(
-            f"/track/{track_input}/fx/2/fxparam/1/value", value)
+            f"/track/{track_channelbus}/send/{reverb_value}/volume", value)
 
     elif parameter == "pfl" and value == 1:
         channel_infos[channel_index].toggle_pfl = (
@@ -317,34 +319,6 @@ def osc_handler_fx(address: str,
                 f"/track/{track_input}"  # Lo-Pass Resonance
                 f"/fx/{FX_INDEX_LOPASS}/fxparam/3/value", val)
 
-
-def moc_poti_handler(address: str, *osc_arguments: List[Any]) -> None:
-
-    words = address.split("/")
-    section = words[3]
-    parameter = words[4]
-
-    #  mypy 0.920 reports a false positive, retest!
-    value: float = float(osc_arguments[0])  # type: ignore
-    assert type(value) == float
-    # print(track + "." + poti + " : " + str(value))
-
-    for channel_index in range(4):
-        if section == str(channel_index):
-            if parameter == "width":
-                val = np.interp(value, [0, 1], [5, 160])
-                udp_client = udp_clients_iem[channel_index]
-                udp_client.send_message("/StereoEncoder/width", val)
-                # print(value)
-            if parameter == "side":
-                val = np.interp(value, [0, 1], [0.5, 0.65])
-                track_input = channel_infos[channel_index].track_input
-                track_channelbus = channel_infos[channel_index].track_channelbus
-                osc_reaper.send_message(
-                    #f"/track/{track_input}/fx/2/fxparam/1/value", val)
-                    f"/track/{track_channelbus}/send/{track_reverb_aux_nr}/volume", value) # reverb aux send
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--ip", default="0.0.0.0", help="The ip to listen on")
@@ -359,7 +333,6 @@ if __name__ == "__main__":
     dispatcher.map("/fx/*", osc_handler_fx)
 
     # # Motion-Controller
-    # # dispatcher.map("/moc/channel/*", moc_poti_handler)
     # # dispatcher.map("/CoordinateConverter/*", iemToCtrlMotion_handler)
     # # dispatcher.map("/moc/channel/*", ctrlMotionToIem_handler)
     # # dispatcher.map("/moc/channel/*", ctrlMotionToIem_handler)

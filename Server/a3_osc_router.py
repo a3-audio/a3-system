@@ -79,7 +79,6 @@ class ChannelInfo:
     toggle_pfl: bool = False
     toggle_3d: bool = False
     position_xyz: tuple[int, int, int] = (0, 0, 0)
-    track_reverb_aux_nr=11
 
 channel_infos = (
     # Channel 1
@@ -332,6 +331,11 @@ if __name__ == "__main__":
     dispatcher.map("/channel/*", osc_handler_channel)
     dispatcher.map("/master/*", osc_handler_master)
     dispatcher.map("/fx/*", osc_handler_fx)
+
+    # # Motion-Controller
+    # # dispatcher.map("/CoordinateConverter/*", iemToCtrlMotion_handler)
+    # # dispatcher.map("/moc/channel/*", ctrlMotionToIem_handler)
+    # # dispatcher.map("/moc/channel/*", ctrlMotionToIem_handler)
 
     server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))

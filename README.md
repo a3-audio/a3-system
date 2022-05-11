@@ -1,4 +1,4 @@
-# A³ Ambisonic Audio Adventures
+# A³ Audio
 Intuitive Open Source interface for live interaction with 3d-audio.
 
 ## Keys
@@ -7,23 +7,20 @@ Intuitive Open Source interface for live interaction with 3d-audio.
 - Realtime DSP audio backend
 
 ## Homepage
-- https://staging.orbitalwaves.net/
-- https://orbitalwaves.net/
+- https://a3-audio.com
 
 ## Documentation
-- https://doc.orbitalwaves.net/
+- https://doc.a3-audio.com
 
 ## Repositories
-- https://github.com/ambisonic-audio-adventures/Ambijockey
-- https://github.com/ambisonic-audio-adventures/MotionControllerUI
-- https://github.com/ambisonic-audio-adventures/doc
-- https://github.com/ambisonic-audio-adventures/homepage
+- https://github.com/a3-audio/a3-system
+- https://github.com/a3-audio/a3-system/MotionControllerUI
 
 ## Contact
-- Ticket [github-project](https://github.com/orgs/ambisonic-audio-adventures/projects/1)
-- Talk [mattermost](https://talk.lilbits.de/ambisonics)
-- Multimedia [Seafile](https://tinycloud.lilbits.de/d/7475495ddee04d428073/)
-- E-Mail [contact@orbitalwaves.net](mailto:contact@orbitalwaves.net)
+- Ticket [github-project](https://github.com/orgs/a3-audio/projects/1)
+- Talk [mattermost](https://talk.a3-audio.com/ambisonics)
+- Multimedia [Seafile](https://cloud.a3-audio.com/library/f1348f1b-7af6-4505-a31e-ee6b46913f98/a3share)
+- E-Mail [contact@orbitalwaves.net](mailto:contact@a3-audio.com)
 
 ## Code of conduct
 1. Don't panic

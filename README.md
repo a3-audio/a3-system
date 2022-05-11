@@ -1,7 +1,7 @@
 # A³ Audio
 Intuitive Open Source interface for live interaction with 3d-audio.
 
-## Key features
+## System
 - A³ Motion: Hardware motion sampler, osc controller, ui
 - A³ Mixer: DJ-Mixer, osc controller
 - A³ Core: Realtime DSP audio backend, osc server

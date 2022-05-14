@@ -1,7 +1,7 @@
-[submodule "Controller_Motion/software/MotionControllerUI"]
-	path = Controller_Motion/software/MotionControllerUI
-	url = git@github.com:ambisonics-audio-association/MotionControllerUI.git
+[submodule "a3motion/software/a3-MotionControllerUI"]
+	path = a3motion/software/a3-MotionControllerUI
+	url = git@github.com:a3-audio/a3-MotionControllerUI.git
     branch = main
-[submodule "hardware"]
-	path = hardware
-	url = git@github.com:ambisonic-audio-adventures/hardware.git
+[submodule "a3-hardware"]
+	path = a3-hardware
+	url = git@github.com:a3-audio/a3-hardware.git

@@ -14,13 +14,13 @@ Interact live with 3D Audio
 
 ## Repositories
 - https://github.com/a3-audio/a3-system
-- https://github.com/a3-audio/a3-system/MotionControllerUI
+- https://github.com/a3-audio/a3-system/a3-MotionControllerUI
 - https://github.com/a3-audio/a3-hardware
 
 ## Contact
 - Ticket [github-project](https://github.com/orgs/a3-audio/projects/1)
 - Talk [mattermost](https://talk.a3-audio.com/ambisonics)
-- E-Mail [contact@orbitalwaves.net](mailto:contact@a3-audio.com)
+- E-Mail [contact@a3-audio.com](mailto:contact@a3-audio.com)
 
 ## Code of conduct
 1. Care the docs

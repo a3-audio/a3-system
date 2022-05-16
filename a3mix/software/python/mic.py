@@ -1,5 +1,18 @@
-# This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
+# A³ Mix is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# A³ Mix is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with A³ Mix.  If not, see <https://www.gnu.org/licenses/>.
+
 # © Copyright 2021-2022 Patric Schmitz, Raphael Eismann, Jendrik Bradaczek
+
 #!/usr/bin/python
 
 import sys

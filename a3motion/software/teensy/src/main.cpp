@@ -1,19 +1,17 @@
-// This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
+// A³ Motion is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// A³ Motion is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with A³ Motion.  If not, see <https://www.gnu.org/licenses/>.
+
 // © Copyright 2021 Jendrik Bradaczek 
-
-/*
-um es später schön zu machen:
-
-Bounce pushbutton = Bounce(PIN_BUTTON_ENCODER, 10);
-pinMode(PIN_BUTTON_ENCODER, INPUT_PULLUP);
-  if (pushbutton.update())
-  {
-    if (pushbutton.fallingEdge())
-    {
-        // ...
-    }
-  }
-*/
 
 #include <Arduino.h>
 #include <Encoder.h>
@@ -272,3 +270,17 @@ void loop()
 
   receivePixels();
 }
+
+/*
+um es später schön zu machen:
+
+Bounce pushbutton = Bounce(PIN_BUTTON_ENCODER, 10);
+pinMode(PIN_BUTTON_ENCODER, INPUT_PULLUP);
+  if (pushbutton.update())
+  {
+    if (pushbutton.fallingEdge())
+    {
+        // ...
+    }
+  }
+*/

@@ -4,3 +4,6 @@
 [submodule "a3-hardware"]
 	path = a3-hardware
 	url = git@github.com:a3-audio/a3-hardware.git
+[submodule "a3motion/a3MotioncontrollerUI"]
+	path = a3motion/a3MotioncontrollerUI
+	url = git@github.com:a3-audio/a3-MotionControllerUI

@@ -1,0 +1,5 @@
+numpy>=1.20.1
+PyOpenGL>=3.1.5
+pyserial-asyncio>=0.5
+PySide6>=6.0.1
+python-osc>=1.7.4

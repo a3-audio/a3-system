@@ -1,0 +1,3 @@
+# input
+SUBSYSTEM=="vchiq|input", MODE="0660"
+KERNEL=="mouse*|mice|event*",  MODE="0660"

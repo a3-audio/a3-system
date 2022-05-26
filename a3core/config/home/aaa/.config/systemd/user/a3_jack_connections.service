@@ -1,5 +1,5 @@
 [Unit]
-Description=a3_jack_connections
+Description=a3core execute jmess
 After=a3_vu_meter.service a3_reaper.service
 
 [Service]

@@ -1,5 +1,5 @@
 [Unit]                                                                                     
-Description=a3_reaper
+Description=a3core execute osc-router
 After=jack.service
 
 [Service]

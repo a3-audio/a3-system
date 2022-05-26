@@ -16,7 +16,7 @@ Environment=HOME=/home/aaa
 Environment=PWD=/home/aaa
 Environment=SHELL=/bin/bash
 Environment=TERM=xterm-color
-Environment=JACK_DEFAULT_SERVER=aaa
+#Environment=JACK_DEFAULT_SERVER=aaa
 Environment=XAUTHORITY=/home/aaa/.Xauthority
 
 #Environment=XTERM_VERSION=XTerm(368)

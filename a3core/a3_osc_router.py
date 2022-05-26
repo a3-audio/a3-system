@@ -304,7 +304,7 @@ def osc_handler_fx(address: str,
                 f"/fx/{FX_INDEX_HIPASS}/fxparam/7/value", float(value))
             osc_reaper.send_message(
                 f"/track/{track_input}"  # Lo-Pass Freq
-                f"/fx/{FX_INDEX_LOPASS}/fxparam/2/value", float(value))
+                f"/fx/{FX_INDEX_LOPASS}/fxparam/7/value", float(value))
 
     elif parameter == "resonance":
         val = np.interp(float(value), [0, 1], [0, 0.8])
@@ -312,10 +312,10 @@ def osc_handler_fx(address: str,
             track_input = channel_infos[channel_index].track_input
             osc_reaper.send_message(
                 f"/track/{track_input}"  # Hi-pass Resonance
-                f"/fx/{FX_INDEX_HIPASS}/fxparam/8/value", val)
+                f"/fx/{FX_INDEX_HIPASS}/fxparam/6/value", val)
             osc_reaper.send_message(
                 f"/track/{track_input}"  # Lo-Pass Resonance
-                f"/fx/{FX_INDEX_LOPASS}/fxparam/3/value", val)
+                f"/fx/{FX_INDEX_LOPASS}/fxparam/6/value", val)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

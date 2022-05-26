@@ -6,7 +6,7 @@ After=a3_vu_meter.service a3_reaper.service
 Type=idle
 PrivateTmp=true
 ExecStartPre=/bin/sleep 5
-WorkingDirectory=/home/aaa/Ambijockey/Server/
+WorkingDirectory=/home/aaa/a3-system/a3core/
 ExecStart=/usr/bin/jmess -Dc a3_connections.jmess
 
 [Install]

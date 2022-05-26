@@ -2,7 +2,7 @@
 Name=eth*
 
 [Network]
-Address=192.168.43.51/24
+Address=192.168.43.50/24
 Gateway=192.168.43.1
 DNS=192.168.43.1
 DNS=9.9.9.9

@@ -6,10 +6,10 @@ After=jack.service
 Type=idle
 PrivateTmp=true
 #ExecStartPre=/bin/sleep 2
-#WorkingDirectory=/home/ra/skripte
+#WorkingDirectory=
 #Environment="QT_QPA_PLATFORM=minimal"
 #Environment=QT_QPA_PLATFORM=offscreen
-ExecStart=/usr/bin/python /home/aaa/Ambijockey/Server/a3_osc_router.py
+ExecStart=/usr/bin/python /home/aaa/a3-system/a3core/a3_osc_router.py
 LimitRTPRIO=70
 
 [Install]

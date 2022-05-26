@@ -9,7 +9,7 @@ PrivateTmp=true
 WorkingDirectory=/home/aaa/Ambijockey/Server/supercollider
 #Environment="QT_QPA_PLATFORM=minimal"
 Environment=QT_QPA_PLATFORM=offscreen
-ExecStart=/usr/bin/sclang /home/aaa/Ambijockey/Server/supercollider/vu-meter.scd
+ExecStart=/usr/bin/sclang /home/aaa/a3-system/a3core/supercollider/a3_vu_meter.scd
 LimitRTPRIO=85
 
 [Install]

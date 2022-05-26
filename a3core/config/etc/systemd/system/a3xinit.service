@@ -1,0 +1,10 @@
+[Unit]
+Description=Autologin to X
+After=systemd-user-sessions.service
+
+[Service]
+ExecStart=/bin/su - -- aaa -l -c 'xinit -- /usr/bin/X -nolisten tcp vt7 </dev/null >/dev/null 2>&1'
+StandardOutput=syslog
+
+[Install]
+WantedBy=multi-user.target

@@ -21,7 +21,7 @@ After=jack.service
 Type=idle
 PrivateTmp=true
 #ExecStartPre=/bin/sleep 2
-WorkingDirectory=/home/aaa/Ambijockey/Server/supercollider
+WorkingDirectory=/home/aaa/a3-system/a3core/supercollider
 #Environment="QT_QPA_PLATFORM=minimal"
 Environment=QT_QPA_PLATFORM=offscreen
 ExecStart=/usr/bin/sclang /home/aaa/a3-system/a3core/supercollider/a3_vu_meter.scd

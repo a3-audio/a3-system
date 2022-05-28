@@ -21,7 +21,7 @@ After=jack.service
 #Type=idle
 PrivateTmp=true
 ExecStartPre=/bin/sleep 2
-#WorkingDirectory=
+#WorkingDirectory=/home/aaa/a3-system/a3core/reaper
 #Environment="QT_QPA_PLATFORM=minimal"
 #Environment=QT_QPA_PLATFORM=offscreen
 Environment=DISPLAY:0

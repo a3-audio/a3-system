@@ -1,18 +1,36 @@
+# A³ Core is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# A³ Core is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with A³ Core.  If not, see <https://www.gnu.org/licenses/>.
+
+# © Copyright 2021-2022 Raphael Eismann
+
 [Unit]                                                                                     
-Description=a3core execute reaper
+Description=A³ Core - Reaper
 After=jack.service
+After=a3xinit.service
 
 [Service]
 #Type=idle
 PrivateTmp=true
-ExecStartPre=/bin/sleep 2
-#WorkingDirectory=
+WorkingDirectory=/opt/REAPER
+EnvironmentFile=/etc/environment
+#ExecStartPre=/bin/sleep 3
 #Environment="QT_QPA_PLATFORM=minimal"
 #Environment=QT_QPA_PLATFORM=offscreen
-Environment=DISPLAY:0
-ExecStart=/usr/local/bin/reaper
+#Environment=DISPLAY=:0
+#Environment="XAUTHORITY=/home/aaa/.Xauthority"
+ExecStart=/bin/bash -c "/opt/REAPER/reaper -ignoreerrors"
+ExecStop=/opt/REAPER/reaper -close all :save
 LimitRTPRIO=90
 
 [Install]
-#WantedBy=default.target
 WantedBy=default.target

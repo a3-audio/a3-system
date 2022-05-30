@@ -1,13 +1,28 @@
+# A³ Core is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# A³ Core is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with A³ Core.  If not, see <https://www.gnu.org/licenses/>.
+
+# © Copyright 20211-2022 Raphael Eismann
+
 [Unit]
-Description=a3core execute jmess
+Description=A³ Core - Jack Connections
 After=a3_vu_meter.service a3_reaper.service
 
 [Service]
 Type=idle
 PrivateTmp=true
 ExecStartPre=/bin/sleep 5
-WorkingDirectory=/home/aaa/a3-system/a3core/
-ExecStart=/usr/bin/jmess -Dc a3_connections.jmess
+#WorkingDirectory=/home/aaa/a3-system/a3core/jack_connections
+ExecStart=/usr/bin/jmess -Dc a3_userpatch.jmess
 
 [Install]
 WantedBy=default.target

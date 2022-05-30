@@ -1,8 +1,20 @@
-# © Copyright 2021 A³ Ambisonic Audio Adventures UG (Haftungsbeschränkt). 
-# This file is a part of A³Pandemic. License is GPLv3: https://github.com/ambisonics-audio-association/Ambijockey/blob/main/COPYING
+# A³ Core is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# A³ Core is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with A³ Core.  If not, see <https://www.gnu.org/licenses/>.
+
+# © Copyright 2021- 2022 Raphael Eismann
 
 [Unit]
-Description=a3core execute xinit
+Description=A³ Core - Xinit
 After=multi-user.target
 DefaultDependencies=no
 
@@ -16,7 +28,7 @@ Environment=HOME=/home/aaa
 Environment=PWD=/home/aaa
 Environment=SHELL=/bin/bash
 Environment=TERM=xterm-color
-#Environment=JACK_DEFAULT_SERVER=aaa
+Environment=JACK_DEFAULT_SERVER=default
 Environment=XAUTHORITY=/home/aaa/.Xauthority
 
 #Environment=XTERM_VERSION=XTerm(368)
@@ -24,14 +36,14 @@ Environment=XAUTHORITY=/home/aaa/.Xauthority
 #Environment=XTERM_LOCALE=en_US.UTF-8
 #Environment=GTK_MODULES=canberra-gtk-module
 Environment=XDG_SESSION_CLASS=user
-Environment=XDG_SESSION_ID=6
+Environment=XDG_SESSION_ID=1
 Environment=XDG_RUNTIME_DIR=/run/user/1000
 Environment=XDG_SESSION_TYPE=tty
 Environment=DISPLAY=:0
 #Environment=WINDOWPATH=1
 #Environment=OBTERM=xterm
 Environment=MOTD_SHOWN=pam
-Environment=SHLVL=1
+Environment=SHLVL=3
 #Environment=QT_QPA_PLATFORM=offscreen
 Environment=CASROOT=/usr
 Environment=MMGT_CLEAR=1

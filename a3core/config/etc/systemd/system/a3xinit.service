@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with A³ Core.  If not, see <https://www.gnu.org/licenses/>.
 
-# © Copyright 2021- 2022 Raphael Eismann
+# © Copyright 2021 Raphael Eismann
 
 [Unit]
 Description=A³ Core - Xinit
@@ -48,9 +48,14 @@ Environment=SHLVL=3
 Environment=CASROOT=/usr
 Environment=MMGT_CLEAR=1
 Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
-Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/opt/REAPER
 Environment=LADSPA_RDF_PATH=/usr/share/ladspa/rdf
 Environment=LADSPA_PATH=/usr/lib/ladspa
+
+#Environment=HG=/usr/bin/hg
+#Environment=MAIL=/var/spool/mail/aaa
+Environment=DRAWHOME=/usr/share/opencascade/resources/DrawResources
+Environment=DRAWDEFAULT=/usr/share/opencascade/resources/DrawResources/DrawDefault
 
 ExecStart=/usr/bin/startx 
 Restart=always

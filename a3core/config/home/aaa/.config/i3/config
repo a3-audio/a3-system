@@ -183,8 +183,16 @@ bar {
 }
 
 for_window [class="^REAPER$" title="^Mixer$"] floating disable
+for_window [class="^!toplevel$" title="A3 Core Interface"] floating disable
 #for_window [class="i3-frame"] floating disable
 for_window [class="^REAPER$" title="^Mixer$"] move container to workspace 10
-for_window [class="^REAPER$" title="^a3-audio"] move container to workspace 9
+for_window [class="^REAPER$" title="^a3_reaper"] move container to workspace 9
+for_window [class="^REAPER$" title="VST: StereoEncoder"] move container to workspace 7
+for_window [class="^Thunar$"] move container to workspace 6
+for_window [class="^Lxmusic$"] move container to workspace 6
+for_window [class="^!toplevel$" title="A3 Core Interface"] move container to workspace 8
 exec --no-startup-id i3-msg 'workspace 8; exec /usr/bin/qjackctl'
 exec /usr/bin/x11vnc -display :0 -geometry 1910x1032 -forever -usepw -rfbauth /home/aaa/.vnc/passwd
+exec feh --bg-scale /home/aaa/a3-system/a3core/a3core_bg.png
+exec /usr/bin/python /home/aaa/a3-system/a3core/a3_interface.py
+# exec /opt/REAPER/reaper -ignoreerrors

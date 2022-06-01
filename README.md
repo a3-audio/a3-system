@@ -14,7 +14,7 @@ Interact live with 3D Audio
 
 ## Repositories
 - https://github.com/a3-audio/a3-system
-- https://github.com/a3-audio/a3-system/a3-MotionControllerUI
+- https://github.com/a3-audio/a3-MotionControllerUI
 - https://github.com/a3-audio/a3-hardware
 
 ## Contact
@@ -26,5 +26,6 @@ Interact live with 3D Audio
 - Care the docs
 - Keep the code clean
 - We use [centralized workflow](https://www.git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows):
-  - Don't edit the mainbranch. Use pull requests instead (if nobody reacts we're probably still mixing - find us on stage) 
+  - Don't edit the mainbranch. Use pull requests instead.
   - If you need an own different setup, fork this repo
+  - Find us on stage

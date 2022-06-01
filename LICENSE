@@ -1,15 +1,17 @@
-# A³ Motion is free software: you can redistribute it and/or modify
+# This source is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 
-# A³ Motion is distributed in the hope that it will be useful,
+# This source is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with A³ Motion.  If not, see <https://www.gnu.org/licenses/>.
+# along with This source.  If not, see <https://www.gnu.org/licenses/>.
 
-You may use "reuse" to check license validation:
-https://reuse.readthedocs.io/en/stable/readme.html
+# Source location: https://github.com/a3-audio/a3-system
+
+# You may use "reuse" to check license validation:
+# https://reuse.readthedocs.io/en/stable/readme.html

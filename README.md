@@ -12,10 +12,8 @@ Interact live with 3D Audio
 ## Documentation
 - https://doc.a3-audio.com
 
-## Repositories
+## Repository
 - https://github.com/a3-audio/a3-system
-- https://github.com/a3-audio/a3-MotionControllerUI
-- https://github.com/a3-audio/a3-hardware
 
 ## Contact
 - Ticket [github-project](https://github.com/orgs/a3-audio/projects/1)

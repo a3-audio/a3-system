@@ -27,3 +27,4 @@ Interact live with 3D Audio
   - Don't edit the mainbranch. Use pull requests instead.
   - If you need an own different setup, fork this repo
   - Find us on stage
+- Follow the <a href="https://contributor-covenant.org/">Contributor Covenant Code of Conduct</a>

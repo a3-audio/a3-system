@@ -77,8 +77,8 @@ const int npxl_pin = 13; // pcb pin
 const int npxl_leds = 48;// striplength
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(npxl_leds, npxl_pin, NEO_GRB + NEO_KHZ800);
 
-int vupxlstrips[4][9] = {
-    {11,10,9,8,7,6,5,4,3},
+int vupxlstrips[4][8] = {
+    {7,6,5,4,3,2,1,0},
     {23,22,21,20,19,18,17,16,15},
     {35,34,33,32,31,30,29,28,27},
     {47,46,45,44,43,42,41,40,39}

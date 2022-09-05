@@ -79,9 +79,9 @@ Adafruit_NeoPixel pixels = Adafruit_NeoPixel(npxl_leds, npxl_pin, NEO_GRB + NEO_
 
 int vupxlstrips[4][8] = {
     {7,6,5,4,3,2,1,0},
-    {23,22,21,20,19,18,17,16,15},
-    {35,34,33,32,31,30,29,28,27},
-    {47,46,45,44,43,42,41,40,39}
+    {15,14,13,12,11,10,9,8},
+    {23,22,21,20,19,18,17,16},
+    {31,30,29,28,27,26,25,24}
 };
 
 // LED matrix
@@ -238,7 +238,7 @@ void loop()
             // per-channel VU meters
             if(vu_index >= 0 && vu_index < 4) {
                 int i = vu_index;
-                for(int j = 0 ; j < 9 ; j++) {
+                for(int j = 0 ; j < 8 ; j++) {
                     uint32_t color;
                     if(j == peak_index)
                         color = pixels.Color(255,0,0);

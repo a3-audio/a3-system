@@ -24,7 +24,7 @@ pixel_pin = board.D18
 num_pixels = 12
 
 pixels = neopixel.NeoPixel(
-    pixel_pin, num_pixels, brightness=0.2, auto_write=False
+    pixel_pin, num_pixels, brightness=0.1, auto_write=False
 )
 
 pixel_fx_mode_highpass = 0
@@ -86,11 +86,11 @@ button_fx_to_mode_name = {
 # master section pots mapping
 master_pots_to_osc_message = {
     "0": "/master/volume",
-    "1": "/fx/frequency",
-    "2": "/fx/resonance",
+    "2": "/fx/frequency",
+    "1": "/fx/resonance",
     "3": "/master/booth",
-    "4": "/master/phones_mix",
-    "5": "/master/phones_volume",
+    "5": "/master/phones_mix",
+    "4": "/master/phones_volume",
 }
 
 # time_last_receive = 0
@@ -246,6 +246,6 @@ if __name__ == '__main__':
     dispatcher.map("/channel/*/led/*", led_handler_channel)
     dispatcher.map("/fx/led", led_handler_fx)
 
-    server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
+    server = osc_server.BlockingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))
     server.serve_forever()

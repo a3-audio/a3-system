@@ -1,0 +1,191 @@
+<!DOCTYPE patchbay>
+<patchbay name="a3coreV02_patchbay" version="0.9.1">
+ <output-sockets>
+  <socket name="reaper input vu-meters 1-4" type="jack-audio" exclusive="off" client="REAPER">
+   <plug>out1</plug>
+   <plug>out2</plug>
+   <plug>out3</plug>
+   <plug>out4</plug>
+  </socket>
+  <socket name="reaper main output vu-meters" type="jack-audio" exclusive="off" client="REAPER">
+   <plug>out5</plug>
+   <plug>out6</plug>
+   <plug>out7</plug>
+   <plug>out8</plug>
+   <plug>out9</plug>
+   <plug>out10</plug>
+   <plug>out11</plug>
+   <plug>out12</plug>
+  </socket>
+  <socket name="reaper phones" type="jack-audio" exclusive="off" client="REAPER">
+   <plug>out13</plug>
+   <plug>out14</plug>
+  </socket>
+  <socket name="reaper booth sub" type="jack-audio" exclusive="off" client="REAPER">
+   <plug>out15</plug>
+  </socket>
+  <socket name="reaper booth tops" type="jack-audio" exclusive="off" client="REAPER">
+   <plug>out16</plug>
+   <plug>out17</plug>
+   <plug>out18</plug>
+   <plug>out19</plug>
+   <plug>out20</plug>
+   <plug>out21</plug>
+   <plug>out22</plug>
+   <plug>out23</plug>
+   <plug>out24</plug>
+   <plug>out25</plug>
+   <plug>out26</plug>
+   <plug>out27</plug>
+   <plug>out28</plug>
+   <plug>out29</plug>
+   <plug>out30</plug>
+   <plug>out31</plug>
+  </socket>
+  <socket name="reaper main sub" type="jack-audio" exclusive="off" client="REAPER">
+   <plug>out32</plug>
+  </socket>
+  <socket name="reaper main tops" type="jack-audio" exclusive="off" client="REAPER">
+   <plug>out33</plug>
+   <plug>out34</plug>
+   <plug>out35</plug>
+   <plug>out36</plug>
+   <plug>out37</plug>
+   <plug>out38</plug>
+   <plug>out39</plug>
+   <plug>out40</plug>
+   <plug>out41</plug>
+   <plug>out42</plug>
+   <plug>out43</plug>
+   <plug>out44</plug>
+   <plug>out45</plug>
+   <plug>out46</plug>
+   <plug>out47</plug>
+   <plug>out48</plug>
+   <plug>out49</plug>
+   <plug>out50</plug>
+   <plug>out51</plug>
+   <plug>out52</plug>
+  </socket>
+  <socket name="multimedia pulseaudio" type="jack-audio" exclusive="off" client="PulseAudio\ JACK\ Sink">
+   <plug>front\-left</plug>
+   <plug>front\-right</plug>
+  </socket>
+  <socket name="dante stereo 1" type="jack-audio" exclusive="off" client="system">
+   <plug>capture_1</plug>
+   <plug>capture_2</plug>
+  </socket>
+  <socket name="dante stereo 2" type="jack-audio" exclusive="off" client="system">
+   <plug>capture_3</plug>
+   <plug>capture_4</plug>
+  </socket>
+  <socket name="dante stereo 3" type="jack-audio" exclusive="off" client="system">
+   <plug>capture_5</plug>
+   <plug>capture_6</plug>
+  </socket>
+  <socket name="dante stereo 4" type="jack-audio" exclusive="off" client="system">
+   <plug>capture_7</plug>
+   <plug>capture_8</plug>
+  </socket>
+ </output-sockets>
+ <input-sockets>
+  <socket name="reaper stereo 1" type="jack-audio" exclusive="off" client="REAPER">
+   <plug>in1</plug>
+   <plug>in2</plug>
+  </socket>
+  <socket name="reaper stereo 2" type="jack-audio" exclusive="off" client="REAPER">
+   <plug>in3</plug>
+   <plug>in4</plug>
+  </socket>
+  <socket name="reaper stereo 3" type="jack-audio" exclusive="off" client="REAPER">
+   <plug>in5</plug>
+   <plug>in6</plug>
+  </socket>
+  <socket name="reaper stereo 4" type="jack-audio" exclusive="off" client="REAPER">
+   <plug>in7</plug>
+   <plug>in8</plug>
+  </socket>
+  <socket name="supercollider input vu-meters" type="jack-audio" exclusive="off" client="SuperCollider">
+   <plug>in_1</plug>
+   <plug>in_2</plug>
+   <plug>in_3</plug>
+   <plug>in_4</plug>
+  </socket>
+  <socket name="supercollider output vu-meters" type="jack-audio" exclusive="off" client="SuperCollider">
+   <plug>in_5</plug>
+   <plug>in_6</plug>
+   <plug>in_7</plug>
+   <plug>in_8</plug>
+   <plug>in_9</plug>
+   <plug>in_10</plug>
+   <plug>in_11</plug>
+   <plug>in_12</plug>
+  </socket>
+  <socket name="dante out phones" type="jack-audio" exclusive="off" client="system">
+   <plug>playback_1</plug>
+   <plug>playback_2</plug>
+  </socket>
+  <socket name="dante out booth sub" type="jack-audio" exclusive="off" client="system">
+   <plug>playback_3</plug>
+  </socket>
+  <socket name="dante out booth tops" type="jack-audio" exclusive="off" client="system">
+   <plug>playback_4</plug>
+   <plug>playback_5</plug>
+   <plug>playback_6</plug>
+   <plug>playback_7</plug>
+   <plug>playback_8</plug>
+   <plug>playback_9</plug>
+   <plug>playback_10</plug>
+   <plug>playback_11</plug>
+   <plug>playback_12</plug>
+   <plug>playback_13</plug>
+   <plug>playback_14</plug>
+   <plug>playback_15</plug>
+   <plug>playback_16</plug>
+   <plug>playback_17</plug>
+   <plug>playback_18</plug>
+   <plug>playback_19</plug>
+  </socket>
+  <socket name="dante out main sub" type="jack-audio" exclusive="off" client="system">
+   <plug>playback_20</plug>
+  </socket>
+  <socket name="dante out main tops" type="jack-audio" exclusive="off" client="system">
+   <plug>playback_21</plug>
+   <plug>playback_22</plug>
+   <plug>playback_23</plug>
+   <plug>playback_24</plug>
+   <plug>playback_25</plug>
+   <plug>playback_26</plug>
+   <plug>playback_27</plug>
+   <plug>playback_28</plug>
+   <plug>playback_29</plug>
+   <plug>playback_30</plug>
+   <plug>playback_31</plug>
+   <plug>playback_32</plug>
+   <plug>playback_33</plug>
+   <plug>playback_34</plug>
+   <plug>playback_35</plug>
+   <plug>playback_36</plug>
+   <plug>playback_37</plug>
+   <plug>playback_38</plug>
+   <plug>playback_39</plug>
+   <plug>playback_40</plug>
+  </socket>
+ </input-sockets>
+ <slots/>
+ <cables>
+  <cable output="reaper input vu-meters 1-4" input="supercollider input vu-meters" type="jack-audio"/>
+  <cable output="reaper main output vu-meters" input="supercollider output vu-meters" type="jack-audio"/>
+  <cable output="reaper phones" input="dante out phones" type="jack-audio"/>
+  <cable output="reaper booth sub" input="dante out booth sub" type="jack-audio"/>
+  <cable output="reaper booth tops" input="dante out booth tops" type="jack-audio"/>
+  <cable output="reaper main sub" input="dante out main sub" type="jack-audio"/>
+  <cable output="reaper main tops" input="dante out main tops" type="jack-audio"/>
+  <cable output="multimedia pulseaudio" input="reaper stereo 1" type="jack-audio"/>
+  <cable output="dante stereo 1" input="reaper stereo 1" type="jack-audio"/>
+  <cable output="dante stereo 2" input="reaper stereo 2" type="jack-audio"/>
+  <cable output="dante stereo 3" input="reaper stereo 3" type="jack-audio"/>
+  <cable output="dante stereo 4" input="reaper stereo 4" type="jack-audio"/>
+ </cables>
+</patchbay>
+

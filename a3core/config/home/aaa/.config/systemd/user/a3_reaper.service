@@ -21,16 +21,16 @@ After=a3xinit.service
 [Service]
 #Type=idle
 PrivateTmp=true
-WorkingDirectory=/opt/REAPER
-EnvironmentFile=/etc/environment
+WorkingDirectory=/home/aaa/opt/REAPER
+#EnvironmentFile=/etc/environment
 #ExecStartPre=/bin/sleep 3
 #Environment="QT_QPA_PLATFORM=minimal"
 #Environment=QT_QPA_PLATFORM=offscreen
 #Environment=DISPLAY=:0
 #Environment="XAUTHORITY=/home/aaa/.Xauthority"
-ExecStart=/bin/bash -c "/opt/REAPER/reaper -ignoreerrors"
-ExecStop=/opt/REAPER/reaper -close all :save
-LimitRTPRIO=90
+ExecStart=/bin/bash -c "/home/aaa/opt/REAPER/reaper -ignoreerrors"
+ExecStop=/home/aaa/opt/REAPER/reaper -close all :save
+LimitRTPRIO=09
 
 [Install]
 WantedBy=default.target

@@ -25,13 +25,15 @@ layout = [
         [sg.Text("A³ Core Interface")],
         [sg.Button("start reaper"), sg.Button("stop reaper")],
         [sg.Button("start supercollider"), sg.Button("stop supercollider")],
-        [sg.Text("cables")],
-        [sg.Button("connect a3 patch")],
-        [sg.Button("disconnect")],
-        [sg.Button("connect userpatch")],
-        [sg.Button("write userpatch")],
+        #[sg.Text("cables")],
+        #[sg.Button("connect a3 patch")],
+        #[sg.Button("disconnect")],
+        #[sg.Button("connect userpatch")],
+        #[sg.Button("write userpatch")],
         [sg.Text("media")],
-        [sg.Button("files"), sg.Button("music")]
+        [sg.Button("files"), sg.Button("music"), sg.Button("show")],
+        [sg.Text("decoder")],
+        [sg.Button("editor")]
         ]
 
 # Create the window
@@ -50,20 +52,24 @@ while True:
     if event == "stop supercollider": 
         os.system("systemctl --user stop a3_vu_meter")
 
-    if event == "connect a3 patch": 
-        os.system("/usr/bin/jmess -Dc /home/aaa/a3-system/a3core/jack_connections/a3_connect.jmess")
-    if event == "disconnect": 
-        os.system("/usr/bin/jmess -D")
-    
-    if event == "connect userpatch": 
-        os.system("/usr/bin/jmess -Dc /home/aaa/userpatches/userpatch.jmess")
-    if event == "write userpatch": 
-        os.system("mv /home/aaa/userpatches/userpatch.jmess /home/aaa/userpatch/userpatch_bck.jmess && /usr/bin/jmess -s /home/aaa/userpatches/userpatch.jmess")
+#    if event == "connect a3 patch": 
+#        os.system("/usr/bin/jmess -Dc /home/aaa/a3-system/a3core/jack_connections/a3_connect.jmess")
+#    if event == "disconnect": 
+#        os.system("/usr/bin/jmess -D")
+#    
+#    if event == "connect userpatch": 
+#        os.system("/usr/bin/jmess -Dc /home/aaa/userpatches/userpatch.jmess")
+#    if event == "write userpatch": 
+#        os.system("mv /home/aaa/userpatches/userpatch.jmess /home/aaa/userpatches/userpatch_bck.jmess && /usr/bin/jmess -s /home/aaa/userpatches/userpatch.jmess")
     
     if event == "files": 
         os.system("/usr/bin/thunar &")
     if event == "music": 
-        os.system("/usr/bin/lxmusic &")
+        os.system("/usr/bin/vlc &")
+    if event == "show": 
+        os.system("/usr/bin/linux-show-player -f /home/aaa/linux-show-player/a3-show.lsp &")
+    if event == "editor": 
+        os.system("/usr/bin/iem-plugin-allradecoder &")
 
     if event == sg.WIN_CLOSED:
         break

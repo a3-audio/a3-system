@@ -25,6 +25,7 @@ layout = [
         [sg.Text("A³ Core Interface")],
         [sg.Button("start reaper"), sg.Button("stop reaper")],
         [sg.Button("start supercollider"), sg.Button("stop supercollider")],
+        [sg.Button("start mixbus"), sg.Button("stop mixbus")],
         #[sg.Text("cables")],
         #[sg.Button("connect a3 patch")],
         #[sg.Button("disconnect")],
@@ -51,6 +52,11 @@ while True:
         os.system("systemctl --user start a3_vu_meter")
     if event == "stop supercollider": 
         os.system("systemctl --user stop a3_vu_meter")
+
+    if event == "start mixbus": 
+        os.system("systemctl --user start a3_mixbus")
+    if event == "stop mixbus": 
+        os.system("systemctl --user stop a3_mixbus")
 
 #    if event == "connect a3 patch": 
 #        os.system("/usr/bin/jmess -Dc /home/aaa/a3-system/a3core/jack_connections/a3_connect.jmess")

@@ -88,11 +88,11 @@ button_fx_to_mode_name = {
 # master section pots mapping
 master_pots_to_osc_message = {
     "0": "/master/volume",
-    "2": "/fx/frequency",
-    "1": "/fx/resonance",
+    "1": "/fx/frequency",
+    "2": "/fx/resonance",
     "3": "/master/booth",
-    "5": "/master/phones_mix",
-    "4": "/master/phones_volume",
+    "4": "/master/phones_mix",
+    "5": "/master/phones_volume",
 }
 
 # time_last_receive = 0

@@ -35,8 +35,8 @@ from pythonosc.udp_client import SimpleUDPClient  # type: ignore
 
 OSC_PORT_CORE: int = 9000
 
-FX_INDEX_HIPASS: int = 3
-FX_INDEX_LOPASS: int = 4
+FX_INDEX_HIPASS: int = 2
+FX_INDEX_LOPASS: int = 3
 
 
 # OSC clients
@@ -175,13 +175,17 @@ def osc_handler_channel(address: str,
         # ad hoc mapping function that smoothly approximates the
         # trial-and-error value mapping for prototype 0.1 with wrong
         # poti weighting in hardware.
-        val = value ** (1/16) * 0.5
+        #val = value ** (1/16) * 0.5
+        
+        # since a3mix v0.2
+        val = np.interp(value, [0, 1], [0.01, 0.72])
         # osc_reaper.send_message(f"/track/{track_input}/gain", val)
-        osc_reaper.send_message(
-            f"/track/{track_input}/fx/1/fxparam/1/value", val)
+        # osc_reaper.send_message(
+        #     f"/track/{track_input}/fx/1/fxparam/1/value", val)
+        osc_reaper.send_message(f"/track/{track_input}/fxeq/gain", val)
 
     elif parameter == "volume":
-        val = np.interp(value, [0, 1], [0.01, 1])
+        val = np.interp(value, [0, 1], [0.01, 0.72])
         track_channelbus = channel_infos[channel_index].track_channelbus
         osc_reaper.send_message(f"/track/{track_channelbus}/volume", val)
 
@@ -239,6 +243,18 @@ def osc_handler_channel(address: str,
         osc_reaper.send_message(
             f"/track/{track_bformat}/mute", float(not is_enabled))
 
+    elif parameter == "azimuth":
+        val = np.interp(value, [-180, 180], [0, 1])
+        track_bformat = channel_infos[channel_index].track_bformat
+        osc_reaper.send_message(
+            f"/track/{track_bformat}/fx/1/fxparam/7/value", val)
+
+    elif parameter == "elevation":
+        val = np.interp(value, [-180, 180], [0, 1])
+        track_bformat = channel_infos[channel_index].track_bformat
+        osc_reaper.send_message(
+            f"/track/{track_bformat}/fx/1/fxparam/8/value", val)
+
 
 def osc_handler_master(address: str,
                        *osc_arguments: List[Any]) -> None:
@@ -253,29 +269,30 @@ def osc_handler_master(address: str,
     parameter: str = words[2]
 
     if parameter == "volume":
-        val = np.interp(value, [0, 1], [0.01, 1])
+        val = np.interp(value, [0, 1], [0.01, 0.72])
         track = master_info.track_masterbus
-        track_b = master_info.track_booth
+        #track_b = master_info.track_booth
         osc_reaper.send_message(f"/track/{track}/volume", val)
-        osc_reaper.send_message(f"/track/{track_b}/volume", val)
+        #osc_reaper.send_message(f"/track/{track_b}/volume", val)
 
     if parameter == "booth":
-        val = np.interp(value, [0, 1], [0.01, 1])
+        val = np.interp(value, [0, 1], [0.01, 0.72])
         track = master_info.track_booth
-        osc_reaper.send_message(f"/track/{track + 1}/volume", val)
-        osc_reaper.send_message(f"/track/{track + 2}/volume", val)
-        osc_reaper.send_message(f"/track/{track + 3}/volume", val)
+        osc_reaper.send_message(f"/track/{track}/volume", val)
+        #osc_reaper.send_message(f"/track/{track + 1}/volume", val)
+        #osc_reaper.send_message(f"/track/{track + 2}/volume", val)
+        #osc_reaper.send_message(f"/track/{track + 3}/volume", val)
 
     if parameter == "phones_mix":
-        val = np.interp(value, [0, 1], [0.01, 1])
+        val = np.interp(value, [0, 1], [0.01, 0.72])
         track_mainmixbus = master_info.track_mainmixbus
         osc_reaper.send_message(f"/track/{track_mainmixbus}/volume", val)
         for channel_index in range(4):
             track_pfl = channel_infos[channel_index].track_pfl
-            osc_reaper.send_message(f"/track/{track_pfl}/volume", 1 - val)
+            osc_reaper.send_message(f"/track/{track_pfl}/volume", 0.72 - val)
 
     if parameter == "phones_volume":
-        val = np.interp(value, [0, 1], [0.01, 1])
+        val = np.interp(value, [0, 1], [0.01, 0.72])
         track_phones = master_info.track_phones
         osc_reaper.send_message(f"/track/{track_phones}/volume", val)
 

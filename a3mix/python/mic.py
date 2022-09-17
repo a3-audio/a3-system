@@ -21,19 +21,21 @@ from pythonosc import dispatcher
 from typing import List, Any
 
 pixel_pin = board.D18
-num_pixels = 12
+num_pixels = 10
+
+ORDER = neopixel.GRB
 
 pixels = neopixel.NeoPixel(
-    pixel_pin, num_pixels, brightness=0.2, auto_write=False
+    pixel_pin, num_pixels, brightness=0.1, auto_write=False, pixel_order=ORDER
 )
 
-pixel_fx_mode_highpass = 0
-pixel_fx_mode_lowpass = 11
+pixel_fx_mode_highpass = 8
+pixel_fx_mode_lowpass = 9
 
-pixels_fx_toggle = [5, 4, 3, 2]
-pixels_3d_toggle = [6, 7, 8, 9]
+pixels_fx_toggle = [0, 2, 4, 6]
+pixels_3d_toggle = [1, 3, 5, 7]
 
-color_led_on = (255,0,0)
+color_led_on = (255,255,255)
 color_led_off = (0,0,0)
 
 def pixel_color(r,g,b):
@@ -49,10 +51,10 @@ osc_core = SimpleUDPClient('192.168.43.50', 9000)
 osc_vu_receive_port = 7771
 
 vu_channel_to_led_count = {
-    0 : 9,
-    1 : 9,
-    2 : 9,
-    3 : 9,
+    0 : 8,
+    1 : 8,
+    2 : 8,
+    3 : 8,
     4 : 32,
     5 : 32,
     6 : 32,
@@ -86,11 +88,11 @@ button_fx_to_mode_name = {
 # master section pots mapping
 master_pots_to_osc_message = {
     "0": "/master/volume",
-    "1": "/master/booth",
-    "2": "/master/phones_mix",
-    "3": "/master/phones_volume",
-    "6": "/fx/resonance",
-    "7": "/fx/frequency",
+    "1": "/fx/frequency",
+    "2": "/fx/resonance",
+    "3": "/master/booth",
+    "4": "/master/phones_mix",
+    "5": "/master/phones_volume",
 }
 
 # time_last_receive = 0
@@ -246,6 +248,6 @@ if __name__ == '__main__':
     dispatcher.map("/channel/*/led/*", led_handler_channel)
     dispatcher.map("/fx/led", led_handler_fx)
 
-    server = osc_server.ThreadingOSCUDPServer((args.ip, args.port), dispatcher)
+    server = osc_server.BlockingOSCUDPServer((args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))
     server.serve_forever()

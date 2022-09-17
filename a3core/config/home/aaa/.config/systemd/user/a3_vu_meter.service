@@ -23,9 +23,9 @@ PrivateTmp=true
 WorkingDirectory=/home/aaa/a3-system/a3core/supercollider
 #ExecStartPre=/bin/sleep 2
 #Environment="QT_QPA_PLATFORM=minimal"
-Environment=QT_QPA_PLATFORM=offscreen
+#Environment=QT_QPA_PLATFORM=offscreen
 ExecStart=/usr/bin/sclang /home/aaa/a3-system/a3core/supercollider/a3_vu_meter.scd
-LimitRTPRIO=85
+LimitRTPRIO=59
 
 [Install]
 WantedBy=default.target

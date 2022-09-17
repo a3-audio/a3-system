@@ -243,6 +243,18 @@ def osc_handler_channel(address: str,
         osc_reaper.send_message(
             f"/track/{track_bformat}/mute", float(not is_enabled))
 
+    elif parameter == "azimuth":
+        val = np.interp(value, [-180, 180], [0, 1])
+        track_bformat = channel_infos[channel_index].track_bformat
+        osc_reaper.send_message(
+            f"/track/{track_bformat}/fx/1/fxparam/7/value", val)
+
+    elif parameter == "elevation":
+        val = np.interp(value, [-180, 180], [0, 1])
+        track_bformat = channel_infos[channel_index].track_bformat
+        osc_reaper.send_message(
+            f"/track/{track_bformat}/fx/1/fxparam/8/value", val)
+
 
 def osc_handler_master(address: str,
                        *osc_arguments: List[Any]) -> None:

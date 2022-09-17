@@ -1,0 +1,38 @@
+# A³ Core is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# A³ Core is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with A³ Core.  If not, see <https://www.gnu.org/licenses/>.
+
+# © Copyright 2021-2022 Raphael Eismann
+
+[Unit]                                                                                     
+Description=A³ Core - Mixbus
+After=jack.service
+After=a3xinit.service
+
+[Service]
+#Type=idle
+PrivateTmp=true
+WorkingDirectory=/home/aaa/mixbus/a3foh/
+#EnvironmentFile=/etc/environment
+#ExecStartPre=/bin/sleep 3
+#Environment="QT_QPA_PLATFORM=minimal"
+#Environment=QT_QPA_PLATFORM=offscreen
+#Environment=DISPLAY=:0
+#Environment="XAUTHORITY=/home/aaa/.Xauthority"
+ExecStart=/bin/bash -c "/opt/Mixbus32C-8.1.378/bin/mixbus32c8 /home/aaa/mixbus/a3foh/a3foh.ardour"
+ExecStop=/usr/bin/kill Mixbus32C
+#ExecStart=/bin/bash -c "/home/aaa/opt/REAPER/reaper -ignoreerrors"
+#ExecStop=/home/aaa/opt/REAPER/reaper -close all :save
+LimitRTPRIO=45
+
+[Install]
+WantedBy=default.target

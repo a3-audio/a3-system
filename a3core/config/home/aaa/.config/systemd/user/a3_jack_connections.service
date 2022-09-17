@@ -15,14 +15,14 @@
 
 [Unit]
 Description=A³ Core - Jack Connections
-After=a3_vu_meter.service a3_reaper.service
+#After=a3_vu_meter.service a3_reaper.service
 
 [Service]
 Type=idle
 PrivateTmp=true
-ExecStartPre=/bin/sleep 5
+#ExecStartPre=/bin/sleep 5
 #WorkingDirectory=/home/aaa/a3-system/a3core/jack_connections
-ExecStart=/usr/bin/jmess -Dc a3_userpatch.jmess
+ExecStart=/usr/bin/jmess -Dc /home/aaa/userpatches/userpatch.jmess
 
 [Install]
 WantedBy=default.target

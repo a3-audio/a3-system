@@ -13,7 +13,7 @@
 
 # © Copyright 202-2022 Raphael Eismann
 
-[Unit]                                                                                     
+[Unit]                                                                          
 Description=a3core execute osc-router
 After=jack.service
 
@@ -24,7 +24,7 @@ PrivateTmp=true
 #WorkingDirectory=
 #Environment="QT_QPA_PLATFORM=minimal"
 #Environment=QT_QPA_PLATFORM=offscreen
-ExecStart=/usr/bin/python /home/aaa/a3-system/a3core/a3_interface.py
+ExecStart=/usr/bin/python3 /home/aaa/a3-system/a3core/a3_interface.py
 #LimitRTPRIO=70
 
 [Install]

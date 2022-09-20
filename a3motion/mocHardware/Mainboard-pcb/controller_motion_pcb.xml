@@ -1,0 +1,1037 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="D">
+  <design>
+    <source>C:\Users\tirii\Documents\GitHub\Ambijockey\hardware\moc\Mainboard-pcb\controller_motion_pcb.sch</source>
+    <date>12/07/21 16:04:26</date>
+    <tool>Eeschema (5.1.10)-1</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>A³motion</title>
+        <company>A³ Ambisonic Audio Adventures (Haftungsbeschränkt) UG &amp; Co. KG</company>
+        <rev>v0.1</rev>
+        <date>2021-08-04</date>
+        <source>controller_motion_pcb.sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="J1">
+      <value>ICSP INTERFACE</value>
+      <footprint>Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector_Generic" part="Conn_01x04" description="Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>619AAD0D</tstamp>
+    </comp>
+    <comp ref="S1">
+      <value>228CMVARGBFR</value>
+      <footprint>flex-Ambisonic:228CMVARGBFR</footprint>
+      <datasheet>https://www.mouser.co.za/datasheet/2/96/228C-1371171.pdf</datasheet>
+      <fields>
+        <field name="Description">Tactile Switches Color Red,Green,Blue SMD Gullwing</field>
+        <field name="Height">7.3</field>
+        <field name="Manufacturer_Name">CTS</field>
+        <field name="Manufacturer_Part_Number">228CMVARGBFR</field>
+        <field name="Mouser Part Number">774-228CMVARGBFR</field>
+        <field name="Mouser Price/Stock">https://www.mouser.co.uk/ProductDetail/CTS-Electronic-Components/228CMVARGBFR?qs=gTYE2QTfZfSFpUQ%252Bb6QA4w%3D%3D</field>
+      </fields>
+      <libsource lib="btn-matrix-rescue" part="228CMVARGBFR" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>619BCFEF</tstamp>
+    </comp>
+    <comp ref="S2">
+      <value>228CMVARGBFR</value>
+      <footprint>flex-Ambisonic:228CMVARGBFR</footprint>
+      <datasheet>https://www.mouser.co.za/datasheet/2/96/228C-1371171.pdf</datasheet>
+      <fields>
+        <field name="Description">Tactile Switches Color Red,Green,Blue SMD Gullwing</field>
+        <field name="Height">7.3</field>
+        <field name="Manufacturer_Name">CTS</field>
+        <field name="Manufacturer_Part_Number">228CMVARGBFR</field>
+        <field name="Mouser Part Number">774-228CMVARGBFR</field>
+        <field name="Mouser Price/Stock">https://www.mouser.co.uk/ProductDetail/CTS-Electronic-Components/228CMVARGBFR?qs=gTYE2QTfZfSFpUQ%252Bb6QA4w%3D%3D</field>
+      </fields>
+      <libsource lib="btn-matrix-rescue" part="228CMVARGBFR" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>619BDDA1</tstamp>
+    </comp>
+    <comp ref="S3">
+      <value>228CMVARGBFR</value>
+      <footprint>flex-Ambisonic:228CMVARGBFR</footprint>
+      <datasheet>https://www.mouser.co.za/datasheet/2/96/228C-1371171.pdf</datasheet>
+      <fields>
+        <field name="Description">Tactile Switches Color Red,Green,Blue SMD Gullwing</field>
+        <field name="Height">7.3</field>
+        <field name="Manufacturer_Name">CTS</field>
+        <field name="Manufacturer_Part_Number">228CMVARGBFR</field>
+        <field name="Mouser Part Number">774-228CMVARGBFR</field>
+        <field name="Mouser Price/Stock">https://www.mouser.co.uk/ProductDetail/CTS-Electronic-Components/228CMVARGBFR?qs=gTYE2QTfZfSFpUQ%252Bb6QA4w%3D%3D</field>
+      </fields>
+      <libsource lib="btn-matrix-rescue" part="228CMVARGBFR" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>619BE7BC</tstamp>
+    </comp>
+    <comp ref="S4">
+      <value>228CMVARGBFR</value>
+      <footprint>flex-Ambisonic:228CMVARGBFR</footprint>
+      <datasheet>https://www.mouser.co.za/datasheet/2/96/228C-1371171.pdf</datasheet>
+      <fields>
+        <field name="Description">Tactile Switches Color Red,Green,Blue SMD Gullwing</field>
+        <field name="Height">7.3</field>
+        <field name="Manufacturer_Name">CTS</field>
+        <field name="Manufacturer_Part_Number">228CMVARGBFR</field>
+        <field name="Mouser Part Number">774-228CMVARGBFR</field>
+        <field name="Mouser Price/Stock">https://www.mouser.co.uk/ProductDetail/CTS-Electronic-Components/228CMVARGBFR?qs=gTYE2QTfZfSFpUQ%252Bb6QA4w%3D%3D</field>
+      </fields>
+      <libsource lib="btn-matrix-rescue" part="228CMVARGBFR" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>619BEF9B</tstamp>
+    </comp>
+    <comp ref="SW1">
+      <value>Rotary_Encoder_Switch</value>
+      <footprint>MOUSERfootprintANDsymbol:PEC11R4230KS0024</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="Rotary_Encoder_Switch" description="Rotary encoder, dual channel, incremental quadrate outputs, with switch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>619C1574</tstamp>
+    </comp>
+    <comp ref="R7">
+      <value>165</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>619C887F</tstamp>
+    </comp>
+    <comp ref="R23">
+      <value>10k</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>619D1398</tstamp>
+    </comp>
+    <comp ref="C8">
+      <value>100nF</value>
+      <footprint>Capacitor_THT:C_Disc_D7.0mm_W2.5mm_P5.00mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>619D9601</tstamp>
+    </comp>
+    <comp ref="J2">
+      <value>I2C INTERFACE MSTR</value>
+      <footprint>Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector_Generic" part="Conn_01x05" description="Generic connector, single row, 01x05, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>619DE917</tstamp>
+    </comp>
+    <comp ref="J3">
+      <value>I2C INTERFACE SLAV</value>
+      <footprint>Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector_Generic" part="Conn_01x05" description="Generic connector, single row, 01x05, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>619DF5A8</tstamp>
+    </comp>
+    <comp ref="C2">
+      <value>22pF</value>
+      <footprint>Capacitor_THT:C_Disc_D7.0mm_W2.5mm_P5.00mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>619E1571</tstamp>
+    </comp>
+    <comp ref="C4">
+      <value>10uH</value>
+      <footprint>Capacitor_THT:CP_Radial_D5.0mm_P2.00mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="CP" description="Polarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A0627D</tstamp>
+    </comp>
+    <comp ref="L1">
+      <value>10uH</value>
+      <footprint>Inductor_THT:L_Axial_L7.0mm_D3.3mm_P10.16mm_Horizontal_Fastron_MICC</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="L" description="Inductor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A104DD</tstamp>
+    </comp>
+    <comp ref="R8">
+      <value>155</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A439C7</tstamp>
+    </comp>
+    <comp ref="R9">
+      <value>100</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A43BD5</tstamp>
+    </comp>
+    <comp ref="R10">
+      <value>165</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A43ED1</tstamp>
+    </comp>
+    <comp ref="R11">
+      <value>155</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A4430E</tstamp>
+    </comp>
+    <comp ref="R12">
+      <value>100</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A4469F</tstamp>
+    </comp>
+    <comp ref="R13">
+      <value>165</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A45072</tstamp>
+    </comp>
+    <comp ref="R16">
+      <value>165</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A45476</tstamp>
+    </comp>
+    <comp ref="R14">
+      <value>155</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A458E4</tstamp>
+    </comp>
+    <comp ref="R17">
+      <value>155</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A45CE9</tstamp>
+    </comp>
+    <comp ref="R15">
+      <value>100</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A460D3</tstamp>
+    </comp>
+    <comp ref="R18">
+      <value>100</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A46411</tstamp>
+    </comp>
+    <comp ref="R22">
+      <value>10k</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A4760B</tstamp>
+    </comp>
+    <comp ref="C9">
+      <value>100nF</value>
+      <footprint>Capacitor_THT:C_Disc_D7.0mm_W2.5mm_P5.00mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A47C20</tstamp>
+    </comp>
+    <comp ref="C5">
+      <value>100nF</value>
+      <footprint>Capacitor_THT:C_Disc_D7.0mm_W2.5mm_P5.00mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A485D9</tstamp>
+    </comp>
+    <comp ref="C1">
+      <value>100nF</value>
+      <footprint>Capacitor_THT:C_Disc_D7.0mm_W2.5mm_P5.00mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A49085</tstamp>
+    </comp>
+    <comp ref="C3">
+      <value>22pF</value>
+      <footprint>Capacitor_THT:C_Disc_D7.0mm_W2.5mm_P5.00mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A498F1</tstamp>
+    </comp>
+    <comp ref="C7">
+      <value>100nF</value>
+      <footprint>Capacitor_THT:C_Disc_D7.0mm_W2.5mm_P5.00mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A4E6DF</tstamp>
+    </comp>
+    <comp ref="R19">
+      <value>27k</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A4F6D7</tstamp>
+    </comp>
+    <comp ref="R20">
+      <value>27k</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A51538</tstamp>
+    </comp>
+    <comp ref="C6">
+      <value>100nF</value>
+      <footprint>Capacitor_THT:C_Disc_D7.0mm_W2.5mm_P5.00mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A52168</tstamp>
+    </comp>
+    <comp ref="R21">
+      <value>4.7k</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A57701</tstamp>
+    </comp>
+    <comp ref="R3">
+      <value>4.7k</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A60619</tstamp>
+    </comp>
+    <comp ref="R4">
+      <value>4.7k</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A61C04</tstamp>
+    </comp>
+    <comp ref="R5">
+      <value>4.7k</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A620FD</tstamp>
+    </comp>
+    <comp ref="R6">
+      <value>4.7k</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A62A7F</tstamp>
+    </comp>
+    <comp ref="J4">
+      <value>Conn_01x02_Male</value>
+      <footprint>Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector" part="Conn_01x02_Male" description="Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A93421</tstamp>
+    </comp>
+    <comp ref="Y1">
+      <value>Crystal</value>
+      <footprint>Crystal:Crystal_HC49-U_Vertical</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="Crystal" description="Two pin crystal"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A878CF</tstamp>
+    </comp>
+    <comp ref="J5">
+      <value>Conn_01x02_Female</value>
+      <footprint>Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector" part="Conn_01x02_Female" description="Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61A92F80</tstamp>
+    </comp>
+    <comp ref="U1">
+      <value>ATtiny861V-10SU</value>
+      <footprint>Package_SO:SOIC-20W_7.5x12.8mm_P1.27mm</footprint>
+      <datasheet>http://ww1.microchip.com/downloads/en/DeviceDoc/atmel-2588-8-bit-avr-microcontrollers-tinyavr-attiny261-attiny461-attiny861_datasheet.pdf</datasheet>
+      <libsource lib="flex_AmbisonicLib" part="ATtiny861V-10SU" description="10MHz, 8kB Flash, 512B SRAM, 512B EEPROM, SOIC-20"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61AB64FF</tstamp>
+    </comp>
+    <comp ref="U2">
+      <value>TPIC6C595-SOIC</value>
+      <footprint>Package_SO:SOIC-16_3.9x9.9mm_P1.27mm</footprint>
+      <datasheet>https://www.mouser.ph/datasheet/2/389/cd00020664-1796042.pdf</datasheet>
+      <libsource lib="flex_AmbisonicLib" part="TPIC6C595-SOIC" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61B13621</tstamp>
+    </comp>
+    <comp ref="U3">
+      <value>TPIC6C595-SOIC</value>
+      <footprint>Package_SO:SOIC-16_3.9x9.9mm_P1.27mm</footprint>
+      <datasheet>https://www.mouser.ph/datasheet/2/389/cd00020664-1796042.pdf</datasheet>
+      <libsource lib="flex_AmbisonicLib" part="TPIC6C595-SOIC" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61B1432C</tstamp>
+    </comp>
+    <comp ref="J6">
+      <value>Conn_01x06_Female</value>
+      <footprint>MOUSERfootprintANDsymbol:HDRV6W67P254_2X3_762X483X858P</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector" part="Conn_01x06_Female" description="Generic connector, single row, 01x06, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61AD898F</tstamp>
+    </comp>
+    <comp ref="R1">
+      <value>0</value>
+      <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61AFB460</tstamp>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="Connector" part="Conn_01x02_Female">
+      <description>Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x02_Female</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector" part="Conn_01x02_Male">
+      <description>Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x02_Male</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector" part="Conn_01x06_Female">
+      <description>Generic connector, single row, 01x06, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x06_Female</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+        <pin num="5" name="Pin_5" type="passive"/>
+        <pin num="6" name="Pin_6" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector_Generic" part="Conn_01x04">
+      <description>Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x04</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector_Generic" part="Conn_01x05">
+      <description>Generic connector, single row, 01x05, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x05</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+        <pin num="5" name="Pin_5" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="C">
+      <description>Unpolarized capacitor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>C_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="CP">
+      <description>Polarized capacitor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>CP_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">CP</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="Crystal">
+      <description>Two pin crystal</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Crystal*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">Y</field>
+        <field name="Value">Crystal</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="L">
+      <description>Inductor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Choke_*</fp>
+        <fp>*Coil*</fp>
+        <fp>Inductor_*</fp>
+        <fp>L_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">L</field>
+        <field name="Value">L</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="R">
+      <description>Resistor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>R_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="Rotary_Encoder_Switch">
+      <description>Rotary encoder, dual channel, incremental quadrate outputs, with switch</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>RotaryEncoder*Switch*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">SW</field>
+        <field name="Value">Rotary_Encoder_Switch</field>
+      </fields>
+      <pins>
+        <pin num="A" name="A" type="passive"/>
+        <pin num="B" name="B" type="passive"/>
+        <pin num="C" name="C" type="passive"/>
+        <pin num="S1" name="S1" type="passive"/>
+        <pin num="S2" name="S2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="btn-matrix-rescue" part="228CMVARGBFR">
+      <fields>
+        <field name="Reference">S</field>
+        <field name="Value">228CMVARGBFR</field>
+        <field name="Footprint">228CMVARGBFR</field>
+        <field name="Datasheet">https://www.mouser.co.za/datasheet/2/96/228C-1371171.pdf</field>
+        <field name="Description">Tactile Switches Color Red,Green,Blue SMD Gullwing</field>
+        <field name="Height">7.3</field>
+        <field name="Mouser Part Number">774-228CMVARGBFR</field>
+        <field name="Mouser Price/Stock">https://www.mouser.co.uk/ProductDetail/CTS-Electronic-Components/228CMVARGBFR?qs=gTYE2QTfZfSFpUQ%252Bb6QA4w%3D%3D</field>
+        <field name="Manufacturer_Name">CTS</field>
+        <field name="Manufacturer_Part_Number">228CMVARGBFR</field>
+      </fields>
+      <pins>
+        <pin num="1" name="COM_1" type="passive"/>
+        <pin num="2" name="COM_1" type="passive"/>
+        <pin num="3" name="COM_2" type="passive"/>
+        <pin num="4" name="COM_2" type="passive"/>
+        <pin num="5" name="K_B" type="passive"/>
+        <pin num="6" name="K_R" type="passive"/>
+        <pin num="7" name="Anode" type="power_in"/>
+        <pin num="8" name="K_G" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="flex_AmbisonicLib" part="ATtiny461V-10SU">
+      <aliases>
+        <alias>ATtiny461-20SU</alias>
+        <alias>ATtiny861V-10SU</alias>
+        <alias>ATtiny861-20SU</alias>
+        <alias>ATtiny261A-SU</alias>
+        <alias>ATtiny461A-SU</alias>
+        <alias>ATtiny861A-SU</alias>
+      </aliases>
+      <description>10MHz, 4kB Flash, 256B SRAM, 256B EEPROM, SOIC-20</description>
+      <docs>http://ww1.microchip.com/downloads/en/DeviceDoc/atmel-2588-8-bit-avr-microcontrollers-tinyavr-attiny261-attiny461-attiny861_datasheet.pdf</docs>
+      <footprints>
+        <fp>SOIC*7.5x12.8mm*P1.27mm*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">ATtiny461V-10SU</field>
+        <field name="Footprint">Package_SO:SOIC-20W_7.5x12.8mm_P1.27mm</field>
+      </fields>
+      <pins>
+        <pin num="1" name="MOSI/PB0" type="BiDi"/>
+        <pin num="2" name="MISO/PB1" type="BiDi"/>
+        <pin num="3" name="SCL/SCK/PB2" type="BiDi"/>
+        <pin num="4" name="PB3" type="BiDi"/>
+        <pin num="5" name="VCC" type="power_in"/>
+        <pin num="6" name="GND" type="power_in"/>
+        <pin num="7" name="XTAL1/PB4" type="BiDi"/>
+        <pin num="8" name="XTAL2/PB5" type="BiDi"/>
+        <pin num="9" name="PB6" type="BiDi"/>
+        <pin num="10" name="~RESET~/PB7" type="BiDi"/>
+        <pin num="11" name="ADC6/PA7" type="BiDi"/>
+        <pin num="12" name="ADC5/PA6" type="BiDi"/>
+        <pin num="13" name="ADC4/PA5" type="BiDi"/>
+        <pin num="14" name="ADC3/PA4" type="BiDi"/>
+        <pin num="15" name="AVCC" type="power_in"/>
+        <pin num="16" name="AGND" type="power_in"/>
+        <pin num="17" name="AREF/PA3" type="BiDi"/>
+        <pin num="18" name="SCL/PA2" type="BiDi"/>
+        <pin num="19" name="ADC1/PA1" type="BiDi"/>
+        <pin num="20" name="SDA/ADC0/PA0" type="BiDi"/>
+      </pins>
+    </libpart>
+    <libpart lib="flex_AmbisonicLib" part="TPIC6C595-SOIC">
+      <docs>https://www.mouser.ph/datasheet/2/389/cd00020664-1796042.pdf</docs>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">TPIC6C595-SOIC</field>
+        <field name="Footprint">Package_SO:SOIC-16_3.9x9.9mm_P1.27mm</field>
+      </fields>
+      <pins>
+        <pin num="1" name="VCC" type="passive"/>
+        <pin num="2" name="SERIN" type="passive"/>
+        <pin num="3" name="DRAIN0" type="passive"/>
+        <pin num="4" name="DRAIN1" type="passive"/>
+        <pin num="5" name="DARIN2" type="passive"/>
+        <pin num="6" name="DRAIN3" type="passive"/>
+        <pin num="7" name="~CLR~" type="passive"/>
+        <pin num="8" name="~G~" type="passive"/>
+        <pin num="9" name="SEROUT" type="passive"/>
+        <pin num="10" name="RCK" type="passive"/>
+        <pin num="11" name="DRAIN4" type="passive"/>
+        <pin num="12" name="DARIN5" type="passive"/>
+        <pin num="13" name="DRAIN6" type="passive"/>
+        <pin num="14" name="DRAIN7" type="passive"/>
+        <pin num="15" name="SRCK" type="passive"/>
+        <pin num="16" name="GND" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="Connector">
+      <uri>C:\Program Files\KiCad\share\kicad\library/Connector.lib</uri>
+    </library>
+    <library logical="Connector_Generic">
+      <uri>C:\Program Files\KiCad\share\kicad\library/Connector_Generic.lib</uri>
+    </library>
+    <library logical="Device">
+      <uri>C:\Program Files\KiCad\share\kicad\library/Device.lib</uri>
+    </library>
+    <library logical="btn-matrix-rescue">
+      <uri>C:/Users/tirii/Documents/GitHub/Ambijockey/hardware/moc/Mainboard-pcb/btn-matrix-rescue.lib</uri>
+    </library>
+    <library logical="flex_AmbisonicLib">
+      <uri>C:/Users/tirii/Documents/Kicad/MYLibs/Symbol/flex_AmbisonicLib.lib</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="GND">
+      <node ref="S1" pin="2"/>
+      <node ref="J4" pin="2"/>
+      <node ref="S2" pin="1"/>
+      <node ref="C3" pin="1"/>
+      <node ref="S3" pin="2"/>
+      <node ref="C7" pin="2"/>
+      <node ref="SW1" pin="S1"/>
+      <node ref="SW1" pin="C"/>
+      <node ref="S4" pin="1"/>
+      <node ref="C6" pin="1"/>
+      <node ref="J6" pin="6"/>
+      <node ref="J6" pin="5"/>
+      <node ref="J6" pin="4"/>
+      <node ref="U3" pin="16"/>
+      <node ref="U2" pin="16"/>
+      <node ref="C8" pin="2"/>
+      <node ref="U1" pin="6"/>
+      <node ref="J2" pin="2"/>
+      <node ref="C4" pin="2"/>
+      <node ref="J2" pin="4"/>
+      <node ref="C5" pin="1"/>
+      <node ref="C1" pin="1"/>
+      <node ref="C9" pin="2"/>
+      <node ref="U1" pin="16"/>
+      <node ref="C2" pin="1"/>
+      <node ref="J3" pin="4"/>
+      <node ref="J3" pin="2"/>
+      <node ref="J5" pin="2"/>
+    </net>
+    <net code="2" name="XTAL1">
+      <node ref="Y1" pin="1"/>
+      <node ref="U1" pin="7"/>
+      <node ref="C2" pin="2"/>
+    </net>
+    <net code="3" name="ENCA">
+      <node ref="C6" pin="2"/>
+      <node ref="R19" pin="1"/>
+      <node ref="U1" pin="9"/>
+    </net>
+    <net code="4" name="XTAL2">
+      <node ref="U1" pin="8"/>
+      <node ref="C3" pin="2"/>
+      <node ref="Y1" pin="2"/>
+    </net>
+    <net code="5" name="ATM_VCC">
+      <node ref="C8" pin="1"/>
+      <node ref="J3" pin="5"/>
+      <node ref="U1" pin="5"/>
+      <node ref="J4" pin="1"/>
+      <node ref="U3" pin="1"/>
+      <node ref="L1" pin="2"/>
+      <node ref="C4" pin="1"/>
+      <node ref="J5" pin="1"/>
+      <node ref="C1" pin="2"/>
+      <node ref="S3" pin="7"/>
+      <node ref="S4" pin="7"/>
+      <node ref="C9" pin="1"/>
+      <node ref="R22" pin="2"/>
+      <node ref="J2" pin="5"/>
+      <node ref="S1" pin="7"/>
+      <node ref="S2" pin="7"/>
+      <node ref="R23" pin="2"/>
+      <node ref="J6" pin="2"/>
+      <node ref="U2" pin="1"/>
+    </net>
+    <net code="6" name="ENCSW">
+      <node ref="U1" pin="13"/>
+      <node ref="R21" pin="2"/>
+    </net>
+    <net code="7" name="ADC1">
+      <node ref="U1" pin="12"/>
+      <node ref="J6" pin="3"/>
+    </net>
+    <net code="8" name="ADC0">
+      <node ref="J6" pin="1"/>
+      <node ref="U1" pin="11"/>
+    </net>
+    <net code="9" name="Net-(R20-Pad2)">
+      <node ref="R20" pin="2"/>
+      <node ref="SW1" pin="B"/>
+    </net>
+    <net code="10" name="Net-(R19-Pad2)">
+      <node ref="SW1" pin="A"/>
+      <node ref="R19" pin="2"/>
+    </net>
+    <net code="11" name="MISO">
+      <node ref="R3" pin="1"/>
+      <node ref="U1" pin="2"/>
+      <node ref="J1" pin="2"/>
+    </net>
+    <net code="12" name="Net-(R6-Pad2)">
+      <node ref="S4" pin="4"/>
+      <node ref="R6" pin="2"/>
+    </net>
+    <net code="13" name="PB3">
+      <node ref="U1" pin="17"/>
+      <node ref="R6" pin="1"/>
+    </net>
+    <net code="14" name="Net-(R5-Pad2)">
+      <node ref="R5" pin="2"/>
+      <node ref="S3" pin="3"/>
+    </net>
+    <net code="15" name="PB2">
+      <node ref="U1" pin="14"/>
+      <node ref="R5" pin="1"/>
+    </net>
+    <net code="16" name="Net-(R4-Pad2)">
+      <node ref="R4" pin="2"/>
+      <node ref="S2" pin="3"/>
+    </net>
+    <net code="17" name="PB1">
+      <node ref="R4" pin="1"/>
+      <node ref="U1" pin="19"/>
+    </net>
+    <net code="18" name="Net-(R3-Pad2)">
+      <node ref="R3" pin="2"/>
+      <node ref="S1" pin="3"/>
+    </net>
+    <net code="19" name="S1_R">
+      <node ref="R7" pin="2"/>
+      <node ref="U2" pin="5"/>
+    </net>
+    <net code="20" name="ENCB">
+      <node ref="C7" pin="1"/>
+      <node ref="R20" pin="1"/>
+      <node ref="R1" pin="2"/>
+    </net>
+    <net code="21" name="Net-(U3-Pad9)">
+      <node ref="U3" pin="9"/>
+    </net>
+    <net code="22" name="Net-(R23-Pad1)">
+      <node ref="U3" pin="8"/>
+      <node ref="R23" pin="1"/>
+      <node ref="U3" pin="7"/>
+    </net>
+    <net code="23" name="Net-(R12-Pad2)">
+      <node ref="R12" pin="2"/>
+      <node ref="U2" pin="14"/>
+    </net>
+    <net code="24" name="Net-(S2-Pad2)">
+      <node ref="S2" pin="2"/>
+    </net>
+    <net code="25" name="Net-(S4-Pad3)">
+      <node ref="S4" pin="3"/>
+    </net>
+    <net code="26" name="Net-(S4-Pad2)">
+      <node ref="S4" pin="2"/>
+    </net>
+    <net code="27" name="Net-(S3-Pad1)">
+      <node ref="S3" pin="1"/>
+    </net>
+    <net code="28" name="Net-(S3-Pad4)">
+      <node ref="S3" pin="4"/>
+    </net>
+    <net code="30" name="Net-(S1-Pad4)">
+      <node ref="S1" pin="4"/>
+    </net>
+    <net code="31" name="Net-(S2-Pad4)">
+      <node ref="S2" pin="4"/>
+    </net>
+    <net code="32" name="Net-(U3-Pad14)">
+      <node ref="U3" pin="14"/>
+    </net>
+    <net code="33" name="Net-(U3-Pad13)">
+      <node ref="U3" pin="13"/>
+    </net>
+    <net code="34" name="Net-(U2-Pad6)">
+      <node ref="U2" pin="6"/>
+    </net>
+    <net code="35" name="Net-(U2-Pad12)">
+      <node ref="U2" pin="12"/>
+    </net>
+    <net code="36" name="Net-(R16-Pad2)">
+      <node ref="R16" pin="2"/>
+      <node ref="U3" pin="6"/>
+    </net>
+    <net code="37" name="Net-(R11-Pad2)">
+      <node ref="U2" pin="11"/>
+      <node ref="R11" pin="2"/>
+    </net>
+    <net code="38" name="PSHFUDATE">
+      <node ref="U3" pin="10"/>
+      <node ref="U2" pin="10"/>
+      <node ref="U1" pin="4"/>
+    </net>
+    <net code="39" name="Net-(R22-Pad1)">
+      <node ref="R22" pin="1"/>
+      <node ref="U2" pin="7"/>
+      <node ref="U2" pin="8"/>
+    </net>
+    <net code="40" name="Net-(R15-Pad2)">
+      <node ref="R15" pin="2"/>
+      <node ref="U3" pin="5"/>
+    </net>
+    <net code="41" name="Net-(R14-Pad2)">
+      <node ref="U3" pin="4"/>
+      <node ref="R14" pin="2"/>
+    </net>
+    <net code="42" name="Net-(R13-Pad2)">
+      <node ref="U3" pin="3"/>
+      <node ref="R13" pin="2"/>
+    </net>
+    <net code="43" name="Net-(U2-Pad9)">
+      <node ref="U2" pin="9"/>
+      <node ref="U3" pin="2"/>
+    </net>
+    <net code="44" name="Net-(R18-Pad2)">
+      <node ref="U3" pin="12"/>
+      <node ref="R18" pin="2"/>
+    </net>
+    <net code="45" name="S1_G">
+      <node ref="U2" pin="4"/>
+      <node ref="R8" pin="2"/>
+    </net>
+    <net code="46" name="S2_R">
+      <node ref="U2" pin="13"/>
+      <node ref="R10" pin="2"/>
+    </net>
+    <net code="47" name="Net-(R17-Pad2)">
+      <node ref="U3" pin="11"/>
+      <node ref="R17" pin="2"/>
+    </net>
+    <net code="48" name="Net-(R9-Pad1)">
+      <node ref="R9" pin="1"/>
+      <node ref="S1" pin="5"/>
+    </net>
+    <net code="49" name="Net-(R11-Pad1)">
+      <node ref="S2" pin="8"/>
+      <node ref="R11" pin="1"/>
+    </net>
+    <net code="50" name="Net-(R10-Pad1)">
+      <node ref="R10" pin="1"/>
+      <node ref="S2" pin="6"/>
+    </net>
+    <net code="51" name="Net-(R12-Pad1)">
+      <node ref="R12" pin="1"/>
+      <node ref="S2" pin="5"/>
+    </net>
+    <net code="52" name="Net-(R8-Pad1)">
+      <node ref="R8" pin="1"/>
+      <node ref="S1" pin="8"/>
+    </net>
+    <net code="53" name="Net-(R7-Pad1)">
+      <node ref="S1" pin="6"/>
+      <node ref="R7" pin="1"/>
+    </net>
+    <net code="54" name="Net-(S1-Pad1)">
+      <node ref="S1" pin="1"/>
+    </net>
+    <net code="55" name="RESET">
+      <node ref="J1" pin="4"/>
+      <node ref="R1" pin="1"/>
+      <node ref="U1" pin="10"/>
+    </net>
+    <net code="56" name="MOSI">
+      <node ref="U1" pin="1"/>
+      <node ref="J1" pin="3"/>
+      <node ref="U2" pin="2"/>
+    </net>
+    <net code="57" name="Net-(R16-Pad1)">
+      <node ref="S4" pin="6"/>
+      <node ref="R16" pin="1"/>
+    </net>
+    <net code="58" name="Net-(R21-Pad1)">
+      <node ref="SW1" pin="S2"/>
+      <node ref="R21" pin="1"/>
+    </net>
+    <net code="59" name="Net-(R17-Pad1)">
+      <node ref="R17" pin="1"/>
+      <node ref="S4" pin="8"/>
+    </net>
+    <net code="60" name="Net-(R18-Pad1)">
+      <node ref="S4" pin="5"/>
+      <node ref="R18" pin="1"/>
+    </net>
+    <net code="61" name="Net-(R14-Pad1)">
+      <node ref="R14" pin="1"/>
+      <node ref="S3" pin="8"/>
+    </net>
+    <net code="62" name="Net-(R13-Pad1)">
+      <node ref="R13" pin="1"/>
+      <node ref="S3" pin="6"/>
+    </net>
+    <net code="63" name="Net-(R15-Pad1)">
+      <node ref="S3" pin="5"/>
+      <node ref="R15" pin="1"/>
+    </net>
+    <net code="64" name="S1_b">
+      <node ref="R9" pin="2"/>
+      <node ref="U2" pin="3"/>
+    </net>
+    <net code="65" name="Net-(C5-Pad2)">
+      <node ref="C5" pin="2"/>
+      <node ref="U1" pin="15"/>
+      <node ref="L1" pin="1"/>
+    </net>
+    <net code="66" name="SCL">
+      <node ref="J2" pin="3"/>
+      <node ref="J3" pin="3"/>
+      <node ref="U1" pin="18"/>
+    </net>
+    <net code="67" name="SDA">
+      <node ref="J3" pin="1"/>
+      <node ref="J2" pin="1"/>
+      <node ref="U1" pin="20"/>
+    </net>
+    <net code="68" name="PSHFCLK">
+      <node ref="J1" pin="1"/>
+      <node ref="U1" pin="3"/>
+      <node ref="U3" pin="15"/>
+      <node ref="U2" pin="15"/>
+    </net>
+  </nets>
+</export>

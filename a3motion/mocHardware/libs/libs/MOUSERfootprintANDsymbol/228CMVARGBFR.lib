@@ -1,0 +1,29 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#SamacSys ECAD Model 228CMVARGBFR
+#/1536589/682930/2.49/8/4/Switch
+DEF 228CMVARGBFR S 0 30 Y Y 1 F N
+F0 "S" 1050 700 50 H V L CNN
+F1 "228CMVARGBFR" 1050 600 50 H V L CNN
+F2 "228CMVARGBFR" 1050 500 50 H I L CNN
+F3 "https://www.mouser.co.za/datasheet/2/96/228C-1371171.pdf" 1050 400 50 H I L CNN
+F4 "Tactile Switches Color Red,Green,Blue SMD Gullwing" 1050 300 50 H I L CNN "Description"
+F5 "7.3" 1050 200 50 H I L CNN "Height"
+F6 "774-228CMVARGBFR" 1050 100 50 H I L CNN "Mouser Part Number"
+F7 "https://www.mouser.co.uk/ProductDetail/CTS-Electronic-Components/228CMVARGBFR?qs=gTYE2QTfZfSFpUQ%252Bb6QA4w%3D%3D" 1050 0 50 H I L CNN "Mouser Price/Stock"
+F8 "CTS" 1050 -100 50 H I L CNN "Manufacturer_Name"
+F9 "228CMVARGBFR" 1050 -200 50 H I L CNN "Manufacturer_Part_Number"
+DRAW
+X COM_1 1 1200 0 200 L 50 50 0 0 P
+X COM_2 2 0 0 200 R 50 50 0 0 P
+X NO_1 3 1200 -100 200 L 50 50 0 0 P
+X NO_2 4 0 -100 200 R 50 50 0 0 P
+X K_B L1 600 700 200 D 50 50 0 0 P
+X K_R L2 600 -700 200 U 50 50 0 0 P
+X COM_A L3 500 700 200 D 50 50 0 0 P
+X K_G L4 500 -700 200 U 50 50 0 0 P
+P 5 0 1 6 200 500 1000 500 1000 -500 200 -500 200 500 N
+ENDDRAW
+ENDDEF
+#
+#End Library

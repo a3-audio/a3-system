@@ -1,12 +1,8 @@
-[submodule "a3motion/software/a3-MotionControllerUI"]
-	path = a3motion/software/a3-MotionControllerUI
-	url = git@github.com:a3-audio/a3-MotionControllerUI.git
-[submodule "a3-hardware"]
-	path = a3-hardware
-	url = git@github.com:a3-audio/a3-hardware.git
 [submodule "a3motion/a3MotioncontrollerUI"]
 	path = a3motion/a3MotioncontrollerUI
-	url = git@github.com:a3-audio/a3-MotionControllerUI
+	url = ../a3-MotionControllerUI
+    branch = main
 [submodule "a3hardware"]
 	path = a3hardware
-	url = git@github.com:a3-audio/a3-hardware
+	url = ../a3-hardware
+    branch = main

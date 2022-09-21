@@ -1,46 +1,67 @@
-19805699631965049
-.Ambisonic
+19810825670694330
+3dAudioFoot
 228CMVARGBFR
 
 
 0
 8
 8
-.Ambisonic
+3dAudioFoot
 Encoder PEC11R-4230K-S0024
 
 
 0
 5
 5
-.Ambisonic
+3dAudioFoot
 Header-01x09-p2.54-selfsolder
 
 
 0
 9
 9
-.Ambisonic
+3dAudioFoot
 ICSP_Header_P2.54_SelfSolder
 
 
 0
 6
 6
-.Ambisonic
+3dAudioFoot
 Molex Mini lock 1x5
 
 
 0
 5
 5
-.Ambisonic
+3dAudioFoot
+SOIC127P1030X265-20N
+20-Pin SOIC
+Integrated Circuit
+0
+20
+20
+3dAudioFoot
 USB-C
 
 
 0
 6
 6
+3dAudioFoot
+attiny1626
+20-Pin SOIC
+Integrated Circuit
+0
+20
+20
+3dAudioFoot
+thermal_via
+
+
+0
+1
+1
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)

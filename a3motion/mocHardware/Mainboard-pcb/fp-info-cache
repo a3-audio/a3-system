@@ -1,54 +1,82 @@
-19823779440205458
-.Ambisonic
-228CMVARGBFR
+19822471803124728
+3dAudioFoot
+228CMVARGBFR_SMD
+228CMVARGBFR-1
+Switch
+0
+8
+8
+3dAudioFoot
+228CMVARGBFR_THT
 
 
 0
 8
 8
-.Ambisonic
+3dAudioFoot
 Encoder PEC11R-4230K-S0024
 
 
 0
 5
 5
-.Ambisonic
+3dAudioFoot
+HDRV6W67P254_2X3_762X483X858P
+10129381-906001BLF
+Connector
+0
+6
+6
+3dAudioFoot
 Header-01x09-p2.54-selfsolder
 
 
 0
 9
 9
-.Ambisonic
+3dAudioFoot
 ICSP_Header_P2.54_SelfSolder
 
 
 0
 6
 6
-.Ambisonic
+3dAudioFoot
 Molex Mini lock 1x5
 
 
 0
 5
 5
-.Ambisonic
+3dAudioFoot
+PEC11R4230KS0024
+PEC11R-4230K-S0024-2
+Integrated Circuit
+0
+7
+7
+3dAudioFoot
+SOIC127P1030X265-20N
+20-Pin SOIC
+Integrated Circuit
+0
+20
+20
+3dAudioFoot
 USB-C
 
 
 0
 6
 6
-.Ambisonic
+3dAudioFoot
 attiny1626
 20-Pin SOIC
 Integrated Circuit
 0
 20
 20
-.Ambisonic
+3dAudioFoot
 thermal_via
 
 
@@ -77601,6 +77629,34 @@ rotary encoder
 0
 5
 4
+SamacSys_Parts
+228CMVARGBFR
+228CMVARGBFR-1
+Switch
+0
+8
+8
+SamacSys_Parts
+HDRV6W67P254_2X3_762X483X858P
+10129381-906001BLF
+Connector
+0
+6
+6
+SamacSys_Parts
+NE555DR
+D (R-PDSO-G8)
+Integrated Circuit
+0
+8
+8
+SamacSys_Parts
+PEC11R4230KS0024
+PEC11R-4230K-S0024-2
+Integrated Circuit
+0
+7
+7
 Sensor
 Aosong_DHT11_5.5x12.0_P2.54mm
 Temperature and humidity module, http://akizukidenshi.com/download/ds/aosong/DHT11.pdf
@@ -84531,66 +84587,3 @@ varistor SIOV
 0
 2
 2
-attiny1626
-SOIC127P1030X265-20N
-20-Pin SOIC
-Integrated Circuit
-0
-20
-20
-libs
-228CMVARGBFR
-
-
-0
-8
-8
-libs
-Encoder PEC11R-4230K-S0024
-
-
-0
-5
-5
-libs
-Header-01x09-p2.54-selfsolder
-
-
-0
-9
-9
-libs
-ICSP_Header_P2.54_SelfSolder
-
-
-0
-6
-6
-libs
-Molex Mini lock 1x5
-
-
-0
-5
-5
-libs
-USB-C
-
-
-0
-6
-6
-libs
-attiny1626
-20-Pin SOIC
-Integrated Circuit
-0
-20
-20
-libs
-thermal_via
-
-
-0
-1
-1

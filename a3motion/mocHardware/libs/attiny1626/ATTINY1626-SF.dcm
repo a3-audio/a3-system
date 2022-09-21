@@ -1,9 +1,0 @@
-EESchema-DOCLIB  Version 2.0
-#
-$CMP ATTINY1626-SF
-D 8-bit Microcontrollers - MCU 20MHz, 16KB, SOIC20, Ind 125C, Green
-K
-F https://ww1.microchip.com/downloads/aemDocuments/documents/MCU08/ProductDocuments/DataSheets/ATtiny1624-26-27-DataSheet-DS40002234B.pdf
-$ENDCMP
-#
-#End Doc Library

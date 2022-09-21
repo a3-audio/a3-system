@@ -5,7 +5,7 @@
   (paper "A4")
 
   (lib_symbols
-    (symbol ".Ambisonic:USB-C" (in_bom yes) (on_board yes)
+    (symbol "3dAudioSym:USB-C" (in_bom yes) (on_board yes)
       (property "Reference" "U" (id 0) (at 2.54 5.08 0)
         (effects (font (size 1.27 1.27)))
       )
@@ -798,23 +798,23 @@
     (pin "2" (uuid e63ba045-3144-4bf0-9a1c-6e7c5df4af5b))
   )
 
-  (symbol (lib_id ".Ambisonic:USB-C") (at 45.72 102.87 0) (unit 1)
+  (symbol (lib_id "3dAudioSym:USB-C") (at 45.72 102.87 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
-    (uuid 3cbb223f-d0e4-484b-8711-77e5036b15b5)
+    (uuid 39ac7e3c-47f1-43e5-b70d-8dfebc468916)
     (property "Reference" "U1" (id 0) (at 41.275 93.8743 0))
     (property "Value" "USB-C" (id 1) (at 41.275 96.6494 0))
-    (property "Footprint" ".Ambisonic:USB-C" (id 2) (at 45.72 102.87 0)
+    (property "Footprint" "3dAudioFoot:USB-C" (id 2) (at 45.72 102.87 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "" (id 3) (at 45.72 102.87 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid e24840f6-00a2-40d5-a460-81b4f6e82b34))
-    (pin "2" (uuid 5a839880-c684-4fad-8177-dcd19ca44a75))
-    (pin "3" (uuid 76cc1b59-e67d-45ab-bf21-ce86b013da2e))
-    (pin "4" (uuid c9b01a63-72c3-4810-9fd4-16d509ad45cf))
-    (pin "5" (uuid 5ed49fa3-9c3b-4da1-85b9-fcd1a8b9849b))
-    (pin "6" (uuid 0e4e0ff0-9fdd-47a1-9807-a63ef4a30a92))
+    (pin "1" (uuid c15af059-8b9d-458f-a49d-de88857a3451))
+    (pin "2" (uuid 21fc70bf-38cb-4f64-80c8-52f8fb5c596f))
+    (pin "3" (uuid c4e5f4b1-3784-4173-92ec-f445bea03d2c))
+    (pin "4" (uuid f4c67df3-763c-4141-be1b-5de814d62315))
+    (pin "5" (uuid ccc51975-f79d-42b1-9218-b1bb4e005f58))
+    (pin "6" (uuid 38d2e88e-817b-499b-a8dc-6ffe82e53baa))
   )
 
   (symbol (lib_id "Connector:Conn_01x05_Male") (at 115.57 100.33 0) (unit 1)
@@ -944,8 +944,8 @@
     (path "/8aff782b-3be5-4c78-a9fd-2ede0c2720d7"
       (reference "R4") (unit 1) (value "10k") (footprint "Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder")
     )
-    (path "/3cbb223f-d0e4-484b-8711-77e5036b15b5"
-      (reference "U1") (unit 1) (value "USB-C") (footprint ".Ambisonic:USB-C")
+    (path "/39ac7e3c-47f1-43e5-b70d-8dfebc468916"
+      (reference "U1") (unit 1) (value "USB-C") (footprint "3dAudioFoot:USB-C")
     )
   )
 )

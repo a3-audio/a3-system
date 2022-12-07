@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<session name="" tempo="120.0" notes="" beatsPerBar="4" beatDivisor="2">
+  <graphs active="0">
+    <node type="graph" uuid="279d833183834f06b426efce48323abd" name="Graph"
+          bypass="0" persistent="1" renderMode="single" keyStart="0" keyEnd="127"
+          transpose="0" delayCompensation="0">
+      <nodes>
+        <node id="2" type="plugin" format="Internal" identifier="audio.output"
+              name="HD-Audio Generic, HDMI 0; HDMI Audio Output" relativeX="0.2833787465940055"
+              relativeY="0.6938775510204082" numAudioIns="2" numAudioOuts="0"
+              uuid="ec0a94413a73426a80ed89582df49f98" bypass="0" persistent="1"
+              renderMode="single" keyStart="0" keyEnd="127" transpose="0" delayCompensation="0.0"
+              enabled="1" x="101.0" y="623.0" program="0" midiProgram="0" globalMidiPrograms="0"
+              midiProgramsEnabled="0" mute="0" muteInput="0" midiProgramsState=""
+              oversamplingFactor="1">
+          <nodes/>
+          <ui>
+            <block/>
+          </ui>
+          <ports>
+            <port index="0" channel="0" type="audio" name="channel 1" symbol="audio_in_1"
+                  flow="input"/>
+            <port index="1" channel="1" type="audio" name="channel 2" symbol="audio_in_2"
+                  flow="input"/>
+            <port index="2" channel="2" type="audio" name="channel 3" symbol="audio_in_3"
+                  flow="input"/>
+            <port index="3" channel="3" type="audio" name="channel 4" symbol="audio_in_4"
+                  flow="input"/>
+            <port index="4" channel="4" type="audio" name="channel 5" symbol="audio_in_5"
+                  flow="input"/>
+            <port index="5" channel="5" type="audio" name="channel 6" symbol="audio_in_6"
+                  flow="input"/>
+            <port index="6" channel="6" type="audio" name="channel 7" symbol="audio_in_7"
+                  flow="input"/>
+            <port index="7" channel="7" type="audio" name="channel 8" symbol="audio_in_8"
+                  flow="input"/>
+          </ports>
+        </node>
+        <node id="5" type="plugin" format="VST3" identifier="/usr/lib/vst3/StereoEncoder.vst3"
+              name="StereoEncoder" relativeX="0.09386068476977567" relativeY="0.284640171858217"
+              pluginIdentifierString="VST3-StereoEncoder-5ec90d25-8140b1d7"
+              uuid="7d6ed3209dac4924bf6a551728372d41" bypass="0" persistent="1"
+              renderMode="single" keyStart="0" keyEnd="127" transpose="0" delayCompensation="0.0"
+              x="99.0" y="242.0" windowX="894" windowY="265" windowVisible="0"
+              state="936.VMjLg74....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9XSL33hUMoFSmQEZt3hKt7zJlcUXxEDZisVRxH1a3vVX3fjTLQmKogjYTwVXogiQY8FMwjENHIUUTkEUKMCR38TNtHzSSE0UYgWUwDVQzDCV0EkUYgGMC8DTEoFUAACQH8VTV8DZDwFYuAiUio2YrgjYXcEVxU0UYgCRBwDctjFR0MyPOAUQpQUPvPDRuEkUOgFUFE1ZYcEV5sVLgQWRBgTLEYTXvTkUOglKosjcHg2R4X2PTETRUAUSAIkVpASZH41ZwjkaEU0XmcmUZo2ZsgjYXcEVxU0UYgCRBwDctjFR0MyPOAUQpQUPvPDRuEkUOg1MrIlZUwlXSUkQio2ZrEVaIIDRwTjQgASUV8DZtj1R1gDdKkicCQUPIUETMEjTZoFLogzci0FRlg0UXIWUWkENHIESz4RZHU2LC8DTEoFUAACQH8VTV8DZDcDYn4BZic1cVM1ZvjFR1MiPLg1Mn8zMtTETRUDUSYlZFkENHIkXzjjPHESQFEFLUY0Sn4RZKYGR3sTN1MDUAkTUP0TPRokZvjFR28VaHYFVWgkbUcUV3fjPLQmKogTcyLzSPUjZTEDLDgzaQY0SngjLgI2crgjYXcEVxU0UYgCRBwDctjFR0MyPOAUQpQUPvPDRuEkUOgFUxH1ZMs1T4AkZHYFVWgkbUcUV3fjTLQmKogTcyLzSPUjZTEDLDgzaQY0SnI1UZoVTGoEZtf1XmcmUisFLogjdXk1R1I1TNQiYo0DLhkFS3g0TMECRogTcyLzSO0DLPMDNrEFaqESVlgTUYkVUVoULUwlXPgCahoGLogDdTMDS1gjPHMUUrElZUwlXIETUOgFRBgzTUwVXpUEahAENrIldvjFRyQTZHYFSUkEcQYUV3gidTMTQDkkZIcUV40zUOg1M3QkdUwlXqgiUQQWSwDlZUwlX0gjPHMUUrElZUwlXIQiQisVRsM1Y2Y0SnQzPLYGR3sTN1k2RSE0UYgWUwDVQzDCV0EkUYgGMC4hKt3hKt3hKt3hKlIUUMQUTPkzUZESQFM1ZQQEV5UjQtDDQlAEMAcEV40zQtDDQl4hK5EjKt3hKt3hKt3hRUACTEEzZh8VVWgkdUYTTmE0UXwyKIMzasA2atUlaz4COuX0TTMCTrU2Yo41TzEFck4C."
+              program="0" midiProgram="0" globalMidiPrograms="0" midiProgramsEnabled="0"
+              mute="0" muteInput="0" midiProgramsState="52.3o8Jnn7SunDysXFXfQFK.BaFXjY3rXkQF.BxKwbSkAFYhUFJtjDKAHKVX0.8XfA.h2YCaB"
+              oversamplingFactor="1" windowOnTop="1" enabled="1">
+          <nodes/>
+          <ui>
+            <block/>
+          </ui>
+          <ports>
+            <port index="0" channel="0" type="audio" name="Input 1" symbol="audio_in_1"
+                  flow="input"/>
+            <port index="1" channel="1" type="audio" name="Input 2" symbol="audio_in_2"
+                  flow="input"/>
+            <port index="2" channel="0" type="audio" name="Output 1" symbol="audio_out_1"
+                  flow="output"/>
+            <port index="3" channel="1" type="audio" name="Output 2" symbol="audio_out_2"
+                  flow="output"/>
+            <port index="4" channel="2" type="audio" name="Output 3" symbol="audio_out_3"
+                  flow="output"/>
+            <port index="5" channel="3" type="audio" name="Output 4" symbol="audio_out_4"
+                  flow="output"/>
+            <port index="6" channel="0" type="control" name="Ambisonics Order"
+                  symbol="control_0" flow="input"/>
+            <port index="7" channel="1" type="control" name="Normalization" symbol="control_1"
+                  flow="input"/>
+            <port index="8" channel="2" type="control" name="Quaternion W" symbol="control_2"
+                  flow="input"/>
+            <port index="9" channel="3" type="control" name="Quaternion X" symbol="control_3"
+                  flow="input"/>
+            <port index="10" channel="4" type="control" name="Quaternion Y" symbol="control_4"
+                  flow="input"/>
+            <port index="11" channel="5" type="control" name="Quaternion Z" symbol="control_5"
+                  flow="input"/>
+            <port index="12" channel="6" type="control" name="Azimuth Angle" symbol="control_6"
+                  flow="input"/>
+            <port index="13" channel="7" type="control" name="Elevation Angle"
+                  symbol="control_7" flow="input"/>
+            <port index="14" channel="8" type="control" name="Roll Angle" symbol="control_8"
+                  flow="input"/>
+            <port index="15" channel="9" type="control" name="Stereo Width" symbol="control_9"
+                  flow="input"/>
+            <port index="16" channel="10" type="control" name="Sample-wise Panning"
+                  symbol="control_10" flow="input"/>
+            <port index="17" channel="11" type="control" name="Bypass" symbol="control_11"
+                  flow="input"/>
+            <port index="18" channel="0" type="midi" name="MIDI In" symbol="element_midi_input"
+                  flow="input"/>
+          </ports>
+        </node>
+        <node id="6" type="plugin" format="VST3" identifier="/usr/lib/vst3/StereoEncoder.vst3"
+              name="StereoEncoder" relativeX="0.3199527744982291" relativeY="0.280343716433942"
+              pluginIdentifierString="VST3-StereoEncoder-5ec90d25-8140b1d7"
+              uuid="0a5e56cd271b49249937fcf7dd95b4d9" bypass="0" persistent="1"
+              renderMode="single" keyStart="0" keyEnd="127" transpose="0" delayCompensation="0.0"
+              x="482.0" y="238.0" windowX="697" windowY="232" windowVisible="0"
+              state="915.VMjLgn3....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9XCLx3hUMoFSmQ0Yt3hKt7zJlcUXxEDZisVRxH1a3vVX3fjTLQmKogjYTwVXogiQY8FMwjENHIUUTkEUKMCR38TNtHzSSE0UYgWUwDVQzDCV0EkUYgGMC8DTEoFUAACQH8VTV8DZDwFYuAiUio2YrgjYXcEVxU0UYgCRBwDctjFR0MyPOAUQpQUPvPDRuEkUOgFUFE1ZYcEV5sVLgQWRBgTLEYTXvTkUOglKosjcHg2R4X2PTETRUAUSAIkVpASZH41ZwjkaEU0XmcmUZo2ZsgjYXcEVxU0UYgCRBwDctjFR0MyPOAUQpQUPvPDRuEkUOg1MrIlZUwlXSUkQio2ZrEVaIIDRwTjQgASUV8DZtj1R1gDdKkicCQUPIUETMEjTZoFLogzci0FRlg0UXIWUWkENHIESz4RZHU2LC8DTEoFUAACQH8VTV8DZDcDYn4BZic1cVM1ZvjFR1MiPLg1Mn8zMtTETRUDUSYlZFkENHIkXzjjPHESQFEFLUY0Sn4RZKYGR3sTN1MDUAkTUP0TPRokZvjFR28VaHYFVWgkbUcUV3fjPLQmKogTcyLzSPUjZTEDLDgzaQY0SngjLgI2crgjYXcEVxU0UYgCRBwDctjFR0MyPOAUQpQUPvPDRuEkUOgFUxH1ZMs1T4AkZHYFVWgkbUcUV3fjTLQmKogTcyLzSPUjZTEDLDgzaQY0SnI1UZoVTGoEZtf1XmcmUisFLogjcyHDSncCZOcyM5Q0PMoWXzkkUZ0VPnQ0ZMYUVuk0UYgWPvDFdQc0SnomTLglK3Q0ZzXTVqkzURAELogDZtfGUqQiQYsVRGQUcIczX3fjTKcGRBgzTUwVXpUEah8TSv.UPQYTV3UULhkGLogTcLUzXqkzUYUWUpEVZ3XTVqkjLKglK3Q0ZzXTVqkzURQWTWkEdYcEVxASZHcmKCwDZ2f1S2bCdToWUrI1Z3XUTz0TLgoVUrIVNt3hKt3hKt3hKt3hKtQUUCUEQTg2ZrM1YQcUVDUjQicVPP4RPHQEY1UTLhkWPP4RPL4hKi4hKt3hKt3hKtXlTU0DUQAURWoULEYzXqEEUXoWQFwyKIMzasA2atUlaz4COuX0TTMCTrU2Yo41TzEFck4C."
+              program="0" midiProgram="0" globalMidiPrograms="0" midiProgramsEnabled="0"
+              mute="0" muteInput="0" midiProgramsState="52.3o8Jnn7SunDysXFXfQFK.BaFXjY3rXkQF.BxKwbSkAFYhUFJtjDKAHKVX0.8XfA.h2YCaB"
+              oversamplingFactor="1" enabled="1">
+          <nodes/>
+          <ui>
+            <block/>
+          </ui>
+          <ports>
+            <port index="0" channel="0" type="audio" name="Input 1" symbol="audio_in_1"
+                  flow="input"/>
+            <port index="1" channel="1" type="audio" name="Input 2" symbol="audio_in_2"
+                  flow="input"/>
+            <port index="2" channel="0" type="audio" name="Output 1" symbol="audio_out_1"
+                  flow="output"/>
+            <port index="3" channel="1" type="audio" name="Output 2" symbol="audio_out_2"
+                  flow="output"/>
+            <port index="4" channel="2" type="audio" name="Output 3" symbol="audio_out_3"
+                  flow="output"/>
+            <port index="5" channel="3" type="audio" name="Output 4" symbol="audio_out_4"
+                  flow="output"/>
+            <port index="6" channel="0" type="control" name="Ambisonics Order"
+                  symbol="control_0" flow="input"/>
+            <port index="7" channel="1" type="control" name="Normalization" symbol="control_1"
+                  flow="input"/>
+            <port index="8" channel="2" type="control" name="Quaternion W" symbol="control_2"
+                  flow="input"/>
+            <port index="9" channel="3" type="control" name="Quaternion X" symbol="control_3"
+                  flow="input"/>
+            <port index="10" channel="4" type="control" name="Quaternion Y" symbol="control_4"
+                  flow="input"/>
+            <port index="11" channel="5" type="control" name="Quaternion Z" symbol="control_5"
+                  flow="input"/>
+            <port index="12" channel="6" type="control" name="Azimuth Angle" symbol="control_6"
+                  flow="input"/>
+            <port index="13" channel="7" type="control" name="Elevation Angle"
+                  symbol="control_7" flow="input"/>
+            <port index="14" channel="8" type="control" name="Roll Angle" symbol="control_8"
+                  flow="input"/>
+            <port index="15" channel="9" type="control" name="Stereo Width" symbol="control_9"
+                  flow="input"/>
+            <port index="16" channel="10" type="control" name="Sample-wise Panning"
+                  symbol="control_10" flow="input"/>
+            <port index="17" channel="11" type="control" name="Bypass" symbol="control_11"
+                  flow="input"/>
+            <port index="18" channel="0" type="midi" name="MIDI In" symbol="element_midi_input"
+                  flow="input"/>
+          </ports>
+        </node>
+        <node id="7" type="plugin" format="VST3" identifier="/usr/lib/vst3/StereoEncoder.vst3"
+              name="StereoEncoder" relativeX="0.1694214876033058" relativeY="0.2824919441460795"
+              pluginIdentifierString="VST3-StereoEncoder-5ec90d25-8140b1d7"
+              uuid="3c97d353c8b24b1ab57db55603fc5f88" bypass="0" persistent="1"
+              renderMode="single" keyStart="0" keyEnd="127" transpose="0" delayCompensation="0.0"
+              x="227.0" y="240.0" windowX="311" windowY="138" windowVisible="0"
+              state="915.VMjLgn3....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9XCLx3hUMoFSmQ0Yt3hKt7zJlcUXxEDZisVRxH1a3vVX3fjTLQmKogjYTwVXogiQY8FMwjENHIUUTkEUKMCR38TNtHzSSE0UYgWUwDVQzDCV0EkUYgGMC8DTEoFUAACQH8VTV8DZDwFYuAiUio2YrgjYXcEVxU0UYgCRBwDctjFR0MyPOAUQpQUPvPDRuEkUOgFUFE1ZYcEV5sVLgQWRBgTLEYTXvTkUOglKosjcHg2R4X2PTETRUAUSAIkVpASZH41ZwjkaEU0XmcmUZo2ZsgjYXcEVxU0UYgCRBwDctjFR0MyPOAUQpQUPvPDRuEkUOg1MrIlZUwlXSUkQio2ZrEVaIIDRwTjQgASUV8DZtj1R1gDdKkicCQUPIUETMEjTZoFLogzci0FRlg0UXIWUWkENHIESz4RZHU2LC8DTEoFUAACQH8VTV8DZDcDYn4BZic1cVM1ZvjFR1MiPLg1Mn8zMtTETRUDUSYlZFkENHIkXzjjPHESQFEFLUY0Sn4RZKYGR3sTN1MDUAkTUP0TPRokZvjFR28VaHYFVWgkbUcUV3fjPLQmKogTcyLzSPUjZTEDLDgzaQY0SngjLgI2crgjYXcEVxU0UYgCRBwDctjFR0MyPOAUQpQUPvPDRuEkUOgFUxH1ZMs1T4AkZHYFVWgkbUcUV3fjTLQmKogTcyLzSPUjZTEDLDgzaQY0SnI1UZoVTGoEZtf1XmcmUisFLogjcyHDSncCZOcyM5Q0PMoWXzkkUZ0VPnQ0ZMYUVuk0UYgWPvDFdQc0SnomTLglK3Q0ZzXTVqkzURAELogDZtfGUqQiQYsVRGQUcIczX3fjTKcGRBgzTUwVXpUEah8TSv.UPQYTV3UULhkGLogTcLUzXqkzUYUWUpEVZ3XTVqkjLKglK3Q0ZzXTVqkzURQWTWkEdYcEVxASZHcmKCwDZ2f1S2bCdToWUrI1Z3XUTz0TLgoVUrIVNt3hKt3hKt3hKt3hKtQUUCUEQTg2ZrM1YQcUVDUjQicVPP4RPHQEY1UTLhkWPP4RPL4hKi4hKt3hKt3hKtXlTU0DUQAURWoULEYzXqEEUXoWQFwyKIMzasA2atUlaz4COuX0TTMCTrU2Yo41TzEFck4C."
+              program="0" midiProgram="0" globalMidiPrograms="0" midiProgramsEnabled="0"
+              mute="0" muteInput="0" midiProgramsState="52.3o8Jnn7SunDysXFXfQFK.BaFXjY3rXkQF.BxKwbSkAFYhUFJtjDKAHKVX0.8XfA.h2YCaB"
+              oversamplingFactor="1" enabled="1">
+          <nodes/>
+          <ui>
+            <block/>
+          </ui>
+          <ports>
+            <port index="0" channel="0" type="audio" name="Input 1" symbol="audio_in_1"
+                  flow="input"/>
+            <port index="1" channel="1" type="audio" name="Input 2" symbol="audio_in_2"
+                  flow="input"/>
+            <port index="2" channel="0" type="audio" name="Output 1" symbol="audio_out_1"
+                  flow="output"/>
+            <port index="3" channel="1" type="audio" name="Output 2" symbol="audio_out_2"
+                  flow="output"/>
+            <port index="4" channel="2" type="audio" name="Output 3" symbol="audio_out_3"
+                  flow="output"/>
+            <port index="5" channel="3" type="audio" name="Output 4" symbol="audio_out_4"
+                  flow="output"/>
+            <port index="6" channel="0" type="control" name="Ambisonics Order"
+                  symbol="control_0" flow="input"/>
+            <port index="7" channel="1" type="control" name="Normalization" symbol="control_1"
+                  flow="input"/>
+            <port index="8" channel="2" type="control" name="Quaternion W" symbol="control_2"
+                  flow="input"/>
+            <port index="9" channel="3" type="control" name="Quaternion X" symbol="control_3"
+                  flow="input"/>
+            <port index="10" channel="4" type="control" name="Quaternion Y" symbol="control_4"
+                  flow="input"/>
+            <port index="11" channel="5" type="control" name="Quaternion Z" symbol="control_5"
+                  flow="input"/>
+            <port index="12" channel="6" type="control" name="Azimuth Angle" symbol="control_6"
+                  flow="input"/>
+            <port index="13" channel="7" type="control" name="Elevation Angle"
+                  symbol="control_7" flow="input"/>
+            <port index="14" channel="8" type="control" name="Roll Angle" symbol="control_8"
+                  flow="input"/>
+            <port index="15" channel="9" type="control" name="Stereo Width" symbol="control_9"
+                  flow="input"/>
+            <port index="16" channel="10" type="control" name="Sample-wise Panning"
+                  symbol="control_10" flow="input"/>
+            <port index="17" channel="11" type="control" name="Bypass" symbol="control_11"
+                  flow="input"/>
+            <port index="18" channel="0" type="midi" name="MIDI In" symbol="element_midi_input"
+                  flow="input"/>
+          </ports>
+        </node>
+        <node id="8" type="plugin" format="VST3" identifier="/usr/lib/vst3/StereoEncoder.vst3"
+              name="StereoEncoder" relativeX="0.2443919716646989" relativeY="0.2814178302900107"
+              pluginIdentifierString="VST3-StereoEncoder-5ec90d25-8140b1d7"
+              uuid="fcee43b6118c4549a97f60024239175e" bypass="0" persistent="1"
+              renderMode="single" keyStart="0" keyEnd="127" transpose="0" delayCompensation="0.0"
+              x="354.0" y="239.0" windowX="349" windowY="2" windowVisible="0"
+              state="915.VMjLgn3....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9XCLx3hUMoFSmQ0Yt3hKt7zJlcUXxEDZisVRxH1a3vVX3fjTLQmKogjYTwVXogiQY8FMwjENHIUUTkEUKMCR38TNtHzSSE0UYgWUwDVQzDCV0EkUYgGMC8DTEoFUAACQH8VTV8DZDwFYuAiUio2YrgjYXcEVxU0UYgCRBwDctjFR0MyPOAUQpQUPvPDRuEkUOgFUFE1ZYcEV5sVLgQWRBgTLEYTXvTkUOglKosjcHg2R4X2PTETRUAUSAIkVpASZH41ZwjkaEU0XmcmUZo2ZsgjYXcEVxU0UYgCRBwDctjFR0MyPOAUQpQUPvPDRuEkUOg1MrIlZUwlXSUkQio2ZrEVaIIDRwTjQgASUV8DZtj1R1gDdKkicCQUPIUETMEjTZoFLogzci0FRlg0UXIWUWkENHIESz4RZHU2LC8DTEoFUAACQH8VTV8DZDcDYn4BZic1cVM1ZvjFR1MiPLg1Mn8zMtTETRUDUSYlZFkENHIkXzjjPHESQFEFLUY0Sn4RZKYGR3sTN1MDUAkTUP0TPRokZvjFR28VaHYFVWgkbUcUV3fjPLQmKogTcyLzSPUjZTEDLDgzaQY0SngjLgI2crgjYXcEVxU0UYgCRBwDctjFR0MyPOAUQpQUPvPDRuEkUOgFUxH1ZMs1T4AkZHYFVWgkbUcUV3fjTLQmKogTcyLzSPUjZTEDLDgzaQY0SnI1UZoVTGoEZtf1XmcmUisFLogjcyHDSncCZOcyM5Q0PMoWXzkkUZ0VPnQ0ZMYUVuk0UYgWPvDFdQc0SnomTLglK3Q0ZzXTVqkzURAELogDZtfGUqQiQYsVRGQUcIczX3fjTKcGRBgzTUwVXpUEah8TSv.UPQYTV3UULhkGLogTcLUzXqkzUYUWUpEVZ3XTVqkjLKglK3Q0ZzXTVqkzURQWTWkEdYcEVxASZHcmKCwDZ2f1S2bCdToWUrI1Z3XUTz0TLgoVUrIVNt3hKt3hKt3hKt3hKtQUUCUEQTg2ZrM1YQcUVDUjQicVPP4RPHQEY1UTLhkWPP4RPL4hKi4hKt3hKt3hKtXlTU0DUQAURWoULEYzXqEEUXoWQFwyKIMzasA2atUlaz4COuX0TTMCTrU2Yo41TzEFck4C."
+              program="0" midiProgram="0" globalMidiPrograms="0" midiProgramsEnabled="0"
+              mute="0" muteInput="0" midiProgramsState="52.3o8Jnn7SunDysXFXfQFK.BaFXjY3rXkQF.BxKwbSkAFYhUFJtjDKAHKVX0.8XfA.h2YCaB"
+              oversamplingFactor="1" enabled="1">
+          <nodes/>
+          <ui>
+            <block/>
+          </ui>
+          <ports>
+            <port index="0" channel="0" type="audio" name="Input 1" symbol="audio_in_1"
+                  flow="input"/>
+            <port index="1" channel="1" type="audio" name="Input 2" symbol="audio_in_2"
+                  flow="input"/>
+            <port index="2" channel="0" type="audio" name="Output 1" symbol="audio_out_1"
+                  flow="output"/>
+            <port index="3" channel="1" type="audio" name="Output 2" symbol="audio_out_2"
+                  flow="output"/>
+            <port index="4" channel="2" type="audio" name="Output 3" symbol="audio_out_3"
+                  flow="output"/>
+            <port index="5" channel="3" type="audio" name="Output 4" symbol="audio_out_4"
+                  flow="output"/>
+            <port index="6" channel="0" type="control" name="Ambisonics Order"
+                  symbol="control_0" flow="input"/>
+            <port index="7" channel="1" type="control" name="Normalization" symbol="control_1"
+                  flow="input"/>
+            <port index="8" channel="2" type="control" name="Quaternion W" symbol="control_2"
+                  flow="input"/>
+            <port index="9" channel="3" type="control" name="Quaternion X" symbol="control_3"
+                  flow="input"/>
+            <port index="10" channel="4" type="control" name="Quaternion Y" symbol="control_4"
+                  flow="input"/>
+            <port index="11" channel="5" type="control" name="Quaternion Z" symbol="control_5"
+                  flow="input"/>
+            <port index="12" channel="6" type="control" name="Azimuth Angle" symbol="control_6"
+                  flow="input"/>
+            <port index="13" channel="7" type="control" name="Elevation Angle"
+                  symbol="control_7" flow="input"/>
+            <port index="14" channel="8" type="control" name="Roll Angle" symbol="control_8"
+                  flow="input"/>
+            <port index="15" channel="9" type="control" name="Stereo Width" symbol="control_9"
+                  flow="input"/>
+            <port index="16" channel="10" type="control" name="Sample-wise Panning"
+                  symbol="control_10" flow="input"/>
+            <port index="17" channel="11" type="control" name="Bypass" symbol="control_11"
+                  flow="input"/>
+            <port index="18" channel="0" type="midi" name="MIDI In" symbol="element_midi_input"
+                  flow="input"/>
+          </ports>
+        </node>
+        <node id="10" type="plugin" format="VST3" identifier="/usr/lib/vst3/BinauralDecoder.vst3"
+              name="BinauralDecoder" relativeX="0.09386068476977567" relativeY="0.5682062298603652"
+              pluginIdentifierString="VST3-BinauralDecoder-dfe79307-7035b0ce"
+              uuid="35275d7593c54a5193d08154e4675287" bypass="0" persistent="1"
+              renderMode="single" keyStart="0" keyEnd="127" transpose="0" delayCompensation="0.0"
+              x="99.0" y="506.0" windowX="463" windowY="503" windowVisible="0"
+              state="615.VMjLg3k....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9LyM23hUMoFSmA0Tt3hKt7zJlcUXxEDZisVRxH1a3vVX3fjTLQmKogjYTwVXogiQY8FMwjENHIUUTkEUKMCR38TNtHzSBsFagcVUsI1Y2YTTq0TLgoVUrIVN1MDUAkTUP0TPRokZvjFRmEzQhI2ZGI0ZEYTV1cVLgQWUVE0cIIDRwTjQgASUV8DZtj1R1gDdKkicCQUPIUETMEjTZoFLogzazXjXvDkLSgWTVkEdMUUV5E0UZQ2XrgjYXcEVxU0UYgCRBwDctjFR0MyPOAUQpQUPvPDRuEkUOgFUxH1ZMs1T4AkZHYFVWgkbUcUV3fjTLQmKogTcyLzSO0DLPMDNrEFaqESVlgTUYkVUVoULUwlXPgCahoGLogzbDkFRlwTUYQWTVkEdqQDU3fDZHYFSUkEcQYUV3EDLggWTW8DZ5IESn4BdTsFMFk0ZIIyTS0DUPoVTrI1ZMIiX3fDdKIzZrE1YU0lXmcmQQsVSwDlZUwlX0gjPHMUUrElZUwlXIQiQisVRsM1Y2Y0SnQzPLYGR3sTN1k2RBsFagcVUsI1Y2YTTq0TLgoVUrIVNt3hKt3hKt3hKt3hKtQUUCUEQTg2ZrM1YQcUVDUjQicVPP4RPHQEY1UTLhkWPP4RPL4hKi4hKt3hKt3hKtXlTU0DUQAURWoULEYzXqEEUXoWQFwyKIMzasA2atUlaz4COuX0TTMCTrU2Yo41TzEFck4C."
+              program="0" midiProgram="0" globalMidiPrograms="0" midiProgramsEnabled="0"
+              mute="0" muteInput="0" midiProgramsState="52.3o8Jnn7SunDysXFXfQFK.BaFXjY3rXkQF.BxKwbSkAFYhUFJtjDKAHKVX0.8XfA.h2YCaB"
+              oversamplingFactor="1" enabled="1">
+          <nodes/>
+          <ui>
+            <block/>
+          </ui>
+          <ports>
+            <port index="0" channel="0" type="audio" name="Input 1" symbol="audio_in_1"
+                  flow="input"/>
+            <port index="1" channel="1" type="audio" name="Input 2" symbol="audio_in_2"
+                  flow="input"/>
+            <port index="2" channel="2" type="audio" name="Input 3" symbol="audio_in_3"
+                  flow="input"/>
+            <port index="3" channel="3" type="audio" name="Input 4" symbol="audio_in_4"
+                  flow="input"/>
+            <port index="4" channel="0" type="audio" name="Output 1" symbol="audio_out_1"
+                  flow="output"/>
+            <port index="5" channel="1" type="audio" name="Output 2" symbol="audio_out_2"
+                  flow="output"/>
+            <port index="6" channel="0" type="control" name="Input Ambisonic Order"
+                  symbol="control_0" flow="input"/>
+            <port index="7" channel="1" type="control" name="Input Normalization"
+                  symbol="control_1" flow="input"/>
+            <port index="8" channel="2" type="control" name="Headphone Equalization"
+                  symbol="control_2" flow="input"/>
+            <port index="9" channel="3" type="control" name="Bypass" symbol="control_3"
+                  flow="input"/>
+            <port index="10" channel="0" type="midi" name="MIDI In" symbol="element_midi_input"
+                  flow="input"/>
+          </ports>
+        </node>
+        <node id="1" type="plugin" format="Internal" identifier="audio.input"
+              name="PulseAudio Sound Server" numAudioIns="0" numAudioOuts="2"
+              uuid="1bac43e4d70842d5bc65ef7280857a58" bypass="0" persistent="1"
+              renderMode="single" keyStart="0" keyEnd="127" transpose="0" delayCompensation="0.0"
+              enabled="1" x="92.0" y="27.0" program="0" midiProgram="0" globalMidiPrograms="0"
+              midiProgramsEnabled="0" mute="0" muteInput="0" midiProgramsState=""
+              oversamplingFactor="1" pluginIdentifierString="Internal--da9d27b2-0"
+              relativeX="0.4420289855072464" relativeY="0.05370569280343716">
+          <nodes/>
+          <ui>
+            <block/>
+          </ui>
+          <ports>
+            <port index="0" channel="0" type="audio" name="channel 1" symbol="audio_out_1"
+                  flow="output"/>
+            <port index="1" channel="1" type="audio" name="channel 2" symbol="audio_out_2"
+                  flow="output"/>
+            <port index="2" channel="2" type="audio" name="channel 3" symbol="audio_out_3"
+                  flow="output"/>
+            <port index="3" channel="3" type="audio" name="channel 4" symbol="audio_out_4"
+                  flow="output"/>
+            <port index="4" channel="4" type="audio" name="channel 5" symbol="audio_out_5"
+                  flow="output"/>
+            <port index="5" channel="5" type="audio" name="channel 6" symbol="audio_out_6"
+                  flow="output"/>
+            <port index="6" channel="6" type="audio" name="channel 7" symbol="audio_out_7"
+                  flow="output"/>
+            <port index="7" channel="7" type="audio" name="channel 8" symbol="audio_out_8"
+                  flow="output"/>
+          </ports>
+        </node>
+        <node id="11" type="plugin" format="VST3" identifier="/usr/lib/vst3/AllRADecoder.vst3"
+              name="AllRADecoder" relativeX="0.1894923258559622" relativeY="0.5671321160042965"
+              pluginIdentifierString="VST3-AllRADecoder-77397337-6f38beca"
+              uuid="3e9e690965614d169b71743f157448c3" bypass="0" persistent="1"
+              renderMode="single" keyStart="0" keyEnd="127" transpose="0" delayCompensation="0.0"
+              x="230.0" y="505.0" windowX="724" windowY="263" windowVisible="0"
+              state="2259.VMjLgnLB...O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9DiMvjiKV0jZLcFTlEjKt3xSqX1UgIWPnM1ZIIiXugCaggCRRwDctjFRlQEagkFNFk0azDSV3fjTUQUVTszLHg2S43hPOEzcFElTEQTTq0TLgoVUrIVN1MDUAkTUP0TPRokZvjFRpUULXUWTVkEd3nlXpUEahglKnM1Y2Y0XqASZHY2LBwDZ2f1S23RUPIUQTMkYpYTV3fjTYMSPxDFdQcTTq0TLgoVUrIFZtf1XmcmUisFLogzcyHDSncCZOciKUAkTEQ0TlolQYgCRRk0LAISX3E0QSc1ZxDFLQ0FRlg0UXIWUWkENHIESz4RZHU2LC8DTEoFUAACQH8VTV8DZpwVX1U0Qi8TRGk0ZIICUqE0Qi8FMwjEZtf1XmcmUisFLogjcyHDSncCZOciKUAkTEQ0TlolQYgCRRMVdUECUN0zPQglKnM1Y2Y0XqASZHc2LBwDZ2f1S23RUPIUQTMkYpYTV3fDdis1ZwjkaQIiXn4BZic1cVM1ZvjFR2MiPLg1Mn8zM2nGUC0jdgQWVVoUaAgFUq0jUY8VVWkEdAASX3E0UOgldRwDZtfGUqQiQYsVRWIETvjFRn4BdTsFMFk0ZIcDU0kzQigCRRszcHIDRSUEagoVUrI1SMACTAEkQYgWUwHVdvjFR0QDQgIWRUAEQUECV0EkUYgGNngjYLUUVzEkUYg2ZpEldUwlXwTjQggCRRwjctjFR0MyPOwDNVMlZMcjXqUTLZsVRxHVN1MUTxUkUgsFMFMlYDoFYuAiUio2YV8DZtj1R1gjPHUzcVkULEYzXugCaggCRBwDctjFRlgTUXo1ZVMVdvjFR2MiPLglK3AkaEwVXzUkQggCRRwDZtHkTyUTLY8FMVgEdqc0Sn4RZHYlXTg0azX0SnQTZKYGR3sTN1MUTxUkUgsFMFMlYDoFYuAiUio2YV8DZPMUSz4RZHYFUDE1ZYcEV5sVLgQGLogjcyHDSn4BZTcVTVoELMc0SnQTZKYGRBgzPmYEVzQiUYIGLogDdHIDRIAiUX01ZrE1YIcEY3fjTLglK3E0YqwVX3fjTLQmKogTcyLzSEcmUYMWUrEldAIET0rlUgASTGoENHIkS1MiPLglKREkbUw1XmE0UZUGMV8DZtj1R1gjPHIUQFk0aUIiX3fjTLQmKogjYLQjVmQCags1cV8DZLkFRloFUgc1XVoEcEwlXz.SZHYGRBgzQEYkVzASZHc2LBwDZ2f1S2PEQgsFLVkEcQcDRA81UZMWUGMlavjFR2wzTMQmKogjYTQTXqk0UXo2ZwDFcvjFR1MiPLglKnQ0YQYkVvzzUOgFQosjcHIDRCclUXQGMVkkbvjFR5gjPHkDLVgUaqwVXmkzUjgCRBwDZtfWTmsFaggCRRwDctjFR0MyPOUzcVk0bUwVX5EjTPUyZVEFLQcjV3fjTLMiKosjcHIDREcmUYESQFM1a3vVX3fjPLQmKogjYHUEVpslUikGLogzcyHDSn4BdP4VQrEFcUYTX3fjTMglKRI0bEESVuQiUXg2ZW8DZtjFRlIFUX8FMV8DZDk1R1gDdKkicSEkbUYUXqQiQiYFQpQ1avX0X5clUOgldRwTdTk1R1gjPHUzcVkULEYzXugCaggCRBwDctjFRlgTUXo1ZVMVdvjFR2MiPLglK3AkaEwVXzUkQggCRn0DZtHkTyUTLY8FMVgEdqc0Sn4RZHYlXTg0azX0SnQTZKYGR3sTN1MUTxUkUgsFMFMlYDoFYuAiUio2YV8DZ5IkS1MiPLglKREkbUw1XmE0UZUGMV8DZtj1R1gjPHIUQFk0aUIiX3fjTLQmKogjYLQjVmQCags1cV8DZhkFRloFUgc1XVoEcEwlXz.SZHYGRBgzQEYkVzASZHc2LBwDZ2f1S2PEQgsFLVkEcQcDRA81UZMWUGMlavjFRyA0TMQmKogjYTQTXqk0UXo2ZwDFcvjFR1MiPLglKnQ0YQYkVvzzUOgFQosjcHIDRCclUXQGMVkkbvjFRyfjPHkDLVgUaqwVXmkzUjgCRBwDZtfWTmsFaggCRRwDctjFR0MyPOUzcVk0bUwVX5EjTPUyZVEFLQcjV3fDZLg2LR0DZtHUTxUEaicVTWoUczX0SnA0PLQmKogjYHUEVpslUikGLogzcyHDSn4BdP4VQrEFcUYTX3fjTNglKRI0bEESVuQiUXg2ZW8DZtjFRlIFUX8FMV8DZDk1R1gDdKkicSEkbUYUXqQiQiYFQpQ1avX0X5clUOgFQC0DdyHUSn4hTQIWUrM1YQckV0QiUOgFTCwDctjFRlgTUXo1ZVMVdvjFR2MiPLglK3AkaEwVXzUkQggCRRwjcHIDRIAiUX01ZrE1YIcEY3fjPLglK3E0YqwVX3fjTLQmKogTcyLzSEcmUYMWUrEldAIET0rlUgASTGoENHI0RzHVZKACRBgTQ2YUVwTjQi8FNrEFNHITS1MiPLglKnQ0YQYkVvzzUOgFQosjcHIDRCclUXQGMVkkbvjFR2QTZHYlZTE1YiYkVzUDahQCLogjcHIDRGUjUZQGLogzcyHDSncCZOcCUDE1ZvXUVzE0QHEzaWo0bUczXtASZHY2LBwDZtHUTxUEaicVTWoUczX0SnomTNY2LBwDZtfFUmEkUZASSW8DZDk1R1gjPHMzYVgEczXUVxASZHcGRogjYpQUXmMlUZQWQrIFMvjFR1gjPHcTQVoEcvjFR2MiPLg1Mn8zM2HzT0U0QYkWPWk0YyYUV30TaOcyMRAkb2wFUAEEUYkFNFk0ZI01St3hKt3hKt3hKt3hKJUELPUTPqI1aYcEV5UkQQcVTWgkKDAkKBs1QhcVSxHlKDAkKC4BTG4hKt3hKt3hKt3FUUMTUDQEdqw1XmE0UYQTQFM1YAwyKIMzasA2atUlaz4COuX0TTMCTrU2Yo41TzEFck4C."
+              program="0" midiProgram="0" globalMidiPrograms="0" midiProgramsEnabled="0"
+              mute="0" muteInput="0" midiProgramsState="52.3o8Jnn7SunDysXFXfQFK.BaFXjY3rXkQF.BxKwbSkAFYhUFJtjDKAHKVX0.8XfA.h2YCaB"
+              oversamplingFactor="1" enabled="1">
+          <nodes/>
+          <ui>
+            <block/>
+          </ui>
+          <ports>
+            <port index="0" channel="0" type="audio" name="Input 1" symbol="audio_in_1"
+                  flow="input"/>
+            <port index="1" channel="1" type="audio" name="Input 2" symbol="audio_in_2"
+                  flow="input"/>
+            <port index="2" channel="2" type="audio" name="Input 3" symbol="audio_in_3"
+                  flow="input"/>
+            <port index="3" channel="3" type="audio" name="Input 4" symbol="audio_in_4"
+                  flow="input"/>
+            <port index="4" channel="0" type="audio" name="Output 1" symbol="audio_out_1"
+                  flow="output"/>
+            <port index="5" channel="1" type="audio" name="Output 2" symbol="audio_out_2"
+                  flow="output"/>
+            <port index="6" channel="2" type="audio" name="Output 3" symbol="audio_out_3"
+                  flow="output"/>
+            <port index="7" channel="3" type="audio" name="Output 4" symbol="audio_out_4"
+                  flow="output"/>
+            <port index="8" channel="4" type="audio" name="Output 5" symbol="audio_out_5"
+                  flow="output"/>
+            <port index="9" channel="5" type="audio" name="Output 6" symbol="audio_out_6"
+                  flow="output"/>
+            <port index="10" channel="6" type="audio" name="Output 7" symbol="audio_out_7"
+                  flow="output"/>
+            <port index="11" channel="7" type="audio" name="Output 8" symbol="audio_out_8"
+                  flow="output"/>
+            <port index="12" channel="0" type="control" name="Input Ambisonic Order"
+                  symbol="control_0" flow="input"/>
+            <port index="13" channel="1" type="control" name="Input Normalization"
+                  symbol="control_1" flow="input"/>
+            <port index="14" channel="2" type="control" name="Decoder Order" symbol="control_2"
+                  flow="input"/>
+            <port index="15" channel="3" type="control" name="Export Decoder" symbol="control_3"
+                  flow="input"/>
+            <port index="16" channel="4" type="control" name="Export Layout" symbol="control_4"
+                  flow="input"/>
+            <port index="17" channel="5" type="control" name="Ambisonic Weights"
+                  symbol="control_5" flow="input"/>
+            <port index="18" channel="6" type="control" name="Bypass" symbol="control_6"
+                  flow="input"/>
+            <port index="19" channel="7" type="control" name="Program" symbol="control_7"
+                  flow="input"/>
+            <port index="20" channel="0" type="midi" name="MIDI In" symbol="element_midi_input"
+                  flow="input"/>
+          </ports>
+        </node>
+      </nodes>
+      <ports/>
+      <ui>
+        <GraphEditorView width="734" height="931" horizontalRangeStart="0.0" verticalRangeStart="0.0"
+                         zoomScale="1.0" nodePropsVisible="0"/>
+      </ui>
+      <arcs>
+        <arc sourceNode="1" sourcePort="0" destNode="5" destPort="0"/>
+        <arc sourceNode="1" sourcePort="1" destNode="5" destPort="1"/>
+        <arc sourceNode="1" sourcePort="6" destNode="6" destPort="0"/>
+        <arc sourceNode="1" sourcePort="7" destNode="6" destPort="1"/>
+        <arc sourceNode="1" sourcePort="2" destNode="7" destPort="0"/>
+        <arc sourceNode="1" sourcePort="3" destNode="7" destPort="1"/>
+        <arc sourceNode="1" sourcePort="4" destNode="8" destPort="0"/>
+        <arc sourceNode="1" sourcePort="5" destNode="8" destPort="1"/>
+        <arc sourceNode="5" sourcePort="2" destNode="10" destPort="0"/>
+        <arc sourceNode="5" sourcePort="3" destNode="10" destPort="1"/>
+        <arc sourceNode="5" sourcePort="4" destNode="10" destPort="2"/>
+        <arc sourceNode="5" sourcePort="5" destNode="10" destPort="3"/>
+        <arc sourceNode="5" sourcePort="2" destNode="11" destPort="0"/>
+        <arc sourceNode="5" sourcePort="3" destNode="11" destPort="1"/>
+        <arc sourceNode="5" sourcePort="4" destNode="11" destPort="2"/>
+        <arc sourceNode="5" sourcePort="5" destNode="11" destPort="3"/>
+        <arc sourceNode="6" sourcePort="2" destNode="10" destPort="0"/>
+        <arc sourceNode="6" sourcePort="3" destNode="10" destPort="1"/>
+        <arc sourceNode="6" sourcePort="4" destNode="10" destPort="2"/>
+        <arc sourceNode="6" sourcePort="5" destNode="10" destPort="3"/>
+        <arc sourceNode="6" sourcePort="2" destNode="11" destPort="0"/>
+        <arc sourceNode="6" sourcePort="3" destNode="11" destPort="1"/>
+        <arc sourceNode="6" sourcePort="4" destNode="11" destPort="2"/>
+        <arc sourceNode="6" sourcePort="5" destNode="11" destPort="3"/>
+        <arc sourceNode="7" sourcePort="2" destNode="10" destPort="0"/>
+        <arc sourceNode="7" sourcePort="3" destNode="10" destPort="1"/>
+        <arc sourceNode="7" sourcePort="4" destNode="10" destPort="2"/>
+        <arc sourceNode="7" sourcePort="5" destNode="10" destPort="3"/>
+        <arc sourceNode="7" sourcePort="2" destNode="11" destPort="0"/>
+        <arc sourceNode="7" sourcePort="3" destNode="11" destPort="1"/>
+        <arc sourceNode="7" sourcePort="4" destNode="11" destPort="2"/>
+        <arc sourceNode="7" sourcePort="5" destNode="11" destPort="3"/>
+        <arc sourceNode="8" sourcePort="2" destNode="10" destPort="0"/>
+        <arc sourceNode="8" sourcePort="3" destNode="10" destPort="1"/>
+        <arc sourceNode="8" sourcePort="4" destNode="10" destPort="2"/>
+        <arc sourceNode="8" sourcePort="5" destNode="10" destPort="3"/>
+        <arc sourceNode="8" sourcePort="2" destNode="11" destPort="0"/>
+        <arc sourceNode="8" sourcePort="3" destNode="11" destPort="1"/>
+        <arc sourceNode="8" sourcePort="4" destNode="11" destPort="2"/>
+        <arc sourceNode="8" sourcePort="5" destNode="11" destPort="3"/>
+        <arc sourceNode="10" sourcePort="4" destNode="2" destPort="0"/>
+        <arc sourceNode="10" sourcePort="5" destNode="2" destPort="1"/>
+        <arc sourceNode="11" sourcePort="4" destNode="2" destPort="2"/>
+        <arc sourceNode="11" sourcePort="5" destNode="2" destPort="3"/>
+        <arc sourceNode="11" sourcePort="6" destNode="2" destPort="4"/>
+        <arc sourceNode="11" sourcePort="7" destNode="2" destPort="5"/>
+        <arc sourceNode="11" sourcePort="8" destNode="2" destPort="6"/>
+        <arc sourceNode="11" sourcePort="9" destNode="2" destPort="7"/>
+      </arcs>
+    </node>
+  </graphs>
+  <controllers/>
+  <maps/>
+  <ui content="129.3ocCHurDBBBE..EVzuiaxQauASWyoZQYfyzBKwG.w0wXD5uuNKOe7sdEgROgcJV2jGWJPmW470Sp.g9XSVVxVbWoWu+HbiKzXd7Lq+ZYXd.LhnU7b1pGS4hAfaFQvrHs1lFaql8+P6aGVudIXzxn7NTTEO7sJYM8UdOPH+voJuRN"/>
+</session>

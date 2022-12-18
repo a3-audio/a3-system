@@ -9,19 +9,16 @@
 
 /*
 (MALE)
-1	 2	 3	 4	 5
-GND	SDC	SDA	UPD	VCW
---- PB0	PB1
-
-10	 9	 8	 7	 6	 4	 3	 2
-SDA	SHU	ENB	BU3	AD1	AD0	ESW	BU1
-PB1	PB2	PB3	PB4	PB5	PA6	PA5	PA4
-
-
-
-11	 12	 13	 15	 16	 17	 19		 1	 2	 3
-SCL	BU2	ENA	BU0	UPD	SHD	SHC		VCW	UPD	GND
-PB0	PC0	PC1	PC3	PA0	PA1	PA3
+1	 2	 3	 4	 5											10	 9	 8	 7	 6	 4	 3	 2
+GND	SDC	SDA	UPD	VCW											SDA	SHU	ENB	BU3	AD1	AD0	ESW	BU1				(Poti Connector)
+--- PB0	PB1													PB1	PB2	PB3	PB4	PB5	PA6	PA5	PA4				1	AD1
+																										2	GND
+																	(Attiny1626)						3	AD0
+(FEMALE)					(programming interface)														4	GND	
+1	 2	 3	 4	 5			 1	 2	 3						11	 12	 13	 15	 16	 17	 19					5	VCC
+GND	SDC	SDA	UPD	VCW			VCW	UPD	GND						SCL	BU2	ENA	BU0	UPD	SHD	SHC		
+--- PB0	PB1													PB0	PC0	PC1	PC3	PA0	PA1	PA3
+															
 */
 
 volatile uint16_t i2c_responseValue;

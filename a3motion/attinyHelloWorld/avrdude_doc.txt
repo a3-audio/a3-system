@@ -1,0 +1,17 @@
+Fuse calculator
+
+https://www.engbedded.com/conffuse/
+
+programmer 
+
+download from 
+https://github.com/ElTangas/jtag2updi
+
+
+rename source to jtag2updi
+
+open .ino with aruino ide 
+
+port and board
+
+upload

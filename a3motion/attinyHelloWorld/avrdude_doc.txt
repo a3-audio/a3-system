@@ -61,14 +61,15 @@ programmer (https://github.com/ElTangas/jtag2updi)
    Jumper(!!!)
       zum programmieren sollte der Attiny vom Rest des Boards getrennt werden. Dazu muss der äußere Jumper entfernt werden
 
-
-
+      Boardconnector
          male(5p)
-                                                jumper(4p)        Attiny1626(20p)
-                                                   x=x
-         female(5p)     programierinterface(3p)    x x (* dieser Jumper bleibt offen)
-      x  x  x  x  x          x  x  x
-      1  2  3  4  5          1  2  3
+                                                                  10 9  8  7  6  5  4  3  2  1
+      x  x  x  x  x                                                     Attiny1626(20p)
+      1  2  3  4  5                                               11 12 13 14 15 16 17 18 19 20
+                                                  
+        female(5p)     programierinterface(3p)    jumper(4p)
+                             x  x  x               x=x
+                             1  2  3               x x (* dieser Jumper bleibt offen)
 
 
    Anschluss des programmers
@@ -80,8 +81,10 @@ programmer (https://github.com/ElTangas/jtag2updi)
 
 4. Avrdude (Tool um die Hex datei zu übertragen)
 
-   Ich habe mir die Version 6.3 besorgt. (http://download.savannah.gnu.org/releases/avrdude/)
+   Ich habe mir die Version 6.3 besorgt da diese schon mit jtag2updi getestet wurde. (http://download.savannah.gnu.org/releases/avrdude/)
    Dann habe ich die avrdude.conf ausgetauscht mit der Version von hier (https://github.com/ElTangas/jtag2updi)
+   Im Ordner a3-system\a3motion\attinyHelloWorld\avrdude-ver6.3 ist schon die richtige Datei avrdude.conf.
+
 
    Wenn dann alles angeschlossen ist und der jumper entfernt wurde. Starte mit 
 
@@ -102,5 +105,24 @@ programmer (https://github.com/ElTangas/jtag2updi)
    avrdude done.  Thank you.
 
    Die Warnungen kann man wohl ignorieren
+
+   5. first Test
+      
+      funktion
+
+         Für den ersten Test gibt es im Ordner a3-system\a3motion\attinyHelloWorld\avrdude-ver6.3 die datei firstTest.hex. Diese läßt die Pins 3 und 4 am Boardconnector toggeln 500ms an und 500ms aus
+
+         Dazu muss der Attiny NICHT mit dem Jumper mit dem Rest des Boards verbunden werden. Also pin 3 und 4 am Jumper werden NICHT verbunden.
+
+      Aufbau 
+         am Pin 4 des Boardconnector wird eine LED angeschlossen. Dabei ist es egal ob an die female oder male seite angeschlossen wird. Der maximale Strom des Attiny ist angeblich 40mA. Der Strom der LED sollte aber weit darunter bleiben. Deshalb wird für eine 2v rote Led ein Vorwiderstand von min 600 Ohm verwendet.
+
+      Übertragung
+
+         -> avrdude -c jtag2updi -P com7 -p t1626 -U flash:w:firstTest.hex
+
+         com7 muss natürlich durch den richtigen Port ersetzt werden.
+
+      wenn alles gut gegangen ist blinkt die LED
 
 

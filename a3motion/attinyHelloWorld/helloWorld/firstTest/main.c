@@ -5,9 +5,9 @@
  */ 
 
 #ifndef F_CPU			// if F_CPU was not defined in Project -> Properties
-#define F_CPU 1000000UL			  // define it now as 1 MHz unsigned long
+#define F_CPU 20000000UL		  // define it now as 1 MHz unsigned long
 #endif
-
+#include "bitoperation.h"
 #include <avr/io.h>			  // this is always included in AVR programs
 #include <util/delay.h>			  // add this to use the delay function
 /*
@@ -27,11 +27,16 @@ GND	SDC	SDA	UPD	VCW			VCW	UPD	GND						SCL	BU2	ENA	BU0	UPD	SHD	SHC
 int main(void)
 {
 	ccp_write_io((void *) & (CLKCTRL.MCLKCTRLB), 0); //protected write to disable prescaler of CPU clock
-    PORTB.DIR
-	DDRB |= (1 << PB0);		  // set Port C pin PC5 for output
-	
+    BITMASK_SET(PORTB.DIR,PIN1_bm|PIN0_bm); //PB1 and PB0 as output
+	uint8_t tog=0;
 	while (1) {	                  // begin infinite loop
-		PORTB ^= (1 << PB5);	  // flip state of LED on PC5
+		if(tog==1){
+			tog=0;
+			BITMASK_SET(PORTB.OUT,PIN1_bm|PIN0_bm); //PB1 and PB0 as output
+		}else{
+			tog=1;
+			BITMASK_CLEAR(PORTB.OUT,PIN1_bm|PIN0_bm); //PB1 and PB0 as output
+		}
 		_delay_ms(500);		  // delay 1/2 second
 	}
 	return(0);	// should never get here, this is to prevent a compiler warning

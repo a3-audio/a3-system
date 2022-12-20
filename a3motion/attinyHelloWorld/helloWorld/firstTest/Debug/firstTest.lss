@@ -1,0 +1,161 @@
+
+firstTest.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000000  00803800  00803800  0000013e  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         000000ea  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .comment      00000030  00000000  00000000  0000013e  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000170  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000040  00000000  00000000  000001b0  2**3
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00001d91  00000000  00000000  000001f0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00001918  00000000  00000000  00001f81  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   0000034e  00000000  00000000  00003899  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000024  00000000  00000000  00003be8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000dea  00000000  00000000  00003c0c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    00000042  00000000  00000000  000049f6  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000010  00000000  00000000  00004a38  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 3c 00 	jmp	0x78	; 0x78 <__ctors_end>
+   4:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+   8:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+   c:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  10:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  14:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  18:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  1c:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  20:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  24:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  28:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  2c:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  30:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  34:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  38:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  3c:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  40:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  44:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  48:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  4c:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  50:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  54:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  58:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  5c:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  60:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  64:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  68:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  6c:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  70:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  74:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+
+00000078 <__ctors_end>:
+  78:	11 24       	eor	r1, r1
+  7a:	1f be       	out	0x3f, r1	; 63
+  7c:	cf ef       	ldi	r28, 0xFF	; 255
+  7e:	cd bf       	out	0x3d, r28	; 61
+  80:	df e3       	ldi	r29, 0x3F	; 63
+  82:	de bf       	out	0x3e, r29	; 62
+  84:	0e 94 48 00 	call	0x90	; 0x90 <main>
+  88:	0c 94 73 00 	jmp	0xe6	; 0xe6 <_exit>
+
+0000008c <__bad_interrupt>:
+  8c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+00000090 <main>:
+															
+*/
+
+int main(void)
+{
+	ccp_write_io((void *) & (CLKCTRL.MCLKCTRLB), 0); //protected write to disable prescaler of CPU clock
+  90:	60 e0       	ldi	r22, 0x00	; 0
+  92:	70 e0       	ldi	r23, 0x00	; 0
+  94:	81 e6       	ldi	r24, 0x61	; 97
+  96:	90 e0       	ldi	r25, 0x00	; 0
+  98:	0e 94 6d 00 	call	0xda	; 0xda <ccp_write_io>
+    BITMASK_SET(PORTB.DIR,PIN1_bm|PIN0_bm); //PB1 and PB0 as output
+  9c:	e0 e2       	ldi	r30, 0x20	; 32
+  9e:	f4 e0       	ldi	r31, 0x04	; 4
+  a0:	80 81       	ld	r24, Z
+  a2:	83 60       	ori	r24, 0x03	; 3
+  a4:	80 83       	st	Z, r24
+	uint8_t tog=0;
+  a6:	80 e0       	ldi	r24, 0x00	; 0
+	while (1) {	                  // begin infinite loop
+		if(tog==1){
+  a8:	81 30       	cpi	r24, 0x01	; 1
+  aa:	39 f4       	brne	.+14     	; 0xba <main+0x2a>
+			tog=0;
+			BITMASK_SET(PORTB.OUT,PIN1_bm|PIN0_bm); //PB1 and PB0 as output
+  ac:	e0 e2       	ldi	r30, 0x20	; 32
+  ae:	f4 e0       	ldi	r31, 0x04	; 4
+  b0:	84 81       	ldd	r24, Z+4	; 0x04
+  b2:	83 60       	ori	r24, 0x03	; 3
+  b4:	84 83       	std	Z+4, r24	; 0x04
+	ccp_write_io((void *) & (CLKCTRL.MCLKCTRLB), 0); //protected write to disable prescaler of CPU clock
+    BITMASK_SET(PORTB.DIR,PIN1_bm|PIN0_bm); //PB1 and PB0 as output
+	uint8_t tog=0;
+	while (1) {	                  // begin infinite loop
+		if(tog==1){
+			tog=0;
+  b6:	80 e0       	ldi	r24, 0x00	; 0
+  b8:	06 c0       	rjmp	.+12     	; 0xc6 <main+0x36>
+			BITMASK_SET(PORTB.OUT,PIN1_bm|PIN0_bm); //PB1 and PB0 as output
+		}else{
+			tog=1;
+			BITMASK_CLEAR(PORTB.OUT,PIN1_bm|PIN0_bm); //PB1 and PB0 as output
+  ba:	e0 e2       	ldi	r30, 0x20	; 32
+  bc:	f4 e0       	ldi	r31, 0x04	; 4
+  be:	84 81       	ldd	r24, Z+4	; 0x04
+  c0:	8c 7f       	andi	r24, 0xFC	; 252
+  c2:	84 83       	std	Z+4, r24	; 0x04
+	while (1) {	                  // begin infinite loop
+		if(tog==1){
+			tog=0;
+			BITMASK_SET(PORTB.OUT,PIN1_bm|PIN0_bm); //PB1 and PB0 as output
+		}else{
+			tog=1;
+  c4:	81 e0       	ldi	r24, 0x01	; 1
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  c6:	2f e7       	ldi	r18, 0x7F	; 127
+  c8:	34 e8       	ldi	r19, 0x84	; 132
+  ca:	9e e1       	ldi	r25, 0x1E	; 30
+  cc:	21 50       	subi	r18, 0x01	; 1
+  ce:	30 40       	sbci	r19, 0x00	; 0
+  d0:	90 40       	sbci	r25, 0x00	; 0
+  d2:	e1 f7       	brne	.-8      	; 0xcc <main+0x3c>
+  d4:	00 c0       	rjmp	.+0      	; 0xd6 <main+0x46>
+  d6:	00 00       	nop
+  d8:	e7 cf       	rjmp	.-50     	; 0xa8 <main+0x18>
+
+000000da <ccp_write_io>:
+  da:	dc 01       	movw	r26, r24
+  dc:	28 ed       	ldi	r18, 0xD8	; 216
+  de:	20 93 34 00 	sts	0x0034, r18	; 0x800034 <__RODATA_PM_OFFSET__+0x7f8034>
+  e2:	6c 93       	st	X, r22
+  e4:	08 95       	ret
+
+000000e6 <_exit>:
+  e6:	f8 94       	cli
+
+000000e8 <__stop_program>:
+  e8:	ff cf       	rjmp	.-2      	; 0xe8 <__stop_program>

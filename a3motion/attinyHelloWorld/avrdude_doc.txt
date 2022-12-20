@@ -2,16 +2,105 @@ Fuse calculator
 
 https://www.engbedded.com/conffuse/
 
-programmer 
+programmer (https://github.com/ElTangas/jtag2updi)
 
-download from 
-https://github.com/ElTangas/jtag2updi
+1. Hardware
 
 
-rename source to jtag2updi
+                                              V_prog                 V_target
+                                                 +-+                     +-+
+                                                  |                       |
+    +----------+          +---------------------+ |                       | +--------------------+
+    | PC       |          | Programmer          +-+                       +-+  Target            |
+    | avrdude  |          |                     |      +----------+         |                    |
+    |       TX +----------+ RX              PD6 +------+   4k7    +---------+ UPDI               |
+    |          |          |                     |      +----------+         |                    |
+    |       RX +----------+ TX                  |                           |                    |
+    |          |          |                     |                           |                    |
+    |          |          |                     |                           |                    |
+    |          |          |                     +--+                     +--+                    |
+    +----------+          +---------------------+  |                     |  +--------------------+
+                JTAGICE MkII                      +-+     UPDI          +-+
+                Protocol                          GND     Protocol      GND
 
-open .ino with aruino ide 
+   Drawing adapted from: https://github.com/mraardvark/pyupdi
 
-port and board
+   (bei mir gehts ohne)
+   *
+   	If you use an Arduino as host for this program, be sure that, after burning the software, 
+   	you disable its auto-reset feature, using one of the techniques described 
+   	here: https://playground.arduino.cc/Main/DisablingAutoResetOnSerialConnection
+   *
 
-upload
+
+2. Programmierung des Nano
+
+   download from 
+   https://github.com/ElTangas/jtag2updi
+
+
+   Building with Arduino IDE
+   If you prefer, the program can be built as if it was an Arduino sketch. Inside the "source" directory, there is an empty file called "jtag2updi.ino" so that the Arduino IDE can recognize the source code.
+
+   Just copy all the files inside "source" to a new directory called "jtag2updi" inside your sketch main directory.
+
+   The Arduino IDE will automatically set the correct MCU model and F_CPU, but if you want to change the speed of the UPDI link, you will have to edit UPDI_BAUD directly in the source code.
+
+   When building for Logic Green AVR clones, I recommend that you install the board definitions from dbuezas (https://github.com/dbuezas/lgt8fx).
+
+   This version allows selection of the MCU running speed, unlike the official release (Larduino_HSP)
+
+   Note: By default, the following pins are used for UPDI communication on common Arduino boards:
+
+   Arduino Mega (1280/2560): PD3 -> Digital Pin 18
+   Arduino(Nano) (328P): PD6 -> Digital Pin 6
+
+
+3. Auf dem Board (von mir jetzt)
+
+   Jumper(!!!)
+      zum programmieren sollte der Attiny vom Rest des Boards getrennt werden. Dazu muss der äußere Jumper entfernt werden
+
+
+
+         male(5p)
+                                                jumper(4p)        Attiny1626(20p)
+                                                   x=x
+         female(5p)     programierinterface(3p)    x x (* dieser Jumper bleibt offen)
+      x  x  x  x  x          x  x  x
+      1  2  3  4  5          1  2  3
+
+
+   Anschluss des programmers
+      Zum anschluss des Prgrammers(Nano) wird das Programierinterface genutzt
+      Der Anschluss erfolgt wie folgend:
+      1 vcc
+      2 updi (meistens pin 6 am Nano)
+      3 GND
+
+4. Avrdude (Tool um die Hex datei zu übertragen)
+
+   Ich habe mir die Version 6.3 besorgt. (http://download.savannah.gnu.org/releases/avrdude/)
+   Dann habe ich die avrdude.conf ausgetauscht mit der Version von hier (https://github.com/ElTangas/jtag2updi)
+
+   Wenn dann alles angeschlossen ist und der jumper entfernt wurde. Starte mit 
+
+   ->    avrdude -c jtag2updi -P com7 -p t1626
+
+
+
+
+   avrdude: jtagmkII_getsync(): sign-on command: status -1
+
+   avrdude: jtagmkII_initialize(): Cannot locate "flash" and "boot" memories in description
+   avrdude: AVR device initialized and ready to accept instructions
+
+   Reading | ################################################## | 100% 0.05s
+
+   avrdude: Device signature = 0x1e9429 (probably t1626)
+
+   avrdude done.  Thank you.
+
+   Die Warnungen kann man wohl ignorieren
+
+

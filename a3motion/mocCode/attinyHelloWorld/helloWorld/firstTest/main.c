@@ -37,7 +37,7 @@ int main(void)
 			tog=1;
 			BITMASK_CLEAR(PORTB.OUT,PIN1_bm|PIN0_bm); //PB1 and PB0 as output
 		}
-		_delay_ms(500);		  // delay 1/2 second
+		_delay_ms(100);		  // delay 1/2 second
 	}
 	return(0);	// should never get here, this is to prevent a compiler warning
 }

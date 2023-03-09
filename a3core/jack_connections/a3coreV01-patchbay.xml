@@ -1,0 +1,116 @@
+<!DOCTYPE patchbay>
+<patchbay version="0.9.1" name="a3-patchbay">
+ <output-sockets>
+  <socket type="jack-audio" exclusive="off" client="PulseAudio\ JACK\ Sink" name="pulse">
+   <plug>front\-left</plug>
+   <plug>front\-right</plug>
+  </socket>
+  <socket type="jack-audio" exclusive="off" client="system" name="st-In-1">
+   <plug>capture_1</plug>
+   <plug>capture_2</plug>
+  </socket>
+  <socket type="jack-audio" exclusive="off" client="system" name="st-in-2">
+   <plug>capture_3</plug>
+   <plug>capture_4</plug>
+  </socket>
+  <socket type="jack-audio" exclusive="off" client="system" name="st-in-3">
+   <plug>capture_5</plug>
+   <plug>capture_6</plug>
+  </socket>
+  <socket type="jack-audio" exclusive="off" client="system" name="st-in-4">
+   <plug>capture_7</plug>
+   <plug>capture_8</plug>
+  </socket>
+  <socket type="jack-audio" exclusive="off" client="REAPER" name="reaper_output_vu">
+   <plug>out5</plug>
+   <plug>out6</plug>
+   <plug>out7</plug>
+   <plug>out8</plug>
+   <plug>out9</plug>
+   <plug>out10</plug>
+   <plug>out11</plug>
+   <plug>out12</plug>
+  </socket>
+  <socket type="jack-audio" exclusive="off" client="REAPER" name="reaper_vu_input">
+   <plug>out1</plug>
+   <plug>out2</plug>
+   <plug>out3</plug>
+   <plug>out4</plug>
+  </socket>
+  <socket type="jack-audio" exclusive="off" client="REAPER" name="reaper_audio_out">
+   <plug>out13</plug>
+   <plug>out14</plug>
+   <plug>out35</plug>
+   <plug>out36</plug>
+   <plug>out37</plug>
+   <plug>out38</plug>
+   <plug>out39</plug>
+   <plug>out40</plug>
+  </socket>
+  <socket type="jack-audio" exclusive="off" client="REAPER" name="reaper-recout">
+   <plug>out55</plug>
+   <plug>out56</plug>
+  </socket>
+ </output-sockets>
+ <input-sockets>
+  <socket type="jack-audio" exclusive="off" client="REAPER" name="reaper-st-1">
+   <plug>in1</plug>
+   <plug>in2</plug>
+  </socket>
+  <socket type="jack-audio" exclusive="off" client="REAPER" name="reaper-st-2">
+   <plug>in3</plug>
+   <plug>in4</plug>
+  </socket>
+  <socket type="jack-audio" exclusive="off" client="REAPER" name="reaper-st-3">
+   <plug>in5</plug>
+   <plug>in6</plug>
+  </socket>
+  <socket type="jack-audio" exclusive="off" client="REAPER" name="reaper-st-4">
+   <plug>in7</plug>
+   <plug>in8</plug>
+  </socket>
+  <socket type="jack-audio" exclusive="off" client="SuperCollider" name="sc_output_vu">
+   <plug>in_5</plug>
+   <plug>in_6</plug>
+   <plug>in_7</plug>
+   <plug>in_8</plug>
+   <plug>in_9</plug>
+   <plug>in_10</plug>
+   <plug>in_11</plug>
+   <plug>in_12</plug>
+  </socket>
+  <socket type="jack-audio" exclusive="off" client="SuperCollider" name="sc_input_vu">
+   <plug>in_1</plug>
+   <plug>in_2</plug>
+   <plug>in_3</plug>
+   <plug>in_4</plug>
+  </socket>
+  <socket type="jack-audio" exclusive="off" client="system" name="speaker-out">
+   <plug>playback_1</plug>
+   <plug>playback_2</plug>
+   <plug>playback_3</plug>
+   <plug>playback_4</plug>
+   <plug>playback_5</plug>
+   <plug>playback_6</plug>
+   <plug>playback_7</plug>
+   <plug>playback_8</plug>
+  </socket>
+  <socket type="jack-audio" exclusive="off" client="JACK\ Input\ Client" name="obs-recin">
+   <plug>in_1</plug>
+   <plug>in_2</plug>
+  </socket>
+ </input-sockets>
+ <slots/>
+ <cables>
+  <cable input="reaper-st-1" output="pulse" type="jack-audio"/>
+  <cable input="reaper-st-1" output="st-In-1" type="jack-audio"/>
+  <cable input="reaper-st-2" output="st-in-2" type="jack-audio"/>
+  <cable input="reaper-st-3" output="st-in-3" type="jack-audio"/>
+  <cable input="reaper-st-4" output="st-in-4" type="jack-audio"/>
+  <cable input="sc_output_vu" output="reaper_output_vu" type="jack-audio"/>
+  <cable input="sc_input_vu" output="reaper_vu_input" type="jack-audio"/>
+  <cable input="speaker-out" output="reaper_audio_out" type="jack-audio"/>
+  <cable input="obs-recin" output="reaper-recout" type="jack-audio"/>
+ </cables>
+</patchbay>
+

@@ -22,49 +22,36 @@ s.options.numBuffers = 4096;
 s.boot;
 
 ~mic = NetAddr.new("192.168.43.51", 7771);    // create the NetAddr
-~vid = NetAddr.new("192.168.43.102", 7771);    // create the NetAddr
+~vid = NetAddr.new("192.168.43.101", 7771);    // create the NetAddr
+~replyrate = 12;
+~peaklag = 5;
+~num_input_vu = 4;
+~num_output_vu = 8;
 
 s.waitForBoot({
 
 //SendPeakRMS.ar(sig, replyRate: 20.0, peakLag: 3, cmdName: '/reply', replyID: -1)
 
-{SendPeakRMS.ar(In.ar(2, 1), 15, 5, "/reply0")}.play;
-{SendPeakRMS.ar(In.ar(3, 1), 15, 5, "/reply1")}.play;
-{SendPeakRMS.ar(In.ar(4, 1), 15, 5, "/reply2")}.play;
-{SendPeakRMS.ar(In.ar(5, 1), 15, 5, "/reply3")}.play;
-{SendPeakRMS.ar(In.ar(6, 1), 15, 5, "/reply4")}.play;
-{SendPeakRMS.ar(In.ar(7, 1), 15, 5, "/reply5")}.play;
-{SendPeakRMS.ar(In.ar(8, 1), 15, 5, "/reply6")}.play;
-{SendPeakRMS.ar(In.ar(9, 1), 15, 5, "/reply7")}.play;
-{SendPeakRMS.ar(In.ar(10, 1), 15, 4, "/reply8")}.play;
-{SendPeakRMS.ar(In.ar(11, 1), 15, 4, "/reply9")}.play;
-{SendPeakRMS.ar(In.ar(12, 1), 15, 4, "/reply10")}.play;
-{SendPeakRMS.ar(In.ar(13, 1), 15, 4, "/reply11")}.play;
+~num_input_vu.do{
+		arg item;
+		{SendPeakRMS.ar(In.ar(2 + item, 1), ~replyrate, ~peaklag, "/reply" ++ item)}.play;
+		OSCFunc({ |msg| ~mic.sendMsg("/vu/" ++ item, msg[3], msg[4]);}, "/reply" ++ item);
+	};
 
-{SendPeakRMS.ar(In.ar(14, 1), 15, 4, "/reply12")}.play;
-{SendPeakRMS.ar(In.ar(15, 1), 15, 4, "/reply13")}.play;
-{SendPeakRMS.ar(In.ar(16, 1), 15, 4, "/reply14")}.play;
-{SendPeakRMS.ar(In.ar(17, 1), 15, 4, "/reply15")}.play;
+~num_output_vu.do{
+		arg item;
+		var after_in_vu;
+		after_in_vu = ~num_input_vu + item;
+		{SendPeakRMS.ar(In.ar(2 + after_in_vu, 1), ~replyrate, ~peaklag, "/reply" ++ after_in_vu)}.play;
+		OSCFunc({ |msg| ~mic.sendMsg("/vu/" ++ after_in_vu, msg[3], msg[4]);}, "/reply" ++ after_in_vu);
+	};
 
-//~mic.sendMsg("/vu_1-16", "peak, rms");
-
-OSCFunc({ |msg| ~mic.sendMsg("/vu/0", msg[3], msg[4]);}, '/reply0');
-OSCFunc({ |msg| ~mic.sendMsg("/vu/1", msg[3], msg[4]);}, '/reply1');
-OSCFunc({ |msg| ~mic.sendMsg("/vu/2", msg[3], msg[4]);}, '/reply2');
-OSCFunc({ |msg| ~mic.sendMsg("/vu/3", msg[3], msg[4]);}, '/reply3');
-OSCFunc({ |msg| ~mic.sendMsg("/vu/4", msg[3], msg[4]);}, '/reply4');
-OSCFunc({ |msg| ~mic.sendMsg("/vu/5", msg[3], msg[4]);}, '/reply5');
-OSCFunc({ |msg| ~mic.sendMsg("/vu/6", msg[3], msg[4]);}, '/reply6');
-OSCFunc({ |msg| ~mic.sendMsg("/vu/7", msg[3], msg[4]);}, '/reply7');
-OSCFunc({ |msg| ~mic.sendMsg("/vu/8", msg[3], msg[4]);}, '/reply8');
-OSCFunc({ |msg| ~mic.sendMsg("/vu/9", msg[3], msg[4]);}, '/reply9');
-OSCFunc({ |msg| ~mic.sendMsg("/vu/10", msg[3], msg[4]);}, '/reply10');
-OSCFunc({ |msg| ~mic.sendMsg("/vu/11", msg[3], msg[4]);}, '/reply11');
-
-OSCFunc({ |msg| ~vid.sendMsg("/vu/1_post", msg[3], msg[4]);}, '/reply12');
-OSCFunc({ |msg| ~vid.sendMsg("/vu/2_post", msg[3], msg[4]);}, '/reply13');
-OSCFunc({ |msg| ~vid.sendMsg("/vu/3_post", msg[3], msg[4]);}, '/reply14');
-OSCFunc({ |msg| ~vid.sendMsg("/vu/4_post", msg[3], msg[4]);}, '/reply15');
-
+~num_input_vu.do{
+		arg item;
+		var after_out_vu, channel;
+		channel = 1 + item;
+		after_out_vu = ~num_input_vu + ~num_output_vu + item;
+		{SendPeakRMS.ar(In.ar(2 + after_out_vu, 1), ~replyrate, ~peaklag, "/reply" ++ after_out_vu)}.play;
+		OSCFunc({ |msg| ~vid.sendMsg("/vu/" ++ channel, msg[3], msg[4]);}, "/reply" ++ after_out_vu);
+	};
 });
-

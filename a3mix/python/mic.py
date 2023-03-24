@@ -88,11 +88,11 @@ button_fx_to_mode_name = {
 # master section pots mapping
 master_pots_to_osc_message = {
     "0": "/master/volume",
-    "2": "/fx/frequency",
-    "1": "/fx/resonance",
+    "1": "/fx/frequency",
+    "2": "/fx/resonance",
     "3": "/master/booth",
-    "5": "/master/phones_mix",
-    "4": "/master/phones_volume",
+    "4": "/master/phones_mix",
+    "5": "/master/phones_volume",
 }
 
 # time_last_receive = 0
@@ -136,18 +136,18 @@ def vu_handler(address: str,
 def send_pfl_leds_data(channel: str, pfl_led_on: int):
     message = "LED:" + str(channel) + ":" + str(pfl_led_on)
     sendData(message)
-    print(message)
+#    print(message)
 
 def led_handler_channel(address: str,
                         *osc_arguments: List[Any]) -> None:
-    print(f'led_handler_channel: {address}')
+#    print(f'led_handler_channel: {address}')
 
     words = address.split("/")
     channel = words[2]
     led_type = words[4]
     led_on = int(osc_arguments[0])
 
-    print(f'toggling {led_type} led for channel {channel}: {led_on}')
+#    print(f'toggling {led_type} led for channel {channel}: {led_on}')
 
     if led_type == "pfl":
         send_pfl_leds_data(channel, led_on)
@@ -161,7 +161,7 @@ def led_handler_channel(address: str,
 
 def led_handler_fx(address: str,
                    *osc_arguments: List[Any]) -> None:
-    print(f'led_handler_fx: {address}')
+#    print(f'led_handler_fx: {address}')
 
     led_fx_mode = osc_arguments[0]
 
@@ -176,7 +176,8 @@ def led_handler_fx(address: str,
 
 
 # Serial communication
-ser = serial.Serial('/dev/ttyACM0', 115200)
+#ser = serial.Serial('/dev/ttyACM0', 115200)
+ser = serial.Serial('/dev/ttyACM0', 4608000)
 ser.flush()
 
 def sendData(data): # send Serial data
@@ -196,7 +197,7 @@ def serial_handler(): # dispatch from serial stream and send to osc
         # print(f'time delta: {delta_time_ms}')
         # time_last_receive = current_time_ns
 
-        print(line)
+#        print(line)
 
         words = line.split(":")
 
@@ -205,7 +206,7 @@ def serial_handler(): # dispatch from serial stream and send to osc
         index = words[3]
         value = words[4]
 
-        print(f'value: {value}')
+#        print(f'value: {value}')
 
         # Buttons
         if mode == "B":
@@ -249,5 +250,5 @@ if __name__ == '__main__':
     dispatcher.map("/fx/led", led_handler_fx)
 
     server = osc_server.BlockingOSCUDPServer((args.ip, args.port), dispatcher)
-    print("Serving on {}".format(server.server_address))
+#    print("Serving on {}".format(server.server_address))
     server.serve_forever()

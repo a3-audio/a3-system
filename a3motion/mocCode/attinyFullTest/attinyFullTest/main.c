@@ -22,11 +22,81 @@ const uint8_t STATES[] = {sRED, sGREEN, sBLUE, sOFF};
 volatile uint8_t counter = 0;
 volatile uint8_t counterNew = 0;
 uint16_t secondsCounter = 0;
+
+ISR(TWI0_TWIS_vect)
+{
+	if(TWI0.SSTATUS & TWI_APIF_bm)					//Address match/stop interrupt
+	{
+		if (TWI0.SSTATUS & TWI_COLL_bm)
+		{
+			TWI0.SSTATUS |= TWI_COLL_bm;			//Clear Collision flag
+			TWI0_SCTRLB = TWI_SCMD_COMPTRANS_gc;	//complete transaction
+			return;
+		}
+		if(TWI0.SSTATUS & TWI_AP_bm)
+		TWI0_SCTRLB = TWI_SCMD_RESPONSE_gc;		//Send ACK after address match
+		else
+		TWI0_SCTRLB = TWI_SCMD_COMPTRANS_gc;	//complete transaction after Stop
+	}
+	
+	if(TWI0.SSTATUS & TWI_DIF_bm)					//Data interrupt
+	{
+		if(TWI0.SSTATUS & TWI_DIR_bm)               //Master reading from client
+		{
+			i2cResponseStrct resp = i2c_get_response();
+			switch(resp.response){
+				case sendADC0:
+				if(resp.index==0){
+					i2c_responseValue=adc_getValue(0);
+					
+					TWI0.SDATA = (uint8_t)i2c_responseValue;
+					}else{
+					
+					TWI0.SDATA =(uint8_t)(i2c_responseValue>>8);
+				}
+				break;
+				case sendADC1:
+				if(resp.index==0){
+					i2c_responseValue=adc_getValue(1);
+					TWI0.SDATA = (uint8_t)i2c_responseValue;
+					}else{
+					
+					TWI0.SDATA =(uint8_t)(i2c_responseValue>>8);
+				}
+				break;
+				case sendENC:
+				if(resp.index==0){
+					i2c_responseValue=enc_getValue();
+					TWI0.SDATA = (uint8_t)i2c_responseValue;
+					}else{
+					
+					TWI0.SDATA =(uint8_t)(i2c_responseValue>>8);
+				}
+				break;
+				case sendBUT:
+	
+				TWI0.SDATA=but_getValue();
+				default:
+				TWI0.SDATA = 11;
+				break;
+			}
+			// spi_get_response();						//Transmit data for Master to read
+			
+			TWI0_SCTRLB = TWI_SCMD_RESPONSE_gc;
+		}
+		else                                            //Master sending to slave
+		{
+			i2c_set_message(TWI0.SDATA);
+			TWI0_SCTRLB = TWI_SCMD_RESPONSE_gc;
+		}
+	}
+}
+
+
 //LED Shift counter
 //clock cycle 3ms/255
 //Led snet interrupt
 //updates the shift register
-
 ISR(SPI0_INT_vect) {
     if (SPI0.INTFLAGS & SPI_TXCIF_bm) {
         BIT_SET(LED_SHU_PT.OUTSET, LED_SHU_BP); //ACK BIT ON
@@ -64,12 +134,15 @@ int main(void) {
    BITMASK_SET(PORTB.DIR, PIN1_bm | PIN0_bm); //PB1 and PB0 as output
     time_t0Init();
     time_t1Init();
+    i2c_init(1);
     //led_init();
     BITMASK_SET(LED_SHD_PT.DIR, (1 << LED_SHD_BP) | (1 << LED_SHC_BP));
     BIT_SET(LED_SHU_PT.DIR, LED_SHU_BP);
     SPI0.CTRLA = SPI_MASTER_bm | SPI_PRESC_DIV4_gc;
     SPI0.CTRLB = SPI_BUFEN_bm | SPI_SSD_bm;
     SPI0.CTRLA |= SPI_ENABLE_bm;
+    
+    
     sei();
    // led_shiftSend(0);
     while (1) {
@@ -83,7 +156,7 @@ int main(void) {
 			tog=1;
 			BITMASK_CLEAR(PORTB.OUT,PIN1_bm|PIN0_bm); //PB1 and PB0 as output
 		}
-            _delay_ms(500);
+            _delay_ms(1000);
         //}
 
     }

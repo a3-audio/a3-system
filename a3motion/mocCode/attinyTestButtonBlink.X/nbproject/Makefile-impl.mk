@@ -27,11 +27,11 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 PROJECTNAME=attinyTestButtonBlink.X
 
 # Active Configuration
-DEFAULTCONF=Release
+DEFAULTCONF=Debug
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=Release Debug 
+ALLCONFS=Release Debug Copy_of_Release 
 
 
 # build
@@ -47,6 +47,7 @@ ALLCONFS=Release Debug
 .clobber-impl: .clobber-pre .depcheck-impl
 	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=Release clean
 	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=Debug clean
+	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=Copy_of_Release clean
 
 
 
@@ -54,6 +55,7 @@ ALLCONFS=Release Debug
 .all-impl: .all-pre .depcheck-impl
 	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=Release build
 	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=Debug build
+	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=Copy_of_Release build
 
 
 

@@ -11,11 +11,11 @@
 #include "src/hardware.h"
 #include "src/bitoperation.h"
 #include "src/ledandcolor.h"
-#include "src/debug.h"
+//#include "src/debug.h"
 #include "src/button.h"
-#include "src/encoder.h"
+//#include "src/encoder.h"
 #include "src/timer.h"
-#include "src/adc.h"
+//#include "src/adc.h"
 #include "src/i2c.h"
 
 

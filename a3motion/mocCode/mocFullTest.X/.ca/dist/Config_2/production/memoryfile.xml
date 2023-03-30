@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<project>                                  
+  <executable name=".ca/dist/Config_2/production/mocFullTest.X.production.elf">                 
+    <memory name="program">              
+      <units>bytes</units>                 
+      <length>16384</length>                 
+      <used>3835</used>                     
+      <free>12549</free>                     
+    </memory>                              
+    <memory name="data">                 
+      <units>bytes</units>                 
+      <length>2048</length>                 
+      <used>154</used>                     
+      <free>1894</free>                     
+    </memory>                              
+  </executable>                            
+</project>                                 

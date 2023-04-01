@@ -23,8 +23,8 @@ build/default/debug/main.o.d build/default/debug/main.o: main.c main.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\pgmspace.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h \
  src/bitoperation.h src/hardware.h src/bitoperation.h src/ledandcolor.h \
- src/debug.h src/debug.h src/button.h src/encoder.h src/timer.h src/adc.h \
- i2cAlternative.h
+ src/debug.h src/debug.h src/button.h encoderAlternative.h src\hardware.h \
+ src/timer.h src/adc.h i2cAlternative.h
 
 main.h:
 
@@ -90,7 +90,9 @@ src/debug.h:
 
 src/button.h:
 
-src/encoder.h:
+encoderAlternative.h:
+
+src\hardware.h:
 
 src/timer.h:
 

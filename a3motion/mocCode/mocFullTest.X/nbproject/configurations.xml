@@ -18,6 +18,7 @@
       <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/timer.h</itemPath>
       <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/i2cAlternative.h</itemPath>
       <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/data.h</itemPath>
+      <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -35,6 +36,7 @@
         <itemPath>src/ledandcolor.c</itemPath>
         <itemPath>src/timer.c</itemPath>
         <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/i2cAlternative.c</itemPath>
+        <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
       <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/debug.c</itemPath>
@@ -191,6 +193,14 @@
         <property key="sram-segment" value=""/>
         <property key="v-printf" value="false"/>
       </AVR-LD>
+      <item path="C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/encoder.h"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/i2c.h"
+            ex="true"
+            overriding="false">
+      </item>
       <Tool>
         <property key="AutoSelectMemRanges" value="auto"/>
         <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
@@ -315,6 +325,10 @@
                   value="Press to select which tool pack to use"/>
         <property key="voltagevalue" value="5.0"/>
       </pk4hybrid>
+      <item path="src/encoder.c" ex="true" overriding="false">
+      </item>
+      <item path="src/i2c.c" ex="true" overriding="false">
+      </item>
     </conf>
     <conf name="xc8" type="2">
       <toolsSet>
@@ -357,106 +371,6 @@
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
-      <AVR-AR>
-        <property key="archiver-flags" value="-r"/>
-      </AVR-AR>
-      <AVR-AS>
-        <property key="announce-version" value="false"/>
-        <property key="include-paths" value=""/>
-        <property key="suppress-warnings" value="false"/>
-      </AVR-AS>
-      <AVR-AS-PRE>
-        <property key="announce-version" value="false"/>
-        <property key="include-paths" value=""/>
-        <property key="preprocessor-macros" value=""/>
-        <property key="preprocessor-macros-undefined" value=""/>
-        <property key="suppress-warnings" value="false"/>
-      </AVR-AS-PRE>
-      <AVR-CPP>
-        <property key="additional-warnings" value="true"/>
-        <property key="call-prologues" value="false"/>
-        <property key="default-bitfield-type" value="true"/>
-        <property key="default-char-type" value="true"/>
-        <property key="extra-include-directories" value=""/>
-        <property key="garbage-collect-data" value="true"/>
-        <property key="garbage-collect-functions" value="true"/>
-        <property key="inhibit-all" value="false"/>
-        <property key="make-warnings-into-errors" value="false"/>
-        <property key="no-interrupts" value="false"/>
-        <property key="no-system-directories" value="false"/>
-        <property key="optimization-level" value="-O1"/>
-        <property key="pack-struct" value="true"/>
-        <property key="preprocess-only" value="false"/>
-        <property key="preprocessor-macros" value=""/>
-        <property key="preprocessor-macros-undefined" value=""/>
-        <property key="save-temps" value="false"/>
-        <property key="short-calls" value="false"/>
-        <property key="short-enums" value="true"/>
-        <property key="strict-ansi" value="false"/>
-        <property key="strict-ansi-errors" value="false"/>
-        <property key="support-ansi" value="false"/>
-        <property key="syntax-only" value="false"/>
-        <property key="undefined-identifier" value="false"/>
-        <property key="verbose" value="false"/>
-      </AVR-CPP>
-      <AVR-GCC>
-        <property key="additional-warnings" value="true"/>
-        <property key="call-prologues" value="false"/>
-        <property key="default-bitfield-type" value="true"/>
-        <property key="default-char-type" value="true"/>
-        <property key="extra-include-directories" value=""/>
-        <property key="extra-warnings" value="false"/>
-        <property key="garbage-collect-data" value="true"/>
-        <property key="garbage-collect-functions" value="true"/>
-        <property key="inhibit-all" value="false"/>
-        <property key="make-warnings-into-errors" value="false"/>
-        <property key="no-interrupts" value="false"/>
-        <property key="no-system-directories" value="false"/>
-        <property key="optimization-level" value="-O1"/>
-        <property key="pack-struct" value="true"/>
-        <property key="preprocessor-macros" value=""/>
-        <property key="preprocessor-macros-undefined" value=""/>
-        <property key="save-temps" value="false"/>
-        <property key="short-calls" value="false"/>
-        <property key="short-enums" value="true"/>
-        <property key="strict-ansi" value="false"/>
-        <property key="strict-ansi-errors" value="false"/>
-        <property key="support-ansi" value="false"/>
-        <property key="syntax-only" value="false"/>
-        <property key="undefined-identifier" value="false"/>
-        <property key="verbose" value="false"/>
-      </AVR-GCC>
-      <AVR-Global>
-        <property key="common-include-directories" value=""/>
-        <property key="eep" value="false"/>
-        <property key="external-ram-check" value="false"/>
-        <property key="hex" value="true"/>
-        <property key="lss" value="false"/>
-        <property key="omit-pack-options" value="false"/>
-        <property key="relax-branches" value="false"/>
-        <property key="srec" value="false"/>
-        <property key="user-pack-device-support" value=""/>
-        <property key="user-pack-include" value=""/>
-        <property key="usersig" value="false"/>
-      </AVR-Global>
-      <AVR-LD>
-        <property key="eeprom-segment" value=""/>
-        <property key="exclude-standard-libraries" value="false"/>
-        <property key="extra-lib-directories" value=""/>
-        <property key="flash-segment" value=""/>
-        <property key="generate-map-file" value="true"/>
-        <property key="initial-stack-address" value=""/>
-        <property key="input-libraries" value="libm"/>
-        <property key="no-default-libs" value="false"/>
-        <property key="no-shared-libraries" value="false"/>
-        <property key="no-startup-files" value="false"/>
-        <property key="omit-symbol-information" value="false"/>
-        <property key="other-options" value=""/>
-        <property key="remove-unused-sections" value="true"/>
-        <property key="rodata-writable" value="false"/>
-        <property key="sram-segment" value=""/>
-        <property key="v-printf" value="false"/>
-      </AVR-LD>
       <HI-TECH-COMP>
         <property key="additional-warnings" value="true"/>
         <property key="asmlist" value="true"/>

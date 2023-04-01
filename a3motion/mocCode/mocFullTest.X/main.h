@@ -13,7 +13,7 @@
 #include "src/ledandcolor.h"
 #include "src/debug.h"
 #include "src/button.h"
-#include "src/encoder.h"
+#include "encoderAlternative.h"
 #include "src/timer.h"
 #include "src/adc.h"
 #include "i2cAlternative.h"
@@ -28,6 +28,7 @@ typedef struct{
 
 void led_shiftSend(uint16_t data);
 int8_t encode_read( uint8_t step );
+
  //converts an angle and a intensity value to RGB
  //angle is 0-360 and val 0-255
 

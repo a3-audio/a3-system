@@ -14,17 +14,31 @@ volatile ledEvent event;
 volatile uint8_t led_cnt1=0;
 volatile uint8_t led_cnt2=0;
 volatile uint8_t sensor_cnt1 = 0;
-volatile uint8_t sensor_cnt2 = 0;
+volatile uint8_t sensor_cnt2 = 1;
 sensor sensor_data={3,4,5,6};
 uint8_t *sensor_data_ptr=(uint8_t *)&sensor_data;
-
+volatile uint8_t adc_finished=1;
 uint8_t adc_i=0;
+
+volatile uint16_t adcTests[24];
+volatile uint8_t adcTest_i;
+
+void adcTest(uint16_t t){
+    adcTest_i++; 
+    if(adcTest_i==24)
+         adcTest_i=0;
+    adcTests[adcTest_i]=t;
+}
+uint16_t ty=0;
 //ADC sample is ready
 ISR(ADC0_SAMPRDY_vect){
+    adc_finished=1;
 	ADC0.INTFLAGS|=ADC_RESOVR_bm;
-	adc_i=adc_setValue((uint16_t)((ADC0_SAMPLEH<<8)|ADC0_SAMPLEL));
-    adc_i=(adc_i==0)?1:0;
+	//adc_i=adc_setValue((uint16_t)((ADC0_SAMPLEH<<8)|ADC0_SAMPLEL));
+    adc_i=adc_setValue(ADC0_SAMPLE);
+    adc_i=(adc_i==0);
     adc_start_prepare(adc_i);
+   adcTest(1);
 }
 
 ISR(SPI0_INT_vect) {
@@ -50,11 +64,13 @@ ISR(TCA0_OVF_vect) {
 ISR(TCB0_INT_vect) {
     
     TCB0.INTFLAGS |= TCB_CAPT_bm;
-    sensor_cnt1++;
-    if(led_cnt1==4)
-        led_cnt1=0;
+    if(sensor_cnt1==sensor_cnt2){
+           sensor_cnt1++;
+    if(sensor_cnt1==4)
+        sensor_cnt1=0;
+    }
+ 
 }
-
 uint8_t getSensorData(uint8_t byte_i) {
     switch(byte_i){
         case 0:
@@ -74,8 +90,10 @@ uint8_t getSensorData(uint8_t byte_i) {
     }
     return sensor_data_ptr[byte_i];
 }
-
-void setLedData(uint8_t button_i, uint8_t r, uint8_t g, uint8_t b) {
+void i2c_setEncoder(uint8_t dat){
+    enc_setStep(dat);
+}
+void i2c_setLedData(uint8_t button_i, uint8_t r, uint8_t g, uint8_t b) {
     led_updateRGB(button_i, r, g, b);
 }
 
@@ -108,22 +126,30 @@ int main(void) {
             }
         }
         if(sensor_cnt1!=sensor_cnt2){
-            sensor_cnt2=sensor_cnt1;
+            sensor_cnt2=sensor_cnt1+1;
             switch(sensor_cnt1){
                 case 0:
                     but_updateStates();
                     break;
                 case 1:
                     enc_update();
+                    ty++;
                     break;
                 case 2:
-                    adc_start_go(adc_i);
+                    adcTest(ty++);
+                    if(adc_finished){
+                        cli();
+                        adc_start_go();
+                        adc_finished=0;
+                        adcTest(0);  
+                        sei();
+                    }
                     break;
                 case 3:
                     break;
                     
             }
+            sensor_cnt2=sensor_cnt1;
         }
-        sensor_cnt1 = 0;
     }
 }

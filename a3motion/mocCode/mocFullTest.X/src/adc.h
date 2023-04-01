@@ -23,7 +23,7 @@ uint16_t adc_getValue(uint8_t adcNum);
 void adc_filterValues(uint8_t adcNum);
 void	adc_start_prepare(uint8_t adcNum);
 void	adc_start_go();
-uint16_t adc_filter(uint16_t input,uint8_t adcNum);
+uint16_t adc_filter(uint16_t input);
 uint16_t adc_increaseBitDepth(uint16_t in,uint8_t Bits_in,uint8_t Bits_out);
 
 #endif /* ADC_H_ */

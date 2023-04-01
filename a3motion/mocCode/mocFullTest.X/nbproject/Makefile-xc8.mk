@@ -51,17 +51,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=src/adc.c src/button.c src/encoder.c src/i2c.c src/init.c src/ledandcolor.c src/timer.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/i2cAlternative.c main.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/debug.c
+SOURCEFILES_QUOTED_IF_SPACED=src/adc.c src/button.c src/encoder.c src/i2c.c src/init.c src/ledandcolor.c src/timer.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/i2cAlternative.c main.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/debug.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/src/adc.o ${OBJECTDIR}/src/button.o ${OBJECTDIR}/src/encoder.o ${OBJECTDIR}/src/i2c.o ${OBJECTDIR}/src/init.o ${OBJECTDIR}/src/ledandcolor.o ${OBJECTDIR}/src/timer.o ${OBJECTDIR}/_ext/282020558/i2cAlternative.o ${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/282020558/debug.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/src/adc.o.d ${OBJECTDIR}/src/button.o.d ${OBJECTDIR}/src/encoder.o.d ${OBJECTDIR}/src/i2c.o.d ${OBJECTDIR}/src/init.o.d ${OBJECTDIR}/src/ledandcolor.o.d ${OBJECTDIR}/src/timer.o.d ${OBJECTDIR}/_ext/282020558/i2cAlternative.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/_ext/282020558/debug.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/src/adc.o ${OBJECTDIR}/src/button.o ${OBJECTDIR}/src/encoder.o ${OBJECTDIR}/src/i2c.o ${OBJECTDIR}/src/init.o ${OBJECTDIR}/src/ledandcolor.o ${OBJECTDIR}/src/timer.o ${OBJECTDIR}/_ext/282020558/i2cAlternative.o ${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/282020558/debug.o ${OBJECTDIR}/_ext/282020558/encoderAlternative.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/src/adc.o.d ${OBJECTDIR}/src/button.o.d ${OBJECTDIR}/src/encoder.o.d ${OBJECTDIR}/src/i2c.o.d ${OBJECTDIR}/src/init.o.d ${OBJECTDIR}/src/ledandcolor.o.d ${OBJECTDIR}/src/timer.o.d ${OBJECTDIR}/_ext/282020558/i2cAlternative.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/_ext/282020558/debug.o.d ${OBJECTDIR}/_ext/282020558/encoderAlternative.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/src/adc.o ${OBJECTDIR}/src/button.o ${OBJECTDIR}/src/encoder.o ${OBJECTDIR}/src/i2c.o ${OBJECTDIR}/src/init.o ${OBJECTDIR}/src/ledandcolor.o ${OBJECTDIR}/src/timer.o ${OBJECTDIR}/_ext/282020558/i2cAlternative.o ${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/282020558/debug.o
+OBJECTFILES=${OBJECTDIR}/src/adc.o ${OBJECTDIR}/src/button.o ${OBJECTDIR}/src/encoder.o ${OBJECTDIR}/src/i2c.o ${OBJECTDIR}/src/init.o ${OBJECTDIR}/src/ledandcolor.o ${OBJECTDIR}/src/timer.o ${OBJECTDIR}/_ext/282020558/i2cAlternative.o ${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/282020558/debug.o ${OBJECTDIR}/_ext/282020558/encoderAlternative.o
 
 # Source Files
-SOURCEFILES=src/adc.c src/button.c src/encoder.c src/i2c.c src/init.c src/ledandcolor.c src/timer.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/i2cAlternative.c main.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/debug.c
+SOURCEFILES=src/adc.c src/button.c src/encoder.c src/i2c.c src/init.c src/ledandcolor.c src/timer.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/i2cAlternative.c main.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/debug.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.c
 
 
 
@@ -148,6 +148,12 @@ ${OBJECTDIR}/_ext/282020558/debug.o: C:/Users/tiri/Documents/GitHub/a3-system/a3
 	@${RM} ${OBJECTDIR}/_ext/282020558/debug.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1 -g -DDEBUG  -gdwarf-2  -x c -D__$(MP_PROCESSOR_OPTION)__   -mdfp="${DFP_DIR}/xc8"  -Wl,--gc-sections -O1 -ffunction-sections -fdata-sections -fshort-enums -fno-common -funsigned-char -funsigned-bitfields -Wall -DXPRJ_xc8=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf-3 -mconst-data-in-progmem -mno-const-data-in-config-mapped-progmem     -MD -MP -MF "${OBJECTDIR}/_ext/282020558/debug.o.d" -MT "${OBJECTDIR}/_ext/282020558/debug.o.d" -MT ${OBJECTDIR}/_ext/282020558/debug.o -o ${OBJECTDIR}/_ext/282020558/debug.o C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/debug.c 
 	
+${OBJECTDIR}/_ext/282020558/encoderAlternative.o: C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.c  .generated_files/flags/xc8/91f92f02d3b3e2465cad93d629f19ec5d196c34a .generated_files/flags/xc8/da39a3ee5e6b4b0d3255bfef95601890afd80709
+	@${MKDIR} "${OBJECTDIR}/_ext/282020558" 
+	@${RM} ${OBJECTDIR}/_ext/282020558/encoderAlternative.o.d 
+	@${RM} ${OBJECTDIR}/_ext/282020558/encoderAlternative.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1 -g -DDEBUG  -gdwarf-2  -x c -D__$(MP_PROCESSOR_OPTION)__   -mdfp="${DFP_DIR}/xc8"  -Wl,--gc-sections -O1 -ffunction-sections -fdata-sections -fshort-enums -fno-common -funsigned-char -funsigned-bitfields -Wall -DXPRJ_xc8=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf-3 -mconst-data-in-progmem -mno-const-data-in-config-mapped-progmem     -MD -MP -MF "${OBJECTDIR}/_ext/282020558/encoderAlternative.o.d" -MT "${OBJECTDIR}/_ext/282020558/encoderAlternative.o.d" -MT ${OBJECTDIR}/_ext/282020558/encoderAlternative.o -o ${OBJECTDIR}/_ext/282020558/encoderAlternative.o C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.c 
+	
 else
 ${OBJECTDIR}/src/adc.o: src/adc.c  .generated_files/flags/xc8/814b4473de84bfd1b738b4403cdd7b362a4bae83 .generated_files/flags/xc8/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}/src" 
@@ -208,6 +214,12 @@ ${OBJECTDIR}/_ext/282020558/debug.o: C:/Users/tiri/Documents/GitHub/a3-system/a3
 	@${RM} ${OBJECTDIR}/_ext/282020558/debug.o.d 
 	@${RM} ${OBJECTDIR}/_ext/282020558/debug.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -x c -D__$(MP_PROCESSOR_OPTION)__   -mdfp="${DFP_DIR}/xc8"  -Wl,--gc-sections -O1 -ffunction-sections -fdata-sections -fshort-enums -fno-common -funsigned-char -funsigned-bitfields -Wall -DXPRJ_xc8=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf-3 -mconst-data-in-progmem -mno-const-data-in-config-mapped-progmem     -MD -MP -MF "${OBJECTDIR}/_ext/282020558/debug.o.d" -MT "${OBJECTDIR}/_ext/282020558/debug.o.d" -MT ${OBJECTDIR}/_ext/282020558/debug.o -o ${OBJECTDIR}/_ext/282020558/debug.o C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/debug.c 
+	
+${OBJECTDIR}/_ext/282020558/encoderAlternative.o: C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.c  .generated_files/flags/xc8/8744492d0856a52163eceac49f46d597853d861f .generated_files/flags/xc8/da39a3ee5e6b4b0d3255bfef95601890afd80709
+	@${MKDIR} "${OBJECTDIR}/_ext/282020558" 
+	@${RM} ${OBJECTDIR}/_ext/282020558/encoderAlternative.o.d 
+	@${RM} ${OBJECTDIR}/_ext/282020558/encoderAlternative.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -x c -D__$(MP_PROCESSOR_OPTION)__   -mdfp="${DFP_DIR}/xc8"  -Wl,--gc-sections -O1 -ffunction-sections -fdata-sections -fshort-enums -fno-common -funsigned-char -funsigned-bitfields -Wall -DXPRJ_xc8=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf-3 -mconst-data-in-progmem -mno-const-data-in-config-mapped-progmem     -MD -MP -MF "${OBJECTDIR}/_ext/282020558/encoderAlternative.o.d" -MT "${OBJECTDIR}/_ext/282020558/encoderAlternative.o.d" -MT ${OBJECTDIR}/_ext/282020558/encoderAlternative.o -o ${OBJECTDIR}/_ext/282020558/encoderAlternative.o C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.c 
 	
 endif
 

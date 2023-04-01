@@ -1,9 +1,8 @@
-build/xc8/production/_ext/282020558/i2cAlternative.o.d \
- build/xc8/production/_ext/282020558/i2cAlternative.o: \
- C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/i2cAlternative.c \
- C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/i2cAlternative.h \
- C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/bitoperation.h \
- C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/hardware.h \
+build/xc8/production/_ext/282020558/encoderAlternative.o.d \
+ build/xc8/production/_ext/282020558/encoderAlternative.o: \
+ C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.c \
+ C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.h \
+ C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\hardware.h \
  c:\users\tiri\documents\github\a3-system\a3motion\moccode\mocfulltest.x\includes.h \
  c:\program\ files\microchip\xc8\v2.36\avr\avr\include\stdlib.h \
  c:\program\ files\microchip\xc8\v2.36\avr\avr\include\features.h \
@@ -29,23 +28,12 @@ build/xc8/production/_ext/282020558/i2cAlternative.o.d \
  c:\program\ files\microchip\xc8\v2.36\avr\avr\include\avr\pgmspace.h \
  c:\program\ files\microchip\xc8\v2.36\avr\lib\gcc\avr\5.4.0\include\stddef.h \
  c:\program\ files\microchip\xc8\v2.36\avr\lib\gcc\avr\5.4.0\include\stdbool.h \
- C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/bitoperation.h \
- C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/main.h \
- C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/hardware.h \
- C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/ledandcolor.h \
- C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/debug.h \
- C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/debug.h \
- C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/button.h \
- C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.h \
- C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\hardware.h \
- C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/timer.h \
- C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/adc.h
+ C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\bitoperation.h \
+ C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\hardware.h
 
-C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/i2cAlternative.h:
+C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.h:
 
-C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/bitoperation.h:
-
-C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/hardware.h:
+C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\hardware.h:
 
 c:\users\tiri\documents\github\a3-system\a3motion\moccode\mocfulltest.x\includes.h:
 
@@ -97,24 +85,6 @@ c:\program\ files\microchip\xc8\v2.36\avr\lib\gcc\avr\5.4.0\include\stddef.h:
 
 c:\program\ files\microchip\xc8\v2.36\avr\lib\gcc\avr\5.4.0\include\stdbool.h:
 
-C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/bitoperation.h:
-
-C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/main.h:
-
-C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/hardware.h:
-
-C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/ledandcolor.h:
-
-C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/debug.h:
-
-C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/debug.h:
-
-C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/button.h:
-
-C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.h:
+C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\bitoperation.h:
 
 C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\hardware.h:
-
-C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/timer.h:
-
-C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/adc.h:

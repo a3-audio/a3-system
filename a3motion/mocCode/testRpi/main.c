@@ -11,6 +11,12 @@
 #include <time.h>
 #include <unistd.h>
 #include <ctype.h>
+
+
+#define MSG_SET_LEDS 0b0101         //5
+#define MSG_SETUP_ENCODER 0b1011    //11
+#define MSG_SET_ID 0b1100           //12
+
 //#include <conio.h>
 void display_byte(uint8_t b) {
     for (int i = 0; i < 8; ++i)
@@ -76,9 +82,9 @@ int i2c_start(int file, uint8_t addr) {
 }
 
 int i2c_write(int file, uint8_t *buf, uint8_t n_buf) {
-    //printf("writing %d bytes\n", n_buf);
-    if (write(file, buf, n_buf) != n_buf) {
-        printf("Failed to write\n");
+    uint16_t test=write(file, buf, n_buf);
+    if ( test!= n_buf) {
+        printf("Failed to write wrote %d\n",test);
         exit(1);
     }
 
@@ -277,6 +283,14 @@ int main() {
         }
             break;
         case 'e':
+            printf("Set Encoder Step size (1,2 or 4)\n");
+            uint8_t command;
+            do{
+                command=input_byte();
+            }while(command!=1&&command!=2&&command!=4);
+            printf("Setting Encoder to %d\n",command);
+            command|=MSG_SETUP_ENCODER<<4;
+            i2c_write(file,&command,1);
             break;
         case 'c':
             printf("Module id is %d\n", mod_id);

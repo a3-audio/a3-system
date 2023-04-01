@@ -51,17 +51,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=src/adc.c src/button.c src/encoder.c src/i2c.c src/init.c src/ledandcolor.c src/timer.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/i2cAlternative.c main.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/debug.c
+SOURCEFILES_QUOTED_IF_SPACED=src/adc.c src/button.c src/init.c src/ledandcolor.c src/timer.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/i2cAlternative.c main.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/debug.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/src/adc.o ${OBJECTDIR}/src/button.o ${OBJECTDIR}/src/encoder.o ${OBJECTDIR}/src/i2c.o ${OBJECTDIR}/src/init.o ${OBJECTDIR}/src/ledandcolor.o ${OBJECTDIR}/src/timer.o ${OBJECTDIR}/_ext/282020558/i2cAlternative.o ${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/282020558/debug.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/src/adc.o.d ${OBJECTDIR}/src/button.o.d ${OBJECTDIR}/src/encoder.o.d ${OBJECTDIR}/src/i2c.o.d ${OBJECTDIR}/src/init.o.d ${OBJECTDIR}/src/ledandcolor.o.d ${OBJECTDIR}/src/timer.o.d ${OBJECTDIR}/_ext/282020558/i2cAlternative.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/_ext/282020558/debug.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/src/adc.o ${OBJECTDIR}/src/button.o ${OBJECTDIR}/src/init.o ${OBJECTDIR}/src/ledandcolor.o ${OBJECTDIR}/src/timer.o ${OBJECTDIR}/_ext/282020558/i2cAlternative.o ${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/282020558/debug.o ${OBJECTDIR}/_ext/282020558/encoderAlternative.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/src/adc.o.d ${OBJECTDIR}/src/button.o.d ${OBJECTDIR}/src/init.o.d ${OBJECTDIR}/src/ledandcolor.o.d ${OBJECTDIR}/src/timer.o.d ${OBJECTDIR}/_ext/282020558/i2cAlternative.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/_ext/282020558/debug.o.d ${OBJECTDIR}/_ext/282020558/encoderAlternative.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/src/adc.o ${OBJECTDIR}/src/button.o ${OBJECTDIR}/src/encoder.o ${OBJECTDIR}/src/i2c.o ${OBJECTDIR}/src/init.o ${OBJECTDIR}/src/ledandcolor.o ${OBJECTDIR}/src/timer.o ${OBJECTDIR}/_ext/282020558/i2cAlternative.o ${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/282020558/debug.o
+OBJECTFILES=${OBJECTDIR}/src/adc.o ${OBJECTDIR}/src/button.o ${OBJECTDIR}/src/init.o ${OBJECTDIR}/src/ledandcolor.o ${OBJECTDIR}/src/timer.o ${OBJECTDIR}/_ext/282020558/i2cAlternative.o ${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/282020558/debug.o ${OBJECTDIR}/_ext/282020558/encoderAlternative.o
 
 # Source Files
-SOURCEFILES=src/adc.c src/button.c src/encoder.c src/i2c.c src/init.c src/ledandcolor.c src/timer.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/i2cAlternative.c main.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/debug.c
+SOURCEFILES=src/adc.c src/button.c src/init.c src/ledandcolor.c src/timer.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/i2cAlternative.c main.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/debug.c C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.c
 
 # Pack Options 
 PACK_COMPILER_OPTIONS=-I "${DFP_DIR}/include"
@@ -116,18 +116,6 @@ ${OBJECTDIR}/src/button.o: src/button.c  .generated_files/flags/default/cd9ff20a
 	@${RM} ${OBJECTDIR}/src/button.o 
 	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny1626 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG  -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/src/button.o.d" -MT "${OBJECTDIR}/src/button.o.d" -MT ${OBJECTDIR}/src/button.o  -o ${OBJECTDIR}/src/button.o src/button.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/src/encoder.o: src/encoder.c  .generated_files/flags/default/3e5d94d8036326f400523c71962c5b4d10867859 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
-	@${MKDIR} "${OBJECTDIR}/src" 
-	@${RM} ${OBJECTDIR}/src/encoder.o.d 
-	@${RM} ${OBJECTDIR}/src/encoder.o 
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny1626 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG  -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/src/encoder.o.d" -MT "${OBJECTDIR}/src/encoder.o.d" -MT ${OBJECTDIR}/src/encoder.o  -o ${OBJECTDIR}/src/encoder.o src/encoder.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
-	
-${OBJECTDIR}/src/i2c.o: src/i2c.c  .generated_files/flags/default/616822283c97e4e0a3c4479c75c0b50c4a86649a .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
-	@${MKDIR} "${OBJECTDIR}/src" 
-	@${RM} ${OBJECTDIR}/src/i2c.o.d 
-	@${RM} ${OBJECTDIR}/src/i2c.o 
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny1626 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG  -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/src/i2c.o.d" -MT "${OBJECTDIR}/src/i2c.o.d" -MT ${OBJECTDIR}/src/i2c.o  -o ${OBJECTDIR}/src/i2c.o src/i2c.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
-	
 ${OBJECTDIR}/src/init.o: src/init.c  .generated_files/flags/default/2f5db52dbd92f58669a293732b34d5a0d74b4493 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}/src" 
 	@${RM} ${OBJECTDIR}/src/init.o.d 
@@ -164,6 +152,12 @@ ${OBJECTDIR}/_ext/282020558/debug.o: C:/Users/tiri/Documents/GitHub/a3-system/a3
 	@${RM} ${OBJECTDIR}/_ext/282020558/debug.o 
 	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny1626 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG  -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/_ext/282020558/debug.o.d" -MT "${OBJECTDIR}/_ext/282020558/debug.o.d" -MT ${OBJECTDIR}/_ext/282020558/debug.o  -o ${OBJECTDIR}/_ext/282020558/debug.o C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/debug.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
+${OBJECTDIR}/_ext/282020558/encoderAlternative.o: C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.c  .generated_files/flags/default/de07938a9b9f56daa20420c994f23a4886722dda .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+	@${MKDIR} "${OBJECTDIR}/_ext/282020558" 
+	@${RM} ${OBJECTDIR}/_ext/282020558/encoderAlternative.o.d 
+	@${RM} ${OBJECTDIR}/_ext/282020558/encoderAlternative.o 
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny1626 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG  -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/_ext/282020558/encoderAlternative.o.d" -MT "${OBJECTDIR}/_ext/282020558/encoderAlternative.o.d" -MT ${OBJECTDIR}/_ext/282020558/encoderAlternative.o  -o ${OBJECTDIR}/_ext/282020558/encoderAlternative.o C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
+	
 else
 ${OBJECTDIR}/src/adc.o: src/adc.c  .generated_files/flags/default/bc13acfdada78d62ed3d1e121cdf9c1153674530 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}/src" 
@@ -176,18 +170,6 @@ ${OBJECTDIR}/src/button.o: src/button.c  .generated_files/flags/default/8a1c9a96
 	@${RM} ${OBJECTDIR}/src/button.o.d 
 	@${RM} ${OBJECTDIR}/src/button.o 
 	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny1626 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/src/button.o.d" -MT "${OBJECTDIR}/src/button.o.d" -MT ${OBJECTDIR}/src/button.o  -o ${OBJECTDIR}/src/button.o src/button.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
-	
-${OBJECTDIR}/src/encoder.o: src/encoder.c  .generated_files/flags/default/6d7e85af7da26932107f47824f35af45b4b80123 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
-	@${MKDIR} "${OBJECTDIR}/src" 
-	@${RM} ${OBJECTDIR}/src/encoder.o.d 
-	@${RM} ${OBJECTDIR}/src/encoder.o 
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny1626 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/src/encoder.o.d" -MT "${OBJECTDIR}/src/encoder.o.d" -MT ${OBJECTDIR}/src/encoder.o  -o ${OBJECTDIR}/src/encoder.o src/encoder.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
-	
-${OBJECTDIR}/src/i2c.o: src/i2c.c  .generated_files/flags/default/76b39f0a4fa27af51dc63c5f07f650be78eab891 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
-	@${MKDIR} "${OBJECTDIR}/src" 
-	@${RM} ${OBJECTDIR}/src/i2c.o.d 
-	@${RM} ${OBJECTDIR}/src/i2c.o 
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny1626 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/src/i2c.o.d" -MT "${OBJECTDIR}/src/i2c.o.d" -MT ${OBJECTDIR}/src/i2c.o  -o ${OBJECTDIR}/src/i2c.o src/i2c.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
 ${OBJECTDIR}/src/init.o: src/init.c  .generated_files/flags/default/11eb4a890e9c3b0857ecf3e303c8582416efeb46 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}/src" 
@@ -224,6 +206,12 @@ ${OBJECTDIR}/_ext/282020558/debug.o: C:/Users/tiri/Documents/GitHub/a3-system/a3
 	@${RM} ${OBJECTDIR}/_ext/282020558/debug.o.d 
 	@${RM} ${OBJECTDIR}/_ext/282020558/debug.o 
 	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny1626 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/_ext/282020558/debug.o.d" -MT "${OBJECTDIR}/_ext/282020558/debug.o.d" -MT ${OBJECTDIR}/_ext/282020558/debug.o  -o ${OBJECTDIR}/_ext/282020558/debug.o C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/debug.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/_ext/282020558/encoderAlternative.o: C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.c  .generated_files/flags/default/24aeee84a6976232c06d8106c984690e795ad172 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+	@${MKDIR} "${OBJECTDIR}/_ext/282020558" 
+	@${RM} ${OBJECTDIR}/_ext/282020558/encoderAlternative.o.d 
+	@${RM} ${OBJECTDIR}/_ext/282020558/encoderAlternative.o 
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny1626 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/_ext/282020558/encoderAlternative.o.d" -MT "${OBJECTDIR}/_ext/282020558/encoderAlternative.o.d" -MT ${OBJECTDIR}/_ext/282020558/encoderAlternative.o  -o ${OBJECTDIR}/_ext/282020558/encoderAlternative.o C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
 endif
 

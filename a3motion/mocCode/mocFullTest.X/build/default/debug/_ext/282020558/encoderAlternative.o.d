@@ -1,5 +1,9 @@
-build/default/production/main.o.d build/default/production/main.o: main.c \
- main.h src/hardware.h src/../includes.h \
+build/default/debug/_ext/282020558/encoderAlternative.o.d \
+ build/default/debug/_ext/282020558/encoderAlternative.o: \
+ C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.c \
+ C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.h \
+ C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\hardware.h \
+ c:\users\tiri\documents\github\a3-system\a3motion\moccode\mocfulltest.x\includes.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stddef.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
@@ -22,15 +26,14 @@ build/default/production/main.o.d build/default/production/main.o: main.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\interrupt.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\pgmspace.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h \
- src/bitoperation.h src/hardware.h src/bitoperation.h src/ledandcolor.h \
- src/debug.h src/debug.h src/button.h encoderAlternative.h src\hardware.h \
- src/timer.h src/adc.h i2cAlternative.h
+ C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\bitoperation.h \
+ C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\hardware.h
 
-main.h:
+C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.h:
 
-src/hardware.h:
+C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\hardware.h:
 
-src/../includes.h:
+c:\users\tiri\documents\github\a3-system\a3motion\moccode\mocfulltest.x\includes.h:
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h:
 
@@ -76,26 +79,6 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h:
 
-src/bitoperation.h:
+C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\bitoperation.h:
 
-src/hardware.h:
-
-src/bitoperation.h:
-
-src/ledandcolor.h:
-
-src/debug.h:
-
-src/debug.h:
-
-src/button.h:
-
-encoderAlternative.h:
-
-src\hardware.h:
-
-src/timer.h:
-
-src/adc.h:
-
-i2cAlternative.h:
+C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\hardware.h:

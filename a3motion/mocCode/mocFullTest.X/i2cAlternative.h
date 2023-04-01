@@ -4,7 +4,7 @@
 
 //#include <xc.h> // include processor files - each processor file is guarded.
 #include "src/bitoperation.h"
-#include "main.h"
+//#include "main.h"
 #include <stdlib.h>
 // I2C slave command macros
 #define I2C_complete() TWI0.SCTRLB = TWI_SCMD_COMPTRANS_gc
@@ -26,10 +26,12 @@
 #define I2C_state_setLed2 44
 #define I2C_state_idle 0
 
-extern void i2c_init(uint8_t i2cAdrr);
-extern void i2c_interrupt();
+void i2c_init(uint8_t i2cAdrr);
+//extern void i2c_interrupt();
 
 extern uint8_t getSensorData(uint8_t i);
-extern void setLedData(uint8_t button_i,uint8_t r,uint8_t g,uint8_t b);
+extern void i2c_setLedData(uint8_t button_i,uint8_t r,uint8_t g,uint8_t b);
+extern void i2c_setEncoder(uint8_t dat);
+void i2c_setID(uint8_t dat);
 #endif	/* XC_HEADER_TEMPLATE_H */
 

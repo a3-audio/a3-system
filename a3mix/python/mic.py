@@ -72,6 +72,7 @@ analog_pots_per_channel_to_osc_param = {
     "2": "eq/mid",
     "3": "eq/low",
     "4": "volume",
+    "5": "fx-send",
 }
 
 button_per_channel_to_osc_param = {

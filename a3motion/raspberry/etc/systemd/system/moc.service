@@ -9,10 +9,11 @@ DefaultDependencies=no
 
 [Service]
 User=aaa
-#Group=tty
+Group=tty
+#Group=aaa
 #Environment=LANG=C
 Environment=USER=aaa
-Environment=LOGNAME=aaa
+#Environment=LOGNAME=aaa
 Environment=HOME=/home/aaa
 Environment=PWD=/home/aaa
 #Environment=SHELL=/bin/bash
@@ -21,7 +22,7 @@ Environment=PWD=/home/aaa
 Environment=XDG_SESSION_CLASS=user
 Environment=XDG_SESSION_TYPE=tty
 Environment=XDG_SESSION_ID=3
-Environment=XDG_RUNTIME_DIR=/run/user/1001
+Environment=XDG_RUNTIME_DIR=/run/user/1000
 Environment=DISPLAY=:0
 Environment=WorkingDirectory=/home/aaa/a3-system/a3motion/a3MotioncontrollerUI
 Environment=XAUTHORITY=/home/aaa/.Xauthority

@@ -27,8 +27,8 @@
 #define enc5_CLK 11
 
 const int numEncoder = 5;
-bool btnEncoderNew[numEncoder];
-bool btnEncoderOld[numEncoder];
+bool btnEncoderNew[8];
+bool btnEncoderOld[8];
 long posEnc[numEncoder];
 long newPosEnc[numEncoder];
 
@@ -86,7 +86,7 @@ const int num_tracks = 6; // including master and fx sections
 const int num_pots = 8;
 int pots_sent[num_tracks][num_pots];
 
-const std::array<std::string, 6> track_names = {
+const std::array<std::string, 6 > track_names = {
     "0",
     "1",
     "2",
@@ -119,41 +119,6 @@ int modePxl[4][3] = {
 // const int spare_1 = 28;
 // const int spare_2 = 29;
 
-void setup()
-{
-  // initialize sent values to 0
-  for(int track = 0 ; track < num_tracks ; ++track) {
-    for(int pot = 0 ; pot < num_pots ; ++pot) {
-      pots_sent[track][pot] = 0;
-    }
-  }
-
-  Serial.begin(4608000);       // starting Serial
-  pixels.begin(); 		// INITIALIZE NeoPixel
-  pixels.clear();
-  pixels.setBrightness(10);
-
-  // Configure per-channel digital pins
-  for(int channel = 0 ; channel < num_channels ; ++channel) {
-    pinMode(PINS_BUTTON_0_PER_CHANNEL[channel], INPUT);
-    pinMode(PINS_LED_PER_CHANNEL[channel], OUTPUT);
-  }
-
-  for(int button = 0 ; button < num_fx_buttons ; ++button) {
-    pinMode(PINS_BUTTON_FX[button], INPUT);
-  }
-
-  lc.shutdown(0,false);
-  lc.shutdown(1,false);
-  lc.shutdown(2,false);
-  lc.shutdown(3,false);
-
-  // Set brightness
-  lc.setIntensity(0,1);
-  lc.setIntensity(1,1);
-  lc.setIntensity(2,1);
-  lc.setIntensity(3,1);
-}
 
 void PFLbuttons()
 {
@@ -206,10 +171,9 @@ void readMux() // hc4051 multiplexer
       Serial.print(":");
       Serial.println(buttons_1_2_multiplex_per_channel[pin].risingEdge() ? "1" : "0");
     }
+    
     // encoder buttons
-    for (int enc=0 ; enc < numEncoder; enc++) {
-      btnEncoderNew[enc] = digitalRead(multiplexer_enc);
-    }
+    btnEncoderNew[pin] = digitalRead(multiplexer_enc);
   }
 }
 
@@ -295,15 +259,6 @@ void sendEncoder()
   }
 }
 
-void initEncoderButtons()
-{
-  for (byte i = 0; i < numEncoder; i++)
-  {
-    btnEncoderNew[i] = 0;
-    btnEncoderOld[i] = 0;
-  }
-}
-
 void encoderButtons()
 {
   for (int enc=0 ; enc < numEncoder; enc++) {
@@ -320,6 +275,70 @@ void encoderButtons()
   }
 }
 
+void initEncoderButtons()
+{
+  for (byte i = 0; i < numEncoder; i++)
+  {
+    btnEncoderNew[i] = 0;
+    btnEncoderOld[i] = 0;
+  }
+}
+
+void initPotentiometer()
+{
+  for(int track = 0 ; track < num_tracks ; ++track) {
+    for(int pot = 0 ; pot < num_pots ; ++pot) {
+      pots_sent[track][pot] = 0;
+    }
+  }
+}
+
+void initLedMatrix()
+{
+  lc.shutdown(0,false);
+  lc.shutdown(1,false);
+  lc.shutdown(2,false);
+  lc.shutdown(3,false);
+
+  // Set brightness
+  lc.setIntensity(0,1);
+  lc.setIntensity(1,1);
+  lc.setIntensity(2,1);
+  lc.setIntensity(3,1);
+}
+
+void initNeoPixel()
+{
+  pixels.begin();
+  pixels.clear();
+  pixels.setBrightness(10);
+}
+
+void initPinConfig()
+{
+  // Configure per-channel digital pins
+  for(int channel = 0 ; channel < num_channels ; ++channel) {
+    pinMode(PINS_BUTTON_0_PER_CHANNEL[channel], INPUT);
+    pinMode(PINS_LED_PER_CHANNEL[channel], OUTPUT);
+  }
+
+  for(int button = 0 ; button < num_fx_buttons ; ++button) {
+    pinMode(PINS_BUTTON_FX[button], INPUT);
+  }
+  pinMode(multiplexer_enc, INPUT);
+}
+
+void setup()
+{
+  Serial.begin(4608000);
+  
+  initPinConfig();
+  initEncoderButtons();
+  initPotentiometer();
+  initLedMatrix();
+  initNeoPixel();
+}
+
 void loop()
 {
   PFLbuttons();
@@ -328,6 +347,5 @@ void loop()
   leds();
   readEncoder();
   sendEncoder();
-  initEncoderButtons();
   encoderButtons();
 }

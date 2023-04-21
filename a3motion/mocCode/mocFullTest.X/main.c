@@ -18,8 +18,6 @@ uint8_t *sensor_data_ptr = (uint8_t *) & sensor_data;
 volatile uint8_t adc_finished = 1;
 volatile uint8_t adc_i = 0;
 
-volatile uint16_t adcTests[24];
-volatile uint8_t adcTest_i;
 
 //ADC sample is ready
 
@@ -53,29 +51,9 @@ ISR(TCA0_OVF_vect) {
 }
 
 
-volatile uint16_t testCnt = 0;
-volatile uint8_t testBut = 0;
-volatile uint8_t testRGB = 0;
-volatile uint8_t testCol = 0;
 //250us
 
 ISR(TCB0_INT_vect) {
-    testCnt++;
-    if (testCnt == 400) {
-        led_updateRGB(3, 1, 0, 0);
-        led_updateRGB(2, 2, 0, 0);
-        led_updateRGB(1, 20, 0, 0);
-        led_updateRGB(0, LED_MAX, 0, 0);
-
-        testBut++;
-        if (testBut == 4)
-            testBut = 0;
-        testCol++;
-        if (testCol == 64)
-            testCol = 0;
-        testCnt = 0;
-
-    }
     TCB0.INTFLAGS |= TCB_CAPT_bm;
     if (sensor_cnt1 == sensor_cnt2) {
         sensor_cnt1++;
@@ -117,9 +95,6 @@ void i2c_setLedData(uint8_t button_i, uint8_t r, uint8_t g, uint8_t b) {
 void i2c_setID(uint8_t dat) {
     eep_set_i2c_addr(dat);
 }
-volatile ledEvent testEvent[20];
-volatile uint8_t testEvent_i = 0;
-volatile uint32_t testEvent_cnt = 0;
 
 int main(void) {
     ccp_write_io((void *) & (CLKCTRL.MCLKCTRLB), 0); //protected write to disable prescaler of CPU clock
@@ -137,18 +112,14 @@ int main(void) {
     adc_start_go(adc_i);
     while (1) {
         if (led_cnt1 != led_cnt2) {
-            
             if (led_cnt1 < led_cnt2) {
                 event = led_updateColorSystem();
             }
             if (event.time <= led_cnt1) {
-
                 led_shiftSend(event.shift);
                 event = led_getNextEvent();
-                
             }
             led_cnt2 = led_cnt1;
-
         }
 
         if (sensor_cnt1 != sensor_cnt2) {

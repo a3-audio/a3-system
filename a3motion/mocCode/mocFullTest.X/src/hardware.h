@@ -9,9 +9,6 @@
 #ifndef HARDWARE_H_
 #define HARDWARE_H_
 #define F_CPU 20000000UL
-#include "../includes.h"
-#include "bitoperation.h"
-
 
 #define ENC_A_PT	PORTC	//PC1
 #define ENC_A_BP	PIN1_bp

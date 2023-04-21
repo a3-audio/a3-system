@@ -9,6 +9,7 @@
 #ifndef TIMER_H_
 #define TIMER_H_
 #include "hardware.h"
+#include <avr/io.h>
 void time_t0Init();
 void time_t1Init();
 

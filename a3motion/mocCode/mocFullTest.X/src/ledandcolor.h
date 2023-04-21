@@ -10,7 +10,10 @@
 #define COLORMATH_H_
 #include "hardware.h"
 #include "debug.h"
-#define LED_MAX 64
+#include	<stdbool.h>
+#include <avr/io.h>
+#include <stdlib.h>
+#define LED_MAX 63
 
 
 typedef struct{

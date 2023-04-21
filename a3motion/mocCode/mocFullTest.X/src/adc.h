@@ -9,6 +9,9 @@
 #ifndef ADC_H_
 #define ADC_H_
 #include "hardware.h"
+#include <avr/io.h>
+#include <math.h>
+#include <stdlib.h>
 #define MYAD0	6
 #define MYAD1	8
 #define ADC_TIMEBASE	((uint8_t)ceil(F_CPU*0.000001))

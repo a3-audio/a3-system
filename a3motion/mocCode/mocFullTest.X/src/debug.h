@@ -8,7 +8,7 @@
 
 #ifndef DEBUG1_H_
 #define DEBUG1_H_
-
+#include <avr/io.h>
 #include "bitoperation.h"
 extern void toggleCh1();
 extern void toggleCh2();

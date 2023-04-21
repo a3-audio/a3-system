@@ -10,6 +10,9 @@
 #define BUTTON_H_
 #define N_RGB_BUTTON	4
 #include "hardware.h"
+#include "bitoperation.h"
+#include <avr/interrupt.h>
+#include <avr/cpufunc.h> /* Required header file */
 #define STATE_BUT_PRESSED	0xFF
 #define STATE_BUT_RELEASED	0
 typedef struct

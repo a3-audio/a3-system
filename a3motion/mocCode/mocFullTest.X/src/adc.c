@@ -15,7 +15,7 @@
 volatile uint16_t adcValuesNew[2] = {0, 0};
 //uint16_t adcValues[2];
 //uint32_t filtered[2]={0,0};
-uint8_t adcNumG = 0;
+volatile uint8_t adcNumG = 0;
 
 
 #define K 5

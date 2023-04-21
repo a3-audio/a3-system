@@ -201,19 +201,12 @@ int main() {
     printf("\n\n");
 
     printf("Module id is %d\n", mod_id);
-    printf("Change it? y/n   (Q quit)\n");
-    char ans = getchar_no_enter();
-    fflush(stdin);
-    if (tolower(ans) == 'q')
-        return 0;
-    if (ans == 'y') {
-        mod_id = input_byte();
-    }
     i2c_start(file, mod_id);
 
     while (1) {
-        printf("\nPress:\nL   for led test\nS   for sensor test\nE   for encoder setup(not working)\n");
-        printf("M   to change module id (not working))\nC   to change id\nQ   to exit\n\n");
+        printf("\nPress:\nL   for led test\nS   for sensor test\nE   for encoder step size. Encoders can have 1,2 or 4 steps per click\n");
+        printf("M   to change module i2c id. !!!Make sure only one Module is attached when doing this.!!! \n");
+        printf("C   to change i2c id the rpi is talking to\nQ   to exit\n\n");
         ans = getchar_no_enter();
         ans = tolower(ans);
         switch (ans) {

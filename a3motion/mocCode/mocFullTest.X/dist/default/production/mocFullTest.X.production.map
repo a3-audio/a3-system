@@ -1,7 +1,5 @@
 Archive member included to satisfy reference by file (symbol)
 
-c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_udivmodqi4.o)
-                              build/default/production/src/ledandcolor.o (__udivmodqi4)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_exit.o)
                               C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3/crtattiny1626.o (exit)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_copy_data.o)
@@ -10,6 +8,16 @@ c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/..
                               build/default/production/src/adc.o (__do_clear_bss)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avrxmega3\libc.a(qsort.o)
                               build/default/production/src/ledandcolor.o (qsort)
+C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
+                              build/default/production/_ext/797462307/eep.o (eeprom_read_byte)
+C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
+                              build/default/production/_ext/797462307/eep.o (eeprom_read_dword)
+C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
+                              build/default/production/_ext/797462307/eep.o (eeprom_update_byte)
+C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
+                              build/default/production/_ext/797462307/eep.o (eeprom_update_dword)
+C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
+                              C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o) (eeprom_write_r18)
 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
                               build/default/production/main.o (ccp_write_io)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_udivmodhi4.o)
@@ -23,12 +31,12 @@ Allocating common symbols
 Common symbol       size              file
 
 adcTests            0x30              build/default/production/main.o
-I2C_REG             0x10              build/default/production/_ext/282020558/i2cAlternative.o
+testEvent           0x3c              build/default/production/main.o
 leds                0x18              build/default/production/src/ledandcolor.o
 adcTest_i           0x1               build/default/production/main.o
 buttons             0x4               build/default/production/src/button.o
 event               0x3               build/default/production/main.o
-led_events          0x27              build/default/production/src/ledandcolor.o
+led_events          0x2a              build/default/production/src/ledandcolor.o
 enc_delta           0x1               build/default/production/_ext/282020558/encoderAlternative.o
 i2c_wrt_i           0x1               build/default/production/_ext/282020558/i2cAlternative.o
 rgbButtons          0x18              build/default/production/src/ledandcolor.o
@@ -43,53 +51,52 @@ Discarded input sections
  .bss           0x00000000        0x0 build/default/production/src/adc.o
  .text.adc_filterValues
                 0x00000000        0x2 build/default/production/src/adc.o
+ .text.adc_updateHysteresis
+                0x00000000       0xaa build/default/production/src/adc.o
+ .text.adc_filter
+                0x00000000       0x64 build/default/production/src/adc.o
  .text.adc_increaseBitDepth
-                0x00000000       0x5e build/default/production/src/adc.o
+                0x00000000      0x110 build/default/production/src/adc.o
  .text          0x00000000        0x0 build/default/production/src/button.o
  .data          0x00000000        0x0 build/default/production/src/button.o
  .bss           0x00000000        0x0 build/default/production/src/button.o
- .text          0x00000000        0x0 build/default/production/src/init.o
- .data          0x00000000        0x0 build/default/production/src/init.o
- .bss           0x00000000        0x0 build/default/production/src/init.o
- .comment       0x00000000       0x31 build/default/production/src/init.o
  .text          0x00000000        0x0 build/default/production/src/ledandcolor.o
  .data          0x00000000        0x0 build/default/production/src/ledandcolor.o
  .bss           0x00000000        0x0 build/default/production/src/ledandcolor.o
- .text.led_getNextEvent
-                0x00000000       0x2c build/default/production/src/ledandcolor.o
+ .text.led_rgbInit
+                0x00000000       0xcc build/default/production/src/ledandcolor.o
  .text          0x00000000        0x0 build/default/production/src/timer.o
  .data          0x00000000        0x0 build/default/production/src/timer.o
  .bss           0x00000000        0x0 build/default/production/src/timer.o
  .text          0x00000000        0x0 build/default/production/_ext/282020558/i2cAlternative.o
  .data          0x00000000        0x0 build/default/production/_ext/282020558/i2cAlternative.o
  .bss           0x00000000        0x0 build/default/production/_ext/282020558/i2cAlternative.o
- .text          0x00000000        0x0 build/default/production/main.o
- .data          0x00000000        0x0 build/default/production/main.o
- .bss           0x00000000        0x0 build/default/production/main.o
- .bss.butStates
-                0x00000000        0x1 build/default/production/main.o
- .text          0x00000000        0x0 build/default/production/_ext/282020558/debug.o
- .data          0x00000000        0x0 build/default/production/_ext/282020558/debug.o
- .bss           0x00000000        0x0 build/default/production/_ext/282020558/debug.o
+ .text.reset_states
+                0x00000000        0xe build/default/production/_ext/282020558/i2cAlternative.o
  .text          0x00000000        0x0 build/default/production/_ext/282020558/encoderAlternative.o
  .data          0x00000000        0x0 build/default/production/_ext/282020558/encoderAlternative.o
  .bss           0x00000000        0x0 build/default/production/_ext/282020558/encoderAlternative.o
- .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_udivmodqi4.o)
- .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_udivmodqi4.o)
- .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_udivmodqi4.o)
- .text.libgcc.mul
-                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_udivmodqi4.o)
- .text.libgcc.div
-                0x00000000       0x18 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_udivmodqi4.o)
- .text.libgcc   0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_udivmodqi4.o)
- .text.libgcc.prologue
-                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_udivmodqi4.o)
- .text.libgcc.builtins
-                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_udivmodqi4.o)
- .text.libgcc.fmul
-                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_udivmodqi4.o)
- .text.libgcc.fixed
-                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_udivmodqi4.o)
+ .text          0x00000000        0x0 build/default/production/_ext/797462307/eep.o
+ .data          0x00000000        0x0 build/default/production/_ext/797462307/eep.o
+ .bss           0x00000000        0x0 build/default/production/_ext/797462307/eep.o
+ .text          0x00000000        0x0 build/default/production/main.o
+ .data          0x00000000        0x0 build/default/production/main.o
+ .bss           0x00000000        0x0 build/default/production/main.o
+ .bss.testEvent_cnt
+                0x00000000        0x4 build/default/production/main.o
+ .bss.testEvent_i
+                0x00000000        0x1 build/default/production/main.o
+ .bss.testRGB   0x00000000        0x1 build/default/production/main.o
+ .text          0x00000000        0x0 build/default/production/_ext/282020558/debug.o
+ .data          0x00000000        0x0 build/default/production/_ext/282020558/debug.o
+ .bss           0x00000000        0x0 build/default/production/_ext/282020558/debug.o
+ .text.toggleCh1
+                0x00000000       0x2a build/default/production/_ext/282020558/debug.o
+ .text.toggleCh2
+                0x00000000       0x2a build/default/production/_ext/282020558/debug.o
+ .bss.tog_ch2   0x00000000        0x1 build/default/production/_ext/282020558/debug.o
+ .bss.tog_ch1   0x00000000        0x1 build/default/production/_ext/282020558/debug.o
+ .comment       0x00000000       0x31 build/default/production/_ext/282020558/debug.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_exit.o)
  .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_exit.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_exit.o)
@@ -141,6 +148,21 @@ Discarded input sections
  .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avrxmega3\libc.a(qsort.o)
  .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avrxmega3\libc.a(qsort.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avrxmega3\libc.a(qsort.o)
+ .text          0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
+ .data          0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
+ .bss           0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
+ .text          0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
+ .data          0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
+ .bss           0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
+ .text          0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
+ .data          0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
+ .bss           0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
+ .text          0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
+ .data          0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
+ .bss           0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
+ .text          0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
+ .data          0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
+ .bss           0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
  .text          0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
  .data          0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
  .bss           0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
@@ -206,13 +228,13 @@ Address of section .data set to 0x803800
 LOAD C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3/crtattiny1626.o
 LOAD build/default/production/src/adc.o
 LOAD build/default/production/src/button.o
-LOAD build/default/production/src/init.o
 LOAD build/default/production/src/ledandcolor.o
 LOAD build/default/production/src/timer.o
 LOAD build/default/production/_ext/282020558/i2cAlternative.o
+LOAD build/default/production/_ext/282020558/encoderAlternative.o
+LOAD build/default/production/_ext/797462307/eep.o
 LOAD build/default/production/main.o
 LOAD build/default/production/_ext/282020558/debug.o
-LOAD build/default/production/_ext/282020558/encoderAlternative.o
                 0x00000001                __MPLAB_BUILD = 0x1
 START GROUP
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avrxmega3\libm.a
@@ -324,7 +346,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x11b2
+.text           0x00000000     0x188e
  *(.vectors)
  .vectors       0x00000000       0x78 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3/crtattiny1626.o
                 0x00000000                __vector_default
@@ -411,131 +433,153 @@ END GROUP
                 0x000000b6                . = ALIGN (0x2)
  *(.text.*)
  .text.adc_start_prepare
-                0x000000b6       0x14 build/default/production/src/adc.o
+                0x000000b6       0x18 build/default/production/src/adc.o
                 0x000000b6                adc_start_prepare
  .text.adc_start_go
-                0x000000ca        0xc build/default/production/src/adc.o
-                0x000000ca                adc_start_go
+                0x000000ce        0xc build/default/production/src/adc.o
+                0x000000ce                adc_start_go
  .text.adc_getValue
-                0x000000d6       0x12 build/default/production/src/adc.o
-                0x000000d6                adc_getValue
- .text.adc_updateHysteresis
-                0x000000e8       0x9c build/default/production/src/adc.o
-                0x000000e8                adc_updateHysteresis
- .text.adc_filter
-                0x00000184       0x4a build/default/production/src/adc.o
-                0x00000184                adc_filter
+                0x000000da       0x12 build/default/production/src/adc.o
+                0x000000da                adc_getValue
  .text.adc_setValue
-                0x000001ce       0x1a build/default/production/src/adc.o
-                0x000001ce                adc_setValue
+                0x000000ec      0x10e build/default/production/src/adc.o
+                0x000000ec                adc_setValue
  .text.adc_init
-                0x000001e8       0x28 build/default/production/src/adc.o
-                0x000001e8                adc_init
+                0x000001fa       0x28 build/default/production/src/adc.o
+                0x000001fa                adc_init
  .text.but_getStates
-                0x00000210        0x6 build/default/production/src/button.o
-                0x00000210                but_getStates
+                0x00000222        0x6 build/default/production/src/button.o
+                0x00000222                but_getStates
  .text.but_updateStates
-                0x00000216      0x1b2 build/default/production/src/button.o
-                0x00000216                but_updateStates
+                0x00000228      0x140 build/default/production/src/button.o
+                0x00000228                but_updateStates
  .text.but_init
-                0x000003c8       0x5c build/default/production/src/button.o
-                0x000003c8                but_init
+                0x00000368       0x76 build/default/production/src/button.o
+                0x00000368                but_init
  .text.led_Compare
-                0x00000424       0x28 build/default/production/src/ledandcolor.o
-                0x00000424                led_Compare
+                0x000003de       0x28 build/default/production/src/ledandcolor.o
+                0x000003de                led_Compare
  .text.led_shiftSend
-                0x0000044c       0x16 build/default/production/src/ledandcolor.o
-                0x0000044c                led_shiftSend
+                0x00000406       0x18 build/default/production/src/ledandcolor.o
+                0x00000406                led_shiftSend
+ .text.led_getNextEvent
+                0x0000041e       0x26 build/default/production/src/ledandcolor.o
+                0x0000041e                led_getNextEvent
  .text.led_updateRGB
-                0x00000462       0x4c build/default/production/src/ledandcolor.o
-                0x00000462                led_updateRGB
- .text.led_rgbInit
-                0x000004ae       0xcc build/default/production/src/ledandcolor.o
-                0x000004ae                led_rgbInit
+                0x00000444       0x30 build/default/production/src/ledandcolor.o
+                0x00000444                led_updateRGB
  .text.led_updateColorSystem
-                0x0000057a      0x128 build/default/production/src/ledandcolor.o
-                0x0000057a                led_updateColorSystem
+                0x00000474      0x69a build/default/production/src/ledandcolor.o
+                0x00000474                led_updateColorSystem
  .text.led_init
-                0x000006a2       0x60 build/default/production/src/ledandcolor.o
-                0x000006a2                led_init
+                0x00000b0e      0x152 build/default/production/src/ledandcolor.o
+                0x00000b0e                led_init
  .text.time_t0Init
-                0x00000702       0x1a build/default/production/src/timer.o
-                0x00000702                time_t0Init
+                0x00000c60       0x1a build/default/production/src/timer.o
+                0x00000c60                time_t0Init
  .text.time_t1Init
-                0x0000071c       0x1a build/default/production/src/timer.o
-                0x0000071c                time_t1Init
+                0x00000c7a       0x1a build/default/production/src/timer.o
+                0x00000c7a                time_t1Init
  .text.i2c_init
-                0x00000736        0xe build/default/production/_ext/282020558/i2cAlternative.o
-                0x00000736                i2c_init
- .text.reset_states
-                0x00000744        0xe build/default/production/_ext/282020558/i2cAlternative.o
-                0x00000744                reset_states
+                0x00000c94        0xe build/default/production/_ext/282020558/i2cAlternative.o
+                0x00000c94                i2c_init
  .text.__vector_14
-                0x00000752      0x1d4 build/default/production/_ext/282020558/i2cAlternative.o
-                0x00000752                __vector_14
- .text.adcTest  0x00000926       0x2c build/default/production/main.o
-                0x00000926                adcTest
- .text.__vector_23
-                0x00000952       0x78 build/default/production/main.o
-                0x00000952                __vector_23
- .text.__vector_16
-                0x000009ca       0x70 build/default/production/main.o
-                0x000009ca                __vector_16
- .text.__vector_8
-                0x00000a3a       0x40 build/default/production/main.o
-                0x00000a3a                __vector_8
- .text.__vector_13
-                0x00000a7a       0x50 build/default/production/main.o
-                0x00000a7a                __vector_13
- .text.getSensorData
-                0x00000aca       0x58 build/default/production/main.o
-                0x00000aca                getSensorData
- .text.i2c_setEncoder
-                0x00000b22        0x6 build/default/production/main.o
-                0x00000b22                i2c_setEncoder
- .text.i2c_setLedData
-                0x00000b28        0x6 build/default/production/main.o
-                0x00000b28                i2c_setLedData
- .text.main     0x00000b2e      0x110 build/default/production/main.o
-                0x00000b2e                main
- .text.toggleCh1
-                0x00000c3e       0x2a build/default/production/_ext/282020558/debug.o
-                0x00000c3e                toggleCh1
- .text.toggleCh2
-                0x00000c68       0x2a build/default/production/_ext/282020558/debug.o
-                0x00000c68                toggleCh2
- .text.enc_setStep
-                0x00000c92        0x6 build/default/production/_ext/282020558/encoderAlternative.o
-                0x00000c92                enc_setStep
+                0x00000ca2      0x252 build/default/production/_ext/282020558/i2cAlternative.o
+                0x00000ca2                __vector_14
+ .text.enc_set_step
+                0x00000ef4        0x6 build/default/production/_ext/282020558/encoderAlternative.o
+                0x00000ef4                enc_set_step
  .text.enc_update
-                0x00000c98       0x38 build/default/production/_ext/282020558/encoderAlternative.o
-                0x00000c98                enc_update
+                0x00000efa       0x44 build/default/production/_ext/282020558/encoderAlternative.o
+                0x00000efa                enc_update
  .text.enc_getValue
-                0x00000cd0       0x36 build/default/production/_ext/282020558/encoderAlternative.o
-                0x00000cd0                enc_getValue
+                0x00000f3e       0x38 build/default/production/_ext/282020558/encoderAlternative.o
+                0x00000f3e                enc_getValue
  .text.enc_init
-                0x00000d06       0x48 build/default/production/_ext/282020558/encoderAlternative.o
-                0x00000d06                enc_init
+                0x00000f76       0x50 build/default/production/_ext/282020558/encoderAlternative.o
+                0x00000f76                enc_init
+ .text.eep_init
+                0x00000fc6       0x58 build/default/production/_ext/797462307/eep.o
+                0x00000fc6                eep_init
+ .text.eep_set_i2c_addr
+                0x0000101e       0x12 build/default/production/_ext/797462307/eep.o
+                0x0000101e                eep_set_i2c_addr
+ .text.eep_get_i2c_addr
+                0x00001030       0x10 build/default/production/_ext/797462307/eep.o
+                0x00001030                eep_get_i2c_addr
+ .text.eep_set_enc_step
+                0x00001040       0x12 build/default/production/_ext/797462307/eep.o
+                0x00001040                eep_set_enc_step
+ .text.eep_get_enc_step
+                0x00001052       0x10 build/default/production/_ext/797462307/eep.o
+                0x00001052                eep_get_enc_step
+ .text.__vector_23
+                0x00001062       0x7a build/default/production/main.o
+                0x00001062                __vector_23
+ .text.__vector_16
+                0x000010dc       0x3e build/default/production/main.o
+                0x000010dc                __vector_16
+ .text.__vector_8
+                0x0000111a       0x38 build/default/production/main.o
+                0x0000111a                __vector_8
+ .text.__vector_13
+                0x00001152       0xfc build/default/production/main.o
+                0x00001152                __vector_13
+ .text.getSensorData
+                0x0000124e       0x56 build/default/production/main.o
+                0x0000124e                getSensorData
+ .text.i2c_setEncoder
+                0x000012a4       0x10 build/default/production/main.o
+                0x000012a4                i2c_setEncoder
+ .text.i2c_setLedData
+                0x000012b4        0x4 build/default/production/main.o
+                0x000012b4                i2c_setLedData
+ .text.i2c_setID
+                0x000012b8        0x4 build/default/production/main.o
+                0x000012b8                i2c_setID
+ .text.startup.main
+                0x000012bc       0xfa build/default/production/main.o
+                0x000012bc                main
  .text.avr-libc
-                0x00000d4e      0x3ca c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avrxmega3\libc.a(qsort.o)
-                0x00000dd0                qsort
+                0x000013b6      0x3ca c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avrxmega3\libc.a(qsort.o)
+                0x00001438                qsort
  .text.avr-libc
-                0x00001118        0xc C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
-                0x00001118                ccp_write_io
+                0x00001780       0x10 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
+                0x00001780                eeprom_read_byte
+                0x00001788                eeprom_mapen
+ .text.avr-libc
+                0x00001790        0xe C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
+                0x00001790                eeprom_read_float
+                0x00001790                eeprom_read_dword
+ .text.avr-libc
+                0x0000179e       0x16 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
+                0x0000179e                eeprom_update_byte
+                0x000017a0                eeprom_update_r18
+ .text.avr-libc
+                0x000017b4       0x18 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
+                0x000017b4                eeprom_update_float
+                0x000017b4                eeprom_update_dword
+ .text.avr-libc
+                0x000017cc       0x28 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
+                0x000017cc                eeprom_write_byte
+                0x000017ce                eeprom_write_r18
+ .text.avr-libc
+                0x000017f4        0xc C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
+                0x000017f4                ccp_write_io
  .text.libgcc.div
-                0x00001124       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_udivmodhi4.o)
-                0x00001124                __udivmodhi4
+                0x00001800       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_udivmodhi4.o)
+                0x00001800                __udivmodhi4
  .text.libgcc.prologue
-                0x0000114c       0x32 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_prologue.o)
-                0x0000114c                __prologue_saves__
+                0x00001828       0x32 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_prologue.o)
+                0x00001828                __prologue_saves__
  .text.libgcc.prologue
-                0x0000117e       0x30 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_epilogue.o)
-                0x0000117e                __epilogue_restores__
-                0x000011ae                . = ALIGN (0x2)
+                0x0000185a       0x30 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_epilogue.o)
+                0x0000185a                __epilogue_restores__
+                0x0000188a                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000011ae        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_exit.o)
-                0x000011ae                _exit
-                0x000011ae                exit
+ .fini9         0x0000188a        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_exit.o)
+                0x0000188a                _exit
+                0x0000188a                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -554,42 +598,42 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000011ae        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_exit.o)
+ .fini0         0x0000188a        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_exit.o)
  *(.fini0)
-                0x000011b2                _etext = .
+                0x0000188e                _etext = .
 
 .rodata
  *(.rodata)
  *(.rodata*)
  *(.gnu.linkonce.r*)
 
-.data           0x00803800        0xc load address 0x000011b2
+.data           0x00803800        0xc load address 0x0000188e
                 0x00803800                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
  .data.led_event_n
                 0x00803800        0x1 build/default/production/src/ledandcolor.o
                 0x00803800                led_event_n
+ .data.step     0x00803801        0x1 build/default/production/_ext/282020558/encoderAlternative.o
+                0x00803801                step
  .data.adc_finished
-                0x00803801        0x1 build/default/production/main.o
-                0x00803801                adc_finished
+                0x00803802        0x1 build/default/production/main.o
+                0x00803802                adc_finished
  .data.sensor_data_ptr
-                0x00803802        0x2 build/default/production/main.o
-                0x00803802                sensor_data_ptr
+                0x00803803        0x2 build/default/production/main.o
+                0x00803803                sensor_data_ptr
  .data.sensor_data
-                0x00803804        0x6 build/default/production/main.o
-                0x00803804                sensor_data
+                0x00803805        0x6 build/default/production/main.o
+                0x00803805                sensor_data
  .data.sensor_cnt2
-                0x0080380a        0x1 build/default/production/main.o
-                0x0080380a                sensor_cnt2
- .data.step     0x0080380b        0x1 build/default/production/_ext/282020558/encoderAlternative.o
-                0x0080380b                step
+                0x0080380b        0x1 build/default/production/main.o
+                0x0080380b                sensor_cnt2
  *(.gnu.linkonce.d*)
                 0x0080380c                . = ALIGN (0x2)
                 0x0080380c                _edata = .
                 0x0080380c                PROVIDE (__data_end, .)
 
-.bss            0x0080380c       0xd6
+.bss            0x0080380c      0x105
                 0x0080380c                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
@@ -633,48 +677,48 @@ END GROUP
  .bss.i2c_read_i
                 0x0080381f        0x1 build/default/production/_ext/282020558/i2cAlternative.o
                 0x0080381f                i2c_read_i
- .bss.ty        0x00803820        0x2 build/default/production/main.o
-                0x00803820                ty
- .bss.adc_i     0x00803822        0x1 build/default/production/main.o
-                0x00803822                adc_i
+ .bss.last      0x00803820        0x1 build/default/production/_ext/282020558/encoderAlternative.o
+ .bss.testCol   0x00803821        0x1 build/default/production/main.o
+                0x00803821                testCol
+ .bss.testBut   0x00803822        0x1 build/default/production/main.o
+                0x00803822                testBut
+ .bss.testCnt   0x00803823        0x2 build/default/production/main.o
+                0x00803823                testCnt
+ .bss.adc_i     0x00803825        0x1 build/default/production/main.o
+                0x00803825                adc_i
  .bss.sensor_cnt1
-                0x00803823        0x1 build/default/production/main.o
-                0x00803823                sensor_cnt1
- .bss.led_cnt2  0x00803824        0x1 build/default/production/main.o
-                0x00803824                led_cnt2
- .bss.led_cnt1  0x00803825        0x1 build/default/production/main.o
-                0x00803825                led_cnt1
- .bss.tog_ch2   0x00803826        0x1 build/default/production/_ext/282020558/debug.o
-                0x00803826                tog_ch2
- .bss.tog_ch1   0x00803827        0x1 build/default/production/_ext/282020558/debug.o
-                0x00803827                tog_ch1
- .bss.last      0x00803828        0x1 build/default/production/_ext/282020558/encoderAlternative.o
+                0x00803826        0x1 build/default/production/main.o
+                0x00803826                sensor_cnt1
+ .bss.led_cnt2  0x00803827        0x1 build/default/production/main.o
+                0x00803827                led_cnt2
+ .bss.led_cnt1  0x00803828        0x1 build/default/production/main.o
+                0x00803828                led_cnt1
  *(COMMON)
  COMMON         0x00803829        0x4 build/default/production/src/button.o
                 0x00803829                buttons
- COMMON         0x0080382d       0x6f build/default/production/src/ledandcolor.o
+ COMMON         0x0080382d       0x72 build/default/production/src/ledandcolor.o
                 0x0080382d                leds
                 0x00803845                led_events
-                0x0080386c                rgbButtons
-                0x00803884                leds_t
- COMMON         0x0080389c       0x11 build/default/production/_ext/282020558/i2cAlternative.o
-                0x0080389c                I2C_REG
-                0x008038ac                i2c_wrt_i
- COMMON         0x008038ad       0x34 build/default/production/main.o
-                0x008038ad                adcTests
-                0x008038dd                adcTest_i
-                0x008038de                event
- COMMON         0x008038e1        0x1 build/default/production/_ext/282020558/encoderAlternative.o
-                0x008038e1                enc_delta
-                0x008038e2                PROVIDE (__bss_end, .)
-                0x000011b2                __data_load_start = LOADADDR (.data)
-                0x000011be                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x0080386f                rgbButtons
+                0x00803887                leds_t
+ COMMON         0x0080389f        0x1 build/default/production/_ext/282020558/i2cAlternative.o
+                0x0080389f                i2c_wrt_i
+ COMMON         0x008038a0        0x1 build/default/production/_ext/282020558/encoderAlternative.o
+                0x008038a0                enc_delta
+ COMMON         0x008038a1       0x70 build/default/production/main.o
+                0x008038a1                adcTests
+                0x008038d1                testEvent
+                0x0080390d                adcTest_i
+                0x0080390e                event
+                0x00803911                PROVIDE (__bss_end, .)
+                0x0000188e                __data_load_start = LOADADDR (.data)
+                0x0000189a                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x008038e2        0x0
+.noinit         0x00803911        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x008038e2                _end = .
+                0x00803911                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
@@ -722,9 +766,9 @@ END GROUP
  .comment       0x00000030       0x31 build/default/production/src/ledandcolor.o
  .comment       0x00000030       0x31 build/default/production/src/timer.o
  .comment       0x00000030       0x31 build/default/production/_ext/282020558/i2cAlternative.o
- .comment       0x00000030       0x31 build/default/production/main.o
- .comment       0x00000030       0x31 build/default/production/_ext/282020558/debug.o
  .comment       0x00000030       0x31 build/default/production/_ext/282020558/encoderAlternative.o
+ .comment       0x00000030       0x31 build/default/production/_ext/797462307/eep.o
+ .comment       0x00000030       0x31 build/default/production/main.o
  .comment       0x00000030       0x31 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avrxmega3\libc.a(qsort.o)
 
 .note.gnu.avr.deviceinfo
@@ -747,28 +791,53 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0x20
+.debug_aranges  0x00000000       0xc0
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
+                0x00000000       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
+ .debug_aranges
+                0x00000020       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
+ .debug_aranges
+                0x00000040       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
+ .debug_aranges
+                0x00000060       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
+ .debug_aranges
+                0x00000080       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
+ .debug_aranges
+                0x000000a0       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x1c36
+.debug_info     0x00000000     0x1f55
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000     0x1b97 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3/crtattiny1626.o
- .debug_info    0x00001b97       0x9f C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
+ .debug_info    0x00001b97       0x9f C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
+ .debug_info    0x00001c36       0xa0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
+ .debug_info    0x00001cd6       0xa0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
+ .debug_info    0x00001d76       0xa1 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
+ .debug_info    0x00001e17       0x9f C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
+ .debug_info    0x00001eb6       0x9f C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
 
-.debug_abbrev   0x00000000     0x1a34
+.debug_abbrev   0x00000000     0x1a98
  *(.debug_abbrev)
  .debug_abbrev  0x00000000     0x1a20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3/crtattiny1626.o
- .debug_abbrev  0x00001a20       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
+ .debug_abbrev  0x00001a20       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
+ .debug_abbrev  0x00001a34       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
+ .debug_abbrev  0x00001a48       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
+ .debug_abbrev  0x00001a5c       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
+ .debug_abbrev  0x00001a70       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
+ .debug_abbrev  0x00001a84       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
 
-.debug_line     0x00000000      0x1b2
+.debug_line     0x00000000      0x455
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x14b C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3/crtattiny1626.o
- .debug_line    0x0000014b       0x67 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
+ .debug_line    0x0000014b       0x79 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
+ .debug_line    0x000001c4       0x6e C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
+ .debug_line    0x00000232       0x80 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
+ .debug_line    0x000002b2       0x7b C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
+ .debug_line    0x0000032d       0xc1 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
+ .debug_line    0x000003ee       0x67 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
 
 .debug_frame
  *(.debug_frame)

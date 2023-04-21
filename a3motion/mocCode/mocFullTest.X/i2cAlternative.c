@@ -21,20 +21,20 @@
 #define MSG_SET_ID 0b1100           //12
 
 // I2C slave registers
-uint8_t I2C_REG[16]; // register array
-uint8_t i2c_wrt_i; // register pointer
-uint8_t i2c_read_i = 0; // register pointer
-uint8_t i2c_read_n = 0; // how many bytes are to read
-uint8_t led_buttons[4] = {0}; // how many bytes are to read
-uint8_t led_color_buf = 0; //
+//uint8_t I2C_REG[16]; // register array
+volatile uint8_t i2c_wrt_i; // register pointer
+volatile uint8_t i2c_read_i = 0; // register pointer
+volatile uint8_t i2c_read_n = 0; // how many bytes are to read
+volatile uint8_t led_buttons[4] = {0}; // how many bytes are to read
+volatile uint8_t led_color_buf = 0; //
 volatile uint8_t I2C_REG_changed = 0; // register change flag
 volatile uint8_t I2C_busy = 0; // I2C busy flag
 //when led_tripple_to_change is zero no button will be changed
 
 typedef enum {
-    idle, receive_led_1, receive_led_2, receive_i2_addr
+    idle, receive_led_1, receive_led_2, receive_i2c_addr
 } I2C_receive_state;
-I2C_receive_state receive_state = idle;
+volatile I2C_receive_state receive_state = idle;
 
 // I2C slave init
 
@@ -45,6 +45,9 @@ void i2c_init(uint8_t i2cAdrr) {
             | TWI_PIEN_bm // stop interrupt enable
             | TWI_ENABLE_bm; // enable I2C slave
 }
+
+
+
 
 
 
@@ -78,7 +81,7 @@ ISR(TWI0_TWIS_vect) {
                 case idle:
                     switch (msg >> 4) {
                         case MSG_SET_ID:
-                            receive_state = receive_i2_addr;
+                            receive_state = receive_i2c_addr;
                             break;
                         case MSG_SETUP_ENCODER:
                             BITMASK_CLEAR(msg, 0b11110000);
@@ -123,9 +126,11 @@ ISR(TWI0_TWIS_vect) {
                     }
                 }
                     break;
-                case receive_i2_addr:
-                    if (msg < 254)
+                case receive_i2c_addr:
+                    if (msg < 0x7F){
                         TWI0.SADDR = msg << 1; // set address (LSB is R/W bit)
+                        i2c_setID(msg);
+                    }
                     reset_states();
                     break;
 

@@ -91,5 +91,7 @@ void but_init() {
     BIT_SET(BU2_PT.PIN0CTRL, PORT_PULLUPEN_bp); //Button2 PC0
     BITMASK_CLEAR(BU3_PT.DIR, BU3_BM);
     BIT_SET(BU3_PT.PIN4CTRL, PORT_PULLUPEN_bp); //Button3 PB4
-    _delay_ms(1);
+    for(int i=0;i<20;i++)
+        for(int i1=0;i1<1000;i1++)
+            _NOP();
 }

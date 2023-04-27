@@ -50,6 +50,12 @@ Bounce button_0_per_channel [] = {
     Bounce(PINS_BUTTON_0_PER_CHANNEL[2], debounce_ms),
     Bounce(PINS_BUTTON_0_PER_CHANNEL[3], debounce_ms)
 };
+
+const int TAP_BUTTON = 37;
+const int TAP_LED = 41;
+
+Bounce tap_bounce = Bounce(TAP_BUTTON, debounce_ms);
+
 const int multiplexer [] = {5, 6, 7, 8, 9}; 	// Channel pots [0-3],
 const int multiplexer_enc = 12; 		// Encoderswitches (digital)
 const int selectPins [] = {30, 31, 32}; 	// Multiplexer abc
@@ -122,7 +128,7 @@ int modePxl[4][3] = {
 
 void PFLbuttons()
 {
-  for(int channel = 0 ; channel < num_channels ; ++channel) {
+  for(int channel = 0 ; channel < num_channels; ++channel) {
     if(button_0_per_channel[channel].update()) {
       Serial.print("T");
       Serial.print(":");
@@ -132,6 +138,15 @@ void PFLbuttons()
       Serial.print(":0:");
       Serial.println(button_0_per_channel[channel].risingEdge() ? "1" : "0");
     }
+  }
+}
+
+void TAPbutton()
+{
+  if(tap_bounce.update()) {
+    Serial.print("T");
+    Serial.print(":0:TAP:0:");
+    Serial.println(tap_bounce.risingEdge() ? "1" : "0");
   }
 }
 
@@ -147,7 +162,7 @@ void readMux() // hc4051 multiplexer
       // potentiometer
       int analog = analogRead(multiplexer[track]);
       int difference = pots_sent[track][pin] - analog;
-      if(abs(difference) > 8) { // needs to be solved in hardware!
+      if(abs(difference) > 12) { // needs to be solved in hardware!
         pots_sent[track][pin] = analog;
         float sendValue = float(analog) / 1023.f;
         Serial.print("T");
@@ -252,7 +267,7 @@ void sendEncoder()
 {
   for (byte i = 0; i < numEncoder; i++){
     if (newPosEnc[i] != posEnc[i]){
-      Serial.print("Enc" + String(i) + ":");
+      Serial.print("T:" + String(i) + ":ENC:0:");
       Serial.println(newPosEnc[i]);
       posEnc[i] = newPosEnc[i];
     }  
@@ -265,9 +280,10 @@ void encoderButtons()
     {
       if (btnEncoderNew[enc] != btnEncoderOld[enc])
       {
-        Serial.print("EB");
+        Serial.print("T:");
         Serial.print(enc);
         Serial.print(":");
+        Serial.print("EB:0:");
         Serial.println(btnEncoderNew[enc]);
         btnEncoderOld[enc] = btnEncoderNew[enc];
       }
@@ -348,4 +364,5 @@ void loop()
   readEncoder();
   sendEncoder();
   encoderButtons();
+  TAPbutton();
 }

@@ -96,6 +96,8 @@ master_pots_to_osc_message = {
     "5": "/master/phones_volume",
 }
 
+last_used_enc = 0
+
 # time_last_receive = 0
 
 def db_value_to_index(value: float, num_leds: int):
@@ -212,13 +214,25 @@ def serial_handler(): # dispatch from serial stream and send to osc
         # Buttons
         if mode == "B":
             # the 4 channel strips
-            channel_names = map(str, range(4))
+            channel_names = map(str, range(5))
             if track in channel_names:
                 osc_core.send_message("/channel/" + track + "/" +
                                       button_per_channel_to_osc_param[index], value)
             elif track == "fx" and value == "1":
                 osc_core.send_message("/fx/mode", button_fx_to_mode_name[index])
 
+        if mode == "TAP":
+            osc_core.send_message("/tap", value)
+
+        if mode == "EB": # Encoder Button
+                osc_core.send_message("/channel/" + track + "/encbtn", value)
+
+        if mode == "ENC": # Encoder
+                osc_core.send_message("/channel/" + track + "/enc", value)
+                global last_used_enc
+                if track != last_used_enc:
+                    last_used_enc = track
+        
         # Potis
         if mode == "P":
             # the 4 channel strips

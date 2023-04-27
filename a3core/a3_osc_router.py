@@ -22,13 +22,11 @@ values and sends them to destinations.
 
 import argparse
 import numpy as np
-# import re
-
+import time
+import rtmidi
 from typing import List, Any
-
 from enum import Enum
 from dataclasses import dataclass
-
 from pythonosc import dispatcher  # type: ignore
 from pythonosc import osc_server
 from pythonosc.udp_client import SimpleUDPClient  # type: ignore
@@ -37,7 +35,6 @@ OSC_PORT_CORE: int = 9000
 
 FX_INDEX_HIPASS: int = 2
 FX_INDEX_LOPASS: int = 3
-
 
 # OSC clients
 osc_mic = SimpleUDPClient('192.168.43.51', 7771)
@@ -48,6 +45,14 @@ osc_vid = SimpleUDPClient('192.168.43.102', 7771)
 udp_clients_iem = tuple(SimpleUDPClient('127.0.0.1', 1337 + index)
                         for index in range(4))
 
+# Midi client
+midiout = rtmidi.MidiOut()
+available_ports = midiout.get_ports()
+
+if available_ports:
+    midiout.open_port(0)
+else:
+    midiout.open_virtual_port("a3 osc router")
 
 @dataclass
 class MasterInfo:
@@ -155,7 +160,6 @@ def param_handler(address: str,
     elif section.startswith("fx"):
         param_handler_fx(section, parameter, value)
 
-
 def osc_handler_channel(address: str,
                         *osc_arguments: List[Any]) -> None:
 
@@ -172,21 +176,12 @@ def osc_handler_channel(address: str,
     channel_index = int(channel)
     track_input = channel_infos[channel_index].track_input
 
+# A3MIX-POTENTIOMETER
+
     if parameter == "gain":
-        # ad hoc mapping function that smoothly approximates the
-        # trial-and-error value mapping for prototype 0.1 with wrong
-        # poti weighting in hardware.
-        #val = value ** (1/16) * 0.5
-        
-        # since a3mix v0.2
-        val = np.interp(value, [0, 1], [0.01, 0.72])
-        # osc_reaper.send_message(f"/track/{track_input}/gain", val)
-        # osc_reaper.send_message(
-        #     f"/track/{track_input}/fx/1/fxparam/1/value", val)
         osc_reaper.send_message(f"/track/{track_input}/fxeq/gain", value)
 
     elif parameter == "volume":
-        val = np.interp(value, [0, 1], [0.01, 0.72])
         track_channelbus = channel_infos[channel_index].track_channelbus
         osc_reaper.send_message(f"/track/{track_channelbus}/volume", value)
 
@@ -204,20 +199,12 @@ def osc_handler_channel(address: str,
             val = np.interp(value, [0, 1], [0.01, 0.8])
             osc_reaper.send_message(f"/track/{track_input}/fxeq/loshelf/gain", val)
 
-    elif parameter == "width":
-        val = np.interp(value, [0, 1], [0.5, 0.9])
-        track_bformat = channel_infos[channel_index].track_bformat
-        osc_reaper.send_message(
-            f"/track/{track_bformat}/fx/1/fxparam/10/value", val)
-        #udp_client = udp_clients_iem[channel_index]
-        #udp_client.send_message("/StereoEncoder/width", val)
-        # print(str(value))
-
-    elif parameter == "reverb":
+    elif parameter == "fx-send":
         track_channelbus = channel_infos[channel_index].track_channelbus
-        reverb_value = master_info.track_reverb_aux_nr
-#        osc_reaper.send_message(
-#            f"/track/{track_channelbus}/send/{reverb_value}/volume", value)
+        osc_reaper.send_message(f"/track/{track_channelbus}/send/1/volume", value)
+
+
+# A3MIX-BUTTONS
 
     elif parameter == "pfl" and value == 1:
         channel_infos[channel_index].toggle_pfl = (
@@ -247,6 +234,8 @@ def osc_handler_channel(address: str,
         osc_reaper.send_message(
             f"/track/{track_bformat}/mute", float(not is_enabled))
 
+# A3MOTION
+
     elif parameter == "azimuth":
         val = np.interp(value, [-180, 180], [0, 1])
         track_bformat = channel_infos[channel_index].track_bformat
@@ -262,6 +251,21 @@ def osc_handler_channel(address: str,
             f"/track/{track_bformat}/fx/1/fxparam/8/value", val)
         osc_vid.send_message(
             f"/track/{track_bformat}/fx/1/fxparam/8/value", val)
+
+    elif parameter == "width":
+        val = np.interp(value, [0, 1], [0.5, 0.9])
+        track_bformat = channel_infos[channel_index].track_bformat
+        osc_reaper.send_message(
+            f"/track/{track_bformat}/fx/1/fxparam/10/value", val)
+        #udp_client = udp_clients_iem[channel_index]
+        #udp_client.send_message("/StereoEncoder/width", val)
+        #print(str(value))
+
+    elif parameter == "reverb":
+        track_channelbus = channel_infos[channel_index].track_channelbus
+        reverb_value = master_info.track_reverb_aux_nr
+        #osc_reaper.send_message(
+        #f"/track/{track_channelbus}/send/{reverb_value}/volume", value)
 
 
 def osc_handler_master(address: str,
@@ -342,6 +346,20 @@ def osc_handler_fx(address: str,
                 f"/track/{track_input}"  # Lo-Pass Resonance
                 f"/fx/{FX_INDEX_LOPASS}/fxparam/6/value", val)
 
+def osc_handler_tap(address: str,
+                   *osc_arguments: List[Any]) -> None:
+
+    value = osc_arguments[0]
+
+    print(address + " : " + str(value))
+
+    words: List[str] = address.split("/")
+    parameter: str = words[1]
+
+    if parameter == "tap" and value == "1":
+        note = [0x90, 60, 0] # Clock tap
+        midiout.send_message(note)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--ip", default="0.0.0.0", help="The ip to listen on")
@@ -354,6 +372,7 @@ if __name__ == "__main__":
     dispatcher.map("/channel/*", osc_handler_channel)
     dispatcher.map("/master/*", osc_handler_master)
     dispatcher.map("/fx/*", osc_handler_fx)
+    dispatcher.map("/tap", osc_handler_tap)
 
     # # Motion-Controller
     # # dispatcher.map("/CoordinateConverter/*", iemToCtrlMotion_handler)

@@ -22,9 +22,11 @@ s.options.numBuffers = 4096;
 s.boot;
 
 ~mic = NetAddr.new("192.168.43.51", 7771);    // create the NetAddr
-~vid = NetAddr.new("192.168.43.101", 7771);    // create the NetAddr
-~replyrate = 12;
-~peaklag = 5;
+~vid = NetAddr.new("192.168.43.102", 7771);    // create the NetAddr
+~replyrate = 20;
+~peaklag_in = 2;
+~peaklag_out = 5;
+~peaklag_vid = 3;
 ~num_input_vu = 4;
 ~num_output_vu = 8;
 
@@ -34,7 +36,7 @@ s.waitForBoot({
 
 ~num_input_vu.do{
 		arg item;
-		{SendPeakRMS.ar(In.ar(2 + item, 1), ~replyrate, ~peaklag, "/reply" ++ item)}.play;
+		{SendPeakRMS.ar(In.ar(2 + item, 1), ~replyrate, ~peaklag_in, "/reply" ++ item)}.play;
 		OSCFunc({ |msg| ~mic.sendMsg("/vu/" ++ item, msg[3], msg[4]);}, "/reply" ++ item);
 	};
 
@@ -42,7 +44,7 @@ s.waitForBoot({
 		arg item;
 		var after_in_vu;
 		after_in_vu = ~num_input_vu + item;
-		{SendPeakRMS.ar(In.ar(2 + after_in_vu, 1), ~replyrate, ~peaklag, "/reply" ++ after_in_vu)}.play;
+		{SendPeakRMS.ar(In.ar(2 + after_in_vu, 1), ~replyrate, ~peaklag_out, "/reply" ++ after_in_vu)}.play;
 		OSCFunc({ |msg| ~mic.sendMsg("/vu/" ++ after_in_vu, msg[3], msg[4]);}, "/reply" ++ after_in_vu);
 	};
 
@@ -51,7 +53,7 @@ s.waitForBoot({
 		var after_out_vu, channel;
 		channel = 1 + item;
 		after_out_vu = ~num_input_vu + ~num_output_vu + item;
-		{SendPeakRMS.ar(In.ar(2 + after_out_vu, 1), ~replyrate, ~peaklag, "/reply" ++ after_out_vu)}.play;
+		{SendPeakRMS.ar(In.ar(2 + after_out_vu, 1), ~replyrate, ~peaklag_vid, "/reply" ++ after_out_vu)}.play;
 		OSCFunc({ |msg| ~vid.sendMsg("/vu/" ++ channel, msg[3], msg[4]);}, "/reply" ++ after_out_vu);
 	};
 });

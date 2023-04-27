@@ -1,0 +1,174 @@
+<!DOCTYPE patchbay>
+<patchbay name="a3_patchbay" version="0.9.9">
+ <output-sockets>
+  <socket name="a3-osc-router-midi" exclusive="off" type="jack-midi" client="a2j">
+   <plug>RtMidiOut\ Client\ \[131\]\ \(capture\)\:\ RtMidi\ output</plug>
+  </socket>
+  <socket name="midiclock" exclusive="off" type="jack-midi" client="a2j">
+   <plug>RtMidiOut\ Client\ \[129\]\ \(capture\)\:\ clock</plug>
+  </socket>
+  <socket name="hw-st-1" exclusive="on" type="jack-audio" client="system">
+   <plug>capture_1</plug>
+   <plug>capture_2</plug>
+  </socket>
+  <socket name="hw-st-2" exclusive="on" type="jack-audio" client="system">
+   <plug>capture_3</plug>
+   <plug>capture_4</plug>
+  </socket>
+  <socket name="hw-st-3" exclusive="on" type="jack-audio" client="system">
+   <plug>capture_5</plug>
+   <plug>capture_6</plug>
+  </socket>
+  <socket name="hw-st-4" exclusive="on" type="jack-audio" client="system">
+   <plug>capture_7</plug>
+   <plug>capture_8</plug>
+  </socket>
+  <socket name="hw-st-12-fx" exclusive="off" type="jack-audio" client="system">
+   <plug>capture_19</plug>
+   <plug>capture_20</plug>
+  </socket>
+  <socket name="reaper-in-vu-preF" exclusive="on" type="jack-audio" client="REAPER">
+   <plug>out1</plug>
+   <plug>out2</plug>
+   <plug>out3</plug>
+   <plug>out4</plug>
+  </socket>
+  <socket name="reaper-in-vu-postF" exclusive="off" type="jack-audio" client="REAPER">
+   <plug>out57</plug>
+   <plug>out58</plug>
+   <plug>out59</plug>
+   <plug>out60</plug>
+  </socket>
+  <socket name="reaper-out-vu" exclusive="on" type="jack-audio" client="REAPER">
+   <plug>out5</plug>
+   <plug>out6</plug>
+   <plug>out7</plug>
+   <plug>out8</plug>
+   <plug>out9</plug>
+   <plug>out10</plug>
+   <plug>out11</plug>
+   <plug>out12</plug>
+  </socket>
+  <socket name="reaper-phones" exclusive="off" type="jack-audio" client="REAPER">
+   <plug>out13</plug>
+   <plug>out14</plug>
+  </socket>
+  <socket name="reaper-main" exclusive="on" type="jack-audio" client="REAPER">
+   <plug>out35</plug>
+   <plug>out36</plug>
+   <plug>out37</plug>
+   <plug>out38</plug>
+   <plug>out39</plug>
+   <plug>out40</plug>
+  </socket>
+  <socket name="reaper-rec-binaural" exclusive="on" type="jack-audio" client="REAPER">
+   <plug>out55</plug>
+   <plug>out56</plug>
+  </socket>
+  <socket name="reaper-booth" exclusive="on" type="jack-audio" client="REAPER">
+   <plug>out16</plug>
+   <plug>out17</plug>
+   <plug>out18</plug>
+   <plug>out19</plug>
+   <plug>out20</plug>
+   <plug>out15</plug>
+  </socket>
+  <socket name="reaper-fx1-send" exclusive="off" type="jack-audio" client="REAPER">
+   <plug>out61</plug>
+   <plug>out62</plug>
+  </socket>
+ </output-sockets>
+ <input-sockets>
+  <socket name="miciclock" exclusive="off" type="jack-midi" client="a2j">
+   <plug>RtMidiIn\ Client\ \[130\]\ \(playback\)\:\ RtMidiOut\ Client\:clock\ 129\:0</plug>
+  </socket>
+  <socket name="system 1" exclusive="off" type="jack-midi" client="system">
+   <plug>midi_playback_1</plug>
+  </socket>
+  <socket name="reaper-st-1" exclusive="off" type="jack-audio" client="REAPER">
+   <plug>in1</plug>
+   <plug>in2</plug>
+  </socket>
+  <socket name="reaper-st-2" exclusive="off" type="jack-audio" client="REAPER">
+   <plug>in3</plug>
+   <plug>in4</plug>
+  </socket>
+  <socket name="reaper-st-3" exclusive="off" type="jack-audio" client="REAPER">
+   <plug>in5</plug>
+   <plug>in6</plug>
+  </socket>
+  <socket name="reaper-st-4" exclusive="off" type="jack-audio" client="REAPER">
+   <plug>in7</plug>
+   <plug>in8</plug>
+  </socket>
+  <socket name="sc-in-vu-preF" exclusive="on" type="jack-audio" client="SuperCollider">
+   <plug>in_1</plug>
+   <plug>in_2</plug>
+   <plug>in_3</plug>
+   <plug>in_4</plug>
+  </socket>
+  <socket name="sc-in-vu-postF" exclusive="off" type="jack-audio" client="SuperCollider">
+   <plug>in_13</plug>
+   <plug>in_14</plug>
+   <plug>in_15</plug>
+   <plug>in_16</plug>
+  </socket>
+  <socket name="sc-out-vu" exclusive="on" type="jack-audio" client="SuperCollider">
+   <plug>in_5</plug>
+   <plug>in_6</plug>
+   <plug>in_7</plug>
+   <plug>in_8</plug>
+   <plug>in_9</plug>
+   <plug>in_10</plug>
+   <plug>in_11</plug>
+   <plug>in_12</plug>
+  </socket>
+  <socket name="hw-phones" exclusive="off" type="jack-audio" client="system">
+   <plug>playback_7</plug>
+   <plug>playback_8</plug>
+  </socket>
+  <socket name="hw-main" exclusive="on" type="jack-audio" client="system">
+   <plug>playback_15</plug>
+   <plug>playback_16</plug>
+   <plug>playback_17</plug>
+   <plug>playback_18</plug>
+   <plug>playback_19</plug>
+   <plug>playback_20</plug>
+  </socket>
+  <socket name="obs-binaural" exclusive="on" type="jack-audio" client="OBS_PH_FL_FR_BL_BR_TOP">
+   <plug>in_1</plug>
+   <plug>in_2</plug>
+  </socket>
+  <socket name="obs-fl-fr-bl-br-top-sub" exclusive="on" type="jack-audio" client="OBS_PH_FL_FR_BL_BR_TOP">
+   <plug>in_3</plug>
+   <plug>in_4</plug>
+   <plug>in_5</plug>
+   <plug>in_6</plug>
+   <plug>in_7</plug>
+   <plug>in_8</plug>
+  </socket>
+  <socket name="hw-fx1" exclusive="off" type="jack-audio" client="system">
+   <plug>playback_11</plug>
+   <plug>playback_12</plug>
+  </socket>
+ </input-sockets>
+ <slots/>
+ <cables>
+  <cable input="miciclock" output="a3-osc-router-midi" type="jack-midi"/>
+  <cable input="system 1" output="midiclock" type="jack-midi"/>
+  <cable input="reaper-st-1" output="hw-st-1" type="jack-audio"/>
+  <cable input="reaper-st-2" output="hw-st-2" type="jack-audio"/>
+  <cable input="reaper-st-3" output="hw-st-3" type="jack-audio"/>
+  <cable input="reaper-st-4" output="hw-st-4" type="jack-audio"/>
+  <cable input="reaper-st-4" output="hw-st-12-fx" type="jack-audio"/>
+  <cable input="sc-in-vu-preF" output="reaper-in-vu-preF" type="jack-audio"/>
+  <cable input="sc-in-vu-postF" output="reaper-in-vu-postF" type="jack-audio"/>
+  <cable input="sc-out-vu" output="reaper-out-vu" type="jack-audio"/>
+  <cable input="hw-phones" output="reaper-phones" type="jack-audio"/>
+  <cable input="hw-main" output="reaper-main" type="jack-audio"/>
+  <cable input="obs-binaural" output="reaper-rec-binaural" type="jack-audio"/>
+  <cable input="obs-fl-fr-bl-br-top-sub" output="reaper-booth" type="jack-audio"/>
+  <cable input="hw-fx1" output="reaper-fx1-send" type="jack-audio"/>
+ </cables>
+</patchbay>
+

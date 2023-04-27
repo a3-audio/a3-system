@@ -43,6 +43,7 @@ FX_INDEX_LOPASS: int = 3
 osc_mic = SimpleUDPClient('192.168.43.51', 7771)
 osc_moc = SimpleUDPClient('192.168.43.52', 8700)
 osc_reaper = SimpleUDPClient('127.0.0.1', 9001)
+osc_vid = SimpleUDPClient('192.168.43.102', 7771)
 
 udp_clients_iem = tuple(SimpleUDPClient('127.0.0.1', 1337 + index)
                         for index in range(4))
@@ -182,38 +183,41 @@ def osc_handler_channel(address: str,
         # osc_reaper.send_message(f"/track/{track_input}/gain", val)
         # osc_reaper.send_message(
         #     f"/track/{track_input}/fx/1/fxparam/1/value", val)
-        osc_reaper.send_message(f"/track/{track_input}/fxeq/gain", val)
+        osc_reaper.send_message(f"/track/{track_input}/fxeq/gain", value)
 
     elif parameter == "volume":
         val = np.interp(value, [0, 1], [0.01, 0.72])
         track_channelbus = channel_infos[channel_index].track_channelbus
-        osc_reaper.send_message(f"/track/{track_channelbus}/volume", val)
+        osc_reaper.send_message(f"/track/{track_channelbus}/volume", value)
 
     elif parameter == "eq":
         eq_parameter : str = words[4]
         if eq_parameter == "high":
-            val = np.interp(value, [0, 1], [0.05, 0.50])
+            val = np.interp(value, [0, 1], [0.01, 0.8])
             osc_reaper.send_message(f"/track/{track_input}/fxeq/hishelf/gain", val)
 
         elif eq_parameter == "mid":
-            val = np.interp(value, [0, 1], [0.01, 0.50])
+            val = np.interp(value, [0, 1], [0.01, 0.8])
             osc_reaper.send_message(f"/track/{track_input}/fxeq/band/0/gain", val)
 
         elif eq_parameter == "low":
-            val = np.interp(value, [0, 1], [0.01, 0.50])
+            val = np.interp(value, [0, 1], [0.01, 0.8])
             osc_reaper.send_message(f"/track/{track_input}/fxeq/loshelf/gain", val)
 
     elif parameter == "width":
-        val = np.interp(value, [0, 1], [0.01, 179])
-        udp_client = udp_clients_iem[channel_index]
-        udp_client.send_message("/StereoEncoder/width", val)
+        val = np.interp(value, [0, 1], [0.5, 0.9])
+        track_bformat = channel_infos[channel_index].track_bformat
+        osc_reaper.send_message(
+            f"/track/{track_bformat}/fx/1/fxparam/10/value", val)
+        #udp_client = udp_clients_iem[channel_index]
+        #udp_client.send_message("/StereoEncoder/width", val)
         # print(str(value))
 
     elif parameter == "reverb":
         track_channelbus = channel_infos[channel_index].track_channelbus
         reverb_value = master_info.track_reverb_aux_nr
-        osc_reaper.send_message(
-            f"/track/{track_channelbus}/send/{reverb_value}/volume", value)
+#        osc_reaper.send_message(
+#            f"/track/{track_channelbus}/send/{reverb_value}/volume", value)
 
     elif parameter == "pfl" and value == 1:
         channel_infos[channel_index].toggle_pfl = (
@@ -248,11 +252,15 @@ def osc_handler_channel(address: str,
         track_bformat = channel_infos[channel_index].track_bformat
         osc_reaper.send_message(
             f"/track/{track_bformat}/fx/1/fxparam/7/value", val)
+        osc_vid.send_message(
+            f"/track/{track_bformat}/fx/1/fxparam/7/value", val)
 
     elif parameter == "elevation":
         val = np.interp(value, [-180, 180], [0, 1])
         track_bformat = channel_infos[channel_index].track_bformat
         osc_reaper.send_message(
+            f"/track/{track_bformat}/fx/1/fxparam/8/value", val)
+        osc_vid.send_message(
             f"/track/{track_bformat}/fx/1/fxparam/8/value", val)
 
 
@@ -272,13 +280,13 @@ def osc_handler_master(address: str,
         val = np.interp(value, [0, 1], [0.01, 0.72])
         track = master_info.track_masterbus
         #track_b = master_info.track_booth
-        osc_reaper.send_message(f"/track/{track}/volume", val)
+        osc_reaper.send_message(f"/track/{track}/volume", value)
         #osc_reaper.send_message(f"/track/{track_b}/volume", val)
 
     if parameter == "booth":
         val = np.interp(value, [0, 1], [0.01, 0.72])
         track = master_info.track_booth
-        osc_reaper.send_message(f"/track/{track}/volume", val)
+        osc_reaper.send_message(f"/track/{track}/volume", value)
         #osc_reaper.send_message(f"/track/{track + 1}/volume", val)
         #osc_reaper.send_message(f"/track/{track + 2}/volume", val)
         #osc_reaper.send_message(f"/track/{track + 3}/volume", val)
@@ -286,15 +294,15 @@ def osc_handler_master(address: str,
     if parameter == "phones_mix":
         val = np.interp(value, [0, 1], [0.01, 0.72])
         track_mainmixbus = master_info.track_mainmixbus
-        osc_reaper.send_message(f"/track/{track_mainmixbus}/volume", val)
+        osc_reaper.send_message(f"/track/{track_mainmixbus}/volume", value)
         for channel_index in range(4):
             track_pfl = channel_infos[channel_index].track_pfl
-            osc_reaper.send_message(f"/track/{track_pfl}/volume", 0.72 - val)
+            osc_reaper.send_message(f"/track/{track_pfl}/volume", 1 - value)
 
     if parameter == "phones_volume":
         val = np.interp(value, [0, 1], [0.01, 0.72])
         track_phones = master_info.track_phones
-        osc_reaper.send_message(f"/track/{track_phones}/volume", val)
+        osc_reaper.send_message(f"/track/{track_phones}/volume", value)
 
 
 def osc_handler_fx(address: str,
@@ -324,7 +332,7 @@ def osc_handler_fx(address: str,
                 f"/fx/{FX_INDEX_LOPASS}/fxparam/7/value", float(value))
 
     elif parameter == "resonance":
-        val = np.interp(float(value), [0, 1], [0, 0.8])
+        val = np.interp(float(value), [0, 1], [0, 0.9])
         for channel_index in range(4):
             track_input = channel_infos[channel_index].track_input
             osc_reaper.send_message(

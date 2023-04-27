@@ -72,6 +72,7 @@ analog_pots_per_channel_to_osc_param = {
     "2": "eq/mid",
     "3": "eq/low",
     "4": "volume",
+    "5": "fx-send",
 }
 
 button_per_channel_to_osc_param = {
@@ -94,6 +95,8 @@ master_pots_to_osc_message = {
     "4": "/master/phones_mix",
     "5": "/master/phones_volume",
 }
+
+last_used_enc = 0
 
 # time_last_receive = 0
 
@@ -136,18 +139,18 @@ def vu_handler(address: str,
 def send_pfl_leds_data(channel: str, pfl_led_on: int):
     message = "LED:" + str(channel) + ":" + str(pfl_led_on)
     sendData(message)
-    print(message)
+#    print(message)
 
 def led_handler_channel(address: str,
                         *osc_arguments: List[Any]) -> None:
-    print(f'led_handler_channel: {address}')
+#    print(f'led_handler_channel: {address}')
 
     words = address.split("/")
     channel = words[2]
     led_type = words[4]
     led_on = int(osc_arguments[0])
 
-    print(f'toggling {led_type} led for channel {channel}: {led_on}')
+#    print(f'toggling {led_type} led for channel {channel}: {led_on}')
 
     if led_type == "pfl":
         send_pfl_leds_data(channel, led_on)
@@ -161,7 +164,7 @@ def led_handler_channel(address: str,
 
 def led_handler_fx(address: str,
                    *osc_arguments: List[Any]) -> None:
-    print(f'led_handler_fx: {address}')
+#    print(f'led_handler_fx: {address}')
 
     led_fx_mode = osc_arguments[0]
 
@@ -176,7 +179,8 @@ def led_handler_fx(address: str,
 
 
 # Serial communication
-ser = serial.Serial('/dev/ttyACM0', 115200)
+#ser = serial.Serial('/dev/ttyACM0', 115200)
+ser = serial.Serial('/dev/ttyACM0', 4608000)
 ser.flush()
 
 def sendData(data): # send Serial data
@@ -196,7 +200,7 @@ def serial_handler(): # dispatch from serial stream and send to osc
         # print(f'time delta: {delta_time_ms}')
         # time_last_receive = current_time_ns
 
-        print(line)
+#        print(line)
 
         words = line.split(":")
 
@@ -205,18 +209,30 @@ def serial_handler(): # dispatch from serial stream and send to osc
         index = words[3]
         value = words[4]
 
-        print(f'value: {value}')
+#        print(f'value: {value}')
 
         # Buttons
         if mode == "B":
             # the 4 channel strips
-            channel_names = map(str, range(4))
+            channel_names = map(str, range(5))
             if track in channel_names:
                 osc_core.send_message("/channel/" + track + "/" +
                                       button_per_channel_to_osc_param[index], value)
             elif track == "fx" and value == "1":
                 osc_core.send_message("/fx/mode", button_fx_to_mode_name[index])
 
+        if mode == "TAP":
+            osc_core.send_message("/tap", value)
+
+        if mode == "EB": # Encoder Button
+                osc_core.send_message("/channel/" + track + "/encbtn", value)
+
+        if mode == "ENC": # Encoder
+                osc_core.send_message("/channel/" + track + "/enc", value)
+                global last_used_enc
+                if track != last_used_enc:
+                    last_used_enc = track
+        
         # Potis
         if mode == "P":
             # the 4 channel strips
@@ -249,5 +265,5 @@ if __name__ == '__main__':
     dispatcher.map("/fx/led", led_handler_fx)
 
     server = osc_server.BlockingOSCUDPServer((args.ip, args.port), dispatcher)
-    print("Serving on {}".format(server.server_address))
+#    print("Serving on {}".format(server.server_address))
     server.serve_forever()

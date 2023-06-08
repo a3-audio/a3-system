@@ -42,7 +42,7 @@ def disp_2():
 
 def disp_3():
   TCA9548A.I2C_setup(0x70,4)
-  serial_dev_3 = i2c(port=1, address=0x3d)
+  serial_dev_3 = i2c(port=1, address=0x3c)
   device_dev_3 = ssd1306(serial_dev_3, rotate=2)
   with canvas(device_dev_3) as draw:
     draw.rectangle(device_dev_3.bounding_box, outline = "white", fill = "black")
@@ -62,10 +62,20 @@ def disp_5():
   device_dev_5 = ssd1306(serial_dev_5)
   with canvas(device_dev_5) as draw:
     draw.rectangle(device_dev_5.bounding_box, outline = "white", fill = "black")
-    draw.text((15, 5), "Discrete", font = oled_font, fill = "white")
+    draw.text((15, 5), "Line In", font = oled_font, fill = "white")
+
+def disp_6():
+  TCA9548A.I2C_setup(0x70,7)
+  serial_dev_6 = i2c(port=0, address=0x3d)
+  device_dev_6 = ssd1306(serial_dev_6)
+  with canvas(device_dev_6) as draw:
+    draw.rectangle(device_dev_5.bounding_box, outline = "white", fill = "black")
+    draw.text((15, 5), "Line In", font = oled_font, fill = "white")
 
 disp_1()
 disp_2()
 disp_3()
 disp_4()
 disp_5()
+disp_6()
+

@@ -12,5 +12,6 @@ def I2C_setup(multiplexer,i2c_channel_setup):
     bus = smbus.SMBus(1)
     bus.write_byte(multiplexer,channel_array[i2c_channel_setup])
     time.sleep(0.001)
-    #uncomment to debug #print("TCA9548A I2C channel status:", bin(bus.read_byte(multiplexer)))
+    #uncomment to debug 
+    print("TCA9548A I2C channel status:", bin(bus.read_byte(multiplexer)))
 

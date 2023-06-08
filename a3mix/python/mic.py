@@ -178,6 +178,17 @@ def led_handler_fx(address: str,
     pixels.show()
 
 
+def tap_handler(address: str,
+               *osc_arguments: List[Any]) -> None:
+    words = address.split("/")
+    tap = words[1]
+
+    value = osc_arguments[0]
+
+    message = "TAP:" + str(value)
+    sendData(message)
+    print(message)
+
 # Serial communication
 #ser = serial.Serial('/dev/ttyACM0', 115200)
 ser = serial.Serial('/dev/ttyACM0', 4608000)
@@ -263,6 +274,7 @@ if __name__ == '__main__':
     dispatcher.map("/vu/*", vu_handler)
     dispatcher.map("/channel/*/led/*", led_handler_channel)
     dispatcher.map("/fx/led", led_handler_fx)
+    #dispatcher.map("/clock", tap_handler)
 
     server = osc_server.BlockingOSCUDPServer((args.ip, args.port), dispatcher)
 #    print("Serving on {}".format(server.server_address))

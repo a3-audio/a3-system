@@ -42,9 +42,9 @@ uint16_t adc_getValue(uint8_t adcNum) {
 }
 
 uint8_t adc_setValue(uint16_t newValue) {
-    //adcValuesNew[adcNumG] = newValue;
-    adc_filter(newValue);
-    adc_updateHysteresis(newValue);
+    adcValuesNew[adcNumG] = newValue;
+    //adc_filter(newValue);
+    //adc_updateHysteresis(newValue);
     return adcNumG;
 }
 

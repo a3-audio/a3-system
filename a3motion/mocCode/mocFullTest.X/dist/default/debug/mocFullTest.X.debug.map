@@ -3,23 +3,23 @@ Archive member included to satisfy reference by file (symbol)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_exit.o)
                               C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3/crtattiny1626.o (exit)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_copy_data.o)
-                              build/default/production/src/ledandcolor.o (__do_copy_data)
+                              build/default/debug/src/ledandcolor.o (__do_copy_data)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_clear_bss.o)
-                              build/default/production/src/adc.o (__do_clear_bss)
+                              build/default/debug/src/adc.o (__do_clear_bss)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avrxmega3\libc.a(qsort.o)
-                              build/default/production/src/ledandcolor.o (qsort)
+                              build/default/debug/src/ledandcolor.o (qsort)
 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
-                              build/default/production/_ext/797462307/eep.o (eeprom_read_byte)
+                              build/default/debug/_ext/797462307/eep.o (eeprom_read_byte)
 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
-                              build/default/production/_ext/797462307/eep.o (eeprom_read_dword)
+                              build/default/debug/_ext/797462307/eep.o (eeprom_read_dword)
 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
-                              build/default/production/_ext/797462307/eep.o (eeprom_update_byte)
+                              build/default/debug/_ext/797462307/eep.o (eeprom_update_byte)
 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
-                              build/default/production/_ext/797462307/eep.o (eeprom_update_dword)
+                              build/default/debug/_ext/797462307/eep.o (eeprom_update_dword)
 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
                               C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o) (eeprom_write_r18)
 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
-                              build/default/production/main.o (ccp_write_io)
+                              build/default/debug/main.o (ccp_write_io)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_udivmodhi4.o)
                               c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avrxmega3\libc.a(qsort.o) (__udivmodhi4)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_prologue.o)
@@ -30,67 +30,75 @@ c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/..
 Allocating common symbols
 Common symbol       size              file
 
-leds                0x18              build/default/production/src/ledandcolor.o
-buttons             0x4               build/default/production/src/button.o
-event               0x3               build/default/production/main.o
-led_events          0x2a              build/default/production/src/ledandcolor.o
-enc_delta           0x1               build/default/production/_ext/282020558/encoderAlternative.o
-i2c_wrt_i           0x1               build/default/production/_ext/282020558/i2cAlternative.o
-rgbButtons          0x18              build/default/production/src/ledandcolor.o
-leds_t              0x18              build/default/production/src/ledandcolor.o
+leds                0x18              build/default/debug/src/ledandcolor.o
+buttons             0x4               build/default/debug/src/button.o
+event               0x3               build/default/debug/main.o
+led_events          0x2a              build/default/debug/src/ledandcolor.o
+enc_delta           0x1               build/default/debug/_ext/282020558/encoderAlternative.o
+i2c_wrt_i           0x1               build/default/debug/_ext/282020558/i2cAlternative.o
+rgbButtons          0x18              build/default/debug/src/ledandcolor.o
+leds_t              0x18              build/default/debug/src/ledandcolor.o
 
 Discarded input sections
 
  .data          0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3/crtattiny1626.o
  .bss           0x00000000        0x0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3/crtattiny1626.o
- .text          0x00000000        0x0 build/default/production/src/adc.o
- .data          0x00000000        0x0 build/default/production/src/adc.o
- .bss           0x00000000        0x0 build/default/production/src/adc.o
+ .text          0x00000000        0x0 build/default/debug/src/adc.o
+ .data          0x00000000        0x0 build/default/debug/src/adc.o
+ .bss           0x00000000        0x0 build/default/debug/src/adc.o
  .text.adc_filterValues
-                0x00000000        0x2 build/default/production/src/adc.o
+                0x00000000        0x2 build/default/debug/src/adc.o
  .text.adc_updateHysteresis
-                0x00000000       0xaa build/default/production/src/adc.o
+                0x00000000       0xaa build/default/debug/src/adc.o
  .text.adc_filter
-                0x00000000       0x64 build/default/production/src/adc.o
+                0x00000000       0x64 build/default/debug/src/adc.o
  .text.adc_increaseBitDepth
-                0x00000000      0x110 build/default/production/src/adc.o
- .text          0x00000000        0x0 build/default/production/src/button.o
- .data          0x00000000        0x0 build/default/production/src/button.o
- .bss           0x00000000        0x0 build/default/production/src/button.o
- .text          0x00000000        0x0 build/default/production/src/ledandcolor.o
- .data          0x00000000        0x0 build/default/production/src/ledandcolor.o
- .bss           0x00000000        0x0 build/default/production/src/ledandcolor.o
+                0x00000000      0x110 build/default/debug/src/adc.o
+ .text          0x00000000        0x0 build/default/debug/src/button.o
+ .data          0x00000000        0x0 build/default/debug/src/button.o
+ .bss           0x00000000        0x0 build/default/debug/src/button.o
+ .text          0x00000000        0x0 build/default/debug/src/ledandcolor.o
+ .data          0x00000000        0x0 build/default/debug/src/ledandcolor.o
+ .bss           0x00000000        0x0 build/default/debug/src/ledandcolor.o
  .text.led_rgbInit
-                0x00000000       0xcc build/default/production/src/ledandcolor.o
- .text          0x00000000        0x0 build/default/production/src/timer.o
- .data          0x00000000        0x0 build/default/production/src/timer.o
- .bss           0x00000000        0x0 build/default/production/src/timer.o
+                0x00000000       0xcc build/default/debug/src/ledandcolor.o
+ .text          0x00000000        0x0 build/default/debug/src/timer.o
+ .data          0x00000000        0x0 build/default/debug/src/timer.o
+ .bss           0x00000000        0x0 build/default/debug/src/timer.o
  .text.time_counter
-                0x00000000       0x1a build/default/production/src/timer.o
- .text          0x00000000        0x0 build/default/production/_ext/282020558/i2cAlternative.o
- .data          0x00000000        0x0 build/default/production/_ext/282020558/i2cAlternative.o
- .bss           0x00000000        0x0 build/default/production/_ext/282020558/i2cAlternative.o
+                0x00000000       0x1a build/default/debug/src/timer.o
+ .text          0x00000000        0x0 build/default/debug/_ext/282020558/i2cAlternative.o
+ .data          0x00000000        0x0 build/default/debug/_ext/282020558/i2cAlternative.o
+ .bss           0x00000000        0x0 build/default/debug/_ext/282020558/i2cAlternative.o
  .text.reset_states
-                0x00000000        0xe build/default/production/_ext/282020558/i2cAlternative.o
- .text          0x00000000        0x0 build/default/production/_ext/282020558/encoderAlternative.o
- .data          0x00000000        0x0 build/default/production/_ext/282020558/encoderAlternative.o
- .bss           0x00000000        0x0 build/default/production/_ext/282020558/encoderAlternative.o
- .text          0x00000000        0x0 build/default/production/_ext/797462307/eep.o
- .data          0x00000000        0x0 build/default/production/_ext/797462307/eep.o
- .bss           0x00000000        0x0 build/default/production/_ext/797462307/eep.o
- .text          0x00000000        0x0 build/default/production/main.o
- .data          0x00000000        0x0 build/default/production/main.o
- .bss           0x00000000        0x0 build/default/production/main.o
- .text          0x00000000        0x0 build/default/production/_ext/282020558/debug.o
- .data          0x00000000        0x0 build/default/production/_ext/282020558/debug.o
- .bss           0x00000000        0x0 build/default/production/_ext/282020558/debug.o
+                0x00000000        0xe build/default/debug/_ext/282020558/i2cAlternative.o
+ .text          0x00000000        0x0 build/default/debug/_ext/282020558/encoderAlternative.o
+ .data          0x00000000        0x0 build/default/debug/_ext/282020558/encoderAlternative.o
+ .bss           0x00000000        0x0 build/default/debug/_ext/282020558/encoderAlternative.o
+ .text          0x00000000        0x0 build/default/debug/_ext/797462307/eep.o
+ .data          0x00000000        0x0 build/default/debug/_ext/797462307/eep.o
+ .bss           0x00000000        0x0 build/default/debug/_ext/797462307/eep.o
+ .text          0x00000000        0x0 build/default/debug/main.o
+ .data          0x00000000        0x0 build/default/debug/main.o
+ .bss           0x00000000        0x0 build/default/debug/main.o
+ .text          0x00000000        0x0 build/default/debug/_ext/282020558/debug.o
+ .data          0x00000000        0x0 build/default/debug/_ext/282020558/debug.o
+ .bss           0x00000000        0x0 build/default/debug/_ext/282020558/debug.o
  .text.toggleCh1
-                0x00000000       0x2a build/default/production/_ext/282020558/debug.o
+                0x00000000       0x2a build/default/debug/_ext/282020558/debug.o
  .text.toggleCh2
-                0x00000000       0x2a build/default/production/_ext/282020558/debug.o
- .bss.tog_ch2   0x00000000        0x1 build/default/production/_ext/282020558/debug.o
- .bss.tog_ch1   0x00000000        0x1 build/default/production/_ext/282020558/debug.o
- .comment       0x00000000       0x31 build/default/production/_ext/282020558/debug.o
+                0x00000000       0x2a build/default/debug/_ext/282020558/debug.o
+ .bss.tog_ch2   0x00000000        0x1 build/default/debug/_ext/282020558/debug.o
+ .bss.tog_ch1   0x00000000        0x1 build/default/debug/_ext/282020558/debug.o
+ .debug_info    0x00000000       0xbe build/default/debug/_ext/282020558/debug.o
+ .debug_abbrev  0x00000000       0x5e build/default/debug/_ext/282020558/debug.o
+ .debug_aranges
+                0x00000000       0x28 build/default/debug/_ext/282020558/debug.o
+ .debug_ranges  0x00000000       0x18 build/default/debug/_ext/282020558/debug.o
+ .debug_line    0x00000000      0x129 build/default/debug/_ext/282020558/debug.o
+ .debug_str     0x00000000      0x19a build/default/debug/_ext/282020558/debug.o
+ .comment       0x00000000       0x31 build/default/debug/_ext/282020558/debug.o
+ .debug_frame   0x00000000       0x34 build/default/debug/_ext/282020558/debug.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_exit.o)
  .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_exit.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avrxmega3\libgcc.a(_exit.o)
@@ -220,16 +228,19 @@ Linker script and memory map
 Address of section .data set to 0x803800
                 0x00008000                __RODATA_PM_OFFSET__ = 0x8000
 LOAD C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3/crtattiny1626.o
-LOAD build/default/production/src/adc.o
-LOAD build/default/production/src/button.o
-LOAD build/default/production/src/ledandcolor.o
-LOAD build/default/production/src/timer.o
-LOAD build/default/production/_ext/282020558/i2cAlternative.o
-LOAD build/default/production/_ext/282020558/encoderAlternative.o
-LOAD build/default/production/_ext/797462307/eep.o
-LOAD build/default/production/main.o
-LOAD build/default/production/_ext/282020558/debug.o
+LOAD build/default/debug/src/adc.o
+LOAD build/default/debug/src/button.o
+LOAD build/default/debug/src/ledandcolor.o
+LOAD build/default/debug/src/timer.o
+LOAD build/default/debug/_ext/282020558/i2cAlternative.o
+LOAD build/default/debug/_ext/282020558/encoderAlternative.o
+LOAD build/default/debug/_ext/797462307/eep.o
+LOAD build/default/debug/main.o
+LOAD build/default/debug/_ext/282020558/debug.o
                 0x00000001                __MPLAB_BUILD = 0x1
+                0x00000001                __ICD2RAM = 0x1
+                0x00000001                __MPLAB_DEBUG = 0x1
+                0x00000001                __DEBUG = 0x1
 START GROUP
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avrxmega3\libm.a
 END GROUP
@@ -427,112 +438,112 @@ END GROUP
                 0x000000b6                . = ALIGN (0x2)
  *(.text.*)
  .text.adc_start_prepare
-                0x000000b6       0x18 build/default/production/src/adc.o
+                0x000000b6       0x18 build/default/debug/src/adc.o
                 0x000000b6                adc_start_prepare
  .text.adc_start_go
-                0x000000ce        0xc build/default/production/src/adc.o
+                0x000000ce        0xc build/default/debug/src/adc.o
                 0x000000ce                adc_start_go
  .text.adc_getValue
-                0x000000da       0x12 build/default/production/src/adc.o
+                0x000000da       0x12 build/default/debug/src/adc.o
                 0x000000da                adc_getValue
  .text.adc_setValue
-                0x000000ec       0x18 build/default/production/src/adc.o
+                0x000000ec       0x18 build/default/debug/src/adc.o
                 0x000000ec                adc_setValue
  .text.adc_init
-                0x00000104       0x28 build/default/production/src/adc.o
+                0x00000104       0x28 build/default/debug/src/adc.o
                 0x00000104                adc_init
  .text.but_getStates
-                0x0000012c        0x6 build/default/production/src/button.o
+                0x0000012c        0x6 build/default/debug/src/button.o
                 0x0000012c                but_getStates
  .text.but_updateStates
-                0x00000132      0x140 build/default/production/src/button.o
+                0x00000132      0x140 build/default/debug/src/button.o
                 0x00000132                but_updateStates
  .text.but_init
-                0x00000272       0x76 build/default/production/src/button.o
+                0x00000272       0x76 build/default/debug/src/button.o
                 0x00000272                but_init
  .text.led_Compare
-                0x000002e8       0x28 build/default/production/src/ledandcolor.o
+                0x000002e8       0x28 build/default/debug/src/ledandcolor.o
                 0x000002e8                led_Compare
  .text.led_shiftSend
-                0x00000310       0x18 build/default/production/src/ledandcolor.o
+                0x00000310       0x18 build/default/debug/src/ledandcolor.o
                 0x00000310                led_shiftSend
  .text.led_getNextEvent
-                0x00000328       0x26 build/default/production/src/ledandcolor.o
+                0x00000328       0x26 build/default/debug/src/ledandcolor.o
                 0x00000328                led_getNextEvent
  .text.led_updateRGB
-                0x0000034e       0x30 build/default/production/src/ledandcolor.o
+                0x0000034e       0x30 build/default/debug/src/ledandcolor.o
                 0x0000034e                led_updateRGB
  .text.led_updateColorSystem
-                0x0000037e      0x69a build/default/production/src/ledandcolor.o
+                0x0000037e      0x69a build/default/debug/src/ledandcolor.o
                 0x0000037e                led_updateColorSystem
  .text.led_init
-                0x00000a18      0x152 build/default/production/src/ledandcolor.o
+                0x00000a18      0x152 build/default/debug/src/ledandcolor.o
                 0x00000a18                led_init
  .text.time_t0Init
-                0x00000b6a       0x1a build/default/production/src/timer.o
+                0x00000b6a       0x1a build/default/debug/src/timer.o
                 0x00000b6a                time_t0Init
  .text.time_t1Init
-                0x00000b84       0x1a build/default/production/src/timer.o
+                0x00000b84       0x1a build/default/debug/src/timer.o
                 0x00000b84                time_t1Init
  .text.i2c_init
-                0x00000b9e        0xe build/default/production/_ext/282020558/i2cAlternative.o
+                0x00000b9e        0xe build/default/debug/_ext/282020558/i2cAlternative.o
                 0x00000b9e                i2c_init
  .text.__vector_14
-                0x00000bac      0x252 build/default/production/_ext/282020558/i2cAlternative.o
+                0x00000bac      0x252 build/default/debug/_ext/282020558/i2cAlternative.o
                 0x00000bac                __vector_14
  .text.enc_set_step
-                0x00000dfe        0x6 build/default/production/_ext/282020558/encoderAlternative.o
+                0x00000dfe        0x6 build/default/debug/_ext/282020558/encoderAlternative.o
                 0x00000dfe                enc_set_step
  .text.enc_update
-                0x00000e04       0x44 build/default/production/_ext/282020558/encoderAlternative.o
+                0x00000e04       0x44 build/default/debug/_ext/282020558/encoderAlternative.o
                 0x00000e04                enc_update
  .text.enc_getValue
-                0x00000e48       0x38 build/default/production/_ext/282020558/encoderAlternative.o
+                0x00000e48       0x38 build/default/debug/_ext/282020558/encoderAlternative.o
                 0x00000e48                enc_getValue
  .text.enc_init
-                0x00000e80       0x50 build/default/production/_ext/282020558/encoderAlternative.o
+                0x00000e80       0x50 build/default/debug/_ext/282020558/encoderAlternative.o
                 0x00000e80                enc_init
  .text.eep_init
-                0x00000ed0       0x58 build/default/production/_ext/797462307/eep.o
+                0x00000ed0       0x58 build/default/debug/_ext/797462307/eep.o
                 0x00000ed0                eep_init
  .text.eep_set_i2c_addr
-                0x00000f28       0x12 build/default/production/_ext/797462307/eep.o
+                0x00000f28       0x12 build/default/debug/_ext/797462307/eep.o
                 0x00000f28                eep_set_i2c_addr
  .text.eep_get_i2c_addr
-                0x00000f3a       0x10 build/default/production/_ext/797462307/eep.o
+                0x00000f3a       0x10 build/default/debug/_ext/797462307/eep.o
                 0x00000f3a                eep_get_i2c_addr
  .text.eep_set_enc_step
-                0x00000f4a       0x12 build/default/production/_ext/797462307/eep.o
+                0x00000f4a       0x12 build/default/debug/_ext/797462307/eep.o
                 0x00000f4a                eep_set_enc_step
  .text.eep_get_enc_step
-                0x00000f5c       0x10 build/default/production/_ext/797462307/eep.o
+                0x00000f5c       0x10 build/default/debug/_ext/797462307/eep.o
                 0x00000f5c                eep_get_enc_step
  .text.__vector_23
-                0x00000f6c       0x7a build/default/production/main.o
+                0x00000f6c       0x7a build/default/debug/main.o
                 0x00000f6c                __vector_23
  .text.__vector_16
-                0x00000fe6       0x3e build/default/production/main.o
+                0x00000fe6       0x3e build/default/debug/main.o
                 0x00000fe6                __vector_16
  .text.__vector_8
-                0x00001024       0x38 build/default/production/main.o
+                0x00001024       0x38 build/default/debug/main.o
                 0x00001024                __vector_8
  .text.__vector_13
-                0x0000105c       0x56 build/default/production/main.o
+                0x0000105c       0x56 build/default/debug/main.o
                 0x0000105c                __vector_13
  .text.getSensorData
-                0x000010b2       0x56 build/default/production/main.o
+                0x000010b2       0x56 build/default/debug/main.o
                 0x000010b2                getSensorData
  .text.i2c_setEncoder
-                0x00001108       0x10 build/default/production/main.o
+                0x00001108       0x10 build/default/debug/main.o
                 0x00001108                i2c_setEncoder
  .text.i2c_setLedData
-                0x00001118        0x4 build/default/production/main.o
+                0x00001118        0x4 build/default/debug/main.o
                 0x00001118                i2c_setLedData
  .text.i2c_setID
-                0x0000111c        0x4 build/default/production/main.o
+                0x0000111c        0x4 build/default/debug/main.o
                 0x0000111c                i2c_setID
  .text.startup.main
-                0x00001120       0xfa build/default/production/main.o
+                0x00001120       0xfa build/default/debug/main.o
                 0x00001120                main
  .text.avr-libc
                 0x0000121a      0x3ca c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avrxmega3\libc.a(qsort.o)
@@ -606,21 +617,21 @@ END GROUP
  *(.data)
  *(.data*)
  .data.led_event_n
-                0x00803800        0x1 build/default/production/src/ledandcolor.o
+                0x00803800        0x1 build/default/debug/src/ledandcolor.o
                 0x00803800                led_event_n
- .data.step     0x00803801        0x1 build/default/production/_ext/282020558/encoderAlternative.o
+ .data.step     0x00803801        0x1 build/default/debug/_ext/282020558/encoderAlternative.o
                 0x00803801                step
  .data.adc_finished
-                0x00803802        0x1 build/default/production/main.o
+                0x00803802        0x1 build/default/debug/main.o
                 0x00803802                adc_finished
  .data.sensor_data_ptr
-                0x00803803        0x2 build/default/production/main.o
+                0x00803803        0x2 build/default/debug/main.o
                 0x00803803                sensor_data_ptr
  .data.sensor_data
-                0x00803805        0x6 build/default/production/main.o
+                0x00803805        0x6 build/default/debug/main.o
                 0x00803805                sensor_data
  .data.sensor_cnt2
-                0x0080380b        0x1 build/default/production/main.o
+                0x0080380b        0x1 build/default/debug/main.o
                 0x0080380b                sensor_cnt2
  *(.gnu.linkonce.d*)
                 0x0080380c                . = ALIGN (0x2)
@@ -631,69 +642,69 @@ END GROUP
                 0x0080380c                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
- .bss.adcNumG   0x0080380c        0x1 build/default/production/src/adc.o
+ .bss.adcNumG   0x0080380c        0x1 build/default/debug/src/adc.o
                 0x0080380c                adcNumG
  .bss.adcValuesNew
-                0x0080380d        0x4 build/default/production/src/adc.o
+                0x0080380d        0x4 build/default/debug/src/adc.o
                 0x0080380d                adcValuesNew
  .bss.buttonStates
-                0x00803811        0x1 build/default/production/src/button.o
+                0x00803811        0x1 build/default/debug/src/button.o
                 0x00803811                buttonStates
  .bss.buttonStatesNew
-                0x00803812        0x1 build/default/production/src/button.o
+                0x00803812        0x1 build/default/debug/src/button.o
                 0x00803812                buttonStatesNew
  .bss.butFilterCnt
-                0x00803813        0x1 build/default/production/src/button.o
+                0x00803813        0x1 build/default/debug/src/button.o
                 0x00803813                butFilterCnt
  .bss.led_event_i
-                0x00803814        0x1 build/default/production/src/ledandcolor.o
+                0x00803814        0x1 build/default/debug/src/ledandcolor.o
                 0x00803814                led_event_i
  .bss.isNewLedEventReady
-                0x00803815        0x1 build/default/production/src/ledandcolor.o
+                0x00803815        0x1 build/default/debug/src/ledandcolor.o
                 0x00803815                isNewLedEventReady
  .bss.receive_state
-                0x00803816        0x1 build/default/production/_ext/282020558/i2cAlternative.o
+                0x00803816        0x1 build/default/debug/_ext/282020558/i2cAlternative.o
                 0x00803816                receive_state
- .bss.I2C_busy  0x00803817        0x1 build/default/production/_ext/282020558/i2cAlternative.o
+ .bss.I2C_busy  0x00803817        0x1 build/default/debug/_ext/282020558/i2cAlternative.o
                 0x00803817                I2C_busy
  .bss.I2C_REG_changed
-                0x00803818        0x1 build/default/production/_ext/282020558/i2cAlternative.o
+                0x00803818        0x1 build/default/debug/_ext/282020558/i2cAlternative.o
                 0x00803818                I2C_REG_changed
  .bss.led_color_buf
-                0x00803819        0x1 build/default/production/_ext/282020558/i2cAlternative.o
+                0x00803819        0x1 build/default/debug/_ext/282020558/i2cAlternative.o
                 0x00803819                led_color_buf
  .bss.led_buttons
-                0x0080381a        0x4 build/default/production/_ext/282020558/i2cAlternative.o
+                0x0080381a        0x4 build/default/debug/_ext/282020558/i2cAlternative.o
                 0x0080381a                led_buttons
  .bss.i2c_read_n
-                0x0080381e        0x1 build/default/production/_ext/282020558/i2cAlternative.o
+                0x0080381e        0x1 build/default/debug/_ext/282020558/i2cAlternative.o
                 0x0080381e                i2c_read_n
  .bss.i2c_read_i
-                0x0080381f        0x1 build/default/production/_ext/282020558/i2cAlternative.o
+                0x0080381f        0x1 build/default/debug/_ext/282020558/i2cAlternative.o
                 0x0080381f                i2c_read_i
- .bss.last      0x00803820        0x1 build/default/production/_ext/282020558/encoderAlternative.o
- .bss.adc_i     0x00803821        0x1 build/default/production/main.o
+ .bss.last      0x00803820        0x1 build/default/debug/_ext/282020558/encoderAlternative.o
+ .bss.adc_i     0x00803821        0x1 build/default/debug/main.o
                 0x00803821                adc_i
  .bss.sensor_cnt1
-                0x00803822        0x1 build/default/production/main.o
+                0x00803822        0x1 build/default/debug/main.o
                 0x00803822                sensor_cnt1
- .bss.led_cnt2  0x00803823        0x1 build/default/production/main.o
+ .bss.led_cnt2  0x00803823        0x1 build/default/debug/main.o
                 0x00803823                led_cnt2
- .bss.led_cnt1  0x00803824        0x1 build/default/production/main.o
+ .bss.led_cnt1  0x00803824        0x1 build/default/debug/main.o
                 0x00803824                led_cnt1
  *(COMMON)
- COMMON         0x00803825        0x4 build/default/production/src/button.o
+ COMMON         0x00803825        0x4 build/default/debug/src/button.o
                 0x00803825                buttons
- COMMON         0x00803829       0x72 build/default/production/src/ledandcolor.o
+ COMMON         0x00803829       0x72 build/default/debug/src/ledandcolor.o
                 0x00803829                leds
                 0x00803841                led_events
                 0x0080386b                rgbButtons
                 0x00803883                leds_t
- COMMON         0x0080389b        0x1 build/default/production/_ext/282020558/i2cAlternative.o
+ COMMON         0x0080389b        0x1 build/default/debug/_ext/282020558/i2cAlternative.o
                 0x0080389b                i2c_wrt_i
- COMMON         0x0080389c        0x1 build/default/production/_ext/282020558/encoderAlternative.o
+ COMMON         0x0080389c        0x1 build/default/debug/_ext/282020558/encoderAlternative.o
                 0x0080389c                enc_delta
- COMMON         0x0080389d        0x3 build/default/production/main.o
+ COMMON         0x0080389d        0x3 build/default/debug/main.o
                 0x0080389d                event
                 0x008038a0                PROVIDE (__bss_end, .)
                 0x000016f2                __data_load_start = LOADADDR (.data)
@@ -745,15 +756,15 @@ END GROUP
 
 .comment        0x00000000       0x30
  *(.comment)
- .comment       0x00000000       0x30 build/default/production/src/adc.o
+ .comment       0x00000000       0x30 build/default/debug/src/adc.o
                                  0x31 (size before relaxing)
- .comment       0x00000030       0x31 build/default/production/src/button.o
- .comment       0x00000030       0x31 build/default/production/src/ledandcolor.o
- .comment       0x00000030       0x31 build/default/production/src/timer.o
- .comment       0x00000030       0x31 build/default/production/_ext/282020558/i2cAlternative.o
- .comment       0x00000030       0x31 build/default/production/_ext/282020558/encoderAlternative.o
- .comment       0x00000030       0x31 build/default/production/_ext/797462307/eep.o
- .comment       0x00000030       0x31 build/default/production/main.o
+ .comment       0x00000030       0x31 build/default/debug/src/button.o
+ .comment       0x00000030       0x31 build/default/debug/src/ledandcolor.o
+ .comment       0x00000030       0x31 build/default/debug/src/timer.o
+ .comment       0x00000030       0x31 build/default/debug/_ext/282020558/i2cAlternative.o
+ .comment       0x00000030       0x31 build/default/debug/_ext/282020558/encoderAlternative.o
+ .comment       0x00000030       0x31 build/default/debug/_ext/797462307/eep.o
+ .comment       0x00000030       0x31 build/default/debug/main.o
  .comment       0x00000030       0x31 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avrxmega3\libc.a(qsort.o)
 
 .note.gnu.avr.deviceinfo
@@ -776,63 +787,134 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0xc0
+.debug_aranges  0x00000000      0x2d8
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
+                0x00000000       0x60 build/default/debug/src/adc.o
  .debug_aranges
-                0x00000020       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
+                0x00000060       0x30 build/default/debug/src/button.o
  .debug_aranges
-                0x00000040       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
+                0x00000090       0x50 build/default/debug/src/ledandcolor.o
  .debug_aranges
-                0x00000060       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
+                0x000000e0       0x30 build/default/debug/src/timer.o
  .debug_aranges
-                0x00000080       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
+                0x00000110       0x30 build/default/debug/_ext/282020558/i2cAlternative.o
  .debug_aranges
-                0x000000a0       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
+                0x00000140       0x38 build/default/debug/_ext/282020558/encoderAlternative.o
+ .debug_aranges
+                0x00000178       0x40 build/default/debug/_ext/797462307/eep.o
+ .debug_aranges
+                0x000001b8       0x60 build/default/debug/main.o
+ .debug_aranges
+                0x00000218       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
+ .debug_aranges
+                0x00000238       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
+ .debug_aranges
+                0x00000258       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
+ .debug_aranges
+                0x00000278       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
+ .debug_aranges
+                0x00000298       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
+ .debug_aranges
+                0x000002b8       0x20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x1f55
+.debug_info     0x00000000     0x56ae
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000     0x1b97 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3/crtattiny1626.o
- .debug_info    0x00001b97       0x9f C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
- .debug_info    0x00001c36       0xa0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
- .debug_info    0x00001cd6       0xa0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
- .debug_info    0x00001d76       0xa1 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
- .debug_info    0x00001e17       0x9f C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
- .debug_info    0x00001eb6       0x9f C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
+ .debug_info    0x00001b97      0x7a2 build/default/debug/src/adc.o
+ .debug_info    0x00002339      0x2ec build/default/debug/src/button.o
+ .debug_info    0x00002625      0x6f9 build/default/debug/src/ledandcolor.o
+ .debug_info    0x00002d1e      0x8cf build/default/debug/src/timer.o
+ .debug_info    0x000035ed      0x41d build/default/debug/_ext/282020558/i2cAlternative.o
+ .debug_info    0x00003a0a      0x331 build/default/debug/_ext/282020558/encoderAlternative.o
+ .debug_info    0x00003d3b      0x2b1 build/default/debug/_ext/797462307/eep.o
+ .debug_info    0x00003fec     0x1304 build/default/debug/main.o
+ .debug_info    0x000052f0       0x9f C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
+ .debug_info    0x0000538f       0xa0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
+ .debug_info    0x0000542f       0xa0 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
+ .debug_info    0x000054cf       0xa1 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
+ .debug_info    0x00005570       0x9f C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
+ .debug_info    0x0000560f       0x9f C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
 
-.debug_abbrev   0x00000000     0x1a98
+.debug_abbrev   0x00000000     0x274a
  *(.debug_abbrev)
  .debug_abbrev  0x00000000     0x1a20 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3/crtattiny1626.o
- .debug_abbrev  0x00001a20       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
- .debug_abbrev  0x00001a34       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
- .debug_abbrev  0x00001a48       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
- .debug_abbrev  0x00001a5c       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
- .debug_abbrev  0x00001a70       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
- .debug_abbrev  0x00001a84       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
+ .debug_abbrev  0x00001a20      0x1f9 build/default/debug/src/adc.o
+ .debug_abbrev  0x00001c19      0x106 build/default/debug/src/button.o
+ .debug_abbrev  0x00001d1f      0x285 build/default/debug/src/ledandcolor.o
+ .debug_abbrev  0x00001fa4      0x100 build/default/debug/src/timer.o
+ .debug_abbrev  0x000020a4      0x166 build/default/debug/_ext/282020558/i2cAlternative.o
+ .debug_abbrev  0x0000220a      0x187 build/default/debug/_ext/282020558/encoderAlternative.o
+ .debug_abbrev  0x00002391      0x10f build/default/debug/_ext/797462307/eep.o
+ .debug_abbrev  0x000024a0      0x232 build/default/debug/main.o
+ .debug_abbrev  0x000026d2       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
+ .debug_abbrev  0x000026e6       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
+ .debug_abbrev  0x000026fa       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
+ .debug_abbrev  0x0000270e       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
+ .debug_abbrev  0x00002722       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
+ .debug_abbrev  0x00002736       0x14 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
 
-.debug_line     0x00000000      0x455
+.debug_line     0x00000000     0x1cdb
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x14b C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3/crtattiny1626.o
- .debug_line    0x0000014b       0x79 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
- .debug_line    0x000001c4       0x6e C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
- .debug_line    0x00000232       0x80 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
- .debug_line    0x000002b2       0x7b C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
- .debug_line    0x0000032d       0xc1 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
- .debug_line    0x000003ee       0x67 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
+ .debug_line    0x0000014b      0x320 build/default/debug/src/adc.o
+ .debug_line    0x0000046b      0x260 build/default/debug/src/button.o
+ .debug_line    0x000006cb      0x615 build/default/debug/src/ledandcolor.o
+ .debug_line    0x00000ce0      0x156 build/default/debug/src/timer.o
+ .debug_line    0x00000e36      0x340 build/default/debug/_ext/282020558/i2cAlternative.o
+ .debug_line    0x00001176      0x24d build/default/debug/_ext/282020558/encoderAlternative.o
+ .debug_line    0x000013c3      0x203 build/default/debug/_ext/797462307/eep.o
+ .debug_line    0x000015c6      0x40b build/default/debug/main.o
+ .debug_line    0x000019d1       0x79 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_byte.o)
+ .debug_line    0x00001a4a       0x6e C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eerd_dword.o)
+ .debug_line    0x00001ab8       0x80 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_byte.o)
+ .debug_line    0x00001b38       0x7b C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eeupd_dword.o)
+ .debug_line    0x00001bb3       0xc1 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(eewr_byte.o)
+ .debug_line    0x00001c74       0x67 C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3\libattiny1626.a(ccp_write.o)
 
-.debug_frame
+.debug_frame    0x00000000      0x450
  *(.debug_frame)
+ .debug_frame   0x00000000       0xc4 build/default/debug/src/adc.o
+ .debug_frame   0x000000c4       0x44 build/default/debug/src/button.o
+ .debug_frame   0x00000108       0x90 build/default/debug/src/ledandcolor.o
+ .debug_frame   0x00000198       0x44 build/default/debug/src/timer.o
+ .debug_frame   0x000001dc       0x8c build/default/debug/_ext/282020558/i2cAlternative.o
+ .debug_frame   0x00000268       0x54 build/default/debug/_ext/282020558/encoderAlternative.o
+ .debug_frame   0x000002bc       0x64 build/default/debug/_ext/797462307/eep.o
+ .debug_frame   0x00000320      0x130 build/default/debug/main.o
 
-.debug_str      0x00000000      0xbdd
+.debug_str      0x00000000     0x1ce7
  *(.debug_str)
  .debug_str     0x00000000      0xbdd C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/ATtiny_DFP/3.0.151/gcc/dev/attiny1626/avrxmega3/crtattiny1626.o
+ .debug_str     0x00000bdd      0x67b build/default/debug/src/adc.o
+                                0x6c9 (size before relaxing)
+ .debug_str     0x00001258       0xed build/default/debug/src/button.o
+                                0x28e (size before relaxing)
+ .debug_str     0x00001345      0x16c build/default/debug/src/ledandcolor.o
+                                0x3ba (size before relaxing)
+ .debug_str     0x000014b1      0x312 build/default/debug/src/timer.o
+                                0x515 (size before relaxing)
+ .debug_str     0x000017c3      0x22e build/default/debug/_ext/282020558/i2cAlternative.o
+                                0x399 (size before relaxing)
+ .debug_str     0x000019f1       0xa7 build/default/debug/_ext/282020558/encoderAlternative.o
+                                0x29b (size before relaxing)
+ .debug_str     0x00001a98      0x104 build/default/debug/_ext/797462307/eep.o
+                                0x24e (size before relaxing)
+ .debug_str     0x00001b9c      0x14b build/default/debug/main.o
+                                0x805 (size before relaxing)
 
-.debug_loc
+.debug_loc      0x00000000     0x10d3
  *(.debug_loc)
+ .debug_loc     0x00000000      0x6e3 build/default/debug/src/adc.o
+ .debug_loc     0x000006e3       0x6c build/default/debug/src/button.o
+ .debug_loc     0x0000074f      0x2d4 build/default/debug/src/ledandcolor.o
+ .debug_loc     0x00000a23      0x248 build/default/debug/_ext/282020558/i2cAlternative.o
+ .debug_loc     0x00000c6b       0xc2 build/default/debug/_ext/282020558/encoderAlternative.o
+ .debug_loc     0x00000d2d       0x8c build/default/debug/_ext/797462307/eep.o
+ .debug_loc     0x00000db9      0x31a build/default/debug/main.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -852,10 +934,18 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges
+.debug_ranges   0x00000000      0x1f8
  *(.debug_ranges)
+ .debug_ranges  0x00000000       0x80 build/default/debug/src/adc.o
+ .debug_ranges  0x00000080       0x20 build/default/debug/src/button.o
+ .debug_ranges  0x000000a0       0x58 build/default/debug/src/ledandcolor.o
+ .debug_ranges  0x000000f8       0x20 build/default/debug/src/timer.o
+ .debug_ranges  0x00000118       0x38 build/default/debug/_ext/282020558/i2cAlternative.o
+ .debug_ranges  0x00000150       0x28 build/default/debug/_ext/282020558/encoderAlternative.o
+ .debug_ranges  0x00000178       0x30 build/default/debug/_ext/797462307/eep.o
+ .debug_ranges  0x000001a8       0x50 build/default/debug/main.o
 
 .debug_macro
  *(.debug_macro)
-OUTPUT(dist/default/production/mocFullTest.X.production.elf elf32-avr)
+OUTPUT(dist/default/debug/mocFullTest.X.debug.elf elf32-avr)
 LOAD linker stubs

@@ -17,7 +17,29 @@
 #define MSG_SETUP_ENCODER 0b1011    //11
 #define MSG_SET_ID 0b1100           //12
 
-//#include <conio.h>
+uint8_t buf_read_n = 0;
+
+
+void delay_millis(long milis) {
+    for (long i = 0; i < milis; ++i)
+    {
+        usleep(930);
+    }
+}
+
+void delay(int number_of_seconds)
+{
+    // Converting time into milli_seconds
+    long milli_seconds = 100 * number_of_seconds;
+
+    // Storing start time
+    clock_t start_time = clock();
+
+    // looping till required time is not achieved
+    while (clock() < start_time + milli_seconds)
+        ;
+}
+/*
 void display_byte(uint8_t b) {
     for (int i = 0; i < 8; ++i)
     {
@@ -26,7 +48,7 @@ void display_byte(uint8_t b) {
         else
             printf("0");
     }
-}
+}*/
 uint8_t input_byte() {
     char *p, s[100];
     long n;
@@ -80,23 +102,18 @@ int i2c_start(int file, uint8_t addr) {
     printf("success\n");
     return 1;
 }
-
+//writes n_buf bytes
 int i2c_write(int file, uint8_t *buf, uint8_t n_buf) {
-    uint16_t test=write(file, buf, n_buf);
-    if ( test!= n_buf) {
-        printf("Failed to write wrote %d\n",test);
+    uint16_t test = write(file, buf, n_buf);
+    if ( test != n_buf) {
+        printf("Failed to write wrote %d\n", test);
         exit(1);
     }
 
     //printf("success\n");
     return 1;
 }
-void delay_millis(long milis) {
-    for (long i = 0; i < milis; ++i)
-    {
-        usleep(930);
-    }
-}
+/*
 int i2c_read(int file, uint8_t *buf, uint8_t n_buf) {
     printf("reading %d bytes\n", n_buf);
     int8_t test = read(file, buf, n_buf);
@@ -106,7 +123,7 @@ int i2c_read(int file, uint8_t *buf, uint8_t n_buf) {
     }
     printf("success\n");
     return 1;
-}
+}*/
 int i2c_read_silent(int file, uint8_t *buf, uint8_t n_buf) {
     //printf("reading %d bytes\n", n_buf);
     int8_t test = read(file, buf, n_buf);
@@ -117,23 +134,10 @@ int i2c_read_silent(int file, uint8_t *buf, uint8_t n_buf) {
     //printf("success\n");
     return 1;
 }
-uint8_t buf_read[16];
-uint8_t buf_read_n = 0;
-uint8_t buf_write[16];
-uint8_t buf_write_n;
-void delay(int number_of_seconds)
-{
-    // Converting time into milli_seconds
-    long milli_seconds = 100 * number_of_seconds;
 
-    // Storing start time
-    clock_t start_time = clock();
 
-    // looping till required time is not achieved
-    while (clock() < start_time + milli_seconds)
-        ;
-}
 
+/*
 void repeat_display() {
     uint8_t tm_cnt = 0;
     printf("start\n");
@@ -144,7 +148,7 @@ void repeat_display() {
         printf("\33[2K\r");
     }
 
-}
+}*/
 
 
 char getchar_no_enter() {
@@ -165,6 +169,7 @@ void create_button_command(uint8_t r, uint8_t g, uint8_t b, uint8_t *out) {
         out[0] |= b;
     }
 }
+/*
 uint8_t create_button_command_header(uint8_t **buts, uint8_t n) {
     uint8_t ret = 0b01010000;
     for (int i = 0; i < n; ++i)
@@ -172,7 +177,8 @@ uint8_t create_button_command_header(uint8_t **buts, uint8_t n) {
         ret |= (1 << buts[i][0]);
     }
     return ret;
-}
+}*/
+
 void create_command_all(uint8_t r, uint8_t g, uint8_t b, uint8_t *commands) {
     commands[0] = 0b01011111;
     uint8_t buts[4][3] = {0};
@@ -213,10 +219,10 @@ int main() {
         case 'l': {
             uint8_t commands[9] = {0};
             uint8_t first = 1;
-            uint8_t time_s=10;
+            uint8_t time_s = 10;
             for (int i = 0; i < 10; ++i)
             {
-                printf("LED test %d seconds",time_s-i);
+                printf("LED test %d seconds", time_s - i);
                 fflush(stdout);
                 create_command_all(61, 0, 0, commands);
                 i2c_write(file, commands, 9);
@@ -230,28 +236,38 @@ int main() {
                 first = 0;
 
                 printf("\33[2K\r");
-                
+
             }
         }
         printf("\n\n\n");
         break;
-
-        case 's':{
+        case 'm': {
+            printf("Set Module ID (0-127)\n");
+            uint8_t commands[2];
+            commands[0] = MSG_SET_ID << 4;
+            do {
+                commands[1] = input_byte();
+            } while (commands[1] > 127);
+            printf("Setting Module ID to %d\n", commands);
+            i2c_write(file, commands, 2);
+        }
+        break;
+        case 's': {
             printf("reading\n");
             printf("How long in s(0 indef)\n");
-            uint32_t time_s=input_u32();
-            uint32_t cnt1=0;
-            uint32_t cnt2=0;
-            if(time_s==0)
-                time_s= (uint32_t)(-1);
+            uint32_t time_s = input_u32();
+            uint32_t cnt1 = 0;
+            uint32_t cnt2 = 0;
+            if (time_s == 0)
+                time_s = (uint32_t)(-1);
             buf_read_n = 6;//input_byte();
             uint8_t br[6];
             int enc = 0;
-            char load,b0,b1,b2,b3;
-            uint16_t adc0,adc1;
+            char load, b0, b1, b2, b3;
+            uint16_t adc0, adc1;
             uint8_t cnt = 0;
-            printf("B0 B1 B2 B3    ADC0   ADC1    ENC\n");
-            while (cnt2!=time_s) {
+            printf("B3 B2 B1 B0    ADC0   ADC1    ENC\n");
+            while (cnt2 != time_s) {
                 if (i2c_read_silent(file, br, buf_read_n) == 1) {
                     enc += (int8_t)br[5];
                     load = (cnt++ & 1) ? 'O' : '|';
@@ -261,7 +277,7 @@ int main() {
                     b1 = (br[0] & 1 << 1) ? 'X' : 'O';
                     b2 = (br[0] & 1 << 2) ? 'X' : 'O';
                     b3 = (br[0] & 1 << 3) ? 'X' : 'O';
-                    
+
                     printf("%c  %c  %c  %c %6d %6d   %6d  %8c", b0, b1, b2, b3, adc0, adc1, enc, load);
                     fflush(stdout);
                     delay_millis(100);
@@ -269,21 +285,21 @@ int main() {
 
                 }
                 cnt1++;
-                if((cnt1%10)==0)
+                if ((cnt1 % 10) == 0)
                     cnt2++;
             }
             printf("%c  %c  %c  %c %6d %6d   %6d  %8c", b0, b1, b2, b3, adc0, adc1, enc, load);
         }
-            break;
+        break;
         case 'e':
             printf("Set Encoder Step size (1,2 or 4)\n");
             uint8_t command;
-            do{
-                command=input_byte();
-            }while(command!=1&&command!=2&&command!=4);
-            printf("Setting Encoder to %d\n",command);
-            command|=MSG_SETUP_ENCODER<<4;
-            i2c_write(file,&command,1);
+            do {
+                command = input_byte();
+            } while (command != 1 && command != 2 && command != 4);
+            printf("Setting Encoder to %d\n", command);
+            command |= MSG_SETUP_ENCODER << 4;
+            i2c_write(file, &command, 1);
             break;
         case 'c':
             printf("Module id is %d\n", mod_id);

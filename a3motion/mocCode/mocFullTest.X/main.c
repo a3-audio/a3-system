@@ -20,9 +20,8 @@ volatile uint8_t adc_i = 0;
 
 
 //ADC sample is ready
-
 ISR(ADC0_SAMPRDY_vect) {
-    adc_finished = 1;
+    adc_finished = true;
     ADC0.INTFLAGS |= ADC_RESOVR_bm;
     //adc_i=adc_setValue((uint16_t)((ADC0_SAMPLEH<<8)|ADC0_SAMPLEL));
     adc_i = adc_setValue(ADC0_SAMPLE);
@@ -41,18 +40,9 @@ ISR(SPI0_INT_vect) {
 }
 
 //75us
-uint16_t test_ses1 = 0;
-uint16_t test_ses2 = 0;
-uint16_t test_ses_i = 0;
-
 ISR(TCA0_OVF_vect) {
 
     TCA0.SINGLE.INTFLAGS |= TCA_SINGLE_OVF_bm; //clear interrupt flag
-    test_ses1++;
-    if (test_ses1 == 14000)
-        test_ses1 = 0;
-
-
     led_cnt1++;
     if (led_cnt1 == LED_MAX)
         led_cnt1 = 0;
@@ -71,7 +61,7 @@ ISR(TCB0_INT_vect) {
     }
 
 }
-
+//i2c abfrage sensoren
 uint8_t getSensorData(uint8_t byte_i) {
     switch (byte_i) {
         case 0:
@@ -120,42 +110,7 @@ int main(void) {
     adc_start_prepare(adc_i);
     adc_start_go(adc_i);
     while (1) {
-        /*if (test_ses1 != test_ses2) {
-            test_ses2 = test_ses1;
-            if (test_ses1 == 0) {
-                switch (test_ses_i) {
-                    case 0:
-                        i2c_setLedData(1, LED_MAX, 0, 0);
-                        i2c_setLedData(0, 0, 0, 0);
-                        i2c_setLedData(2, 0, 0, 0);
-                        i2c_setLedData(3, 0, 0, 0);
-                        test_ses_i++;
-                        break;
-                    case 1:
-                        i2c_setLedData(2, 0, LED_MAX, 0);
-                        i2c_setLedData(1, 0, 0, 0);
-                        i2c_setLedData(0, 0, 0, 0);
-                        i2c_setLedData(3, 0, 0, 0);
-                        test_ses_i++;
-                        break;
-                    case 2:
-                        i2c_setLedData(3, 0, 0, LED_MAX);
-                        i2c_setLedData(1, 0, 0, 0);
-                        i2c_setLedData(2, 0, 0, 0);
-                        i2c_setLedData(0, 0, 0, 0);
-                        test_ses_i++;
-                        break;
-                    default:
-                        i2c_setLedData(0, LED_MAX, LED_MAX/4, 0);
-                        i2c_setLedData(1, 0, 0, 0);
-                        i2c_setLedData(2, 0, 0, 0);
-                        i2c_setLedData(3, 0, 0, 0);
-                        test_ses_i = 0;
-                        break;
-
-                }
-            }
-        }*/
+        
         if (led_cnt1 != led_cnt2) {
             if (led_cnt1 < led_cnt2) {
                 event = led_updateColorSystem();
@@ -180,7 +135,7 @@ int main(void) {
                     if (adc_finished) {
                         cli();
                         adc_start_go();
-                        adc_finished = 0;
+                        adc_finished = false;
                         sei();
                     }
                     break;

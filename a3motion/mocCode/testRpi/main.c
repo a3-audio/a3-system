@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <linux/i2c-dev.h>
-#include <i2c/smbus.h>
+//#include <i2c/smbus.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
@@ -207,7 +207,7 @@ int main() {
         printf("\nPress:\nL   for led test\nS   for sensor test\nE   for encoder step size. Encoders can have 1,2 or 4 steps per click\n");
         printf("M   to change module i2c id. !!!Make sure only one Module is attached when doing this.!!! \n");
         printf("C   to change i2c id the rpi is talking to\nQ   to exit\n\n");
-        ans = getchar_no_enter();
+        char ans = getchar_no_enter();
         ans = tolower(ans);
         switch (ans) {
         case 'l': {

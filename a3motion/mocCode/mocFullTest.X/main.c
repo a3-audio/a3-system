@@ -41,10 +41,18 @@ ISR(SPI0_INT_vect) {
 }
 
 //75us
+uint16_t test_ses1 = 0;
+uint16_t test_ses2 = 0;
+uint16_t test_ses_i = 0;
 
 ISR(TCA0_OVF_vect) {
 
     TCA0.SINGLE.INTFLAGS |= TCA_SINGLE_OVF_bm; //clear interrupt flag
+    test_ses1++;
+    if (test_ses1 == 14000)
+        test_ses1 = 0;
+
+
     led_cnt1++;
     if (led_cnt1 == LED_MAX)
         led_cnt1 = 0;
@@ -54,6 +62,7 @@ ISR(TCA0_OVF_vect) {
 //250us
 
 ISR(TCB0_INT_vect) {
+
     TCB0.INTFLAGS |= TCB_CAPT_bm;
     if (sensor_cnt1 == sensor_cnt2) {
         sensor_cnt1++;
@@ -111,6 +120,42 @@ int main(void) {
     adc_start_prepare(adc_i);
     adc_start_go(adc_i);
     while (1) {
+        /*if (test_ses1 != test_ses2) {
+            test_ses2 = test_ses1;
+            if (test_ses1 == 0) {
+                switch (test_ses_i) {
+                    case 0:
+                        i2c_setLedData(1, LED_MAX, 0, 0);
+                        i2c_setLedData(0, 0, 0, 0);
+                        i2c_setLedData(2, 0, 0, 0);
+                        i2c_setLedData(3, 0, 0, 0);
+                        test_ses_i++;
+                        break;
+                    case 1:
+                        i2c_setLedData(2, 0, LED_MAX, 0);
+                        i2c_setLedData(1, 0, 0, 0);
+                        i2c_setLedData(0, 0, 0, 0);
+                        i2c_setLedData(3, 0, 0, 0);
+                        test_ses_i++;
+                        break;
+                    case 2:
+                        i2c_setLedData(3, 0, 0, LED_MAX);
+                        i2c_setLedData(1, 0, 0, 0);
+                        i2c_setLedData(2, 0, 0, 0);
+                        i2c_setLedData(0, 0, 0, 0);
+                        test_ses_i++;
+                        break;
+                    default:
+                        i2c_setLedData(0, LED_MAX, LED_MAX/4, 0);
+                        i2c_setLedData(1, 0, 0, 0);
+                        i2c_setLedData(2, 0, 0, 0);
+                        i2c_setLedData(3, 0, 0, 0);
+                        test_ses_i = 0;
+                        break;
+
+                }
+            }
+        }*/
         if (led_cnt1 != led_cnt2) {
             if (led_cnt1 < led_cnt2) {
                 event = led_updateColorSystem();

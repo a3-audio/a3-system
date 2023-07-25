@@ -8,8 +8,6 @@
 
 #ifndef BITOPERATION_H_
 #define BITOPERATION_H_
-#include "hardware.h"
-
 
 #define BIT_SET(a,b) ((a) |= (1<<(b)))
 #define BIT_CLEAR(a,b) ((a) &= ~(1<<(b)))

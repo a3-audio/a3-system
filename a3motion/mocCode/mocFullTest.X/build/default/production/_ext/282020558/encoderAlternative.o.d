@@ -4,7 +4,6 @@ build/default/production/_ext/282020558/encoderAlternative.o.d \
  C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.h \
  C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\hardware.h \
  C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\bitoperation.h \
- C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\hardware.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\interrupt.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sfr_defs.h \
@@ -24,8 +23,6 @@ C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderA
 C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\hardware.h:
 
 C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\bitoperation.h:
-
-C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src\hardware.h:
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\interrupt.h:
 

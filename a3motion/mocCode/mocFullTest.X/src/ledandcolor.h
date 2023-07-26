@@ -9,7 +9,7 @@
 #ifndef COLORMATH_H_
 #define COLORMATH_H_
 #include "hardware.h"
-#include "debug.h"
+#include "bitoperation.h"
 #include	<stdbool.h>
 #include <avr/io.h>
 #include <stdlib.h>

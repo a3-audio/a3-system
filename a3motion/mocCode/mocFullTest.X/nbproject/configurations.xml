@@ -4,17 +4,16 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>main.h</itemPath>
       <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/adc.h</itemPath>
       <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/bitoperation.h</itemPath>
       <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/button.h</itemPath>
-      <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/debug.h</itemPath>
       <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/hardware.h</itemPath>
       <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/ledandcolor.h</itemPath>
       <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/timer.h</itemPath>
-      <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/i2cAlternative.h</itemPath>
-      <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.h</itemPath>
       <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/eep.h</itemPath>
+      <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/main.h</itemPath>
+      <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/encoderAlternative.h</itemPath>
+      <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/i2cAlternative.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -24,16 +23,15 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="src" displayName="src" projectFiles="true">
-        <itemPath>src/adc.c</itemPath>
-        <itemPath>src/button.c</itemPath>
-        <itemPath>src/ledandcolor.c</itemPath>
-        <itemPath>src/timer.c</itemPath>
-        <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/i2cAlternative.c</itemPath>
-        <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/encoderAlternative.c</itemPath>
-        <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/eep.c</itemPath>
       </logicalFolder>
-      <itemPath>main.c</itemPath>
-      <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/debug.c</itemPath>
+      <itemPath>src/adc.c</itemPath>
+      <itemPath>src/button.c</itemPath>
+      <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/eep.c</itemPath>
+      <itemPath>src/ledandcolor.c</itemPath>
+      <itemPath>src/timer.c</itemPath>
+      <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/main.c</itemPath>
+      <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/encoderAlternative.c</itemPath>
+      <itemPath>C:/Users/tiri/Documents/GitHub/a3-system/a3motion/mocCode/mocFullTest.X/src/i2cAlternative.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

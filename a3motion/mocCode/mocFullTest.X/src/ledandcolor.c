@@ -6,7 +6,6 @@
  */
 
 #include "ledandcolor.h"
-#include "debug.h"
 
 volatile rgbLed rgbButtons[4];
 led leds[12];

@@ -5,9 +5,10 @@
  *  Author: FElix Dahmen
  */
 #include "adc.h"
-#define HYST_WIDTH	3
+
 #define SELECTED_ADC	(ADC0.MUXPOS&0x3F)//compare it to MYAD0 or MYAD1
 #define ADC_READY_FOR_NEW	(!BITMASK_CHECK_ALL(ADC0.INTFLAGS,ADC_SAMPRDY_bm)&&!BITMASK_CHECK_ALL(ADC0.STATUS,ADC_ADCBUSY_bm));
+#define HYST_WIDTH	2 // in Bits
 #define MARGIN  ((1 << HYST_WIDTH) - 1)
 #define OFFSET  (1 << (HYST_WIDTH - 1))
 #define MAX_IN	((uint16_t)-1)
@@ -42,13 +43,17 @@ uint16_t adc_getValue(uint8_t adcNum) {
 }
 
 uint8_t adc_setValue(uint16_t newValue) {
+    if(adcNumG==0)
     adcValuesNew[adcNumG] = newValue;
-    //adc_filter(newValue);
-    //adc_updateHysteresis(newValue);
+    else{
+    adc_filter(newValue);
+    adc_updateHysteresis(newValue);
+    }
     return adcNumG;
 }
 
 void adc_filterValues(uint8_t adcNum) {
+    (void) adcNum;
     //add some filter functions here
     //adcValues[adcNum]=adcValuesNew[adcNum];
 }
@@ -64,6 +69,7 @@ void adc_filterValues(uint8_t adcNum) {
  */
 
 /**
+ * check https://github.com/tttapa/Arduino-ADC-Filter-Hysteresis/blob/master/Hysteresis.hpp
  * @brief   A class for applying hysteresis to a given input.
  *
  * This reduces the noise by decreasing the resolution, and it prevents flipping
@@ -88,13 +94,13 @@ void adc_filterValues(uint8_t adcNum) {
  *          Increasing this number will result in a decrease in fluctuations.
  */
 uint8_t adc_updateHysteresis(uint16_t inputLevel) {
-    uint16_t prevLevelFull = ((uint16_t) adcValuesNew[adcNumG] << HYST_WIDTH) | OFFSET; //
-    uint16_t lowerbound = adcValuesNew[adcNumG] > 0 ? prevLevelFull - MARGIN : 0;
-    uint16_t upperbound = adcValuesNew[adcNumG] < MAX_OUT ? prevLevelFull + MARGIN : MAX_IN;
-    if (inputLevel < lowerbound || inputLevel > upperbound) {
-        adcValuesNew[adcNumG] = inputLevel >> HYST_WIDTH;
-        return 1;
-    }
+        uint16_t prevLevelFull = ((uint16_t) adcValuesNew[adcNumG] << HYST_WIDTH) | OFFSET; //
+        uint16_t lowerbound = prevLevelFull - MARGIN ;
+        uint16_t upperbound = adcValuesNew[adcNumG] < MAX_OUT ? prevLevelFull + MARGIN : MAX_IN;
+        if (inputLevel < lowerbound || inputLevel > upperbound) {
+            adcValuesNew[adcNumG] = inputLevel >> HYST_WIDTH;
+            return 1;
+        }
     return 0;
 }
 
@@ -140,9 +146,9 @@ uint8_t adc_updateHysteresis(uint16_t inputLevel) {
 //ggf auf uint32_t erhoehen
 
 uint16_t adc_filter(uint16_t input) {
-     adcValuesNew[adcNumG] += input;
-     uint16_t output = (adcValuesNew[adcNumG] + fixedPointAHalf) >> K;
-     adcValuesNew[adcNumG] -= output;
+    adcValuesNew[adcNumG] += input;
+    uint16_t output = (adcValuesNew[adcNumG] + fixedPointAHalf) >> K;
+    adcValuesNew[adcNumG] -= output;
     return 1; //output;
 }
 

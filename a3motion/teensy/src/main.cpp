@@ -30,7 +30,7 @@ pinMode(PIN_BUTTON_ENCODER, INPUT_PULLUP);
 #define s1 22
 #define s2 21 // high-order bit
 
-// Encoder Pin's
+// encoder pins
 #define enc0_DT 0
 #define enc0_CLK 1
 #define enc1_DT 2
@@ -103,8 +103,6 @@ void sendBtnMx()
   }
 }
 
-
-
 void initPoti()
 {
   pinMode(muxInBtnMx1, INPUT_PULLDOWN);
@@ -141,16 +139,16 @@ void readMux()
     digitalWrite(s0, addrBit0);
     digitalWrite(s1, addrBit1);
     digitalWrite(s2, addrBit2);
-    delayMicroseconds(50); // Damit der 4051 zeit hat die Adresse um zu schalten
+    delayMicroseconds(10); // Damit der 4051 zeit hat die Adresse um zu schalten
 
-    // read Butten Matrix
+    // read buttonmatrix
     btnMxNew[i] = digitalRead(muxInBtnMx1);
     btnMxNew[i + 8] = digitalRead(muxInBtnMx2);
 
-    // read Butten Encoder
+    // read encoder buttons
     btnEncoderNew[i] = digitalRead(muxInBtnEncoder);
 
-    // read the Poti's
+    // read potentiometer
     potiNew[i] = analogRead(muxInPot);
   }
 }

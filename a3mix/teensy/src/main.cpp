@@ -9,7 +9,7 @@
 #include <LedControl.h>
 #include <Bounce.h>
 #include <Encoder.h>
-
+#include <string>
 //////////// PIN ASSIGNMENTS //////////////
 
 // encoder pins

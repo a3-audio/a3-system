@@ -21,26 +21,17 @@ from pythonosc import dispatcher
 from typing import List, Any
 
 pixel_pin = board.D18
-num_pixels = 10
+num_pixels = 14
+num_channel = 4
 
 ORDER = neopixel.GRB
 
 pixels = neopixel.NeoPixel(
-    pixel_pin, num_pixels, brightness=0.1, auto_write=False, pixel_order=ORDER
+    pixel_pin, num_pixels, brightness=1, auto_write=False, pixel_order=ORDER
 )
 
-pixel_fx_mode_highpass = 8
-pixel_fx_mode_lowpass = 9
-
-pixels_fx_toggle = [0, 2, 4, 6]
-pixels_3d_toggle = [1, 3, 5, 7]
-
-color_led_on = (255,255,255)
-color_led_off = (0,0,0)
-
-def pixel_color(r,g,b):
-    pixels.fill((r,g,b))
-    pixels.show()
+button_leds = [[0, 0, 0] for i in range(num_channel)]
+button_leds_master = [0, 0, 0]
 
 fx_state = np.zeros(10)
 
@@ -135,11 +126,13 @@ def vu_handler(address: str,
 
     send_vu_data(vu, peak_db, rms_db)
 
+def send_button_leds_data(channel: int, led_on, led_mode):
+    button_leds[channel][led_mode] = 255 if led_on else 0
+    pixels[channel] = button_leds[channel]
+    pixels.show()
 
-def send_pfl_leds_data(channel: str, pfl_led_on: int):
-    message = "LED:" + str(channel) + ":" + str(pfl_led_on)
-    sendData(message)
-#    print(message)
+    #print("button_leds")
+    #print(button_leds[int(channel)])
 
 def led_handler_channel(address: str,
                         *osc_arguments: List[Any]) -> None:
@@ -149,18 +142,18 @@ def led_handler_channel(address: str,
     channel = words[2]
     led_type = words[4]
     led_on = int(osc_arguments[0])
-
+    led_mode = 0
 #    print(f'toggling {led_type} led for channel {channel}: {led_on}')
 
     if led_type == "pfl":
-        send_pfl_leds_data(channel, led_on)
+        led_mode = 0
+        send_button_leds_data(int(channel), led_on, led_mode)
     elif led_type == "fx":
-        pixels[pixels_fx_toggle[int(channel)]] = color_led_on if led_on else color_led_off
-        pixels.show()
+        led_mode = 1
+        send_button_leds_data(int(channel), led_on, led_mode)
     elif led_type == "3d":
-        pixels[pixels_3d_toggle[int(channel)]] = color_led_on if led_on else color_led_off
-        pixels.show()
-
+        led_mode = 2
+        send_button_leds_data(int(channel), led_on, led_mode)
 
 def led_handler_fx(address: str,
                    *osc_arguments: List[Any]) -> None:
@@ -173,10 +166,12 @@ def led_handler_fx(address: str,
 
     high_pass = led_fx_mode == "high_pass"
 
-    pixels[pixel_fx_mode_highpass] = color_led_on if high_pass else color_led_off
-    pixels[pixel_fx_mode_lowpass] = color_led_off if high_pass else color_led_on
+    button_leds_master[1] = 0 if high_pass else 255
+    button_leds_master[2] = 255 if high_pass else 0
+    pixels[num_channel] = button_leds_master
     pixels.show()
-
+    #print("button_leds_master")
+    #print(button_leds_master)
 
 def tap_handler(address: str,
                *osc_arguments: List[Any]) -> None:
@@ -279,3 +274,4 @@ if __name__ == '__main__':
     server = osc_server.BlockingOSCUDPServer((args.ip, args.port), dispatcher)
 #    print("Serving on {}".format(server.server_address))
     server.serve_forever()
+

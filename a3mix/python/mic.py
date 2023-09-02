@@ -58,12 +58,12 @@ vu_channel_to_led_count = {
 
 # channel strips 1-4
 analog_pots_per_channel_to_osc_param = {
-    "0": "gain",
-    "1": "eq/high",
-    "2": "eq/mid",
-    "3": "eq/low",
-    "4": "volume",
-    "5": "fx-send",
+    "0": "fx-send",
+    "1": "gain",
+    "2": "eq/high",
+    "3": "eq/mid",
+    "4": "eq/low",
+    "5": "volume",
 }
 
 button_per_channel_to_osc_param = {
@@ -80,8 +80,8 @@ button_fx_to_mode_name = {
 # master section pots mapping
 master_pots_to_osc_message = {
     "0": "/master/volume",
-    "1": "/fx/frequency",
-    "2": "/fx/resonance",
+    "2": "/fx/frequency",
+    "1": "/fx/resonance",
     "3": "/master/booth",
     "4": "/master/phones_mix",
     "5": "/master/phones_volume",
@@ -127,12 +127,15 @@ def vu_handler(address: str,
     send_vu_data(vu, peak_db, rms_db)
 
 def send_button_leds_data(channel: int, led_on, led_mode):
-    button_leds[channel][led_mode] = 255 if led_on else 0
-    pixels[channel] = button_leds[channel]
-    pixels.show()
+    if led_mode == 0:
+        button_leds[channel][led_mode] = 0 if led_on else 255
+        pixels[channel] = button_leds[channel]
+        pixels.show()
 
-    #print("button_leds")
-    #print(button_leds[int(channel)])
+    elif led_mode > 0:
+        button_leds[channel][led_mode] = 255 if led_on else 0
+        pixels[channel] = button_leds[channel]
+        pixels.show()
 
 def led_handler_channel(address: str,
                         *osc_arguments: List[Any]) -> None:

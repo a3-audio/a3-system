@@ -73,9 +73,9 @@ s.sync;
 ~phonesMonoBus = Bus.audio(s, 2);
 ~phonesReverbBus = Bus.audio(s, ~hoaNumChannels);
 
-~chMasterBus = Bus.audio(s, 8+(2*~hoaNumChannels));
+~chMasterBus = Bus.audio(s, (s, 40));
 
-~ch1MasterBus = Bus.audio(s, 8+(2*~hoaNumChannels));
+~ch1MasterBus = Bus.audio(s, (s, 40));
 ~ch1AmbisonicBus = Bus.audio(s, ~hoaNumChannels);
 ~ch1StereoBus = Bus.audio(s, 2);
 ~ch1SubBus = Bus.audio(s, 1);

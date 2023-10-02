@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name "3dAudioFoot")(type "KiCad")(uri "${KIPRJMOD}/libs/3dAudioFoot.pretty")(options "")(descr ""))
+)

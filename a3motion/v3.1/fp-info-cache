@@ -1,4 +1,4 @@
-20545471418833639
+20577239954573964
 3dAudioFoot
 228CMVARGBFR_SMD
 228CMVARGBFR-1
@@ -25,15 +25,15 @@ But_Velo_Rec_1
 
 
 0
-8
-8
+2
+2
 3dAudioFoot
 But_Velo_Rnd_1
 
 
 0
-8
-8
+2
+2
 3dAudioFoot
 Encoder PEC11R-4230K-S0024
 
@@ -90,6 +90,13 @@ Integrated Circuit
 0
 7
 7
+3dAudioFoot
+SOIC127P620X171-16N
+SOP16_1
+Integrated Circuit
+0
+16
+16
 3dAudioFoot
 SOIC127P1030X265-20N
 20-Pin SOIC
@@ -86407,3 +86414,129 @@ varistor
 0
 2
 2
+v03
+228CMVARGBFR_SMD
+228CMVARGBFR-1
+Switch
+0
+8
+8
+v03
+228CMVARGBFR_THT
+
+
+0
+8
+8
+v03
+BSS138
+https://www.mouser.de/datasheet/2/395/BSS138_A2007-2064302.pdf
+821-BSS138/BSS138BKVL 
+0
+3
+3
+v03
+But_Velo_Rec_1
+
+
+0
+2
+2
+v03
+But_Velo_Rnd_1
+
+
+0
+2
+2
+v03
+Encoder PEC11R-4230K-S0024
+
+
+0
+5
+5
+v03
+HDRV6W67P254_2X3_762X483X858P
+10129381-906001BLF
+Connector
+0
+6
+6
+v03
+Header-01x09-p2.54-selfsolder
+
+
+0
+9
+9
+v03
+ICSP_Header_P2.54_SelfSolder
+
+
+0
+6
+6
+v03
+JST_EH_B5B-EH-A_1x05_P2.50mm_Vertical
+JST EH series connector, B5B-EH-A (http://www.jst-mfg.com/product/pdf/eng/eEH.pdf), generated with kicad-footprint-generator
+connector JST EH vertical
+0
+5
+5
+v03
+JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical
+JST XH series connector, B5B-XH-A (http://www.jst-mfg.com/product/pdf/eng/eXH.pdf), generated with kicad-footprint-generator
+connector JST XH vertical
+0
+5
+5
+v03
+Molex Mini lock 1x5
+
+
+0
+5
+5
+v03
+PEC11R4230KS0024
+PEC11R-4230K-S0024-2
+Integrated Circuit
+0
+7
+7
+v03
+SOIC127P620X171-16N
+SOP16_1
+Integrated Circuit
+0
+16
+16
+v03
+SOIC127P1030X265-20N
+20-Pin SOIC
+Integrated Circuit
+0
+20
+20
+v03
+USB-C
+
+
+0
+6
+6
+v03
+attiny1626
+20-Pin SOIC
+Integrated Circuit
+0
+20
+20
+v03
+thermal_via
+
+
+0
+1
+1

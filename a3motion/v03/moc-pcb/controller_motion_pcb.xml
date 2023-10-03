@@ -1,0 +1,1008 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="E">
+  <design>
+    <source>C:\Users\tirii\Documents\Ambisonic\a3-hardware\a3motion\v03\Mainboard-pcb\controller_motion_pcb.kicad_sch</source>
+    <date>27/09/2022 13:00:52</date>
+    <tool>Eeschema (6.0.0)</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>A³ Moc - Potiboard</title>
+        <company>A3 Audio UG (haftungsbeschränkt)</company>
+        <rev>v.0.3</rev>
+        <date>2022-09-27</date>
+        <source>controller_motion_pcb.kicad_sch</source>
+        <comment number="1" value="Felix Dahmen"/>
+        <comment number="2" value=""/>
+        <comment number="3" value="https://github.com/a3-audio/a3-hardware"/>
+        <comment number="4" value="Licensed under CERN-OHL-S v2 or later"/>
+        <comment number="5" value=""/>
+        <comment number="6" value=""/>
+        <comment number="7" value=""/>
+        <comment number="8" value=""/>
+        <comment number="9" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="C1">
+      <value>100nF</value>
+      <footprint>Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder</footprint>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a52168</tstamps>
+    </comp>
+    <comp ref="C2">
+      <value>100nF</value>
+      <footprint>Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder</footprint>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a4e6df</tstamps>
+    </comp>
+    <comp ref="C3">
+      <value>100nF</value>
+      <footprint>Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder</footprint>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-0000619d9601</tstamps>
+    </comp>
+    <comp ref="C4">
+      <value>100nF</value>
+      <footprint>Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder</footprint>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a47c20</tstamps>
+    </comp>
+    <comp ref="C5">
+      <value>10uF</value>
+      <footprint>Capacitor_THT:CP_Radial_D4.0mm_P1.50mm</footprint>
+      <libsource lib="Device" part="CP" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>677d0894-bb50-45a8-8bc2-da87ac23fff3</tstamps>
+    </comp>
+    <comp ref="C6">
+      <value>100nF</value>
+      <footprint>Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder</footprint>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d53ab7bf-19ad-4b1d-9a62-b11e767d92da</tstamps>
+    </comp>
+    <comp ref="J1">
+      <value>SPI_Female</value>
+      <footprint>Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Horizontal</footprint>
+      <libsource lib="Connector" part="Conn_01x05_Female" description="Generic connector, single row, 01x05, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a986cef8-6a74-404b-b0df-eed830b11554</tstamps>
+    </comp>
+    <comp ref="J2">
+      <value>SPI_Male</value>
+      <footprint>Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Horizontal</footprint>
+      <libsource lib="Connector" part="Conn_01x05_Male" description="Generic connector, single row, 01x05, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>328540cd-3776-4e05-8103-eba84427bac2</tstamps>
+    </comp>
+    <comp ref="J3">
+      <value>Conn_01x05</value>
+      <footprint>3dAudioFoot:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical</footprint>
+      <libsource lib="Connector" part="Conn_01x05_Female" description="Generic connector, single row, 01x05, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061ad898f</tstamps>
+    </comp>
+    <comp ref="J4">
+      <value>UPDI_Interface</value>
+      <footprint>Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical</footprint>
+      <libsource lib="Connector" part="Conn_01x03_Male" description="Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>08226cc2-9649-4017-922e-e52f499504b6</tstamps>
+    </comp>
+    <comp ref="J5">
+      <value>Programm_Jumper</value>
+      <footprint>Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical</footprint>
+      <libsource lib="Connector" part="Conn_01x04_Male" description="Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a964e358-066e-44c6-a88f-46a1efc323e0</tstamps>
+    </comp>
+    <comp ref="R1">
+      <value>0R</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5564edc0-ec29-4de6-b483-87723dea0d05</tstamps>
+    </comp>
+    <comp ref="R2">
+      <value>0R</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>3244a4c9-b4f3-45ae-8e37-c7a25cc8896c</tstamps>
+    </comp>
+    <comp ref="R3">
+      <value>4k7</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7a2ca59d-820f-4fa1-abab-bd90f7425325</tstamps>
+    </comp>
+    <comp ref="R4">
+      <value>4k7</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b0da4269-8835-4e3c-8df0-df24e71ba6e5</tstamps>
+    </comp>
+    <comp ref="R5">
+      <value>165</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-0000619c887f</tstamps>
+    </comp>
+    <comp ref="R6">
+      <value>155</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a439c7</tstamps>
+    </comp>
+    <comp ref="R7">
+      <value>100</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a43bd5</tstamps>
+    </comp>
+    <comp ref="R8">
+      <value>165</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a43ed1</tstamps>
+    </comp>
+    <comp ref="R9">
+      <value>155</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a4430e</tstamps>
+    </comp>
+    <comp ref="R10">
+      <value>100</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a4469f</tstamps>
+    </comp>
+    <comp ref="R11">
+      <value>165</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a45072</tstamps>
+    </comp>
+    <comp ref="R12">
+      <value>155</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a458e4</tstamps>
+    </comp>
+    <comp ref="R13">
+      <value>100</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a460d3</tstamps>
+    </comp>
+    <comp ref="R14">
+      <value>165</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a45476</tstamps>
+    </comp>
+    <comp ref="R15">
+      <value>155</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a45ce9</tstamps>
+    </comp>
+    <comp ref="R16">
+      <value>100</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a46411</tstamps>
+    </comp>
+    <comp ref="R17">
+      <value>27k</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a4f6d7</tstamps>
+    </comp>
+    <comp ref="R18">
+      <value>27k</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a51538</tstamps>
+    </comp>
+    <comp ref="R19">
+      <value>4k7</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>11af898b-5f2c-4dd5-8860-50e1fc715034</tstamps>
+    </comp>
+    <comp ref="R20">
+      <value>4K7</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061a4760b</tstamps>
+    </comp>
+    <comp ref="R21">
+      <value>4K7</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-0000619d1398</tstamps>
+    </comp>
+    <comp ref="R22">
+      <value>4k7</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a846226d-aad6-4e96-bb05-2d36fe3be982</tstamps>
+    </comp>
+    <comp ref="R23">
+      <value>0R</value>
+      <footprint>Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f96c893f-14c6-418a-8181-97ff2d6870b0</tstamps>
+    </comp>
+    <comp ref="S1">
+      <value>228CMVARGBFR</value>
+      <footprint>3dAudioFoot:228CMVARGBFR_SMD</footprint>
+      <datasheet>https://www.mouser.co.za/datasheet/2/96/228C-1371171.pdf</datasheet>
+      <fields>
+        <field name="Description">Tactile Switches Color Red,Green,Blue SMD Gullwing</field>
+        <field name="Height">7.3</field>
+        <field name="Manufacturer_Name">CTS</field>
+        <field name="Manufacturer_Part_Number">228CMVARGBFR</field>
+        <field name="Mouser Part Number">774-228CMVARGBFR</field>
+        <field name="Mouser Price/Stock">https://www.mouser.co.uk/ProductDetail/CTS-Electronic-Components/228CMVARGBFR?qs=gTYE2QTfZfSFpUQ%252Bb6QA4w%3D%3D</field>
+      </fields>
+      <libsource lib="3dAudioSym" part="228CMVARGBFR" description=""/>
+      <property name="Description" value="Tactile Switches Color Red,Green,Blue SMD Gullwing"/>
+      <property name="Height" value="7.3"/>
+      <property name="Mouser Part Number" value="774-228CMVARGBFR"/>
+      <property name="Mouser Price/Stock" value="https://www.mouser.co.uk/ProductDetail/CTS-Electronic-Components/228CMVARGBFR?qs=gTYE2QTfZfSFpUQ%252Bb6QA4w%3D%3D"/>
+      <property name="Manufacturer_Name" value="CTS"/>
+      <property name="Manufacturer_Part_Number" value="228CMVARGBFR"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-0000619bcfef</tstamps>
+    </comp>
+    <comp ref="S2">
+      <value>228CMVARGBFR</value>
+      <footprint>3dAudioFoot:228CMVARGBFR_SMD</footprint>
+      <datasheet>https://www.mouser.co.za/datasheet/2/96/228C-1371171.pdf</datasheet>
+      <fields>
+        <field name="Description">Tactile Switches Color Red,Green,Blue SMD Gullwing</field>
+        <field name="Height">7.3</field>
+        <field name="Manufacturer_Name">CTS</field>
+        <field name="Manufacturer_Part_Number">228CMVARGBFR</field>
+        <field name="Mouser Part Number">774-228CMVARGBFR</field>
+        <field name="Mouser Price/Stock">https://www.mouser.co.uk/ProductDetail/CTS-Electronic-Components/228CMVARGBFR?qs=gTYE2QTfZfSFpUQ%252Bb6QA4w%3D%3D</field>
+      </fields>
+      <libsource lib="3dAudioSym" part="228CMVARGBFR" description=""/>
+      <property name="Description" value="Tactile Switches Color Red,Green,Blue SMD Gullwing"/>
+      <property name="Height" value="7.3"/>
+      <property name="Mouser Part Number" value="774-228CMVARGBFR"/>
+      <property name="Mouser Price/Stock" value="https://www.mouser.co.uk/ProductDetail/CTS-Electronic-Components/228CMVARGBFR?qs=gTYE2QTfZfSFpUQ%252Bb6QA4w%3D%3D"/>
+      <property name="Manufacturer_Name" value="CTS"/>
+      <property name="Manufacturer_Part_Number" value="228CMVARGBFR"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-0000619bdda1</tstamps>
+    </comp>
+    <comp ref="S3">
+      <value>228CMVARGBFR</value>
+      <footprint>3dAudioFoot:228CMVARGBFR_SMD</footprint>
+      <datasheet>https://www.mouser.co.za/datasheet/2/96/228C-1371171.pdf</datasheet>
+      <fields>
+        <field name="Description">Tactile Switches Color Red,Green,Blue SMD Gullwing</field>
+        <field name="Height">7.3</field>
+        <field name="Manufacturer_Name">CTS</field>
+        <field name="Manufacturer_Part_Number">228CMVARGBFR</field>
+        <field name="Mouser Part Number">774-228CMVARGBFR</field>
+        <field name="Mouser Price/Stock">https://www.mouser.co.uk/ProductDetail/CTS-Electronic-Components/228CMVARGBFR?qs=gTYE2QTfZfSFpUQ%252Bb6QA4w%3D%3D</field>
+      </fields>
+      <libsource lib="3dAudioSym" part="228CMVARGBFR" description=""/>
+      <property name="Description" value="Tactile Switches Color Red,Green,Blue SMD Gullwing"/>
+      <property name="Height" value="7.3"/>
+      <property name="Mouser Part Number" value="774-228CMVARGBFR"/>
+      <property name="Mouser Price/Stock" value="https://www.mouser.co.uk/ProductDetail/CTS-Electronic-Components/228CMVARGBFR?qs=gTYE2QTfZfSFpUQ%252Bb6QA4w%3D%3D"/>
+      <property name="Manufacturer_Name" value="CTS"/>
+      <property name="Manufacturer_Part_Number" value="228CMVARGBFR"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-0000619be7bc</tstamps>
+    </comp>
+    <comp ref="S4">
+      <value>228CMVARGBFR</value>
+      <footprint>3dAudioFoot:228CMVARGBFR_SMD</footprint>
+      <datasheet>https://www.mouser.co.za/datasheet/2/96/228C-1371171.pdf</datasheet>
+      <fields>
+        <field name="Description">Tactile Switches Color Red,Green,Blue SMD Gullwing</field>
+        <field name="Height">7.3</field>
+        <field name="Manufacturer_Name">CTS</field>
+        <field name="Manufacturer_Part_Number">228CMVARGBFR</field>
+        <field name="Mouser Part Number">774-228CMVARGBFR</field>
+        <field name="Mouser Price/Stock">https://www.mouser.co.uk/ProductDetail/CTS-Electronic-Components/228CMVARGBFR?qs=gTYE2QTfZfSFpUQ%252Bb6QA4w%3D%3D</field>
+      </fields>
+      <libsource lib="3dAudioSym" part="228CMVARGBFR" description=""/>
+      <property name="Description" value="Tactile Switches Color Red,Green,Blue SMD Gullwing"/>
+      <property name="Height" value="7.3"/>
+      <property name="Mouser Part Number" value="774-228CMVARGBFR"/>
+      <property name="Mouser Price/Stock" value="https://www.mouser.co.uk/ProductDetail/CTS-Electronic-Components/228CMVARGBFR?qs=gTYE2QTfZfSFpUQ%252Bb6QA4w%3D%3D"/>
+      <property name="Manufacturer_Name" value="CTS"/>
+      <property name="Manufacturer_Part_Number" value="228CMVARGBFR"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-0000619bef9b</tstamps>
+    </comp>
+    <comp ref="SW1">
+      <value>Rotary_Encoder_Switch</value>
+      <footprint>3dAudioFoot:PEC11R4230KS0024</footprint>
+      <libsource lib="Device" part="Rotary_Encoder_Switch" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-0000619c1574</tstamps>
+    </comp>
+    <comp ref="U1">
+      <value>TPIC6C595</value>
+      <footprint>Package_SO:SOIC-16_3.9x9.9mm_P1.27mm</footprint>
+      <datasheet>https://www.mouser.ph/datasheet/2/389/cd00020664-1796042.pdf</datasheet>
+      <libsource lib="3dAudioSym" part="TPIC6C595" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061b13621</tstamps>
+    </comp>
+    <comp ref="U2">
+      <value>TPIC6C595</value>
+      <footprint>Package_SO:SOIC-16_3.9x9.9mm_P1.27mm</footprint>
+      <datasheet>https://www.mouser.ph/datasheet/2/389/cd00020664-1796042.pdf</datasheet>
+      <libsource lib="3dAudioSym" part="TPIC6C595" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00000000-0000-0000-0000-000061b1432c</tstamps>
+    </comp>
+    <comp ref="U3">
+      <value>ATtiny1626</value>
+      <footprint>3dAudioFoot:attiny1626</footprint>
+      <libsource lib="3dAudioSym" part="ATtiny1626" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="controller_motion_pcb.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>11896c2c-8771-4362-a4aa-2f8901fb1bc7</tstamps>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="3dAudioSym" part="228CMVARGBFR">
+      <docs>https://www.mouser.co.za/datasheet/2/96/228C-1371171.pdf</docs>
+      <fields>
+        <field name="Reference">S</field>
+        <field name="Value">228CMVARGBFR</field>
+        <field name="Footprint">228CMVARGBFR</field>
+        <field name="Datasheet">https://www.mouser.co.za/datasheet/2/96/228C-1371171.pdf</field>
+        <field name="Description">Tactile Switches Color Red,Green,Blue SMD Gullwing</field>
+        <field name="Height">7.3</field>
+        <field name="Mouser Part Number">774-228CMVARGBFR</field>
+        <field name="Mouser Price/Stock">https://www.mouser.co.uk/ProductDetail/CTS-Electronic-Components/228CMVARGBFR?qs=gTYE2QTfZfSFpUQ%252Bb6QA4w%3D%3D</field>
+        <field name="Manufacturer_Name">CTS</field>
+        <field name="Manufacturer_Part_Number">228CMVARGBFR</field>
+      </fields>
+      <pins>
+        <pin num="1" name="COM_1" type="passive"/>
+        <pin num="2" name="COM_1" type="passive"/>
+        <pin num="3" name="COM_2" type="passive"/>
+        <pin num="4" name="COM_2" type="passive"/>
+        <pin num="5" name="K_B" type="passive"/>
+        <pin num="6" name="K_R" type="passive"/>
+        <pin num="7" name="Anode" type="power_in"/>
+        <pin num="8" name="K_G" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="3dAudioSym" part="ATtiny1626">
+      <fields>
+        <field name="Reference">U1</field>
+        <field name="Value">ATtiny1626</field>
+        <field name="Footprint">attiny1626:SOIC127P1030X265-20N</field>
+      </fields>
+      <pins>
+        <pin num="1" name="VCC" type="power_in"/>
+        <pin num="2" name="PA4/ADC4/SS1" type="input"/>
+        <pin num="3" name="PA5/ADC5" type="input"/>
+        <pin num="4" name="PA6/ADC6" type="input"/>
+        <pin num="5" name="PA7/ADC7" type="input"/>
+        <pin num="6" name="PB5/ADC8/CLKOUT" type="input"/>
+        <pin num="7" name="PB4/ADC9/RST" type="input"/>
+        <pin num="8" name="PB3" type="input"/>
+        <pin num="9" name="PB2" type="input"/>
+        <pin num="10" name="PB1/ADC10/SDA" type="input"/>
+        <pin num="11" name="PB0/ADC11/SCL" type="input"/>
+        <pin num="12" name="PC0/ADC12/SCK2" type="input"/>
+        <pin num="13" name="PC1/ADC13/DO2" type="input"/>
+        <pin num="14" name="PC2/ADC14/DI2" type="input"/>
+        <pin num="15" name="PC3/ADC15/SS2" type="input"/>
+        <pin num="16" name="PA0/UPDI/RESET" type="input"/>
+        <pin num="17" name="PA1/ADC1/DO1" type="input"/>
+        <pin num="18" name="PA2/ADC2/DI1" type="input"/>
+        <pin num="19" name="PA3/ADC3/SCK1" type="input"/>
+        <pin num="20" name="GND" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="3dAudioSym" part="TPIC6C595">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">TPIC6C595</field>
+      </fields>
+      <pins>
+        <pin num="1" name="VCC" type="passive"/>
+        <pin num="2" name="SERIN" type="passive"/>
+        <pin num="3" name="DRAIN0" type="passive"/>
+        <pin num="4" name="DRAIN1" type="passive"/>
+        <pin num="5" name="DARIN2" type="passive"/>
+        <pin num="6" name="DRAIN3" type="passive"/>
+        <pin num="7" name="~{CLR}" type="passive"/>
+        <pin num="8" name="~{G}" type="passive"/>
+        <pin num="9" name="SEROUT" type="passive"/>
+        <pin num="10" name="RCK" type="passive"/>
+        <pin num="11" name="DRAIN4" type="passive"/>
+        <pin num="12" name="DARIN5" type="passive"/>
+        <pin num="13" name="DRAIN6" type="passive"/>
+        <pin num="14" name="DRAIN7" type="passive"/>
+        <pin num="15" name="SRCK" type="passive"/>
+        <pin num="16" name="GND" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector" part="Conn_01x03_Male">
+      <description>Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x03_Male</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector" part="Conn_01x04_Male">
+      <description>Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x04_Male</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector" part="Conn_01x05_Female">
+      <description>Generic connector, single row, 01x05, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x05_Female</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+        <pin num="5" name="Pin_5" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector" part="Conn_01x05_Male">
+      <description>Generic connector, single row, 01x05, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x05_Male</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+        <pin num="5" name="Pin_5" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="C">
+      <description>Unpolarized capacitor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>C_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="CP">
+      <footprints>
+        <fp>CP_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">Device_CP</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="R">
+      <description>Resistor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>R_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="Rotary_Encoder_Switch">
+      <footprints>
+        <fp>RotaryEncoder*Switch*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">SW</field>
+        <field name="Value">Device_Rotary_Encoder_Switch</field>
+      </fields>
+      <pins>
+        <pin num="A" name="A" type="passive"/>
+        <pin num="B" name="B" type="passive"/>
+        <pin num="C" name="C" type="passive"/>
+        <pin num="S1" name="S1" type="passive"/>
+        <pin num="S2" name="S2" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="3dAudioSym">
+      <uri>C:\Users\tirii\Documents\Ambisonic\a3-hardware\a3motion\v03\Mainboard-pcb/../libs/3dAudioSym.kicad_sym</uri>
+    </library>
+    <library logical="Connector">
+      <uri>C:\Program Files\KiCad\6.0\share\kicad\symbols\/Connector.kicad_sym</uri>
+    </library>
+    <library logical="Device">
+      <uri>C:\Program Files\KiCad\6.0\share\kicad\symbols\/Device.kicad_sym</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="ADC0">
+      <node ref="J3" pin="3" pinfunction="Pin_3" pintype="passive"/>
+      <node ref="U3" pin="4" pinfunction="PA6/ADC6" pintype="input"/>
+    </net>
+    <net code="2" name="ADC1">
+      <node ref="J3" pin="1" pinfunction="Pin_1" pintype="passive"/>
+      <node ref="U3" pin="6" pinfunction="PB5/ADC8/CLKOUT" pintype="input"/>
+    </net>
+    <net code="3" name="BUT0">
+      <node ref="S1" pin="3" pinfunction="COM_2" pintype="passive"/>
+    </net>
+    <net code="4" name="BUT1">
+      <node ref="R3" pin="2" pintype="passive"/>
+      <node ref="S2" pin="3" pinfunction="COM_2" pintype="passive"/>
+    </net>
+    <net code="5" name="BUT2">
+      <node ref="R22" pin="2" pintype="passive"/>
+      <node ref="S3" pin="3" pinfunction="COM_2" pintype="passive"/>
+    </net>
+    <net code="6" name="BUT3">
+      <node ref="R19" pin="2" pintype="passive"/>
+      <node ref="S4" pin="3" pinfunction="COM_2" pintype="passive"/>
+    </net>
+    <net code="7" name="ENCA">
+      <node ref="C1" pin="2" pintype="passive"/>
+      <node ref="R17" pin="1" pintype="passive"/>
+      <node ref="U3" pin="13" pinfunction="PC1/ADC13/DO2" pintype="input"/>
+    </net>
+    <net code="8" name="ENCB">
+      <node ref="C2" pin="1" pintype="passive"/>
+      <node ref="R18" pin="1" pintype="passive"/>
+      <node ref="U3" pin="8" pinfunction="PB3" pintype="input"/>
+    </net>
+    <net code="9" name="ENCSW">
+      <node ref="R4" pin="2" pintype="passive"/>
+      <node ref="SW1" pin="S2" pinfunction="S2" pintype="passive"/>
+    </net>
+    <net code="10" name="GND">
+      <node ref="C1" pin="1" pintype="passive"/>
+      <node ref="C2" pin="2" pintype="passive"/>
+      <node ref="C3" pin="2" pintype="passive"/>
+      <node ref="C4" pin="2" pintype="passive"/>
+      <node ref="C5" pin="2" pintype="passive"/>
+      <node ref="C6" pin="1" pintype="passive"/>
+      <node ref="J1" pin="5" pinfunction="Pin_5" pintype="passive"/>
+      <node ref="J2" pin="5" pinfunction="Pin_5" pintype="passive"/>
+      <node ref="J3" pin="2" pinfunction="Pin_2" pintype="passive"/>
+      <node ref="J3" pin="4" pinfunction="Pin_4" pintype="passive"/>
+      <node ref="J4" pin="1" pinfunction="Pin_1" pintype="passive"/>
+      <node ref="S1" pin="2" pinfunction="COM_1" pintype="passive"/>
+      <node ref="S2" pin="1" pinfunction="COM_1" pintype="passive"/>
+      <node ref="S3" pin="2" pinfunction="COM_1" pintype="passive"/>
+      <node ref="S4" pin="2" pinfunction="COM_1" pintype="passive"/>
+      <node ref="SW1" pin="C" pinfunction="C" pintype="passive"/>
+      <node ref="SW1" pin="S1" pinfunction="S1" pintype="passive"/>
+      <node ref="U1" pin="16" pinfunction="GND" pintype="passive"/>
+      <node ref="U1" pin="8" pinfunction="~{G}" pintype="passive"/>
+      <node ref="U2" pin="16" pinfunction="GND" pintype="passive"/>
+      <node ref="U2" pin="8" pinfunction="~{G}" pintype="passive"/>
+      <node ref="U3" pin="20" pinfunction="GND" pintype="power_in"/>
+    </net>
+    <net code="11" name="Net-(R1-Pad1)">
+      <node ref="R1" pin="1" pintype="passive"/>
+      <node ref="U3" pin="17" pinfunction="PA1/ADC1/DO1" pintype="input"/>
+    </net>
+    <net code="12" name="Net-(R2-Pad1)">
+      <node ref="R2" pin="1" pintype="passive"/>
+      <node ref="U3" pin="19" pinfunction="PA3/ADC3/SCK1" pintype="input"/>
+    </net>
+    <net code="13" name="Net-(R3-Pad1)">
+      <node ref="R3" pin="1" pintype="passive"/>
+      <node ref="U3" pin="2" pinfunction="PA4/ADC4/SS1" pintype="input"/>
+    </net>
+    <net code="14" name="Net-(R4-Pad1)">
+      <node ref="R4" pin="1" pintype="passive"/>
+      <node ref="U3" pin="3" pinfunction="PA5/ADC5" pintype="input"/>
+    </net>
+    <net code="15" name="Net-(R5-Pad1)">
+      <node ref="R5" pin="1" pintype="passive"/>
+      <node ref="S1" pin="6" pinfunction="K_R" pintype="passive"/>
+    </net>
+    <net code="16" name="Net-(R6-Pad1)">
+      <node ref="R6" pin="1" pintype="passive"/>
+      <node ref="S1" pin="8" pinfunction="K_G" pintype="passive"/>
+    </net>
+    <net code="17" name="Net-(R7-Pad1)">
+      <node ref="R7" pin="1" pintype="passive"/>
+      <node ref="S1" pin="5" pinfunction="K_B" pintype="passive"/>
+    </net>
+    <net code="18" name="Net-(R8-Pad1)">
+      <node ref="R8" pin="1" pintype="passive"/>
+      <node ref="S2" pin="6" pinfunction="K_R" pintype="passive"/>
+    </net>
+    <net code="19" name="Net-(R9-Pad1)">
+      <node ref="R9" pin="1" pintype="passive"/>
+      <node ref="S2" pin="8" pinfunction="K_G" pintype="passive"/>
+    </net>
+    <net code="20" name="Net-(R10-Pad1)">
+      <node ref="R10" pin="1" pintype="passive"/>
+      <node ref="S2" pin="5" pinfunction="K_B" pintype="passive"/>
+    </net>
+    <net code="21" name="Net-(R11-Pad1)">
+      <node ref="R11" pin="1" pintype="passive"/>
+      <node ref="S3" pin="6" pinfunction="K_R" pintype="passive"/>
+    </net>
+    <net code="22" name="Net-(R12-Pad1)">
+      <node ref="R12" pin="1" pintype="passive"/>
+      <node ref="S3" pin="8" pinfunction="K_G" pintype="passive"/>
+    </net>
+    <net code="23" name="Net-(R13-Pad1)">
+      <node ref="R13" pin="1" pintype="passive"/>
+      <node ref="S3" pin="5" pinfunction="K_B" pintype="passive"/>
+    </net>
+    <net code="24" name="Net-(R14-Pad1)">
+      <node ref="R14" pin="1" pintype="passive"/>
+      <node ref="S4" pin="6" pinfunction="K_R" pintype="passive"/>
+    </net>
+    <net code="25" name="Net-(R15-Pad1)">
+      <node ref="R15" pin="1" pintype="passive"/>
+      <node ref="S4" pin="8" pinfunction="K_G" pintype="passive"/>
+    </net>
+    <net code="26" name="Net-(R16-Pad1)">
+      <node ref="R16" pin="1" pintype="passive"/>
+      <node ref="S4" pin="5" pinfunction="K_B" pintype="passive"/>
+    </net>
+    <net code="27" name="Net-(R17-Pad2)">
+      <node ref="R17" pin="2" pintype="passive"/>
+      <node ref="SW1" pin="A" pinfunction="A" pintype="passive"/>
+    </net>
+    <net code="28" name="Net-(R18-Pad2)">
+      <node ref="R18" pin="2" pintype="passive"/>
+      <node ref="SW1" pin="B" pinfunction="B" pintype="passive"/>
+    </net>
+    <net code="29" name="Net-(R19-Pad1)">
+      <node ref="R19" pin="1" pintype="passive"/>
+      <node ref="U3" pin="7" pinfunction="PB4/ADC9/RST" pintype="input"/>
+    </net>
+    <net code="30" name="Net-(R20-Pad1)">
+      <node ref="R20" pin="1" pintype="passive"/>
+      <node ref="U1" pin="7" pinfunction="~{CLR}" pintype="passive"/>
+    </net>
+    <net code="31" name="Net-(R21-Pad1)">
+      <node ref="R21" pin="1" pintype="passive"/>
+      <node ref="U2" pin="7" pinfunction="~{CLR}" pintype="passive"/>
+    </net>
+    <net code="32" name="Net-(R22-Pad1)">
+      <node ref="R22" pin="1" pintype="passive"/>
+      <node ref="U3" pin="12" pinfunction="PC0/ADC12/SCK2" pintype="input"/>
+    </net>
+    <net code="33" name="Net-(R23-Pad1)">
+      <node ref="R23" pin="1" pintype="passive"/>
+      <node ref="U1" pin="9" pinfunction="SEROUT" pintype="passive"/>
+    </net>
+    <net code="34" name="PSFHCLK">
+      <node ref="R2" pin="2" pintype="passive"/>
+      <node ref="U1" pin="15" pinfunction="SRCK" pintype="passive"/>
+      <node ref="U2" pin="15" pinfunction="SRCK" pintype="passive"/>
+    </net>
+    <net code="35" name="PSHFDATA">
+      <node ref="R1" pin="2" pintype="passive"/>
+      <node ref="U1" pin="2" pinfunction="SERIN" pintype="passive"/>
+    </net>
+    <net code="36" name="PSHFDATA2">
+      <node ref="R23" pin="2" pintype="passive"/>
+      <node ref="U2" pin="2" pinfunction="SERIN" pintype="passive"/>
+    </net>
+    <net code="37" name="PSHFUDATE">
+      <node ref="U1" pin="10" pinfunction="RCK" pintype="passive"/>
+      <node ref="U2" pin="10" pinfunction="RCK" pintype="passive"/>
+      <node ref="U3" pin="9" pinfunction="PB2" pintype="input"/>
+    </net>
+    <net code="38" name="S1_G">
+      <node ref="R6" pin="2" pintype="passive"/>
+      <node ref="U1" pin="5" pinfunction="DARIN2" pintype="passive"/>
+    </net>
+    <net code="39" name="S1_R">
+      <node ref="R5" pin="2" pintype="passive"/>
+      <node ref="U1" pin="4" pinfunction="DRAIN1" pintype="passive"/>
+    </net>
+    <net code="40" name="S1_b">
+      <node ref="R7" pin="2" pintype="passive"/>
+      <node ref="U1" pin="3" pinfunction="DRAIN0" pintype="passive"/>
+    </net>
+    <net code="41" name="S2_B">
+      <node ref="R10" pin="2" pintype="passive"/>
+      <node ref="U1" pin="12" pinfunction="DARIN5" pintype="passive"/>
+    </net>
+    <net code="42" name="S2_G">
+      <node ref="R9" pin="2" pintype="passive"/>
+      <node ref="U1" pin="14" pinfunction="DRAIN7" pintype="passive"/>
+    </net>
+    <net code="43" name="S2_R">
+      <node ref="R8" pin="2" pintype="passive"/>
+      <node ref="U1" pin="13" pinfunction="DRAIN6" pintype="passive"/>
+    </net>
+    <net code="44" name="S3_B">
+      <node ref="R13" pin="2" pintype="passive"/>
+      <node ref="U2" pin="3" pinfunction="DRAIN0" pintype="passive"/>
+    </net>
+    <net code="45" name="S3_G">
+      <node ref="R12" pin="2" pintype="passive"/>
+      <node ref="U2" pin="5" pinfunction="DARIN2" pintype="passive"/>
+    </net>
+    <net code="46" name="S3_R">
+      <node ref="R11" pin="2" pintype="passive"/>
+      <node ref="U2" pin="4" pinfunction="DRAIN1" pintype="passive"/>
+    </net>
+    <net code="47" name="S4_B">
+      <node ref="R16" pin="2" pintype="passive"/>
+      <node ref="U2" pin="12" pinfunction="DARIN5" pintype="passive"/>
+    </net>
+    <net code="48" name="S4_G">
+      <node ref="R15" pin="2" pintype="passive"/>
+      <node ref="U2" pin="14" pinfunction="DRAIN7" pintype="passive"/>
+    </net>
+    <net code="49" name="S4_R">
+      <node ref="R14" pin="2" pintype="passive"/>
+      <node ref="U2" pin="13" pinfunction="DRAIN6" pintype="passive"/>
+    </net>
+    <net code="50" name="SCL">
+      <node ref="J1" pin="4" pinfunction="Pin_4" pintype="passive"/>
+      <node ref="J2" pin="4" pinfunction="Pin_4" pintype="passive"/>
+      <node ref="U3" pin="11" pinfunction="PB0/ADC11/SCL" pintype="input"/>
+    </net>
+    <net code="51" name="SDA">
+      <node ref="J1" pin="3" pinfunction="Pin_3" pintype="passive"/>
+      <node ref="J2" pin="3" pinfunction="Pin_3" pintype="passive"/>
+      <node ref="U3" pin="10" pinfunction="PB1/ADC10/SDA" pintype="input"/>
+    </net>
+    <net code="52" name="UPDI">
+      <node ref="J5" pin="2" pinfunction="Pin_2" pintype="passive"/>
+      <node ref="U3" pin="16" pinfunction="PA0/UPDI/RESET" pintype="input"/>
+    </net>
+    <net code="53" name="UPDI_w">
+      <node ref="J1" pin="2" pinfunction="Pin_2" pintype="passive"/>
+      <node ref="J2" pin="2" pinfunction="Pin_2" pintype="passive"/>
+      <node ref="J4" pin="2" pinfunction="Pin_2" pintype="passive"/>
+      <node ref="J5" pin="1" pinfunction="Pin_1" pintype="passive"/>
+    </net>
+    <net code="54" name="VCC">
+      <node ref="C3" pin="1" pintype="passive"/>
+      <node ref="C4" pin="1" pintype="passive"/>
+      <node ref="J3" pin="5" pinfunction="Pin_5" pintype="passive"/>
+      <node ref="J5" pin="4" pinfunction="Pin_4" pintype="passive"/>
+      <node ref="R20" pin="2" pintype="passive"/>
+      <node ref="R21" pin="2" pintype="passive"/>
+      <node ref="S1" pin="7" pinfunction="Anode" pintype="power_in"/>
+      <node ref="S2" pin="7" pinfunction="Anode" pintype="power_in"/>
+      <node ref="S3" pin="7" pinfunction="Anode" pintype="power_in"/>
+      <node ref="S4" pin="7" pinfunction="Anode" pintype="power_in"/>
+      <node ref="U1" pin="1" pinfunction="VCC" pintype="passive"/>
+      <node ref="U2" pin="1" pinfunction="VCC" pintype="passive"/>
+    </net>
+    <net code="55" name="VCC_w">
+      <node ref="C5" pin="1" pintype="passive"/>
+      <node ref="C6" pin="2" pintype="passive"/>
+      <node ref="J1" pin="1" pinfunction="Pin_1" pintype="passive"/>
+      <node ref="J2" pin="1" pinfunction="Pin_1" pintype="passive"/>
+      <node ref="J4" pin="3" pinfunction="Pin_3" pintype="passive"/>
+      <node ref="J5" pin="3" pinfunction="Pin_3" pintype="passive"/>
+      <node ref="U3" pin="1" pinfunction="VCC" pintype="power_in"/>
+    </net>
+    <net code="56" name="unconnected-(S1-Pad1)">
+      <node ref="S1" pin="1" pinfunction="COM_1" pintype="passive+no_connect"/>
+    </net>
+    <net code="57" name="unconnected-(S1-Pad4)">
+      <node ref="S1" pin="4" pinfunction="COM_2" pintype="passive+no_connect"/>
+    </net>
+    <net code="58" name="unconnected-(S2-Pad2)">
+      <node ref="S2" pin="2" pinfunction="COM_1" pintype="passive+no_connect"/>
+    </net>
+    <net code="59" name="unconnected-(S2-Pad4)">
+      <node ref="S2" pin="4" pinfunction="COM_2" pintype="passive+no_connect"/>
+    </net>
+    <net code="60" name="unconnected-(S3-Pad1)">
+      <node ref="S3" pin="1" pinfunction="COM_1" pintype="passive+no_connect"/>
+    </net>
+    <net code="61" name="unconnected-(S3-Pad4)">
+      <node ref="S3" pin="4" pinfunction="COM_2" pintype="passive+no_connect"/>
+    </net>
+    <net code="62" name="unconnected-(S4-Pad1)">
+      <node ref="S4" pin="1" pinfunction="COM_1" pintype="passive"/>
+    </net>
+    <net code="63" name="unconnected-(S4-Pad4)">
+      <node ref="S4" pin="4" pinfunction="COM_2" pintype="passive"/>
+    </net>
+    <net code="64" name="unconnected-(U1-Pad6)">
+      <node ref="U1" pin="6" pinfunction="DRAIN3" pintype="passive+no_connect"/>
+    </net>
+    <net code="65" name="unconnected-(U1-Pad11)">
+      <node ref="U1" pin="11" pinfunction="DRAIN4" pintype="passive"/>
+    </net>
+    <net code="66" name="unconnected-(U2-Pad6)">
+      <node ref="U2" pin="6" pinfunction="DRAIN3" pintype="passive+no_connect"/>
+    </net>
+    <net code="67" name="unconnected-(U2-Pad9)">
+      <node ref="U2" pin="9" pinfunction="SEROUT" pintype="passive+no_connect"/>
+    </net>
+    <net code="68" name="unconnected-(U2-Pad11)">
+      <node ref="U2" pin="11" pinfunction="DRAIN4" pintype="passive"/>
+    </net>
+    <net code="69" name="unconnected-(U3-Pad5)">
+      <node ref="U3" pin="5" pinfunction="PA7/ADC7" pintype="input"/>
+    </net>
+    <net code="70" name="unconnected-(U3-Pad14)">
+      <node ref="U3" pin="14" pinfunction="PC2/ADC14/DI2" pintype="input"/>
+    </net>
+    <net code="71" name="unconnected-(U3-Pad15)">
+      <node ref="U3" pin="15" pinfunction="PC3/ADC15/SS2" pintype="input"/>
+    </net>
+    <net code="72" name="unconnected-(U3-Pad18)">
+      <node ref="U3" pin="18" pinfunction="PA2/ADC2/DI1" pintype="input+no_connect"/>
+    </net>
+  </nets>
+</export>

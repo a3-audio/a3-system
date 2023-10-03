@@ -1,0 +1,22 @@
+Source:,C:\Users\tirii\Documents\Ambisonic\a3-hardware\a3motion\v03\RPIconnector\rpiconnector\rpiconnector.kicad_sch,,,,,
+Date:,27/09/2022 12:04:25,,,,,
+Tool:,Eeschema (6.0.0),,,,,
+Generator:,C:\Program Files\KiCad\6.0\bin\scripting\plugins/bom_csv_grouped_by_value.py,,,,,
+Component Count:,9,,,,,
+,,,,,,
+Individual Components:,,,,,,
+,,,,,,
+Item,Qty,Reference(s),Value,LibPart,Footprint,Datasheet
+,,J1,Conn_01x05_Male,Connector:Conn_01x05_Male,Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical,DK:61300511121
+,,J2,Conn_02x05_Odd_Even,Connector_Generic:Conn_02x05_Odd_Even,Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical,MO:649-68046-605PLF
+,,Q1,BSS138,Transistor_FET:BSS138,Package_TO_SOT_SMD:SOT-23,DK:BSS138LT1G
+,,Q2,BSS138,Transistor_FET:BSS138,Package_TO_SOT_SMD:SOT-23,DK:BSS138LT1G
+,,R1,10k,Device:R,Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder,1206 5%
+,,R2,10k,Device:R,Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder,1206 5%
+,,R3,10k,Device:R,Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder,1206 5%
+,,R4,10k,Device:R,Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder,1206 5%
+,,U1,USB-C,3dAudioSym:USB-C,3dAudioFoot:USB-C,MO:640-USB4125-GF-A-190
+,,,,,,
+,,,,,,
+,"DK ? Digikey
+MO ? Mouser",,,,,

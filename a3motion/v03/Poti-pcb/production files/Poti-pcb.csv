@@ -1,0 +1,17 @@
+Source:,C:\Users\tirii\Documents\Ambisonic\a3-hardware\a3motion\v03\Poti-pcb\Poti-pcb.kicad_sch,,,,,
+Date:,27/09/2022 13:05:09,,,,,
+Tool:,Eeschema (6.0.0),,,,,
+Generator:,C:\Program Files\KiCad\6.0\bin\scripting\plugins/bom_csv_grouped_by_value.py,,,,,
+Component Count:,5,,,,,
+,,,,,,
+Individual Components:,,,,,,
+,,,,,,
+Item,Qty,Reference(s),Value,LibPart,Footprint,Datasheet
+,,J1,Conn_01x05_Male,Connector:Conn_01x05_Male,3dAudioFoot:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical,DK:B5B-XH-A
+,,R1,4k7,Device:R,Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder,1206 5%
+,,R2,4k7,Device:R,Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder,1206 5%
+,,RV1,10k Poti,Device:R_Potentiometer,Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical_CircularHoles,DK:PT01-D130D-B503
+,,RV2,10k Poti,Device:R_Potentiometer,Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical_CircularHoles,DK:PT01-D130D-B503
+,,,,,,
+,"DK ? Digikey
+MO ? Mouser",,,,,

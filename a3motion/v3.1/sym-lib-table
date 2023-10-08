@@ -1,3 +1,0 @@
-(sym_lib_table
-  (lib (name "3dAudioSym")(type "KiCad")(uri "${KIPRJMOD}/libs/3dAudioSym.kicad_sym")(options "")(descr ""))
-)

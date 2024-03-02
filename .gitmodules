@@ -1,8 +1,0 @@
-[submodule "a3motion/a3MotioncontrollerUI"]
-	path = a3motion/a3MotioncontrollerUI
-	url = ../a3-MotionControllerUI
-    branch = main
-[submodule "a3hardware"]
-	path = a3hardware
-	url = ../a3-hardware
-    branch = main

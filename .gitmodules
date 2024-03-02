@@ -1,0 +1,9 @@
+[submodule "a3-mixer"]
+	path = a3-mixer
+	url = https://github.com/a3-audio/a3-mixer
+[submodule "a3-core"]
+	path = a3-core
+	url = https://github.com/a3-audio/a3-core
+[submodule "a3-motion"]
+	path = a3-motion
+	url = https://github.com/a3-audio/a3-motion

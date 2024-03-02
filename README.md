@@ -10,14 +10,14 @@ Interact live with 3D Audio
 - https://a3-audio.github.io/a3-audio
 
 ## Documentation
-- ttps://a3-audio.github.io/a3-doc
+- https://a3-audio.github.io/a3-doc
 
 ## Repository
 - https://github.com/a3-audio/a3-system
 
 ## Contact
-- Tickets: https://github.com/orgs/a3-audio/projects/1
-- Mattermost: https://talk.a3-audio.com/ambisonics
+- [Github project](https://github.com/orgs/a3-audio/projects/1)
+- [Mattermost](https://talk.a3-audio.com/ambisonics)
 
 ## Code of conduct
 - Care the docs

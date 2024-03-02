@@ -1,9 +1,0 @@
-# See /boot/overlays/README for all available options
-
-dtoverlay=vc4-kms-v3d
-initramfs initramfs-linux.img followkernel
-
-display_rotate=2
-# device_tree_param=spi=on
-# dtparam=i2c_arm=on
-# disable_splash=1

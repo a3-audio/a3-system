@@ -7,18 +7,17 @@ Interact live with 3D Audio
 - A³ Core: 3D Sound Server
 
 ## Homepage
-- https://a3-audio.com
+- https://a3-audio.github.io/a3-audio
 
 ## Documentation
-- https://doc.a3-audio.com
+- ttps://a3-audio.github.io/a3-doc
 
 ## Repository
 - https://github.com/a3-audio/a3-system
 
 ## Contact
-- Ticket [github-project](https://github.com/orgs/a3-audio/projects/1)
-- Talk [mattermost](https://talk.a3-audio.com/ambisonics)
-- E-Mail [contact@a3-audio.com](mailto:contact@a3-audio.com)
+- Tickets: https://github.com/orgs/a3-audio/projects/1
+- Mattermost: https://talk.a3-audio.com/ambisonics
 
 ## Code of conduct
 - Care the docs

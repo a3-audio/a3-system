@@ -7,17 +7,16 @@ Interact live with 3D Audio
 - [A³ Motion](https://github.com/a3-audio/a3-motion): 4-Channel Motion Sampler (osc controller)
 
 ## Homepage
-- https://a3-audio.com
+- https://a3-audio.github.io
 
 ## Documentation
-- https://a3-audio.com/a3-doc
+- https://a3-audio.github.io/a3-doc
 
 ## Repository
 - https://github.com/a3-audio/a3-system
 
 ## Contact
 - [Github project](https://github.com/orgs/a3-audio/projects/1)
-- [Mattermost](https://talk.a3-audio.com/ambisonics)
 
 ## Code of conduct
 - Care the docs

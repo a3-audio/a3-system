@@ -1,5 +1,5 @@
 # A³ Audio
-Interact live with 3D Audio
+Spatial DJ-Setup
 
 ## System
 - [A³ Core](https://a3-audio.github.io/a3-doc/user/a3core.html): 3D Sound Server (audio backend and analysis on reaper and supercollider)

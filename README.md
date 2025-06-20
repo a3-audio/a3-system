@@ -1,10 +1,10 @@
 # A³ Audio
-Interact live with 3D Audio
+Spatial DJ-Setup
 
 ## System
-- [A³ Core](https://github.com/a3-audio/a3-core): 3D Sound Server (audio backend and analysis on reaper and supercollider)
-- [A³ Mixer](https://github.com/a3-audio/a3-mixer): 4-Channel DJ Mixer (osc controller)
-- [A³ Motion](https://github.com/a3-audio/a3-motion): 4-Channel Motion Sampler (osc controller)
+- [A³ Core](https://a3-audio.github.io/a3-doc/user/a3core.html): 3D Sound Server (audio backend and analysis on reaper and supercollider)
+- [A³ Mixer](https://a3-audio.github.io/a3-doc/user/a3core.html): 4-Channel DJ Mixer (osc controller)
+- [A³ Motion](https://a3-audio.github.io/a3-doc/user/a3core.html): 4-Channel Motion Sampler (osc controller)
 
 ## Homepage
 - https://a3-audio.github.io
@@ -14,9 +14,6 @@ Interact live with 3D Audio
 
 ## Repository
 - https://github.com/a3-audio/a3-system
-
-## Contact
-- [Github project](https://github.com/orgs/a3-audio/projects/1)
 
 ## Code of conduct
 - Care the docs

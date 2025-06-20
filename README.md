@@ -1,5 +1,5 @@
 # A³ Audio
-Spatial DJ-Setup
+Interact live with 3D Audio
 
 ## System
 - [A³ Core](https://a3-audio.github.io/a3-doc/user/a3core.html): 3D Sound Server (audio backend and analysis on reaper and supercollider)
@@ -21,5 +21,5 @@ Spatial DJ-Setup
 - We use [centralized workflow](https://www.git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows):
   - Don't edit the mainbranch. Use pull requests instead.
   - If you need an own different setup, fork this repo
-  - Find us on stage
 - Follow the <a href="https://contributor-covenant.org/">Contributor Covenant</a> Code of Conduct
+- Find us on stage

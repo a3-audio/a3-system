@@ -9,6 +9,7 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 #include <avr/interrupt.h>
+#include <avr/cpufunc.h> /* Required header file */
 #include "hardware.h"
 #include "bitoperation.h"
 #include "ledandcolor.h"
@@ -17,7 +18,7 @@
 #include "timer.h"
 #include "adc.h"
 #include "i2cAlternative.h"
-#include <avr/cpufunc.h> /* Required header file */
+
 #include "eep.h"
 typedef struct{
     uint8_t button;

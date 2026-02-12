@@ -5,6 +5,7 @@ Interact live with 3D Audio
 - [A³ Core](https://a3-audio.github.io/a3-doc/user/a3core.html): 3D Sound Server (audio backend and analysis on reaper and supercollider)
 - [A³ Mixer](https://a3-audio.github.io/a3-doc/user/a3core.html): 4-Channel DJ Mixer (osc controller)
 - [A³ Motion](https://a3-audio.github.io/a3-doc/user/a3core.html): 4-Channel Motion Sampler (osc controller)
+- [Beat-Analyzer](https://github.com/rafjagger/beat-analyzer.git): Real-time beat detection with JACK audio input and OSC output. Clock input support (Pioneer, A3-Motion) 
 
 ## Homepage
 - https://a3-audio.github.io

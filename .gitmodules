@@ -7,3 +7,6 @@
 [submodule "a3-motion"]
 	path = a3-motion
 	url = https://github.com/a3-audio/a3-motion
+[submodule "beat-analyzer"]
+	path = beat-analyzer
+	url = https://github.com/rafjagger/beat-analyzer.git

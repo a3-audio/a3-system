@@ -32,7 +32,7 @@ Interact live with 3D Audio
 | a3-core   | osc-router.py | -              | -    | -    | 
 |           |               | interpreter    | 8101 | -    | receive osc from a3-motion / a3-mixer
 |           |               | DAW-control    | -    | 8102 | Sends to reaper
-| a3-core   | beat-analyzer	| -              | -    | -    | analyze audio / receive pioneer clock / sends vu-meter, beatclock and bpm 
+|           | beat-analyzer	| -              | -    | -    | analyze audio / receive pioneer clock / sends vu-meter, beatclock and bpm 
 |           |               | a3-motion vu   | -    | 8111 | vu-meter 
 |           |               | a3-motion beat | -    | 8112 | beatclock and bpm 
 |           |               | a3-mixer       | -    | 8113 | vu-meter
@@ -42,7 +42,7 @@ Interact live with 3D Audio
 |           |               | videojockey    | -    | 8117 | beatclock and bpm
 |           |               | admin-pc       | -    | 8118 | vu-meter
 |           |               | admin-pc       | -    | 8119 | beatclock and bpm
-| a3-core   | reaper        | DAW            | 8102 | -    | 
+|           | reaper        | DAW            | 8102 | -    | 
 | a3-mixer  | a3-mixer.py   |                | 8113 | 8101 | receive vu-meter, send parameter
 | a3-motion | a3-motion-ui  |                | 8111 | 8101 | receive vu-meter, send parameter
 |           |               |                | 8112 | -    | receive beatclock and bpm

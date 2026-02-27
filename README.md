@@ -29,8 +29,7 @@ Interact live with 3D Audio
 ```
 | device    | program       | function        | RX    | TX    | description
 | --------- | ------------- | --------------  | ----  | ----  | -----------
-| a3-core   | a3-core.py    | -               | -     | -     | 
-|           |               | receiver        | 8101  | -     | receive osc from a3-motion / a3-mixer
+| a3-core   | a3-core.py    | receiver        | 8101  | -     | receive parameter
 |           |               | DAW-control     | -     | 8102  | Sends to reaper
 |           | beat-analyzer	| -               | -     | -     | analyze audio / receive pioneer clock / sends vu-meter, beatclock and bpm 
 |           |               | a3-motion vu    | -     | 8111  | vu-meter 

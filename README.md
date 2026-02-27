@@ -43,7 +43,7 @@ Interact live with 3D Audio
 |           |               | admin-pc       | -    | 8118 | vu-meter
 |           |               | admin-pc       | -    | 8119 | beatclock and bpm
 | a3-core   | reaper        | DAW            | 8102 | -    | 
-| a3-mixer  | a3-mixer.py   |                | 8113 | 8101 | send parameter, receive vu-meter 
+| a3-mixer  | a3-mixer.py   |                | 8113 | 8101 | receive vu-meter, send parameter
 | a3-motion | a3-motion-ui  |                | 8111 | 8101 | receive vu-meter, send parameter
 |           |               |                | 8112 | -    | receive beatclock and bpm
 ```

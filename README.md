@@ -14,7 +14,7 @@ movement beforehand. Everything between the devices is OSC over UDP.
 | [A³ Motion](https://a3-audio.github.io/a3-doc/user/a3motion.html) | [a3-motion](https://github.com/a3-audio/a3-motion) · [a3-motion-ui](https://github.com/a3-audio/a3-motion-ui) | 4-channel motion sampler. Records movement trajectories on a touchscreen sphere and plays them back in time with the beat. |
 | Beat-Analyzer | [beat-analyzer](https://github.com/rafjagger/beat-analyzer) | Real-time beat detection over JACK, plus the VU meters every device displays. Clock from its own analysis, from A³ Motion, or from Pioneer Pro DJ Link. |
 
-![A³ Motion UI](https://a3-audio.github.io/a3-doc/user/pics_user/a3-motion-ui-full.png)
+![A³ Motion UI](https://a3-audio.github.io/a3-doc/user/pics_user/a3-motion-ui-display.png)
 
 ## How the pieces talk
 

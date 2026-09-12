@@ -1,9 +1,38 @@
-[submodule "a3-mixer"]
-	path = a3-mixer
-	url = https://github.com/a3-audio/a3-mixer
+# Every repository the A3 system is made of, at the state this one records.
+#
+# The point of the umbrella is that these six belong together: a Core that
+# answers an address the Motion of a different month never sends is not a
+# system. What is recorded here is therefore not "the newest of each" but one
+# coherent set -- see "A version is a tag" in README.md.
+#
+# https rather than ssh, so a clone works without a key.
+#
+# a3-motion-ui is deliberately NOT here. It is already a submodule of
+# a3-motion (as `ui`), and a second gitlink to it would be a second place to
+# keep in step -- which is the failure this whole file exists to prevent.
+
 [submodule "a3-core"]
 	path = a3-core
 	url = https://github.com/a3-audio/a3-core
+
+[submodule "a3-mixer"]
+	path = a3-mixer
+	url = https://github.com/a3-audio/a3-mixer
+
 [submodule "a3-motion"]
 	path = a3-motion
 	url = https://github.com/a3-audio/a3-motion
+
+[submodule "a3-doc"]
+	path = a3-doc
+	url = https://github.com/a3-audio/a3-doc
+
+[submodule "a3-audio.github.io"]
+	path = a3-audio.github.io
+	url = https://github.com/a3-audio/a3-audio.github.io
+
+# Same system, different organisation: the beat clock and the VU meters every
+# device shows. Versioned along with the rest.
+[submodule "beat-analyzer"]
+	path = beat-analyzer
+	url = https://github.com/rafjagger/beat-analyzer

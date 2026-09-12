@@ -68,13 +68,110 @@ lives in the [OSC documentation](https://a3-audio.github.io/a3-doc/ressources/os
 Worth knowing before chasing a silent link. These are recorded rather than fixed
 because each needs a decision about which end is right:
 
-- `a3-core.py` addresses its peers by **hardcoded IP** (`192.168.43.54`, `.55`), and
-  `a3-mixer.py` does the same for the core (`192.168.43.50`). A system on a different
-  subnet has those links dead with nothing to indicate it.
+- `a3-core.py` addresses its peers by **hardcoded IP**, and `a3-mixer.py` does the
+  same for the core (`192.168.43.50`). A system on a different subnet has those links
+  dead with nothing to indicate it. Core's two can at least be pointed elsewhere
+  without editing anything — `--mixer` and `--motion` — and the addresses in the file
+  were finally corrected to the ones that answer (`.61:7772` for the mixer, measured)
+  on 2026-09-12; they had been wrong in git for months while the working ones lived
+  as a hand edit on the machine.
 - `a3-core.py` sends to A³ Motion on port **8700**, while `a3-motion-ui` listens on
   **7771**.
 - `beat-analyzer` is configured to reach the mixer on **7773/7774**, while
   `a3-mixer.py` listens on **7771**.
+
+## Repositories and versioning
+
+**This section is the one place the project's shape is written down.** The
+other repositories do not repeat it; they point here. A structure described in
+seven places is a structure that will one day disagree with itself.
+
+### What the pieces are
+
+A³ is seven repositories and one system, and **this one carries the other six
+as submodules** — so a single clone brings a coherent set rather than whatever
+each happened to be at that moment:
+
+```
+a3-system/                  the umbrella: this README, and the six below
+├── a3-core/                the sound server
+├── a3-mixer/               the DJ mixer
+├── a3-motion/              the motion sampler
+│   └── ui/                 → a3-motion-ui, the touchscreen application
+├── a3-doc/                 the documentation
+├── a3-audio.github.io/     the homepage
+└── beat-analyzer/          the beat clock and the VU meters
+```
+
+```bash
+git clone --recurse-submodules https://github.com/a3-audio/a3-system
+```
+
+| Repository | What it holds |
+| :--- | :--- |
+| [a3-system](https://github.com/a3-audio/a3-system) | This: what the system is, how the pieces talk, how it is worked on. |
+| [a3-core](https://github.com/a3-audio/a3-core) | The sound server as a Debian package tree — the OSC router, the SuperCollider backend, the REAPER project and its OSC surface, the systemd units. |
+| [a3-mixer](https://github.com/a3-audio/a3-mixer) | The mixer's control scripts and its KiCad hardware. |
+| [a3-motion](https://github.com/a3-audio/a3-motion) | The motion sampler's panel firmware and hardware. |
+| [a3-motion-ui](https://github.com/a3-audio/a3-motion-ui) | The JUCE touchscreen application — the largest single piece of software here. Reached through a3-motion's `ui` submodule rather than a second time from this one: two gitlinks to one repository are two places to keep in step. |
+| [a3-doc](https://github.com/a3-audio/a3-doc) | The user guide, the assembly photographs, and the **OSC reference every device is built against**. |
+| [a3-audio.github.io](https://github.com/a3-audio/a3-audio.github.io) | The homepage. |
+| [beat-analyzer](https://github.com/rafjagger/beat-analyzer) | The beat clock and the VU meters every device shows. Same system, different organisation — and versioned along with the rest. |
+
+### Work on `main`
+
+**Development happens on `main` in every repository, and a version is a tag.**
+
+Branch off `main` for a piece of work, merge it back into `main` when it is
+done. Nothing else is an integration branch.
+
+This replaced a scheme of one branch per hardware revision — `v03.2` in
+a3-motion-ui, `dev/v03` in a3-mixer — which is the right shape when several
+people ship revisions in parallel and the wrong one here. In practice one
+person does most of the work, and `main` in a3-motion-ui fell **577 commits**
+behind while everything real happened on the branch beside it. A branch nobody
+integrates is not a release branch; it is a second `main` with a worse name.
+
+Outside contributions are still pull requests against `main` — see the code of
+conduct below. The rule above is about where the maintainers work, not an
+invitation to push to somebody else's `main`.
+
+### A version is a tag, and it is the same tag everywhere
+
+A state worth returning to gets an **annotated tag**, set in **every
+repository at once, with the same name**:
+
+```
+v03.0    2026-09-12    the first one
+```
+
+The same name everywhere is the whole point. These repositories only mean
+something together — a Core that answers an address the Motion of a different
+month never sends is not a system — so what you want when you go back is *the
+seven states that belonged together*, and a single tag name is what finds them:
+
+```bash
+git clone --recurse-submodules https://github.com/a3-audio/a3-system
+git -C a3-system checkout v03.0
+git -C a3-system submodule update --init --recursive
+```
+
+The submodules are the same statement made a second way: this repository
+records *which commit of each* belonged to that state, so a tag here brings
+the whole set back even for anyone who never learned the convention.
+
+Two rules that follow from that:
+
+- **A tag is never moved.** Anyone who has already fetched it keeps the old
+  one, so a moved tag means two people holding different things under one
+  name. If the state was wrong, the next tag is the answer.
+- **The number is the system's, not the repository's.** A repository with
+  nothing to change since the last tag still gets the new one. That is not
+  noise — it is the statement that this state belongs with the others.
+
+`v03` is the hardware generation these tags sit in: the ESP32-S3 panel in
+A³ Motion, the Raspberry Pi Pico mainboard in the mixer. The second number
+counts states within it.
 
 ## Documentation
 
@@ -87,7 +184,8 @@ because each needs a decision about which end is right:
 - Care the docs
 - Keep the code clean
 - We use [centralized workflow](https://www.git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows):
-  - Don't edit the mainbranch. Use pull requests instead.
+  - Contributing from outside: don't edit `main` directly — open a pull request.
+    (The maintainers work on `main`; see *Repositories and versioning* above.)
   - If you need an own different setup, fork this repo
 - Follow the <a href="https://contributor-covenant.org/">Contributor Covenant</a> Code of Conduct
 - Find us on stage

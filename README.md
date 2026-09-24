@@ -1,4 +1,4 @@
-# A³ Audio
+# A³ System
 Interact live with 3D Audio
 
 A³ is a live spatial-audio instrument: three networked devices that let a performer

@@ -51,10 +51,10 @@ picked out mid-set and handed to a movement. The vocal circles overhead while th
 where it is. With A³ around it, this is the first complete DJ setup for 3D
 sound.
 
-StemDeck is to keep its own time, too: it will announce itself on **Pioneer
-Pro DJ Link** and send its beat there, so Beat-Analyzer follows it exactly as
-it would follow a CDJ. Not built yet — until then the clock comes from
-Beat-Analyzer's own analysis.
+StemDeck keeps its own time, too. It joins **Pioneer Pro DJ Link** as virtual
+CDJ 6 and sends the beat of its MASTER deck there, so Beat-Analyzer (clock
+mode 2) follows it exactly as it would follow a CDJ, and passes the beat on to
+A³ Motion. With real CDJs on the link, StemDeck can follow them instead.
 
 ## Network ports (UDP/OSC)
 
@@ -73,6 +73,7 @@ that ship.
 | **a3-mixer** (`a3-mixer.py`) | 7771 | a3-core `:9000` | VU and LED state in; mixer parameters out |
 | **beat-analyzer** | 7775 | a3-core `:9000`, a3-motion `:7771` / `:7772`, a3-mixer `:7773` / `:7774` | Beat and BPM out, VU meters out; external clock in |
 | | Pioneer Pro DJ Link | 50000–50002 | Device announcement, beat sync, device status |
+| **stemdeck** | Pioneer Pro DJ Link 50000–50002 | Pro DJ Link broadcast, as virtual CDJ 6 | Beat and status of its MASTER deck out; a CDJ's tempo in, for SYNC |
 
 The full address reference — every OSC message, its arguments and their ranges —
 lives in the [OSC documentation](https://a3-audio.github.io/a3-doc/ressources/osc.html).
@@ -132,7 +133,7 @@ git clone --recurse-submodules https://github.com/a3-audio/a3-system
 | [a3-doc](https://github.com/a3-audio/a3-doc) | The user guide, the assembly photographs, and the **OSC reference every device is built against**. |
 | [a3-audio.github.io](https://github.com/a3-audio/a3-audio.github.io) | The homepage. |
 | [beat-analyzer](https://github.com/rafjagger/beat-analyzer) | The beat clock and the VU meters every device shows. Same system, different organisation — and versioned along with the rest. |
-| [stemdeck](https://github.com/rafjagger/stemdeck) | The stem player: two decks of four stems, per-stem aux routing, and (to come) its own Pro DJ Link clock. Like beat-analyzer, kept outside the organisation and versioned with the rest. |
+| [stemdeck](https://github.com/rafjagger/stemdeck) | The stem player: two decks of four stems, per-stem aux routing, its own Pro DJ Link clock. Like beat-analyzer, kept outside the organisation and versioned with the rest. |
 
 ### Work on `main`
 

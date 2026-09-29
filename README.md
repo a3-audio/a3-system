@@ -13,6 +13,7 @@ movement beforehand. Everything between the devices is OSC over UDP.
 | [A³ Mixer](https://a3-audio.github.io/a3-doc/user/a3mix.html) | [a3-mixer](https://github.com/a3-audio/a3-mixer) | 4-channel DJ mixer. Sends gain, EQ, volume, PFL, FX and the 3D toggle; receives VU and LED state. |
 | [A³ Motion](https://a3-audio.github.io/a3-doc/user/a3motion.html) | [a3-motion](https://github.com/a3-audio/a3-motion) · [a3-motion-ui](https://github.com/a3-audio/a3-motion-ui) | 4-channel motion sampler. Records movement trajectories on a touchscreen sphere and plays them back in time with the beat. |
 | Beat-Analyzer | [beat-analyzer](https://github.com/rafjagger/beat-analyzer) | Real-time beat detection over JACK, plus the VU meters every device displays. Clock from its own analysis, from A³ Motion, or from Pioneer Pro DJ Link. |
+| StemDeck | [stemdeck](https://github.com/rafjagger/stemdeck) | Stem player: two decks of four stems each. Any single stem can be sent to the aux bus on its own — and from there onto a movement. |
 
 ![A³ Motion UI](https://a3-audio.github.io/a3-doc/user/pics_user/a3-motion-ui-display.png)
 
@@ -41,6 +42,19 @@ rate, in time with the beat clock.
 
 **Beat-Analyzer** listens to the audio and produces the tempo everything else follows,
 along with the VU meters that drive the visuals on A³ Motion.
+
+**StemDeck** is where the music comes from. A Pioneer CDJ hands over a finished
+stereo mix, and a stereo mix can only be moved as a whole. StemDeck plays two
+decks of four stems each and sends any one of them to the aux bus on its
+own. That is the step no DJ setup took before: a single part of the music,
+picked out mid-set and handed to a movement. The vocal circles overhead while the groove stays
+where it is. With A³ around it, this is the first complete DJ setup for 3D
+sound.
+
+StemDeck is to keep its own time, too: it will announce itself on **Pioneer
+Pro DJ Link** and send its beat there, so Beat-Analyzer follows it exactly as
+it would follow a CDJ. Not built yet — until then the clock comes from
+Beat-Analyzer's own analysis.
 
 ## Network ports (UDP/OSC)
 
@@ -84,23 +98,24 @@ because each needs a decision about which end is right:
 
 **This section is the one place the project's shape is written down.** The
 other repositories do not repeat it; they point here. A structure described in
-seven places is a structure that will one day disagree with itself.
+eight places is a structure that will one day disagree with itself.
 
 ### What the pieces are
 
-A³ is seven repositories and one system, and **this one carries the other six
+A³ is eight repositories and one system, and **this one carries the other seven
 as submodules** — so a single clone brings a coherent set rather than whatever
 each happened to be at that moment:
 
 ```
-a3-system/                  the umbrella: this README, and the six below
+a3-system/                  the umbrella: this README, and the seven below
 ├── a3-core/                the sound server
 ├── a3-mixer/               the DJ mixer
 ├── a3-motion/              the motion sampler
 │   └── ui/                 → a3-motion-ui, the touchscreen application
 ├── a3-doc/                 the documentation
 ├── a3-audio.github.io/     the homepage
-└── beat-analyzer/          the beat clock and the VU meters
+├── beat-analyzer/          the beat clock and the VU meters
+└── stemdeck/               the stem player
 ```
 
 ```bash
@@ -117,6 +132,7 @@ git clone --recurse-submodules https://github.com/a3-audio/a3-system
 | [a3-doc](https://github.com/a3-audio/a3-doc) | The user guide, the assembly photographs, and the **OSC reference every device is built against**. |
 | [a3-audio.github.io](https://github.com/a3-audio/a3-audio.github.io) | The homepage. |
 | [beat-analyzer](https://github.com/rafjagger/beat-analyzer) | The beat clock and the VU meters every device shows. Same system, different organisation — and versioned along with the rest. |
+| [stemdeck](https://github.com/rafjagger/stemdeck) | The stem player: two decks of four stems, per-stem aux routing, and (to come) its own Pro DJ Link clock. Like beat-analyzer, kept outside the organisation and versioned with the rest. |
 
 ### Work on `main`
 
@@ -148,7 +164,7 @@ v03.0    2026-09-12    the first one
 The same name everywhere is the whole point. These repositories only mean
 something together — a Core that answers an address the Motion of a different
 month never sends is not a system — so what you want when you go back is *the
-seven states that belonged together*, and a single tag name is what finds them:
+eight states that belonged together*, and a single tag name is what finds them:
 
 ```bash
 git clone --recurse-submodules https://github.com/a3-audio/a3-system

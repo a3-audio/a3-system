@@ -1,10 +1,13 @@
-"""A³ Mixer: a Raspberry Pi with a Teensy. Not installed by this yet.
+"""A³ Mixer: today a Raspberry Pi 3B with a Teensy. Not installed by this yet.
 
-Named so the choice is visible and says why it cannot be made: the mixer runs
-Raspberry Pi OS, and its unit (a3-mixer.service) starts
-/home/aaa/a3-mixer/engine/scripts/a3-mixer.py, a path its repository no
-longer has (software/scripts since). Both want settling before an installer
-lays them down.
+Named so the choice is visible and says why it cannot be made. The desk's
+units live in a3-mixer under platform-config/raspianos/etc/systemd/system/;
+a3-mixer.service starts /home/aaa/a3-mixer/software/scripts/a3-mixer.py on
+the venv's Python. What is missing is the install itself: no desk install
+steps are written yet, and they are not worth writing for this hardware,
+because the Pi and the Teensy are to be replaced by a small microcontroller
+board with Ethernet. The desk is set up by hand until then (a3-doc,
+configuration/mic.md, "Running the desk").
 """
 
 from .base import Role

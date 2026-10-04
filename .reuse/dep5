@@ -1,0 +1,17 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: A3 Audio - A³ System
+Upstream-Contact: A3 Audio <contact@a3-audio.com>
+Source: https://github.com/a3-audio/a3-system
+Comment: https://a3-audio.com
+
+Files: *
+Copyright: 2020-2026 A3 Audio <contact@a3-audio.com>
+License: GPL-3.0-or-later
+
+Files: README.md
+Copyright: 2020-2026 A3 Audio <contact@a3-audio.com>
+License: CC-BY-SA-4.0
+
+Files: .gitignore .gitmodules
+Copyright: 2020-2026 A3 Audio <contact@a3-audio.com>
+License: CC0-1.0

@@ -1,11 +1,14 @@
 # Every repository the A3 system is made of, at the state this one records.
 #
-# The point of the umbrella is that these seven belong together: a Core that
+# The point of the umbrella is that these six belong together: a Core that
 # answers an address the Motion of a different month never sends is not a
 # system. What is recorded here is therefore not "the newest of each" but one
 # coherent set -- see "A version is a tag" in README.md.
 #
 # https rather than ssh, so a clone works without a key.
+#
+# The website (a3-audio.github.io) is not here either, since 2026-10-04: it
+# shows the newest state of the project, not one version of it.
 #
 # a3-motion-ui is deliberately NOT here. It is already a submodule of
 # a3-motion (as `ui`), and a second gitlink to it would be a second place to
@@ -27,12 +30,6 @@
 	path = a3-doc
 	url = https://github.com/a3-audio/a3-doc
 
-[submodule "a3-audio.github.io"]
-	path = a3-audio.github.io
-	url = https://github.com/a3-audio/a3-audio.github.io
-
-# Same system, different organisation: the beat clock and the VU meters every
-# device shows. Versioned along with the rest.
 [submodule "beat-analyzer"]
 	path = beat-analyzer
 	url = https://github.com/rafjagger/beat-analyzer

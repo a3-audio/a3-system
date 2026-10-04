@@ -9,7 +9,7 @@ movement beforehand. Everything between the devices is OSC over UDP.
 
 | Device | Repository | What it is |
 | :--- | :--- | :--- |
-| [A³ Core](https://a3-audio.github.io/a3-doc/user/a3core.html) | [a3-core](https://github.com/a3-audio/a3-core) | 3D sound server — the machine that carries the audio. Debian x86_64 running JACK, REAPER and SuperCollider, remote-controlled over OSC. |
+| [A³ Core](https://a3-audio.github.io/a3-doc/user/a3core.html) | [a3-core](https://github.com/a3-audio/a3-core) | 3D sound server — the machine that carries the audio. Debian x86_64 running JACK and REAPER, remote-controlled over OSC. |
 | [A³ Mixer](https://a3-audio.github.io/a3-doc/user/a3mix.html) | [a3-mixer](https://github.com/a3-audio/a3-mixer) | 4-channel DJ mixer. Sends gain, EQ, volume, PFL, FX and the 3D toggle; receives VU and LED state. |
 | [A³ Motion](https://a3-audio.github.io/a3-doc/user/a3motion.html) | [a3-motion](https://github.com/a3-audio/a3-motion) · [a3-motion-ui](https://github.com/a3-audio/a3-motion-ui) | 4-channel motion sampler. Records movement trajectories on a touchscreen sphere and plays them back in time with the beat. |
 | Beat-Analyzer | [beat-analyzer](https://github.com/rafjagger/beat-analyzer) | Real-time beat detection over JACK, plus the VU meters every device displays. Clock from its own analysis, from A³ Motion, or from Pioneer Pro DJ Link. |
@@ -154,7 +154,7 @@ git clone --recurse-submodules https://github.com/a3-audio/a3-system
 | Repository | What it holds |
 | :--- | :--- |
 | [a3-system](https://github.com/a3-audio/a3-system) | This: what the system is, how the pieces talk, how it is worked on. |
-| [a3-core](https://github.com/a3-audio/a3-core) | The sound server as a Debian package tree — the OSC router, the SuperCollider backend, the REAPER project and its OSC surface, the systemd units. |
+| [a3-core](https://github.com/a3-audio/a3-core) | The sound server as a Debian package tree — the OSC router, the REAPER project and its OSC surface, the systemd units. |
 | [a3-mixer](https://github.com/a3-audio/a3-mixer) | The mixer's control scripts and its KiCad hardware. |
 | [a3-motion](https://github.com/a3-audio/a3-motion) | The motion sampler's panel firmware and hardware. |
 | [a3-motion-ui](https://github.com/a3-audio/a3-motion-ui) | The JUCE touchscreen application — the largest single piece of software here. Reached through a3-motion's `ui` submodule rather than a second time from this one: two gitlinks to one repository are two places to keep in step. |

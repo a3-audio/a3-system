@@ -6,10 +6,12 @@ reads what would have been run. Run with:
     python3 -m unittest discover -s tests
 """
 
+import json
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
@@ -20,7 +22,9 @@ from installer.prompt import Prompter, TextPrompter  # noqa: E402
 from installer.roles import ALL, BY_NAME  # noqa: E402
 from installer.roles.base import Context, RoleError, State  # noqa: E402
 from installer.roles.core import chosen_groups, preseed_lines  # noqa: E402
-from installer.roles.motion import Motion, drop_in_text  # noqa: E402
+from installer.roles import motion  # noqa: E402
+from installer.roles.motion import (Motion, drop_in_text, panel_usb_ids,  # noqa: E402
+                                    serial_candidates)
 from installer.settings import Settings  # noqa: E402
 from installer.system import Runner  # noqa: E402
 
@@ -184,6 +188,78 @@ class MotionOnAnyMachine(unittest.TestCase):
 
     def test_forced_flashes_even_unchanged(self):
         self.assertEqual(1, len(self.firmware("no", flashed_tree="current", force=True)))
+
+
+def fake_serial_devices(root, devices):
+    """/dev/serial/by-id and /sys/class/tty as udev and the kernel lay them out.
+
+    devices: by-id name -> (tty, vendor, product, driver); driver "acm" puts
+    the tty directly under the USB interface, "usb-serial" one level deeper.
+    """
+    by_id, dev, sys_tty = root / "by-id", root / "dev", root / "sys/class/tty"
+    for d in (by_id, dev, sys_tty):
+        d.mkdir(parents=True)
+    for name, (tty, vendor, product, driver) in devices.items():
+        (dev / tty).touch()
+        (by_id / name).symlink_to(dev / tty)
+        usb = root / "sys/devices" / name / "3-1"
+        interface = usb / "3-1:1.0"
+        device = interface / tty if driver == "usb-serial" else interface
+        device.mkdir(parents=True)
+        (usb / "idVendor").write_text(vendor + "\n")
+        (usb / "idProduct").write_text(product + "\n")
+        (sys_tty / tty).mkdir()
+        (sys_tty / tty / "device").symlink_to(device)
+    return by_id, sys_tty
+
+
+PANEL_BRIDGE = ("1a86", "55d3")
+
+
+class ThePanelIsFoundByItsUsbId(unittest.TestCase):
+    """The tty number differs between machines; the USB ID does not."""
+
+    def test_the_ids_come_from_the_board_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            board = Path(tmp) / "board.json"
+            board.write_text(json.dumps({"build": {"hwids": [["0x1A86", "0x55D3"]]}}))
+            self.assertEqual({PANEL_BRIDGE}, panel_usb_ids(board))
+
+    def test_only_the_panel_whatever_its_number(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            by_id, sys_tty = fake_serial_devices(Path(tmp), {
+                "usb-Raspberry_Pi_Pico-if00": ("ttyACM0", "2e8a", "000a", "acm"),
+                "usb-1a86_USB_Single_Serial_5B7A-if00": ("ttyACM1", "1a86", "55d3", "acm"),
+            })
+            self.assertEqual([str(by_id / "usb-1a86_USB_Single_Serial_5B7A-if00")],
+                             serial_candidates({PANEL_BRIDGE}, by_id, sys_tty))
+
+    def test_a_usb_serial_tty_is_found_too(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            by_id, sys_tty = fake_serial_devices(Path(tmp), {
+                "usb-wch-if00": ("ttyUSB0", "1a86", "55d3", "usb-serial"),
+            })
+            self.assertEqual(1, len(serial_candidates({PANEL_BRIDGE}, by_id, sys_tty)))
+
+    def test_no_by_id_directory_is_no_candidate(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertEqual([], serial_candidates({PANEL_BRIDGE}, Path(tmp) / "none",
+                                                   Path(tmp)))
+
+    def test_auto_flashes_the_one_panel(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, log = context(tmp, {("motion", "serial_port"): "auto"})
+            by_id, sys_tty = fake_serial_devices(Path(tmp) / "devs", {
+                "usb-other-if00": ("ttyACM0", "2e8a", "000a", "acm"),
+                "usb-panel-if00": ("ttyACM1", "1a86", "55d3", "acm"),
+            })
+            with mock.patch.object(motion, "BY_ID", by_id), \
+                    mock.patch.object(motion, "SYS_TTY", sys_tty), \
+                    mock.patch.object(motion, "panel_usb_ids", lambda _: {PANEL_BRIDGE}):
+                Motion().flash(ctx, "tree")
+            uploads = [c for c in log.commands() if "upload" in c]
+            self.assertEqual(1, len(uploads))
+            self.assertIn("--upload-port " + str(by_id / "usb-panel-if00"), uploads[0])
 
 
 class MissingUnitsAreSaidPlainly(unittest.TestCase):

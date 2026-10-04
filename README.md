@@ -95,6 +95,34 @@ because each needs a decision about which end is right:
 - `beat-analyzer` is configured to reach the mixer on **7773/7774**, while
   `a3-mixer.py` listens on **7771**.
 
+## Installing
+
+Every machine of the system is set up from a clone of this repository, by
+`install` -- the Core, a machine for StemDeck, the one the Motion PCB hangs
+on. It asks which state of the system (a tag), which roles the machine has,
+and their settings, then installs exactly that tag's submodules:
+
+```bash
+git clone --recurse-submodules https://github.com/a3-audio/a3-system ~/a3-system
+~/a3-system/install
+```
+
+| Role | What it installs |
+| :--- | :--- |
+| A³ Core | the a3-core package, **built from this tag's a3-core** and held, so `apt upgrade` does not move it off the release; the beat-analyzer comes with it |
+| StemDeck | StemDeck built in `stemdeck/`, its unit; on a machine without the Core also its zita units |
+| Motion UI | Motion UI built in `a3-motion/ui/`, its unit, the group `dialout`, and the panel's firmware flashed when it changed |
+| A³ Mixer | not yet (Raspberry Pi OS) |
+
+The answers are kept in `~/.config/a3/install.conf`. A later run starts from
+them; `install --update v03.1` takes them without asking and brings the
+machine to that tag; `install --config FILE` sets up a second machine like
+the first. `install --dry-run` shows every command and runs none.
+
+For now it runs on Debian only, as the user `aaa`, from `/home/aaa/a3-system`:
+the components' units name those paths. Windows and macOS come with the
+first release that has packages for them.
+
 ## Repositories and versioning
 
 **This section is the one place the project's shape is written down.** The

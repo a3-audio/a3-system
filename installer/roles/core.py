@@ -1,0 +1,175 @@
+"""A³ Core: the a3-core package, built from this release's a3-core.
+
+The package is built here, from the submodule, rather than taken from the
+apt repository: that repository holds one package, the newest, and a Core
+installed from it is on a3-core's main whatever tag the rest is on. Built
+from the submodule it is exactly the release's, also offline. It is then
+held, so `apt upgrade` does not move it off the release.
+
+Its debconf questions are asked here, with the rest, and handed over
+preseeded and marked seen; the postinst takes them as given (a3-core
+8573e2b, 8dcb2c7). The beat-analyzer comes with it: the package's
+a3-user-install.service builds it from ~/a3-system/beat-analyzer.
+"""
+
+import shutil
+import subprocess
+import tempfile
+from pathlib import Path
+
+from .base import Role, RoleError
+
+PACKAGE_DIR = Path("a3-core/platform-config/debian-x86_64/a3-core")
+SHIPPED_CONFIG = PACKAGE_DIR / "home/aaa/.local/share/a3-core/config"
+POSTINST = PACKAGE_DIR / "DEBIAN/postinst"
+
+GROUP_LABELS = {
+    "reaper": "REAPER: Template, OSC-Map, Presets, Effekte",
+    "i3": "i3-Config",
+    "systemd": "systemd-User-Units",
+    "qjackctl": "QjackCtl und Patchbay",
+    "iem": "IEM-Plugin-Settings",
+    "other": "sonstige Dateien",
+}
+
+
+def postinst_function(repo, *names):
+    """Functions from the package's own postinst, to run them here rather
+    than keep a second copy of what they decide."""
+    text = (repo / POSTINST).read_text()
+    bodies = []
+    for name in names:
+        if f"\n{name}() {{" not in text:
+            raise RoleError(f"a3-core in diesem Stand kennt {name}() nicht; er ist "
+                            "älter als der Installer. Erst den a3-core-Pin hochziehen.")
+        start = text.index(f"\n{name}() {{") + 1
+        end = text.index("\n}\n", start) + 3
+        bodies.append(text[start:end])
+    return "\n".join(bodies)
+
+
+def differing_groups(repo, home):
+    """The parts of ~/.config that differ from what this release ships,
+    by the package's own rule (differing_config_groups in the postinst)."""
+    script = postinst_function(repo, "config_group", "differing_config_groups")
+    found = subprocess.run(
+        ["sh", "-c", f'{script}\ndiffering_config_groups "$1" "$2"', "sh",
+         str(repo / SHIPPED_CONFIG), str(home / ".config")],
+        check=True, capture_output=True, text=True).stdout.strip()
+    return [g.strip() for g in found.split(",") if g.strip()]
+
+
+def chosen_groups(setting, differing):
+    """The setting ("all", "none", "reaper, i3") applied to what differs."""
+    setting = setting.strip()
+    if setting == "all":
+        return list(differing)
+    if setting in ("none", ""):
+        return []
+    wanted = {g.strip() for g in setting.split(",")}
+    return [g for g in differing if g in wanted]
+
+
+def preseed_lines(settings, replace):
+    """debconf-set-selections input: every question the postinst asks,
+    answered and marked seen."""
+    def flag(key):
+        return "true" if settings.flag("core", key) else "false"
+
+    lines = [("configure-network", "boolean", flag("configure_network"))]
+    if settings.flag("core", "configure_network"):
+        lines += [
+            ("install-default-network", "boolean", "false"),
+            ("interface", "string", settings.get("core", "interface")),
+            ("address", "string", settings.get("core", "address")),
+            ("gateway", "string", settings.get("core", "gateway")),
+            ("dns", "string", settings.get("core", "dns")),
+            ("bridge-with", "string", settings.get("core", "bridge_with")),
+        ]
+    lines.append(("headless-display", "boolean", flag("headless")))
+    if replace is not None:
+        lines.append(("replace-config", "multiselect", ", ".join(replace)))
+
+    out = []
+    for question, kind, value in lines:
+        out.append(f"a3-core a3-core/{question} {kind} {value}")
+        out.append(f"a3-core a3-core/{question} seen true")
+    return "\n".join(out) + "\n"
+
+
+class Core(Role):
+    name = "core"
+    label = "A³ Core (Sound-Server: JACK, REAPER, a3-core, Beat-Analyzer)"
+    platforms = ("debian",)
+
+    def configure(self, ctx):
+        s, ask = ctx.settings, ctx.prompter
+        s.set_flag("core", "configure_network", ask.yesno(
+            "Netzwerk dieses Cores einrichten?\n(Nein lässt das Netzwerk, wie es ist.)",
+            s.flag("core", "configure_network")))
+        if s.flag("core", "configure_network"):
+            for key, question in (("interface", "Netzwerk-Schnittstelle (z.B. eno1)"),
+                                  ("address", "Statische Adresse mit Präfix (z.B. 192.168.8.10/24)"),
+                                  ("gateway", "Gateway"),
+                                  ("dns", "DNS-Server"),
+                                  ("bridge_with", "Zweite Buchse für die Bridge (leer: keine)")):
+                s.set("core", key, ask.text(question, s.get("core", key)))
+        s.set_flag("core", "headless", ask.yesno(
+            "Ohne Monitor betreiben (Dummy-Bildschirm, nur VNC)?",
+            s.flag("core", "headless")))
+
+        differing = differing_groups(ctx.repo, ctx.home)
+        if not differing:
+            ctx.answers["replace"] = []
+            return
+        default = chosen_groups(s.get("core", "replace"), differing)
+        if ask.interactive:
+            picked = ask.checklist(
+                "Diese Teile von ~/.config weichen von diesem Stand ab.\n"
+                "Welche sollen ersetzt werden? (Gesichert nach ~/.config/a3-replaced/)",
+                [(g, GROUP_LABELS.get(g, g)) for g in differing], default)
+            ctx.answers["replace"] = picked
+            if set(picked) == set(differing):
+                s.set("core", "replace", "all")
+            elif not picked:
+                s.set("core", "replace", "none")
+            else:
+                s.set("core", "replace", ", ".join(picked))
+        else:
+            ctx.answers["replace"] = default
+
+    def install(self, ctx):
+        run = ctx.runner
+        work = Path(tempfile.mkdtemp(prefix="a3-core-"))
+        try:
+            deb = build_package(ctx, work)
+            run.run(["debconf-set-selections"], root=True,
+                    input=preseed_lines(ctx.settings, ctx.answers.get("replace")))
+            run.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",
+                     "--allow-downgrades", "--allow-change-held-packages", deb], root=True)
+            run.run(["apt-mark", "hold", "a3-core"], root=True)
+        finally:
+            shutil.rmtree(work, ignore_errors=True)
+
+
+def build_package(ctx, work):
+    """The a3-core .deb of this release, built into `work`. Versioned like
+    a3-core's own workflow does it (tools/package_version.py: 03.0+258)."""
+    run = ctx.runner
+    if not shutil.which("dpkg-deb"):
+        raise RoleError("dpkg-deb fehlt -- ist das ein Debian?")
+    version = run.output(["python3", "a3-core/tools/package_version.py"],
+                         cwd=ctx.repo).strip()
+    tree = work / "a3-core"
+    deb = work / f"a3-core_{version}_amd64.deb"
+    run.log(f"Baue a3-core {version} aus {ctx.repo / PACKAGE_DIR}")
+    if not run.dry_run:
+        shutil.copytree(ctx.repo / PACKAGE_DIR, tree, symlinks=True)
+        control = tree / "DEBIAN" / "control"
+        control.write_text("".join(
+            f"Version: {version}\n" if line.startswith("Version:") else line
+            for line in control.read_text().splitlines(keepends=True)))
+        # apt reads a local package as the user _apt.
+        work.chmod(0o755)
+    run.run(["dpkg-deb", "--build", "--root-owner-group", tree, deb])
+    return deb

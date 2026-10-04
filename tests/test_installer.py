@@ -19,7 +19,7 @@ sys.path.insert(0, str(REPO))
 from installer import release  # noqa: E402
 from installer.cli import where_problems  # noqa: E402
 from installer.prompt import Prompter, TextPrompter  # noqa: E402
-from installer.roles import ALL, BY_NAME  # noqa: E402
+from installer.roles import ALL, BY_NAME, needed_submodules  # noqa: E402
 from installer.roles.base import Context, RoleError, State  # noqa: E402
 from installer.roles.core import chosen_groups, preseed_lines  # noqa: E402
 from installer.roles import motion  # noqa: E402
@@ -112,6 +112,47 @@ class Tags(unittest.TestCase):
             def output(self, args, cwd=None):
                 return "v03.0\nv03.10\nv03.9\nv.0.2\n"
         self.assertEqual(["v03.10", "v03.9", "v03.0"], release.tags(Fake(), REPO))
+
+
+class OnlyWhatTheRolesNeed(unittest.TestCase):
+    """A machine gets the submodules its roles build from, not the docs'
+    234 MB of history on a Motion panel's Pi."""
+
+    def submodule_commands(self, roles, version=None):
+        log = Log()
+        runner = Runner(dry_run=True, log=log)
+        if version:
+            release.check_out(runner, REPO, version)
+        release.update_submodules(runner, REPO, needed_submodules(roles))
+        commands = [c.split("  (in ")[0] for c in log.commands()]
+        return [c for c in commands if "submodule" in c or "checkout" in c]
+
+    def test_each_role_names_what_it_builds_from(self):
+        self.assertEqual(["a3-core", "beat-analyzer"], needed_submodules(["core"]))
+        self.assertEqual(["stemdeck"], needed_submodules(["stemdeck"]))
+        self.assertEqual(["a3-motion"], needed_submodules(["motion"]))
+
+    def test_in_install_order_and_once(self):
+        self.assertEqual(["a3-core", "beat-analyzer", "stemdeck", "a3-motion"],
+                         needed_submodules(["motion", "stemdeck", "core", "core"]))
+
+    def test_only_those_are_initialised(self):
+        commands = self.submodule_commands(["stemdeck", "motion"])
+        update = [c for c in commands if "update" in c]
+        self.assertEqual(1, len(update))
+        self.assertTrue(update[0].endswith("--init --recursive -- stemdeck a3-motion"),
+                        update[0])
+        self.assertNotIn("a3-doc", " ".join(commands))
+
+    def test_a_checkout_initialises_nothing_by_itself(self):
+        commands = self.submodule_commands([], version="v03.0")
+        self.assertEqual(["git checkout --quiet v03.0"], commands)
+
+    def test_every_named_submodule_is_one(self):
+        gitmodules = (REPO / ".gitmodules").read_text()
+        for role in ALL:
+            for path in role.submodules:
+                self.assertIn(f"path = {path}\n", gitmodules, (role.name, path))
 
 
 class TextQuestions(unittest.TestCase):

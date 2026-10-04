@@ -15,6 +15,7 @@ SOURCE = "stemdeck"
 class StemDeck(Role):
     name = "stemdeck"
     label = "StemDeck (Stem-Player)"
+    submodules = (SOURCE,)
     platforms = ("debian",)
 
     def install(self, ctx):

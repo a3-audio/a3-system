@@ -17,7 +17,7 @@ from pathlib import Path
 
 from . import release
 from .prompt import make_prompter
-from .roles import ALL, BY_NAME
+from .roles import ALL, BY_NAME, needed_submodules
 from .roles.base import Context, RoleError
 from .settings import DEFAULT_PATH, Settings
 from .system import CommandFailed, Runner, platform_name
@@ -110,6 +110,8 @@ def main(argv=None):
         if unsupported:
             raise RoleError(f"Auf {ctx.platform} noch nicht möglich: "
                             + ", ".join(BY_NAME[r].label for r in unsupported))
+        # Before the questions: the Core's read what this release ships.
+        release.update_submodules(runner, REPO, needed_submodules(roles))
         for name in roles:
             BY_NAME[name].configure(ctx)
 

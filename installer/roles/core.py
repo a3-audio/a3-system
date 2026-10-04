@@ -100,6 +100,7 @@ def preseed_lines(settings, replace):
 class Core(Role):
     name = "core"
     label = "A³ Core (Sound-Server: JACK, REAPER, a3-core, Beat-Analyzer)"
+    submodules = ("a3-core", "beat-analyzer")
     platforms = ("debian",)
 
     def configure(self, ctx):

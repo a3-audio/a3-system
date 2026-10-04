@@ -155,6 +155,99 @@ class OnlyWhatTheRolesNeed(unittest.TestCase):
                 self.assertIn(f"path = {path}\n", gitmodules, (role.name, path))
 
 
+class OneJuceForEveryProduct(unittest.TestCase):
+    """StemDeck and Motion UI build against one JUCE, the pinned one, and a
+    prefix holds only that one: with two, CMake takes either."""
+
+    def ensure(self, installed=(), latest="9.0.3"):
+        from installer.roles import base
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, log = context(tmp)
+            for version in installed:
+                (base.juce_prefix(ctx) / "lib" / "cmake" / f"JUCE-{version}").mkdir(parents=True)
+            with mock.patch.object(base, "latest_juce", lambda _ctx: latest):
+                base.ensure_juce(ctx)
+            commands = [c.split("  (in ")[0] for c in log.commands()]
+            return commands, list(log), str(base.juce_prefix(ctx))
+
+    def test_the_pin_is_the_newest_release(self):
+        from installer.roles.base import JUCE_VERSION
+        self.assertEqual("9.0.3", JUCE_VERSION)
+
+    def test_the_pinned_one_installed_builds_nothing(self):
+        commands, _, _ = self.ensure(installed=["9.0.3"])
+        self.assertEqual([], commands)
+
+    def test_none_installed_is_cloned_at_the_pin(self):
+        commands, _, prefix = self.ensure()
+        self.assertTrue(any("--depth 1 --branch 9.0.3" in c for c in commands), commands)
+        self.assertNotIn(f"rm -rf {prefix}", commands)
+
+    def test_another_version_is_replaced_not_joined(self):
+        commands, _, prefix = self.ensure(installed=["8.0.12"])
+        self.assertIn(f"rm -rf {prefix}", commands)
+        clone = next(i for i, c in enumerate(commands) if "git clone" in c)
+        self.assertLess(commands.index(f"rm -rf {prefix}"), clone)
+
+    def test_a_newer_release_is_named_but_not_taken(self):
+        commands, lines, _ = self.ensure(installed=["9.0.3"], latest="9.1.0")
+        self.assertEqual([], commands)
+        self.assertTrue(any("9.1.0" in line for line in lines), lines)
+
+    def test_no_network_is_no_hint_and_no_error(self):
+        commands, lines, _ = self.ensure(installed=["9.0.3"], latest=None)
+        self.assertEqual([], commands)
+
+
+class TheProductsNameThePinnedJuce(unittest.TestCase):
+    """Where a product's docs name a JUCE release, at the commit this
+    repository records, it is JUCE_VERSION: one JUCE for every product."""
+
+    DOCS = {
+        "stemdeck": ("stemdeck", "README.md"),
+        "a3-motion-ui README": ("a3-motion/ui", "README.md"),
+        "a3-motion-ui ARCHITECTURE": ("a3-motion/ui", "ARCHITECTURE.md"),
+    }
+
+    @staticmethod
+    def pinned_text(path, name):
+        """`name` at the commit recorded for `path`, through nested gitlinks."""
+        import subprocess
+
+        def git(cwd, *args):
+            return subprocess.run(["git", *args], cwd=cwd, check=True,
+                                  capture_output=True, text=True).stdout.strip()
+        here, commit = REPO, git(REPO, "rev-parse", "HEAD")
+        for part in Path(path).parts:
+            commit = git(here, "rev-parse", f"{commit}:{part}")
+            here = here / part
+        return git(here, "show", f"{commit}:{name}")
+
+    def test_one_version(self):
+        import re
+        import subprocess
+        from installer.roles.base import JUCE_VERSION
+        for label, (path, name) in self.DOCS.items():
+            with self.subTest(label):
+                try:
+                    text = self.pinned_text(path, name)
+                except subprocess.CalledProcessError:
+                    self.skipTest(f"{path} is not checked out here")
+                named = set(re.findall(r"JUCE\W{0,2}(\d+\.\d+\.\d+)", text))
+                self.assertLessEqual(named, {JUCE_VERSION}, label)
+
+
+class NewestJuceTag(unittest.TestCase):
+    def test_releases_only_numbers_as_numbers(self):
+        from installer.roles.base import newest_release
+        listing = ("abc\trefs/tags/8.0.12\n"
+                   "def\trefs/tags/9.0.10\n"
+                   "ghi\trefs/tags/9.0.3\n"
+                   "jkl\trefs/tags/9.0.3^{}\n"
+                   "mno\trefs/tags/juce-9-preview\n")
+        self.assertEqual("9.0.10", newest_release(listing))
+
+
 class TextQuestions(unittest.TestCase):
     def prompter(self, *answers):
         replies = iter(answers)

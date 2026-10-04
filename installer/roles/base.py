@@ -4,6 +4,7 @@ file, systemd user units and JUCE."""
 
 import configparser
 import os
+import re
 from pathlib import Path
 
 
@@ -111,28 +112,65 @@ def enable_and_restart(ctx, unit):
 
 # -- JUCE -----------------------------------------------------------------------
 
-# The JUCE StemDeck and Motion UI build against, the same on every machine
-# and on the developer's. Not the newest: a new JUCE is a change to test
-# like any other, and goes into a release on purpose.
-JUCE_VERSION = "8.0.12"
+# The one JUCE every product builds against -- StemDeck, Motion UI and
+# whatever comes next -- on every machine and on the developer's. Kept at
+# the newest release, but bumped on purpose: a new JUCE is a change to build
+# and test like any other. ensure_juce() says when a newer one is out.
+JUCE_VERSION = "9.0.3"
+JUCE_REPOSITORY = "https://github.com/juce-framework/JUCE.git"
+_RELEASE_TAG = re.compile(r"refs/tags/(\d+\.\d+\.\d+)$")
 
 
 def juce_prefix(ctx):
     return ctx.home / "local" / "juce"
 
 
+def _version_key(version):
+    return tuple(int(part) for part in version.split("."))
+
+
+def newest_release(ls_remote):
+    """The newest x.y.z tag in a `git ls-remote --tags` listing."""
+    found = [m.group(1) for line in ls_remote.splitlines()
+             if (m := _RELEASE_TAG.search(line))]
+    return max(found, key=_version_key) if found else None
+
+
+def latest_juce(ctx):
+    """The newest JUCE release on GitHub, or None without a network."""
+    try:
+        return newest_release(ctx.runner.output(
+            ["git", "ls-remote", "--tags", JUCE_REPOSITORY]))
+    except Exception:
+        return None
+
+
 def ensure_juce(ctx):
-    """JUCE installed to ~/local/juce, where StemDeck and Motion UI look."""
+    """The pinned JUCE in ~/local/juce, where StemDeck and Motion UI look, and
+    no other: JUCE's CMake package matches exactly, and with two versions in
+    one prefix a find_package without a version takes either."""
     prefix = juce_prefix(ctx)
-    if (prefix / "lib" / "cmake" / f"JUCE-{JUCE_VERSION}").is_dir():
+    _name_a_newer_juce(ctx)
+    installed = sorted(p.name for p in (prefix / "lib" / "cmake").glob("JUCE-*"))
+    if installed == [f"JUCE-{JUCE_VERSION}"]:
         ctx.runner.log(f"JUCE {JUCE_VERSION} ist da ({prefix}).")
         return prefix
+    if installed:
+        ctx.runner.log(f"Ersetze {', '.join(installed)} in {prefix} durch JUCE {JUCE_VERSION}.")
+        ctx.runner.run(["rm", "-rf", prefix])
     source = ctx.home / "src" / "JUCE"
     ctx.runner.run(["rm", "-rf", source])
     ctx.runner.run(["git", "clone", "--quiet", "--depth", "1", "--branch", JUCE_VERSION,
-                    "https://github.com/juce-framework/JUCE.git", source])
+                    JUCE_REPOSITORY, source])
     ctx.runner.run(["cmake", "-S", source, "-B", source / "build",
                     f"-DCMAKE_INSTALL_PREFIX={prefix}", "-DCMAKE_BUILD_TYPE=Release"])
     ctx.runner.run(["cmake", "--build", source / "build", "--target", "install",
                     "-j", ctx.jobs()])
     return prefix
+
+
+def _name_a_newer_juce(ctx):
+    latest = latest_juce(ctx)
+    if latest and _version_key(latest) > _version_key(JUCE_VERSION):
+        ctx.runner.log(f"Hinweis: JUCE {latest} ist erschienen, gebaut wird weiter "
+                       f"gegen {JUCE_VERSION} (JUCE_VERSION in installer/roles/base.py).")

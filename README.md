@@ -57,6 +57,17 @@ A version is an annotated tag with the same name in every repository; this
 repository's submodules record which commit of each belongs to it. See the
 [release notes](https://a3-audio.github.io/a3-doc/ressources/release-notes.html).
 
+## Pro DJ Link
+
+StemDeck and the beat-analyzer work with Pro DJ Link: they follow the tempo
+master of a Pro DJ Link network, and StemDeck can be that master when there is
+no CDJ. Pro DJ Link and rekordbox are trademarks of AlphaTheta Corporation;
+Pioneer DJ is a trademark of Pioneer Corporation. A³ is not affiliated with,
+endorsed or certified by them. The support is an independent implementation for
+interoperability, built from public documentation of the protocol. On a network
+you do not run, ask the venue first. Details:
+[Trademarks and Pro DJ Link](https://a3-audio.github.io/a3-doc/ressources/trademarks.html).
+
 ## Contributing
 
 Care the docs, keep the code clean, and open a pull request against `main`.

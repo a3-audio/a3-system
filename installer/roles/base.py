@@ -60,6 +60,9 @@ class Role:
     name = ""
     label = ""
     platforms = ()
+    # The submodules of this repository the role builds from. Only these are
+    # checked out on its machine.
+    submodules = ()
 
     def supported(self, platform):
         return platform in self.platforms

@@ -3,8 +3,8 @@
 A version is a tag, set in every repository at once (README: "A version is a
 tag, and it is the same tag everywhere"), and this repository records which
 commit of each submodule belongs to it. Checking out the tag here and then
-the submodules brings the whole coherent set; nothing is taken from a
-submodule's own newest commit.
+the submodules the machine's roles need brings their part of the coherent
+set; nothing is taken from a submodule's own newest commit.
 """
 
 import re
@@ -43,12 +43,21 @@ def fetch(runner, repo):
 
 
 def check_out(runner, repo, version):
-    """This repository at `version` and every submodule at the commit it
-    records there. A local change in a submodule stops the checkout rather
-    than being overwritten: it is somebody's work."""
+    """This repository at `version`. Its submodules follow in
+    update_submodules(), and only those the machine's roles need."""
     runner.run(["git", "checkout", "--quiet", version], cwd=repo)
-    runner.run(["git", "submodule", "sync", "--recursive"], cwd=repo)
-    runner.run(["git", "submodule", "update", "--init", "--recursive"], cwd=repo)
+
+
+def update_submodules(runner, repo, paths):
+    """These submodules at the commit this repository records. Run on every
+    install, not only on a version change: a role added later needs its
+    submodule too. A local change in a submodule stops the update rather than
+    being overwritten: it is somebody's work."""
+    if not paths:
+        return
+    runner.run(["git", "submodule", "sync", "--recursive", "--", *paths], cwd=repo)
+    runner.run(["git", "submodule", "update", "--init", "--recursive", "--", *paths],
+               cwd=repo)
 
 
 def submodule_commit(runner, repo, path):

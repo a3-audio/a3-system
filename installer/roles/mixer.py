@@ -13,6 +13,7 @@ from .base import Role
 class Mixer(Role):
     name = "mixer"
     label = "A³ Mixer (Raspberry Pi + Teensy)"
+    submodules = ("a3-mixer",)
     platforms = ()
 
     def install(self, ctx):

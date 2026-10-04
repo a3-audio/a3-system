@@ -45,12 +45,12 @@ How to start it, what you get and the one-time setup:
 ## Getting started
 
 ```bash
-git clone --recurse-submodules https://github.com/a3-audio/a3-system ~/a3-system
+git clone https://github.com/a3-audio/a3-system ~/a3-system
 ~/a3-system/install
 ```
 
 `install` asks which version (a tag) and which roles the machine has, then
-installs that tag's parts. `install --dry-run` shows what it would do. For now it
+checks out and installs only the parts those roles need. `install --dry-run` shows what it would do. For now it
 runs on Debian only, as the user `aaa`, from `/home/aaa/a3-system`.
 
 A version is an annotated tag with the same name in every repository; this

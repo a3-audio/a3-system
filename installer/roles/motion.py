@@ -81,6 +81,7 @@ def serial_candidates(usb_ids, by_id=None, sys_tty=None):
 class Motion(Role):
     name = "motion"
     label = "Motion UI mit dem PCB an diesem Rechner (inkl. Firmware)"
+    submodules = ("a3-motion",)
     platforms = ("debian",)
 
     def configure(self, ctx):

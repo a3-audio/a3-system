@@ -11,11 +11,14 @@ Core's copy is not on a machine without the Core.
 
 The ESP32 panel is flashed with PlatformIO when its firmware changed since
 the last flash -- told by the git tree of a3-motion/firmware -- and the user
-gets the group dialout, which the PCB's serial port belongs to.
+gets the group dialout, which the PCB's serial port belongs to. The panel's
+port is found by its USB ID, read from the firmware's board file, the same
+entry PlatformIO finds it by: its tty number differs between machines.
 """
 
 import getpass
 import grp
+import json
 from pathlib import Path
 
 from .base import (Role, RoleError, ensure_juce, enable_and_restart,
@@ -23,6 +26,9 @@ from .base import (Role, RoleError, ensure_juce, enable_and_restart,
 
 UI = Path("a3-motion/ui")
 FIRMWARE = Path("a3-motion/firmware")
+BOARD_FILE = FIRMWARE / "boards" / "esp32-s3-devkitc-1-n16r8.json"
+BY_ID = Path("/dev/serial/by-id")
+SYS_TTY = Path("/sys/class/tty")
 BINARY = Path("build/src/a3-motion-ui/a3-motion-ui_artefacts/Release/Standalone/a3-motion-ui")
 PIO_VENV = Path(".local/share/a3/platformio")
 
@@ -41,11 +47,35 @@ def drop_in_text(ui):
     )
 
 
-def serial_candidates(by_id=Path("/dev/serial/by-id")):
-    """The USB serial devices by their stable names."""
+def panel_usb_ids(board_file):
+    """The panel's USB IDs as sysfs writes them: ("1a86", "55d3")."""
+    hwids = json.loads(Path(board_file).read_text())["build"]["hwids"]
+    return {(vid.lower().removeprefix("0x"), pid.lower().removeprefix("0x"))
+            for vid, pid in hwids}
+
+
+def usb_id(tty, sys_tty):
+    """A tty's USB vendor and product, from the USB device above it in sysfs.
+
+    An ACM tty sits directly under the USB interface, a usb-serial one a level
+    deeper; the USB device is the first parent with an idVendor.
+    """
+    node = (sys_tty / tty / "device").resolve()
+    for parent in (node, *node.parents):
+        vendor, product = parent / "idVendor", parent / "idProduct"
+        if vendor.is_file() and product.is_file():
+            return vendor.read_text().strip(), product.read_text().strip()
+    return None
+
+
+def serial_candidates(usb_ids, by_id=None, sys_tty=None):
+    """The panel's serial devices by their stable names."""
+    by_id = by_id or BY_ID
+    sys_tty = sys_tty or SYS_TTY
     if not by_id.is_dir():
         return []
-    return sorted(str(p) for p in by_id.iterdir())
+    return sorted(str(link) for link in by_id.iterdir()
+                  if usb_id(link.resolve().name, sys_tty) in usb_ids)
 
 
 class Motion(Role):
@@ -112,15 +142,17 @@ class Motion(Role):
         run, s = ctx.runner, ctx.settings
         port = s.get("motion", "serial_port")
         if port == "auto":
-            found = serial_candidates()
+            usb_ids = panel_usb_ids(ctx.repo / BOARD_FILE)
+            found = serial_candidates(usb_ids)
             if len(found) == 1:
                 port = found[0]
             elif ctx.prompter.interactive and found:
                 port = ctx.prompter.choose("An welchem Port hängt das Motion-Panel?",
                                            [(p, p) for p in found], found[0])
             else:
+                ids = ", ".join(f"{v}:{p}" for v, p in sorted(usb_ids))
                 raise RoleError("Motion-Panel nicht eindeutig gefunden "
-                                f"({', '.join(found) or 'kein USB-Serial-Gerät'}). "
+                                f"({', '.join(found) or f'kein Gerät mit USB-ID {ids}'}). "
                                 "In install.conf unter [motion] serial_port setzen.")
         pio = self._platformio(ctx)
         # Motion UI holds the port; it is stopped for the flash and started

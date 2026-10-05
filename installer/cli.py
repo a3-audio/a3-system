@@ -17,7 +17,7 @@ from pathlib import Path
 
 from . import release
 from .prompt import make_prompter
-from .roles import ALL, BY_NAME, needed_submodules
+from .roles import ALL, BY_NAME, needed_packages, needed_submodules
 from .roles.base import Context, RoleError
 from .settings import DEFAULT_PATH, Settings
 from .system import CommandFailed, Runner, platform_name
@@ -84,6 +84,32 @@ def choose_roles(ctx):
     return picked
 
 
+def install_packages(ctx, names):
+    """What the roles build against, in one apt call before any of them:
+    each role names its own, none relies on another's package."""
+    packages = needed_packages(names)
+    if not packages or ctx.platform != "debian":
+        return
+    ctx.runner.log("\n=== Pakete der Rollen ===")
+    ctx.runner.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",
+                    *packages], root=True)
+
+
+def install_roles(ctx, names):
+    """The packages, then each role in turn until one fails."""
+    install_packages(ctx, names)
+    results = []
+    for name in names:
+        ctx.runner.log(f"\n=== {BY_NAME[name].label} ===")
+        try:
+            BY_NAME[name].install(ctx)
+            results.append((name, "ok"))
+        except (RoleError, CommandFailed) as error:
+            results.append((name, f"FEHLER: {error}"))
+            break
+    return results
+
+
 def main(argv=None):
     args = parse(sys.argv[1:] if argv is None else argv)
     settings = Settings(args.config or DEFAULT_PATH)
@@ -124,15 +150,7 @@ def main(argv=None):
         if not args.dry_run and args.config is None:
             settings.save()
 
-        results = []
-        for name in roles:
-            runner.log(f"\n=== {BY_NAME[name].label} ===")
-            try:
-                BY_NAME[name].install(ctx)
-                results.append((name, "ok"))
-            except (RoleError, CommandFailed) as error:
-                results.append((name, f"FEHLER: {error}"))
-                break
+        results = install_roles(ctx, roles)
     except KeyboardInterrupt:
         print("\nAbgebrochen.")
         return 1

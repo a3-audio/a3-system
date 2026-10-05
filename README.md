@@ -50,7 +50,9 @@ git clone https://github.com/a3-audio/a3-system ~/a3-system
 ```
 
 `install` asks which version (a tag) and which roles the machine has, then
-checks out and installs only the parts those roles need. `install --dry-run` shows what it would do. For now it
+checks out and installs only the parts those roles need. Each role names the
+Debian packages it builds against; they are installed with one `apt-get` (through
+`sudo`) before any role. `install --dry-run` shows what it would do. For now it
 runs on Debian only, as the user `aaa`, from `/home/aaa/a3-system`.
 
 A version is an annotated tag with the same name in every repository; this

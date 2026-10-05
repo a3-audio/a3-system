@@ -64,6 +64,10 @@ class Role:
     # The submodules of this repository the role builds from. Only these are
     # checked out on its machine.
     submodules = ()
+    # The Debian packages the role builds against, installed by the installer
+    # before any role: a role does not count on another role's package for
+    # them (a3nuc2, StemDeck without the Core, 2026-10-05).
+    packages = ()
 
     def supported(self, platform):
         return platform in self.platforms
@@ -118,6 +122,25 @@ def enable_and_restart(ctx, unit):
 # and test like any other. ensure_juce() says when a newer one is out.
 JUCE_VERSION = "9.0.3"
 JUCE_REPOSITORY = "https://github.com/juce-framework/JUCE.git"
+
+# What JUCE needs to build on Linux, and the tools to build at all. Not
+# GTK, WebKit or curl: the products build with JUCE_WEB_BROWSER=0 and
+# JUCE_USE_CURL=0.
+JUCE_PACKAGES = (
+    "libasound2-dev", "libx11-dev", "libxcomposite-dev", "libxcursor-dev",
+    "libxext-dev", "libxinerama-dev", "libxrandr-dev", "libxrender-dev",
+    "libfreetype-dev", "libfontconfig1-dev", "libglu1-mesa-dev",
+    # JUCE 9's OpenGL module includes EGL/egl.h; without egl.pc at configure
+    # time JUCE drops its egl;gl group silently.
+    "libegl-dev",
+    # JUCE 9's juce_gui_basics includes X11/extensions/XInput2.h; a3nuc2's
+    # first installer run stopped there (2026-10-05).
+    "libxi-dev",
+    "cmake", "pkg-config", "git", "build-essential",
+    # StemDeck and Motion UI compile through ccache when it is installed, so a
+    # rebuild after an update is mostly cache hits.
+    "ccache",
+)
 _RELEASE_TAG = re.compile(r"refs/tags/(\d+\.\d+\.\d+)$")
 
 

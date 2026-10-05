@@ -17,3 +17,8 @@ def needed_submodules(names):
             continue
         paths.extend(p for p in role.submodules if p not in paths)
     return paths
+
+
+def needed_packages(names):
+    """The Debian packages the named roles build against, sorted, once each."""
+    return sorted({p for role in ALL if role.name in names for p in role.packages})

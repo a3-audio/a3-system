@@ -7,7 +7,8 @@ back -- and JACK is that machine's own business: a3-jack exists only on a
 Core.
 """
 
-from .base import Role, ensure_juce, enable_and_restart, install_user_unit
+from .base import (JUCE_PACKAGES, Role, ensure_juce, enable_and_restart,
+                   install_user_unit)
 
 SOURCE = "stemdeck"
 
@@ -17,6 +18,8 @@ class StemDeck(Role):
     label = "StemDeck (Stem-Player)"
     submodules = (SOURCE,)
     platforms = ("debian",)
+    packages = JUCE_PACKAGES + (
+        "libflac-dev", "libvorbis-dev", "libogg-dev", "libjack-jackd2-dev")
 
     def install(self, ctx):
         run = ctx.runner

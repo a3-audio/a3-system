@@ -21,8 +21,9 @@ import grp
 import json
 from pathlib import Path
 
-from .base import (Role, RoleError, ensure_juce, enable_and_restart,
-                   install_user_unit, systemctl_user, write_drop_in)
+from .base import (JUCE_PACKAGES, Role, RoleError, ensure_juce,
+                   enable_and_restart, install_user_unit, systemctl_user,
+                   write_drop_in)
 
 UI = Path("a3-motion/ui")
 FIRMWARE = Path("a3-motion/firmware")
@@ -83,6 +84,8 @@ class Motion(Role):
     label = "Motion UI mit dem PCB an diesem Rechner (inkl. Firmware)"
     submodules = ("a3-motion",)
     platforms = ("debian",)
+    # gsl for the motion engine, serial and gpiod for the V3 hardware interface.
+    packages = JUCE_PACKAGES + ("libgsl-dev", "libgpiod-dev", "libserial-dev")
 
     def configure(self, ctx):
         s, ask = ctx.settings, ctx.prompter

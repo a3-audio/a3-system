@@ -17,9 +17,9 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
 from installer import release  # noqa: E402
-from installer.cli import where_problems  # noqa: E402
+from installer.cli import install_roles, where_problems  # noqa: E402
 from installer.prompt import Prompter, TextPrompter  # noqa: E402
-from installer.roles import ALL, BY_NAME, needed_submodules  # noqa: E402
+from installer.roles import ALL, BY_NAME, needed_packages, needed_submodules  # noqa: E402
 from installer.roles.base import Context, RoleError, State  # noqa: E402
 from installer.roles.core import chosen_groups, preseed_lines  # noqa: E402
 from installer.roles import motion  # noqa: E402
@@ -281,6 +281,95 @@ class Roles(unittest.TestCase):
         for role in ALL:
             for other in ("windows", "macos", "raspios"):
                 self.assertFalse(role.supported(other), (role.name, other))
+
+
+# What each product needs to build on Debian, moved here from a3-core's
+# test_package_build_dependencies: the roles install it themselves, so a
+# machine without the Core builds too (a3nuc2, 2026-10-05).
+JUCE_NEEDS = (
+    "libasound2-dev", "libx11-dev", "libxcomposite-dev", "libxcursor-dev",
+    "libxext-dev", "libxinerama-dev", "libxrandr-dev", "libxrender-dev",
+    "libfreetype-dev", "libfontconfig1-dev", "libglu1-mesa-dev",
+    # JUCE 9's OpenGL module includes EGL/egl.h
+    "libegl-dev",
+    # JUCE 9's juce_gui_basics includes X11/extensions/XInput2.h
+    "libxi-dev",
+    "cmake", "pkg-config", "git", "build-essential",
+    # rebuilds after an update are mostly cache hits
+    "ccache",
+)
+STEMDECK_NEEDS = JUCE_NEEDS + (
+    "libflac-dev", "libvorbis-dev", "libogg-dev", "libjack-jackd2-dev")
+# Motion UI and its V3 hardware interface
+MOTION_NEEDS = JUCE_NEEDS + ("libgsl-dev", "libgpiod-dev", "libserial-dev")
+
+
+class RolesNameTheirPackages(unittest.TestCase):
+    """A role installs what it builds against; nothing comes by way of
+    another role's package."""
+
+    def test_the_two_that_stopped_a3nuc2_are_in_the_juce_list(self):
+        from installer.roles.base import JUCE_PACKAGES
+        self.assertIn("libxi-dev", JUCE_PACKAGES)
+        self.assertIn("libegl-dev", JUCE_PACKAGES)
+
+    def test_stemdeck_covers_its_build(self):
+        self.assertEqual(set(), set(STEMDECK_NEEDS) - set(BY_NAME["stemdeck"].packages))
+
+    def test_motion_covers_its_build(self):
+        self.assertEqual(set(), set(MOTION_NEEDS) - set(BY_NAME["motion"].packages))
+
+    def test_core_and_mixer_install_none(self):
+        self.assertEqual((), BY_NAME["core"].packages)
+        self.assertEqual((), BY_NAME["mixer"].packages)
+
+    def test_stemdeck_alone_gets_nothing_of_motion(self):
+        packages = needed_packages(["stemdeck"])
+        self.assertEqual(set(), set(STEMDECK_NEEDS) - set(packages))
+        self.assertEqual(set(), {"libgsl-dev", "libgpiod-dev", "libserial-dev"} & set(packages))
+
+    def test_core_alone_installs_nothing(self):
+        self.assertEqual([], needed_packages(["core"]))
+
+    def test_sorted_and_once(self):
+        packages = needed_packages(["stemdeck", "motion"])
+        self.assertEqual(sorted(set(packages)), packages)
+        self.assertEqual(set(STEMDECK_NEEDS) | set(MOTION_NEEDS), set(packages))
+
+
+class FakeRole:
+    def __init__(self, name, packages=()):
+        self.name, self.label, self.packages = name, name, packages
+
+    def install(self, ctx):
+        ctx.runner.log(f"$ install {self.name}")
+
+
+class PackagesBeforeTheRoles(unittest.TestCase):
+    def install(self, roles, platform="debian"):
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, log = context(tmp)
+            ctx.platform = platform
+            by_name = {r.name: r for r in roles}
+            with mock.patch("installer.cli.BY_NAME", by_name), \
+                    mock.patch("installer.roles.BY_NAME", by_name), \
+                    mock.patch("installer.roles.ALL", tuple(roles)):
+                results = install_roles(ctx, [r.name for r in roles])
+            return [c.removeprefix("sudo ") for c in log.commands()], results
+
+    def test_one_apt_call_first(self):
+        commands, results = self.install([FakeRole("a", ("y", "x")), FakeRole("b", ("x",))])
+        self.assertEqual(["env DEBIAN_FRONTEND=noninteractive apt-get install -y x y",
+                          "install a", "install b"], commands)
+        self.assertEqual([("a", "ok"), ("b", "ok")], results)
+
+    def test_no_packages_no_apt(self):
+        commands, _ = self.install([FakeRole("core")])
+        self.assertEqual(["install core"], commands)
+
+    def test_apt_only_on_debian(self):
+        commands, _ = self.install([FakeRole("a", ("x",))], platform="other")
+        self.assertEqual(["install a"], commands)
 
 
 class MotionOnAnyMachine(unittest.TestCase):

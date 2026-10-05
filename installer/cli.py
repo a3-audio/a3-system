@@ -2,7 +2,8 @@
 
     install                      ask: version, roles, their settings
     install --update [VERSION]   no questions: the stored roles and settings,
-                                 at VERSION (default: the newest tag)
+                                 at VERSION (default: the stored branch, or
+                                 the newest tag when a tag is stored)
     install --config FILE        no questions: FILE's roles and settings
     install --dry-run            show every command, run none
     install --flash-firmware     flash the Motion panel even if unchanged
@@ -52,6 +53,17 @@ def where_problems(repo, user):
     return problems
 
 
+def update_version(requested, stored, tags, here):
+    """--update's version: the one named; else a branch the machine was set
+    to follows that branch (a tag of 2026-09 has no StemDeck submodule, and
+    a machine on main went back to it, 2026-10-05); else the newest tag."""
+    if requested:
+        return requested
+    if stored and not release.TAG.match(stored):
+        return stored
+    return tags[0] if tags else here
+
+
 def choose_version(ctx, args):
     run, repo = ctx.runner, ctx.repo
     try:
@@ -61,7 +73,8 @@ def choose_version(ctx, args):
     tags = release.tags(run, repo)
     here = release.current(run, repo)
     if args.update is not None:
-        return args.update or (tags[0] if tags else here)
+        return update_version(args.update, ctx.settings.get("system", "version"),
+                              tags, here)
     stored = ctx.settings.get("system", "version") or here
     if not ctx.prompter.interactive:
         return stored
@@ -161,6 +174,7 @@ def main(argv=None):
         version = choose_version(ctx, args)
         if version != release.current(runner, REPO):
             release.check_out(runner, REPO, version)
+        release.catch_up(runner, REPO, version)
         settings.set("system", "version", version)
 
         roles = choose_roles(ctx)

@@ -12,6 +12,7 @@ preseeded and marked seen; the postinst takes them as given (a3-core
 a3-user-install.service builds it from ~/a3-system/beat-analyzer.
 """
 
+import json
 import shutil
 import subprocess
 import tempfile
@@ -22,6 +23,8 @@ from .base import SCREEN_PACKAGES, Role, RoleError
 PACKAGE_DIR = Path("a3-core/platform-config/debian-x86_64/a3-core")
 SHIPPED_CONFIG = PACKAGE_DIR / "home/aaa/.local/share/a3-core/config"
 POSTINST = PACKAGE_DIR / "DEBIAN/postinst"
+# The OSC truth: which host is which, among them the Core's address.
+TRUTH = PACKAGE_DIR / "usr/share/a3/a3-osc.json"
 
 # The user units the package puts into ~/.config/systemd/user (from
 # SHIPPED_CONFIG) and enables through default.target.wants. Stopped and
@@ -104,6 +107,68 @@ def preseed_lines(settings, replace):
         out.append(f"a3-core a3-core/{question} {kind} {value}")
         out.append(f"a3-core a3-core/{question} seen true")
     return "\n".join(out) + "\n"
+
+
+def truth_core_address(repo):
+    """hosts.core in this release's truth, or None when it names none."""
+    try:
+        return json.loads((repo / TRUTH).read_text())["hosts"]["core"]
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def addresses_in(ip_output):
+    """The IPv4 addresses in `ip -o -4 addr show`, without their prefix."""
+    found = []
+    for line in ip_output.splitlines():
+        words = line.split()
+        if "inet" in words[:-1]:
+            found.append(words[words.index("inet") + 1].split("/")[0])
+    return found
+
+
+def own_addresses(runner):
+    """The IPv4 addresses on this machine's interfaces. Only looks, so it
+    runs on --dry-run too."""
+    try:
+        return addresses_in(runner.output(["ip", "-o", "-4", "addr", "show"]))
+    except (OSError, subprocess.CalledProcessError):
+        return []
+
+
+def answered_address(settings):
+    """The address the Core's own network answers will set, or None when
+    the installer is to leave the network as it is."""
+    if not settings.flag("core", "configure_network"):
+        return None
+    return settings.get("core", "address").split("/")[0].strip() or None
+
+
+def core_refusal(truth_address, own, answered):
+    """None when this machine may be the Core, else why not. Only the
+    machine with the truth's core address may: a second Core would announce
+    itself (/core/here) in the same LAN and the desk could land on it."""
+    if truth_address and (truth_address in own or truth_address == answered):
+        return None
+    if not truth_address:
+        return ("Die Wahrheit (a3-osc.json) dieses Stands nennt keine Core-Adresse; "
+                "ob dieser Rechner der Core ist, lässt sich nicht prüfen.")
+    return (f"Dieser Rechner hat nicht die Core-Adresse der Wahrheit ({truth_address}), "
+            "und die Netzwerk-Antworten des Cores setzen sie nicht. Ein zweiter Core "
+            "würde sich im selben LAN melden (/core/here), und das Pult könnte beim "
+            "falschen landen. Der Core wird nicht installiert, die anderen Rollen schon.")
+
+
+def check_core(ctx, lookup=own_addresses):
+    """The check before the Core installs, said out loud: None when it may,
+    else the reason it is refused."""
+    truth = truth_core_address(ctx.repo)
+    own = lookup(ctx.runner)
+    answered = answered_address(ctx.settings)
+    ctx.runner.log(f"Core-Adresse der Wahrheit: {truth or 'keine'}; "
+                   f"dieser Rechner: {', '.join(own) or 'keine'}; "
+                   f"aus den Netzwerk-Antworten: {answered or 'keine'}")
+    return core_refusal(truth, own, answered)
 
 
 class Core(Role):

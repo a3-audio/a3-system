@@ -22,7 +22,7 @@ from installer.prompt import Prompter, TextPrompter  # noqa: E402
 from installer.roles import ALL, BY_NAME, needed_packages, needed_submodules  # noqa: E402
 from installer.roles.base import Context, RoleError, State  # noqa: E402
 from installer.roles.core import chosen_groups, preseed_lines  # noqa: E402
-from installer.roles import motion, screen  # noqa: E402
+from installer.roles import core, motion, screen  # noqa: E402
 from installer.roles.motion import (Motion, drop_in_text, panel_usb_ids,  # noqa: E402
                                     serial_candidates)
 from installer.settings import Settings  # noqa: E402
@@ -1384,6 +1384,104 @@ class StemDeckBringsTheKeyboard(unittest.TestCase):
     def test_onboard_is_among_its_packages(self):
         """StemDeck's on-screen keyboard starts onboard."""
         self.assertIn("onboard", BY_NAME["stemdeck"].packages)
+
+
+IP_OUTPUT = """1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever
+3: br0    inet 192.168.8.10/24 brd 192.168.8.255 scope global br0\\       valid_lft forever
+4: wlan0    inet 10.0.0.5/24 brd 10.0.0.255 scope global dynamic wlan0\\       valid_lft 3000sec
+"""
+
+
+class OneCoreInTheLan(unittest.TestCase):
+    """Two Cores in one LAN would both announce /core/here, and the desk
+    could end up on the wrong one: the Core role installs only on the
+    machine that owns the truth's core address (2026-10-05)."""
+
+    TRUTH = "192.168.8.10"
+
+    def test_the_truth_names_the_core(self):
+        self.assertEqual(self.TRUTH, core.truth_core_address(REPO))
+
+    def test_the_addresses_of_this_machine_from_ip(self):
+        self.assertEqual(["127.0.0.1", "192.168.8.10", "10.0.0.5"],
+                         core.addresses_in(IP_OUTPUT))
+
+    def test_owning_the_address_allows_it(self):
+        self.assertIsNone(core.core_refusal(self.TRUTH, ["127.0.0.1", self.TRUTH], None))
+
+    def test_its_own_network_answers_setting_the_address_allow_it(self):
+        self.assertIsNone(core.core_refusal(self.TRUTH, ["192.168.43.58"], self.TRUTH))
+
+    def test_neither_refuses_naming_the_address_and_the_second_core(self):
+        message = core.core_refusal(self.TRUTH, ["192.168.8.20"], "192.168.8.20")
+        self.assertIn(self.TRUTH, message)
+        self.assertIn("zweiter Core", message)
+
+    def test_a_truth_without_a_core_refuses(self):
+        self.assertIsNotNone(core.core_refusal(None, ["192.168.8.10"], None))
+
+    def test_the_answered_address_counts_only_when_the_network_is_configured(self):
+        s = Settings("/nonexistent/install.conf")
+        s.set("core", "address", "192.168.8.10/24")
+        s.set_flag("core", "configure_network", False)
+        self.assertIsNone(core.answered_address(s))
+        s.set_flag("core", "configure_network", True)
+        self.assertEqual("192.168.8.10", core.answered_address(s))
+
+    def check(self, own, settings=None):
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, log = context(tmp, settings)
+            return core.check_core(ctx, lookup=lambda runner: own), list(log)
+
+    def test_the_check_on_the_rig_allows(self):
+        refusal, _ = self.check(["192.168.8.10"])
+        self.assertIsNone(refusal)
+
+    def test_the_check_on_a_second_machine_refuses(self):
+        refusal, _ = self.check(["192.168.8.20"])
+        self.assertIn(self.TRUTH, refusal)
+
+    def test_the_check_with_its_own_network_answer_allows(self):
+        refusal, _ = self.check([], {("core", "configure_network"): "yes",
+                                     ("core", "address"): "192.168.8.10/24"})
+        self.assertIsNone(refusal)
+
+    def test_a_dry_run_prints_the_check(self):
+        _, log = self.check(["192.168.8.20"])
+        said = "\n".join(log)
+        self.assertIn(self.TRUTH, said)
+        self.assertIn("192.168.8.20", said)
+
+    def test_refused_the_others_install_and_an_installed_core_stays(self):
+        roles = [LeavingRole("core"), FakeRole("stemdeck"), FakeRole("motion")]
+        from installer.cli import apply_roles
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, log = context(tmp)
+            ctx.state.set("installed", "core", "2026-10-01")
+            patches = with_fakes(roles)
+            for p in patches:
+                p.start()
+            try:
+                left, rows = apply_roles(ctx, ["core", "stemdeck", "motion"],
+                                         discover=nothing_found,
+                                         refused={"core": "nein"})
+            finally:
+                for p in patches:
+                    p.stop()
+        commands = log.commands()
+        self.assertEqual([], left)
+        self.assertIn("install stemdeck", commands)
+        self.assertIn("install motion", commands)
+        self.assertNotIn("install core", commands)
+        self.assertNotIn("uninstall core", commands)
+        self.assertEqual(("core", "ABGELEHNT: nein"), rows[0])
+        self.assertIn(("stemdeck", "ok"), rows)
+
+    def test_the_summary_says_it(self):
+        from installer.cli import summary_text
+        text = summary_text("v03.0", ["core", "stemdeck"], {"core": "Grund"})
+        self.assertIn("Grund", text)
+        self.assertNotIn("A³ Core", text.split("Rollen:")[1].splitlines()[0])
 
 
 if __name__ == "__main__":

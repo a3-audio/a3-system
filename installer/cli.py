@@ -20,6 +20,7 @@ from .leave import discover_roles, leave_roles
 from .prompt import make_prompter
 from .roles import ALL, BY_NAME, needed_packages, needed_submodules, needs_screen
 from .roles.base import Context, RoleError, record_installed
+from .roles.core import check_core
 from .roles.screen import set_up_screen
 from .settings import DEFAULT_PATH, Settings
 from .system import CommandFailed, Runner, platform_name
@@ -134,12 +135,38 @@ def install_roles(ctx, names):
     return results
 
 
-def apply_roles(ctx, names, discover=discover_roles):
+def apply_roles(ctx, names, discover=discover_roles, refused=None):
     """The deselected roles leave first -- a Core leaving frees JACK and the
     ports a new role may need -- then the chosen ones install.
+    A refused role ({name: why}) is still chosen, so an installed one does
+    not leave, but it does not install either.
     (rows of the roles that were to leave, rows of the install)."""
+    refused = refused or {}
     left = leave_roles(ctx, names, discover)
-    return left, install_roles(ctx, names)
+    rows = [(name, f"ABGELEHNT: {refused[name]}") for name in names if name in refused]
+    return left, rows + install_roles(ctx, [n for n in names if n not in refused])
+
+
+def refused_roles(ctx, names):
+    """{name: why} for the chosen roles this machine may not have: the Core
+    anywhere but on the truth's core address."""
+    if "core" not in names:
+        return {}
+    ctx.runner.log("\n=== Ein Core im LAN ===")
+    why = check_core(ctx)
+    if why is None:
+        return {}
+    ctx.runner.log(f"A³ Core abgelehnt: {why}")
+    return {"core": why}
+
+
+def summary_text(version, names, refused):
+    installing = [n for n in names if n not in refused]
+    text = (f"Stand: {version}\nRollen: "
+            + (", ".join(BY_NAME[r].label for r in installing) or "keine"))
+    for name, why in refused.items():
+        text += f"\n\nNicht installiert: {BY_NAME[name].label}\n{why}"
+    return text
 
 
 def main(argv=None):
@@ -173,16 +200,15 @@ def main(argv=None):
         for name in roles:
             BY_NAME[name].configure(ctx)
 
-        summary = (f"Stand: {version}\nRollen: "
-                   + (", ".join(BY_NAME[r].label for r in roles) or "keine"))
+        refused = refused_roles(ctx, roles)
         if ctx.prompter.interactive and not ctx.prompter.yesno(
-                summary + "\n\nSo installieren?", True):
+                summary_text(version, roles, refused) + "\n\nSo installieren?", True):
             print("Abgebrochen, nichts installiert.")
             return 1
         if not args.dry_run and args.config is None:
             settings.save()
 
-        left, results = apply_roles(ctx, roles)
+        left, results = apply_roles(ctx, roles, refused=refused)
     except KeyboardInterrupt:
         print("\nAbgebrochen.")
         return 1

@@ -36,6 +36,11 @@ DEFAULTS = {
         # is yes; otherwise what would leave is listed and stays.
         "allow": "no",
     },
+    "stemdeck": {
+        # StemDeck's stem library (Artist/Album/sets), an absolute path.
+        # Empty until asked: the default is then the folder StemDeck uses.
+        "library": "",
+    },
     "motion": {
         # Flash the panel's firmware when its source changed since the last
         # flash: yes, no, or ask.

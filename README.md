@@ -54,7 +54,8 @@ checks out and installs only the parts those roles need. Each role names the
 Debian packages it builds against; they are installed with one `apt-get` (through
 `sudo`) before any role. Roles with a screen (Core, StemDeck, Motion UI) log
 `aaa` in on tty1 and start X with i3 there, without a display manager, from the
-next reboot on. `install --dry-run` shows what it would do. For now it
+next reboot on. The StemDeck role asks where the stem library is and hands the
+path to StemDeck. `install --dry-run` shows what it would do. For now it
 runs on Debian only, as the user `aaa`, from `/home/aaa/a3-system`.
 
 A role that was installed and is no longer ticked leaves the machine: its

@@ -5,13 +5,70 @@ The unit comes from StemDeck's own repository. On a machine without the Core
 its zita units come too -- they carry the stems to the Core and two channels
 back -- and JACK is that machine's own business: a3-jack exists only on a
 Core.
+
+The stem library is asked for and handed to StemDeck as stemFolder in its
+own settings file, a JUCE PropertiesFile (Source/MainComponent.cpp). StemDeck
+writes that file when it quits, so it is stopped before the file is changed.
 """
 
-from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, ensure_juce,
-                   enable_and_restart, install_user_unit, recorded_roles)
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
+                   enable_and_restart, install_user_unit, recorded_roles,
+                   systemctl_user)
 
 SOURCE = "stemdeck"
+UNIT = "stemdeck.service"
 ZITA_UNITS = ("zita-n2j.service", "zita-j2n.service")
+SETTINGS_FILE = Path(".config/StemDeck/StemDeck.settings")
+STEM_FOLDER = "stemFolder"
+XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>'
+
+
+def settings_path(ctx):
+    return ctx.home / SETTINGS_FILE
+
+
+def stem_folder_in(text):
+    """The stemFolder a settings file names, or None."""
+    try:
+        root = ET.fromstring(text)
+    except ET.ParseError:
+        return None
+    for value in root.findall("VALUE"):
+        if value.get("name") == STEM_FOLDER:
+            return value.get("val") or None
+    return None
+
+
+def with_stem_folder(text, folder):
+    """The settings file `text` (None: there is none yet) with stemFolder set
+    to `folder` and every other VALUE as it was."""
+    if text is None:
+        root = ET.Element("PROPERTIES")
+    else:
+        try:
+            root = ET.fromstring(text)
+        except ET.ParseError as error:
+            raise RoleError(f"{SETTINGS_FILE} ist kein lesbares XML ({error}); "
+                            "von Hand prüfen, der Installer ändert es so nicht.")
+    entry = next((v for v in root.findall("VALUE") if v.get("name") == STEM_FOLDER), None)
+    if entry is None:
+        entry = ET.Element("VALUE", {"name": STEM_FOLDER})
+        root.insert(0, entry)
+    entry.set("val", str(folder))
+    ET.indent(root, space="  ")
+    return f"{XML_DECLARATION}\n\n{ET.tostring(root, encoding='unicode')}\n"
+
+
+def absolute_folder(ctx, answer):
+    """StemDeck takes an absolute stemFolder only; ~ and relative answers are
+    the user's home."""
+    answer = answer.strip()
+    if answer == "~" or answer.startswith("~/"):
+        answer = str(ctx.home) + answer[1:]
+    return str(ctx.home / answer) if not Path(answer).is_absolute() else answer
 
 
 class StemDeck(Role):
@@ -22,8 +79,25 @@ class StemDeck(Role):
     packages = SCREEN_PACKAGES + JUCE_PACKAGES + (
         "libflac-dev", "libvorbis-dev", "libogg-dev", "libjack-jackd2-dev",
         # jack_wait: its unit waits for whatever JACK runs, Core or not
-        "jack-example-tools")
+        "jack-example-tools",
+        # StemDeck's on-screen keyboard starts onboard
+        "onboard")
     needs_screen = True
+
+    def configure(self, ctx):
+        s, ask = ctx.settings, ctx.prompter
+        default = s.get("stemdeck", "library") or self._library_now(ctx)
+        answer = default
+        if ask.interactive:
+            answer = ask.text("Wo liegt die Stem-Bibliothek von StemDeck "
+                              "(Artist/Album/Sets)?", default) or default
+        s.set("stemdeck", "library", absolute_folder(ctx, answer))
+
+    def _library_now(self, ctx):
+        """The folder StemDeck uses now, or ~/stems on a machine without it."""
+        path = settings_path(ctx)
+        found = stem_folder_in(path.read_text()) if path.is_file() else None
+        return found or str(ctx.home / "stems")
 
     def install(self, ctx):
         run = ctx.runner
@@ -34,20 +108,46 @@ class StemDeck(Role):
         run.run(["cmake", "--build", source / "build-make", "-j", ctx.jobs()])
 
         units = source / ".config" / "systemd" / "user"
-        install_user_unit(ctx, units / "stemdeck.service")
+        install_user_unit(ctx, units / UNIT)
         if "core" not in ctx.settings.roles():
             for zita in ZITA_UNITS:
                 install_user_unit(ctx, units / zita)
                 enable_and_restart(ctx, zita)
             run.log("Hinweis: Ohne Core auf diesem Rechner muss JACK hier "
                     "anders gestartet werden; a3-jack gibt es nur auf dem Core.")
-        enable_and_restart(ctx, "stemdeck.service")
+        self._hand_over_library(ctx)
+        enable_and_restart(ctx, UNIT)
+
+    def _hand_over_library(self, ctx):
+        """The library folder made if missing and written into StemDeck's
+        settings. StemDeck is stopped first: it writes the file when it
+        quits and would put the old folder back."""
+        run = ctx.runner
+        folder = Path(ctx.settings.get("stemdeck", "library")
+                      or self._library_now(ctx))
+        path = settings_path(ctx)
+        # check=False: on the first install there is no unit to stop yet.
+        systemctl_user(ctx, "stop", UNIT, check=False)
+        try:
+            text = with_stem_folder(path.read_text() if path.is_file() else None, folder)
+        except RoleError:
+            # The file stays as it is, and StemDeck runs on with it.
+            systemctl_user(ctx, "start", UNIT, check=False)
+            raise
+        if not folder.is_dir():
+            run.log(f"# Stem-Bibliothek {folder} fehlt, wird angelegt.")
+        run.log(f"# {path}: {STEM_FOLDER} = {folder}")
+        if run.dry_run:
+            return
+        folder.mkdir(parents=True, exist_ok=True)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
 
     stays = ("der Build-Ordner stemdeck/build-make",
              "Bibliothek, Sessions, Aufnahmen und Stems")
 
     def leaving_units(self, ctx):
-        return ["stemdeck.service"] + (list(ZITA_UNITS) if _owns_zita(ctx) else [])
+        return [UNIT] + (list(ZITA_UNITS) if _owns_zita(ctx) else [])
 
     def leaving_files(self, ctx):
         return [ctx.user_units / unit for unit in self.leaving_units(ctx)]

@@ -174,6 +174,7 @@ def main(argv=None):
         version = choose_version(ctx, args)
         if version != release.current(runner, REPO):
             release.check_out(runner, REPO, version)
+        release.catch_up(runner, REPO, version)
         settings.set("system", "version", version)
 
         roles = choose_roles(ctx)

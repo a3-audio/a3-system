@@ -133,6 +133,29 @@ class UpdateWithoutAVersion(unittest.TestCase):
         self.assertEqual("main", update_version("", "", [], "main"))
 
 
+class ABranchCatchesUp(unittest.TestCase):
+    def commands(self, version, origin_has_it=True):
+        log = Log()
+        runner = Runner(dry_run=True, log=log)
+        found = mock.Mock(return_value="abc\n") if origin_has_it else \
+            mock.Mock(side_effect=Exception("unknown ref"))
+        with mock.patch.object(runner, "output", found):
+            release.catch_up(runner, REPO, version)
+        return [c.split("  (in ")[0] for c in log.commands()], found
+
+    def test_a_branch_fast_forwards_to_origin(self):
+        commands, _ = self.commands("main")
+        self.assertEqual(["git merge --ff-only --quiet origin/main"], commands)
+
+    def test_a_tag_stays_and_asks_nothing(self):
+        commands, found = self.commands("v03.0")
+        self.assertEqual([], commands)
+        found.assert_not_called()
+
+    def test_a_branch_origin_lacks_stays(self):
+        self.assertEqual([], self.commands("local-only", origin_has_it=False)[0])
+
+
 class OnlyWhatTheRolesNeed(unittest.TestCase):
     """A machine gets the submodules its roles build from, not the docs'
     234 MB of history on a Motion panel's Pi."""

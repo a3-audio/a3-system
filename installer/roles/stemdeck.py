@@ -62,6 +62,14 @@ def with_stem_folder(text, folder):
     return f"{XML_DECLARATION}\n\n{ET.tostring(root, encoding='unicode')}\n"
 
 
+def stemdeck_library(ctx):
+    """The stemFolder StemDeck uses now, or None when its settings name no
+    usable one: no file, no entry, or a relative path StemDeck ignores."""
+    path = settings_path(ctx)
+    found = stem_folder_in(path.read_text()) if path.is_file() else None
+    return found if found and Path(found).is_absolute() else None
+
+
 def absolute_folder(ctx, answer):
     """StemDeck takes an absolute stemFolder only; ~ and relative answers are
     the user's home."""
@@ -85,19 +93,21 @@ class StemDeck(Role):
     needs_screen = True
 
     def configure(self, ctx):
+        """StemDeck's own choice wins: the DJ may have changed the folder in
+        StemDeck since the last install. Without anyone to ask, the stored
+        answer is only used where StemDeck names no folder."""
         s, ask = ctx.settings, ctx.prompter
-        default = s.get("stemdeck", "library") or self._library_now(ctx)
-        answer = default
+        now, stored = stemdeck_library(ctx), s.get("stemdeck", "library")
+        default = now or stored or str(ctx.home / "stems")
         if ask.interactive:
             answer = ask.text("Wo liegt die Stem-Bibliothek von StemDeck "
                               "(Artist/Album/Sets)?", default) or default
+        else:
+            answer = default
+            if now and stored and absolute_folder(ctx, stored) != now:
+                ctx.runner.log(f"Stem-Bibliothek: {stored} aus den Einstellungen "
+                               f"nicht übernommen, StemDeck nutzt {now}.")
         s.set("stemdeck", "library", absolute_folder(ctx, answer))
-
-    def _library_now(self, ctx):
-        """The folder StemDeck uses now, or ~/stems on a machine without it."""
-        path = settings_path(ctx)
-        found = stem_folder_in(path.read_text()) if path.is_file() else None
-        return found or str(ctx.home / "stems")
 
     def install(self, ctx):
         run = ctx.runner
@@ -120,11 +130,16 @@ class StemDeck(Role):
 
     def _hand_over_library(self, ctx):
         """The library folder made if missing and written into StemDeck's
-        settings. StemDeck is stopped first: it writes the file when it
+        settings, unless StemDeck uses it already: then nothing is stopped
+        or written. StemDeck is stopped first: it writes the file when it
         quits and would put the old folder back."""
         run = ctx.runner
+        now = stemdeck_library(ctx)
         folder = Path(ctx.settings.get("stemdeck", "library")
-                      or self._library_now(ctx))
+                      or now or ctx.home / "stems")
+        if now == str(folder):
+            run.log(f"Stem-Bibliothek: StemDeck nutzt bereits {folder}.")
+            return
         path = settings_path(ctx)
         # check=False: on the first install there is no unit to stop yet.
         systemctl_user(ctx, "stop", UNIT, check=False)
@@ -136,7 +151,7 @@ class StemDeck(Role):
             raise
         if not folder.is_dir():
             run.log(f"# Stem-Bibliothek {folder} fehlt, wird angelegt.")
-        run.log(f"# {path}: {STEM_FOLDER} = {folder}")
+        run.log(f"Stem-Bibliothek: {folder}, eingetragen in {path} ({STEM_FOLDER}).")
         if run.dry_run:
             return
         folder.mkdir(parents=True, exist_ok=True)

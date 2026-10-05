@@ -22,7 +22,7 @@ from installer.prompt import Prompter, TextPrompter  # noqa: E402
 from installer.roles import ALL, BY_NAME, needed_packages, needed_submodules  # noqa: E402
 from installer.roles.base import Context, RoleError, State  # noqa: E402
 from installer.roles.core import chosen_groups, preseed_lines  # noqa: E402
-from installer.roles import motion  # noqa: E402
+from installer.roles import motion, screen  # noqa: E402
 from installer.roles.motion import (Motion, drop_in_text, panel_usb_ids,  # noqa: E402
                                     serial_candidates)
 from installer.settings import Settings  # noqa: E402
@@ -43,7 +43,7 @@ def context(tmp, settings=None):
         s.set(section, key, value)
     log = Log()
     runner = Runner(dry_run=True, log=log)
-    return Context(REPO, s, runner, Prompter(), "debian", home=tmp), log
+    return Context(REPO, s, runner, Prompter(), "debian", home=tmp, user="aaa"), log
 
 
 class SettingsKeepAnswers(unittest.TestCase):
@@ -302,6 +302,8 @@ STEMDECK_NEEDS = JUCE_NEEDS + (
     "libflac-dev", "libvorbis-dev", "libogg-dev", "libjack-jackd2-dev")
 # Motion UI and its V3 hardware interface
 MOTION_NEEDS = JUCE_NEEDS + ("libgsl-dev", "libgpiod-dev", "libserial-dev")
+# X started by startx from the tty1 login, i3 on it, xrandr/xset for the screen
+SCREEN_NEEDS = ("xinit", "i3", "x11-xserver-utils")
 
 
 class RolesNameTheirPackages(unittest.TestCase):
@@ -319,8 +321,9 @@ class RolesNameTheirPackages(unittest.TestCase):
     def test_motion_covers_its_build(self):
         self.assertEqual(set(), set(MOTION_NEEDS) - set(BY_NAME["motion"].packages))
 
-    def test_core_and_mixer_install_none(self):
-        self.assertEqual((), BY_NAME["core"].packages)
+    def test_core_installs_only_the_screen_and_mixer_none(self):
+        from installer.roles.base import SCREEN_PACKAGES
+        self.assertEqual(SCREEN_PACKAGES, BY_NAME["core"].packages)
         self.assertEqual((), BY_NAME["mixer"].packages)
 
     def test_stemdeck_alone_gets_nothing_of_motion(self):
@@ -328,34 +331,49 @@ class RolesNameTheirPackages(unittest.TestCase):
         self.assertEqual(set(), set(STEMDECK_NEEDS) - set(packages))
         self.assertEqual(set(), {"libgsl-dev", "libgpiod-dev", "libserial-dev"} & set(packages))
 
-    def test_core_alone_installs_nothing(self):
-        self.assertEqual([], needed_packages(["core"]))
+    def test_core_alone_installs_only_the_screen(self):
+        self.assertEqual(sorted(SCREEN_NEEDS), needed_packages(["core"]))
 
     def test_sorted_and_once(self):
         packages = needed_packages(["stemdeck", "motion"])
         self.assertEqual(sorted(set(packages)), packages)
-        self.assertEqual(set(STEMDECK_NEEDS) | set(MOTION_NEEDS), set(packages))
+        self.assertEqual(set(STEMDECK_NEEDS) | set(MOTION_NEEDS) | set(SCREEN_NEEDS),
+                         set(packages))
+
+    def test_every_screen_role_brings_the_screen(self):
+        for name in ("core", "stemdeck", "motion"):
+            with self.subTest(name):
+                self.assertTrue(BY_NAME[name].needs_screen)
+                self.assertEqual(set(), set(SCREEN_NEEDS) - set(BY_NAME[name].packages))
+
+    def test_the_mixer_has_no_screen(self):
+        self.assertFalse(BY_NAME["mixer"].needs_screen)
 
 
 class FakeRole:
-    def __init__(self, name, packages=()):
+    def __init__(self, name, packages=(), needs_screen=False):
         self.name, self.label, self.packages = name, name, packages
+        self.needs_screen = needs_screen
 
     def install(self, ctx):
         ctx.runner.log(f"$ install {self.name}")
 
 
+def install_fakes(roles, platform="debian"):
+    """install_roles on fake roles, dry run: the commands without sudo, and the results."""
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx, log = context(tmp)
+        ctx.platform = platform
+        by_name = {r.name: r for r in roles}
+        with mock.patch("installer.cli.BY_NAME", by_name), \
+                mock.patch("installer.roles.BY_NAME", by_name), \
+                mock.patch("installer.roles.ALL", tuple(roles)):
+            results = install_roles(ctx, [r.name for r in roles])
+        return [c.removeprefix("sudo ") for c in log.commands()], results
+
+
 class PackagesBeforeTheRoles(unittest.TestCase):
-    def install(self, roles, platform="debian"):
-        with tempfile.TemporaryDirectory() as tmp:
-            ctx, log = context(tmp)
-            ctx.platform = platform
-            by_name = {r.name: r for r in roles}
-            with mock.patch("installer.cli.BY_NAME", by_name), \
-                    mock.patch("installer.roles.BY_NAME", by_name), \
-                    mock.patch("installer.roles.ALL", tuple(roles)):
-                results = install_roles(ctx, [r.name for r in roles])
-            return [c.removeprefix("sudo ") for c in log.commands()], results
+    install = staticmethod(install_fakes)
 
     def test_one_apt_call_first(self):
         commands, results = self.install([FakeRole("a", ("y", "x")), FakeRole("b", ("x",))])
@@ -370,6 +388,168 @@ class PackagesBeforeTheRoles(unittest.TestCase):
     def test_apt_only_on_debian(self):
         commands, _ = self.install([FakeRole("a", ("x",))], platform="other")
         self.assertEqual(["install a"], commands)
+
+
+class TheScreenStepRunsOnceBetweenPackagesAndRoles(unittest.TestCase):
+    install = staticmethod(install_fakes)
+
+    def test_after_the_packages_and_before_the_first_role(self):
+        commands, results = self.install([FakeRole("a", ("x",), needs_screen=True),
+                                          FakeRole("b", needs_screen=True)])
+        apt = commands.index("env DEBIAN_FRONTEND=noninteractive apt-get install -y x")
+        disable = commands.index("systemctl disable lightdm")
+        self.assertEqual(0, apt)
+        self.assertLess(disable, commands.index("install a"))
+        self.assertEqual(1, commands.count("systemctl disable lightdm"))
+        self.assertEqual([("autologin", "ok"), ("a", "ok"), ("b", "ok")], results)
+
+    def test_skipped_when_no_chosen_role_needs_a_screen(self):
+        commands, results = self.install([FakeRole("mixer")])
+        self.assertEqual(["install mixer"], commands)
+        self.assertEqual([("mixer", "ok")], results)
+
+
+AUTOLOGIN_TARGET = "/etc/systemd/system/getty@tty1.service.d/a3-autologin.conf"
+
+
+class AutologinWithoutADisplayManager(unittest.TestCase):
+    def test_the_drop_in_text(self):
+        self.assertEqual("[Service]\n"
+                         "ExecStart=\n"
+                         "ExecStart=-/sbin/agetty --autologin aaa --noclear %I $TERM\n",
+                         screen.autologin_drop_in("aaa"))
+
+    def test_a_missing_bash_profile_keeps_reading_profile(self):
+        """bash reads ~/.bash_profile instead of ~/.profile, not as well."""
+        text = screen.with_autologin_block(None)
+        self.assertIn(". ~/.profile", text)
+        self.assertLess(text.index(". ~/.profile"), text.index(screen.BLOCK_BEGIN))
+        self.assertIn(screen.autologin_block(), text)
+
+    def test_the_block_starts_x_only_on_tty1_without_a_display(self):
+        block = screen.autologin_block()
+        self.assertTrue(block.startswith(screen.BLOCK_BEGIN + "\n"), block)
+        self.assertTrue(block.endswith(screen.BLOCK_END + "\n"), block)
+        self.assertIn('[ -z "$DISPLAY" ]', block)
+        self.assertIn('"$(tty)" = /dev/tty1', block)
+        self.assertIn("exec startx", block)
+
+    def test_a_present_block_is_replaced_and_nothing_else(self):
+        before = "export A=1\n"
+        after = "alias ll='ls -l'\n"
+        old = f"{screen.BLOCK_BEGIN}\nexec something-old\n{screen.BLOCK_END}\n"
+        text = screen.with_autologin_block(before + old + after)
+        self.assertEqual(before + screen.autologin_block() + after, text)
+
+    def test_a_foreign_file_gets_the_block_appended(self):
+        foreign = "# mine\nexport PATH=$HOME/bin:$PATH"
+        text = screen.with_autologin_block(foreign)
+        self.assertTrue(text.startswith(foreign + "\n"), text)
+        self.assertTrue(text.endswith(screen.autologin_block()), text)
+        self.assertNotIn(". ~/.profile", text)
+
+    def test_twice_is_once(self):
+        for start in (None, "export A=1\n"):
+            once = screen.with_autologin_block(start)
+            self.assertEqual(once, screen.with_autologin_block(once))
+            self.assertEqual(1, once.count(screen.BLOCK_BEGIN))
+
+    def files_context(self, tmp, dry_run=False):
+        log = Log()
+        runner = Runner(dry_run=dry_run, log=log)
+        s = Settings(Path(tmp) / "install.conf")
+        return Context(REPO, s, runner, Prompter(), "debian", home=tmp, user="aaa"), log
+
+    def test_bash_profile_written_into_the_home(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, _ = self.files_context(tmp)
+            (Path(tmp) / ".bash_profile").write_text("export A=1\n")
+            screen.ensure_bash_profile(ctx)
+            text = (Path(tmp) / ".bash_profile").read_text()
+            self.assertTrue(text.startswith("export A=1\n"))
+            self.assertIn(screen.autologin_block(), text)
+
+    def test_xinitrc_written_when_missing_and_rewritten_when_ours(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, _ = self.files_context(tmp)
+            xinitrc = Path(tmp) / ".xinitrc"
+            screen.ensure_xinitrc(ctx)
+            self.assertEqual(screen.XINITRC_TEXT, xinitrc.read_text())
+            self.assertIn("exec i3\n", xinitrc.read_text())
+            xinitrc.write_text(screen.XINITRC_MARKER + "\nexec twm\n")
+            screen.ensure_xinitrc(ctx)
+            self.assertEqual(screen.XINITRC_TEXT, xinitrc.read_text())
+
+    def test_xinitrc_hands_the_display_to_the_user_manager_before_i3(self):
+        """a3-reaper and qjackctl set no DISPLAY; under lightdm Xsession.d
+        imported it into systemd --user, with startx only this does."""
+        text = screen.XINITRC_TEXT
+        imported = text.index("systemctl --user import-environment DISPLAY XAUTHORITY")
+        self.assertLess(imported, text.index("exec /etc/X11/Xsession i3"))
+        self.assertLess(imported, text.index("exec i3"))
+
+    def test_a_foreign_xinitrc_is_kept_and_named(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, log = self.files_context(tmp)
+            xinitrc = Path(tmp) / ".xinitrc"
+            xinitrc.write_text("exec openbox\n")
+            screen.ensure_xinitrc(ctx)
+            self.assertEqual("exec openbox\n", xinitrc.read_text())
+            self.assertTrue(any(".xinitrc" in line and "gelassen" in line for line in log),
+                            list(log))
+
+    def set_up(self, tmp):
+        ctx, log = self.files_context(tmp, dry_run=True)
+        with mock.patch("installer.system.os.geteuid", lambda: 1000), \
+                mock.patch.object(screen.shutil, "which", lambda name: "/usr/bin/" + name):
+            screen.set_up_screen(ctx)
+        return log
+
+    def test_a_dry_run_records_the_root_commands_and_writes_nothing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            log = self.set_up(tmp)
+            commands = log.commands()
+            self.assertIn(f"sudo install -D -m 644 /dev/stdin {AUTOLOGIN_TARGET}", commands)
+            self.assertIn("sudo systemctl disable lightdm", commands)
+            self.assertIn("sudo systemctl daemon-reload", commands)
+            joined = "\n".join(log)
+            self.assertIn("| ExecStart=-/sbin/agetty --autologin aaa --noclear %I $TERM",
+                          joined)
+            self.assertFalse((Path(tmp) / ".bash_profile").exists())
+            self.assertFalse((Path(tmp) / ".xinitrc").exists())
+
+    def test_lightdm_is_disabled_not_purged_and_the_log_says_when(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            log = self.set_up(tmp)
+            self.assertFalse(any("purge" in c or "remove" in c for c in log.commands()))
+            joined = "\n".join(log)
+            self.assertIn("sudo apt purge lightdm", joined)
+            self.assertIn("Neustart", joined)
+
+    def test_the_drop_in_is_verified(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            commands = self.set_up(tmp).commands()
+            verify = [c for c in commands if c.startswith("systemd-analyze verify")]
+            self.assertEqual(["systemd-analyze verify getty@tty1.service"], verify)
+            self.assertLess(commands.index(f"sudo install -D -m 644 /dev/stdin "
+                                           f"{AUTOLOGIN_TARGET}"),
+                            commands.index(verify[0]))
+
+    def test_problems_name_a_missing_block_and_missing_programs(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            home = Path(tmp)
+            (home / ".bash_profile").write_text("export A=1\n")
+            problems = screen.screen_problems(home, lambda name: None)
+            joined = "\n".join(problems)
+            self.assertIn(".bash_profile", joined)
+            for program in ("startx", "i3", "Xorg"):
+                self.assertIn(program, joined)
+
+    def test_no_problems_when_all_is_there(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            home = Path(tmp)
+            (home / ".bash_profile").write_text(screen.with_autologin_block(None))
+            self.assertEqual([], screen.screen_problems(home, lambda name: "/usr/bin/" + name))
 
 
 class MotionOnAnyMachine(unittest.TestCase):
@@ -507,6 +687,409 @@ class StateIsKept(unittest.TestCase):
             path = Path(tmp) / "state"
             State(path).set("motion", "firmware_tree", "abc", dry_run=True)
             self.assertFalse(path.exists())
+
+
+
+# -- roles that leave -----------------------------------------------------------
+
+import datetime  # noqa: E402
+
+TODAY = datetime.date.today().isoformat()
+
+
+class FailingRole(FakeRole):
+    def install(self, ctx):
+        raise RoleError("kaputt")
+
+
+class LeavingRole(FakeRole):
+    """A fake role that can leave: says what goes, logs its uninstall."""
+
+    def __init__(self, name, needs_screen=False, fails=False):
+        super().__init__(name, needs_screen=needs_screen)
+        self.fails = fails
+
+    def leaving_lines(self, ctx):
+        return [f"  unit-of-{self.name}.service"]
+
+    def uninstall(self, ctx):
+        if self.fails:
+            raise RoleError("geht nicht weg")
+        ctx.runner.log(f"$ uninstall {self.name}")
+
+
+class AnsweringPrompter(Prompter):
+    """Someone at the machine, answering every yes/no with `answer`."""
+
+    interactive = True
+
+    def __init__(self, answer):
+        self.answer = answer
+        self.asked = []
+
+    def yesno(self, question, default):
+        self.asked.append((question, default))
+        return self.answer
+
+
+def nothing_found(_user_units):
+    return []
+
+
+def with_fakes(roles):
+    by_name = {r.name: r for r in roles}
+    return (mock.patch("installer.cli.BY_NAME", by_name),
+            mock.patch("installer.leave.BY_NAME", by_name),
+            mock.patch("installer.leave.ALL", tuple(roles)),
+            mock.patch("installer.roles.BY_NAME", by_name),
+            mock.patch("installer.roles.ALL", tuple(roles)))
+
+
+def apply_fakes(roles, chosen, installed, prompter=None, allow=None, platform="debian"):
+    """apply_roles on fake roles, dry run, with `installed` in the state."""
+    from installer.cli import apply_roles
+    with tempfile.TemporaryDirectory() as tmp:
+        settings = {("uninstall", "allow"): allow} if allow else {}
+        ctx, log = context(tmp, settings)
+        ctx.platform = platform
+        if prompter:
+            ctx.prompter = prompter
+        for name in installed:
+            ctx.state.set("installed", name, "2026-10-01")
+        patches = with_fakes(roles)
+        for p in patches:
+            p.start()
+        try:
+            left, installed_rows = apply_roles(ctx, chosen, discover=nothing_found)
+            results = left + installed_rows
+        finally:
+            for p in patches:
+                p.stop()
+        recorded = {n: ctx.state.get("installed", n) for n in installed}
+        return [c.removeprefix("sudo ") for c in log.commands()], results, list(log), recorded
+
+
+class InstalledRolesAreRecorded(unittest.TestCase):
+    def install(self, roles, dry_run=False):
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, _ = context(tmp)
+            ctx.runner.dry_run = dry_run
+            ctx.platform = "other"
+            by_name = {r.name: r for r in roles}
+            with mock.patch("installer.cli.BY_NAME", by_name), \
+                    mock.patch("installer.roles.BY_NAME", by_name), \
+                    mock.patch("installer.roles.ALL", tuple(roles)):
+                install_roles(ctx, [r.name for r in roles])
+            path = ctx.state.path
+            return State(path) if path.exists() else None
+
+    def test_after_a_successful_install_with_the_date(self):
+        state = self.install([FakeRole("a"), FakeRole("b")])
+        self.assertEqual(TODAY, state.get("installed", "a"))
+        self.assertEqual(TODAY, state.get("installed", "b"))
+
+    def test_not_after_a_failed_one_nor_the_ones_after_it(self):
+        state = self.install([FakeRole("a"), FailingRole("b"), FakeRole("c")])
+        self.assertEqual(TODAY, state.get("installed", "a"))
+        self.assertEqual("", state.get("installed", "b"))
+        self.assertEqual("", state.get("installed", "c"))
+
+    def test_a_dry_run_writes_nothing(self):
+        self.assertIsNone(self.install([FakeRole("a")], dry_run=True))
+
+
+class RolesFoundOnAMachineSetUpBefore(unittest.TestCase):
+    """No [installed] section: the roles are taken from what is there."""
+
+    def discover(self, core, stemdeck, motion):
+        from installer.leave import discover_roles
+        with tempfile.TemporaryDirectory() as tmp:
+            units = Path(tmp)
+            if stemdeck:
+                (units / "stemdeck.service").touch()
+            if motion:
+                (units / "a3-motion.service").touch()
+            return discover_roles(units, core_installed=lambda: core)
+
+    def test_every_combination(self):
+        import itertools
+        for core, stemdeck, motion in itertools.product((False, True), repeat=3):
+            with self.subTest(core=core, stemdeck=stemdeck, motion=motion):
+                expected = [n for n, there in (("core", core), ("stemdeck", stemdeck),
+                                               ("motion", motion)) if there]
+                self.assertEqual(expected, self.discover(core, stemdeck, motion))
+
+    def test_the_package_counts_when_dpkg_says_installed(self):
+        from installer.leave import package_installed
+        self.assertTrue(package_installed("a3-core", lambda _: "install ok installed"))
+        self.assertTrue(package_installed("a3-core", lambda _: "hold ok installed"))
+        self.assertFalse(package_installed("a3-core", lambda _: "deinstall ok config-files"))
+        self.assertFalse(package_installed("a3-core", lambda _: None))
+
+    def test_a_recorded_section_wins_even_when_empty(self):
+        from installer.leave import installed_now
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, _ = context(tmp)
+            found = lambda _units: ["core", "stemdeck"]  # noqa: E731
+            self.assertEqual((["core", "stemdeck"], True), installed_now(ctx, found))
+            ctx.state.set("installed", "motion", "2026-10-01")
+            self.assertEqual((["motion"], False), installed_now(ctx, found))
+            ctx.state.remove("installed", "motion")
+            self.assertEqual(([], False), installed_now(ctx, found))
+
+    def test_found_roles_are_recorded_after_the_dialog(self):
+        from installer.cli import apply_roles
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, _ = context(tmp)
+            roles = [LeavingRole("core"), LeavingRole("stemdeck")]
+            patches = with_fakes(roles)
+            for p in patches:
+                p.start()
+            try:
+                apply_roles(ctx, ["stemdeck"], discover=lambda _u: ["core", "stemdeck"])
+            finally:
+                for p in patches:
+                    p.stop()
+            # Not allowed to leave (no [uninstall] allow), so both stay recorded.
+            self.assertEqual(TODAY, ctx.state.get("installed", "core"))
+            self.assertEqual(TODAY, ctx.state.get("installed", "stemdeck"))
+
+
+class Deselected(unittest.TestCase):
+    def test_installed_minus_chosen_in_install_order(self):
+        from installer.leave import deselected
+        self.assertEqual(["core", "motion"],
+                         deselected(["core", "stemdeck", "motion"], ["stemdeck"]))
+
+    def test_chosen_but_not_installed_is_nothing_to_leave(self):
+        from installer.leave import deselected
+        self.assertEqual([], deselected(["stemdeck"], ["stemdeck", "motion"]))
+
+
+CORE_UNITS_SHIPPED = REPO / ("a3-core/platform-config/debian-x86_64/a3-core/home/aaa/"
+                             ".local/share/a3-core/config/systemd/user")
+
+
+def uninstall_commands(name, chosen=(), installed=(), home_files=()):
+    """A role's uninstall in a dry run: the commands, without sudo, and the log."""
+    with tempfile.TemporaryDirectory() as tmp:
+        settings = {("roles", r): "yes" for r in chosen}
+        ctx, log = context(tmp, settings)
+        for role in installed:
+            ctx.state.set("installed", role, "2026-10-01", dry_run=True)
+        for rel in home_files:
+            (Path(tmp) / rel).parent.mkdir(parents=True, exist_ok=True)
+            (Path(tmp) / rel).touch()
+        BY_NAME[name].uninstall(ctx)
+        units = str(ctx.user_units)
+        commands = [c.removeprefix("sudo ").replace(units, "~units").replace(tmp, "~")
+                    for c in log.commands()]
+        return commands, list(log)
+
+
+class CoreLeaves(unittest.TestCase):
+    def test_its_units_stop_and_are_disabled(self):
+        from installer.roles.core import CORE_UNITS
+        commands, _ = uninstall_commands("core")
+        for unit in CORE_UNITS:
+            self.assertIn(f"systemctl --user disable --now {unit}", commands)
+
+    def test_the_units_are_the_ones_the_package_ships(self):
+        from installer.roles.core import CORE_UNITS
+        if not CORE_UNITS_SHIPPED.is_dir():
+            self.skipTest("a3-core is not checked out here")
+        shipped = {p.name for p in CORE_UNITS_SHIPPED.glob("*.service")}
+        self.assertEqual(shipped, set(CORE_UNITS))
+
+    def test_unheld_and_removed_never_purged(self):
+        commands, _ = uninstall_commands("core")
+        remove = "env DEBIAN_FRONTEND=noninteractive apt-get remove -y a3-core"
+        self.assertIn(remove, commands)
+        self.assertLess(commands.index("apt-mark unhold a3-core"), commands.index(remove))
+        last_disable = max(i for i, c in enumerate(commands) if "disable --now" in c)
+        self.assertLess(last_disable, commands.index(remove))
+        self.assertFalse(any("purge" in c for c in commands), commands)
+
+    def test_the_ssh_keys_the_package_ships_are_kept(self):
+        """dpkg removes ~/.ssh/authorized_keys with the package; without it a
+        machine run over ssh is locked out."""
+        commands, _ = uninstall_commands("core", home_files=[".ssh/authorized_keys"])
+        remove = next(i for i, c in enumerate(commands) if "apt-get remove" in c)
+        keep = next(i for i, c in enumerate(commands) if c.startswith("cp -p ~/.ssh/authorized_keys"))
+        back = next(i for i, c in enumerate(commands) if c.startswith("mv ") and "authorized_keys" in c)
+        self.assertLess(keep, remove)
+        self.assertLess(remove, back)
+
+    def test_no_keys_no_copy(self):
+        commands, _ = uninstall_commands("core")
+        self.assertFalse(any("authorized_keys" in c for c in commands), commands)
+
+
+class StemDeckLeaves(unittest.TestCase):
+    def test_without_a_core_its_zita_units_go_too(self):
+        commands, _ = uninstall_commands("stemdeck")
+        for unit in ("stemdeck.service", "zita-n2j.service", "zita-j2n.service"):
+            self.assertIn(f"systemctl --user disable --now {unit}", commands)
+            self.assertIn(f"rm -f ~units/{unit}", commands)
+        self.assertEqual("systemctl --user daemon-reload", commands[-1])
+
+    def test_with_the_core_chosen_only_stemdeck(self):
+        commands, _ = uninstall_commands("stemdeck", chosen=["core"])
+        self.assertIn("systemctl --user disable --now stemdeck.service", commands)
+        self.assertIn("rm -f ~units/stemdeck.service", commands)
+        self.assertFalse(any("zita" in c for c in commands), commands)
+
+    def test_a_core_still_installed_keeps_its_zita_files(self):
+        """The zita files then are the Core's; the Core stops them when it leaves."""
+        commands, _ = uninstall_commands("stemdeck", installed=["core"])
+        self.assertFalse(any("zita" in c for c in commands), commands)
+
+    def test_build_and_library_stay(self):
+        commands, _ = uninstall_commands("stemdeck")
+        self.assertFalse(any("rm -rf" in c or "build-make" in c for c in commands), commands)
+
+
+class MotionLeaves(unittest.TestCase):
+    def test_unit_and_drop_in_go(self):
+        commands, _ = uninstall_commands("motion")
+        self.assertEqual([
+            "systemctl --user disable --now a3-motion.service",
+            "rm -f ~units/a3-motion.service",
+            "rm -f ~units/a3-motion.service.d/a3-system.conf",
+            "rmdir --ignore-fail-on-non-empty ~units/a3-motion.service.d",
+            "systemctl --user daemon-reload",
+        ], commands)
+
+    def test_the_drop_in_is_the_one_install_writes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, _ = context(tmp)
+            ctx.runner.dry_run = False
+            from installer.roles.base import write_drop_in
+            written = write_drop_in(ctx, "a3-motion.service", "a3-system.conf", "x")
+            self.assertIn(written, BY_NAME["motion"].leaving_files(ctx))
+
+
+class TheDialogBeforeAnythingLeaves(unittest.TestCase):
+    def test_it_lists_units_package_and_what_stays(self):
+        from installer.leave import leaving_text
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, _ = context(tmp)
+            text = leaving_text(ctx, ["core", "motion"])
+        for expected in ("a3-main.service", "a3-jack.service", "a3-reaper.service",
+                         "a3-core", "a3-motion.service", "a3-system.conf", "Bleibt"):
+            self.assertIn(expected, text)
+        self.assertIn("Pakete", text)
+
+    def test_asked_with_no_as_default(self):
+        prompter = AnsweringPrompter(False)
+        apply_fakes([LeavingRole("a"), LeavingRole("b")], ["b"], ["a", "b"], prompter)
+        self.assertEqual(1, len(prompter.asked))
+        question, default = prompter.asked[0]
+        self.assertFalse(default)
+        self.assertIn("unit-of-a.service", question)
+
+    def test_no_changes_nothing_and_the_install_goes_on(self):
+        commands, results, log, recorded = apply_fakes(
+            [LeavingRole("a"), LeavingRole("b")], ["b"], ["a", "b"], AnsweringPrompter(False))
+        self.assertNotIn("uninstall a", commands)
+        self.assertIn("install b", commands)
+        self.assertEqual("2026-10-01", recorded["a"])
+        self.assertTrue(any("trotzdem" in line for line in log), log)
+
+    def test_yes_removes_and_forgets_the_role(self):
+        commands, results, _, recorded = apply_fakes(
+            [LeavingRole("a"), LeavingRole("b")], ["b"], ["a", "b"], AnsweringPrompter(True))
+        self.assertIn("uninstall a", commands)
+        self.assertEqual("", recorded["a"])
+        self.assertIn(("a", "entfernt"), results)
+
+    def test_a_failed_uninstall_keeps_the_record(self):
+        _, results, _, recorded = apply_fakes(
+            [LeavingRole("a", fails=True), LeavingRole("b")], ["b"], ["a", "b"],
+            AnsweringPrompter(True))
+        self.assertEqual("2026-10-01", recorded["a"])
+        self.assertTrue(any(n == "a" and r.startswith("FEHLER") for n, r in results), results)
+
+    def test_nothing_to_leave_asks_nothing(self):
+        prompter = AnsweringPrompter(True)
+        apply_fakes([LeavingRole("a")], ["a"], ["a"], prompter)
+        self.assertEqual([], prompter.asked)
+
+
+class WithoutQuestionsOnlyTheFileLetsARoleLeave(unittest.TestCase):
+    """--config FILE and --update: no one to ask, so [uninstall] allow decides."""
+
+    def test_without_allow_nothing_leaves_but_it_is_listed(self):
+        commands, results, log, recorded = apply_fakes(
+            [LeavingRole("a"), LeavingRole("b")], ["b"], ["a", "b"])
+        self.assertNotIn("uninstall a", commands)
+        self.assertIn("install b", commands)
+        self.assertEqual("2026-10-01", recorded["a"])
+        joined = "\n".join(log)
+        self.assertIn("unit-of-a.service", joined)
+        self.assertIn("allow = yes", joined)
+
+    def test_with_allow_it_leaves(self):
+        commands, _, _, recorded = apply_fakes(
+            [LeavingRole("a"), LeavingRole("b")], ["b"], ["a", "b"], allow="yes")
+        self.assertIn("uninstall a", commands)
+        self.assertEqual("", recorded["a"])
+
+    def test_the_setting_defaults_to_no(self):
+        self.assertFalse(Settings("/nonexistent/install.conf").flag("uninstall", "allow"))
+
+
+class RolesLeaveBeforeAnythingInstalls(unittest.TestCase):
+    def test_before_the_packages_the_screen_and_the_first_install(self):
+        roles = [LeavingRole("a"), FakeRole("b", ("x",), needs_screen=True)]
+        commands, _, _, _ = apply_fakes(roles, ["b"], ["a"], allow="yes")
+        leave = commands.index("uninstall a")
+        self.assertLess(leave, commands.index(
+            "env DEBIAN_FRONTEND=noninteractive apt-get install -y x"))
+        self.assertLess(leave, commands.index("systemctl disable lightdm"))
+        self.assertLess(leave, commands.index("install b"))
+
+    def test_in_reverse_install_order(self):
+        """The Core last: StemDeck's leaving asks whether a Core is still there."""
+        roles = [LeavingRole("a"), LeavingRole("b"), LeavingRole("c")]
+        commands, _, _, _ = apply_fakes(roles, ["c"], ["a", "b", "c"], allow="yes")
+        self.assertLess(commands.index("uninstall b"), commands.index("uninstall a"))
+
+
+class TheAutologinStaysWhenTheLastScreenRoleLeaves(unittest.TestCase):
+    def test_named_with_how_to_remove_it(self):
+        roles = [LeavingRole("a", needs_screen=True), LeavingRole("b")]
+        commands, _, log, _ = apply_fakes(roles, ["b"], ["a"], allow="yes")
+        joined = "\n".join(log)
+        self.assertIn(AUTOLOGIN_TARGET, joined)
+        self.assertFalse(any(AUTOLOGIN_TARGET in c for c in commands), commands)
+
+    def test_not_named_while_a_screen_role_stays(self):
+        roles = [LeavingRole("a", needs_screen=True), LeavingRole("b", needs_screen=True)]
+        _, _, log, _ = apply_fakes(roles, ["b"], ["a"], allow="yes")
+        self.assertFalse(any("tty1" in line and "bleibt" in line for line in log), log)
+
+
+
+class ALongQuestionScrolls(unittest.TestCase):
+    """The leaving dialog lists every unit; a 12-line box would cut it off."""
+
+    def asked(self, question):
+        from installer.prompt import WhiptailPrompter
+        prompter = WhiptailPrompter()
+        calls = []
+        prompter._run = lambda args: calls.append(args) or (1, "")
+        prompter.yesno(question, False)
+        return calls[0]
+
+    def test_a_long_question_gets_a_tall_scrolling_box(self):
+        args = self.asked("\n".join(f"line {n}" for n in range(40)))
+        self.assertIn("--scrolltext", args)
+        self.assertEqual("24", args[args.index("--yesno") + 2])
+
+    def test_a_short_one_keeps_its_box(self):
+        args = self.asked("So installieren?")
+        self.assertEqual("12", args[args.index("--yesno") + 2])
 
 
 if __name__ == "__main__":

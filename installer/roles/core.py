@@ -17,11 +17,20 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from .base import Role, RoleError
+from .base import SCREEN_PACKAGES, Role, RoleError
 
 PACKAGE_DIR = Path("a3-core/platform-config/debian-x86_64/a3-core")
 SHIPPED_CONFIG = PACKAGE_DIR / "home/aaa/.local/share/a3-core/config"
 POSTINST = PACKAGE_DIR / "DEBIAN/postinst"
+
+# The user units the package puts into ~/.config/systemd/user (from
+# SHIPPED_CONFIG) and enables through default.target.wants. Stopped and
+# disabled when the Core leaves; the files stay with the rest of ~/.config.
+CORE_UNITS = (
+    "a3-main.service", "a3-jack.service", "a3-reaper.service", "a3-core.service",
+    "beat-analyzer.service", "qjackctl.service", "zita-n2j.service",
+    "zita-j2n.service", "a3-bar-per-workspace.service", "a3-user-install.service",
+)
 
 GROUP_LABELS = {
     "reaper": "REAPER: Template, OSC-Map, Presets, Effekte",
@@ -102,6 +111,9 @@ class Core(Role):
     label = "A³ Core (Sound-Server: JACK, REAPER, a3-core, Beat-Analyzer)"
     submodules = ("a3-core", "beat-analyzer")
     platforms = ("debian",)
+    # REAPER runs on X; a headless Core runs it on the dummy screen.
+    packages = SCREEN_PACKAGES
+    needs_screen = True
 
     def configure(self, ctx):
         s, ask = ctx.settings, ctx.prompter
@@ -151,6 +163,38 @@ class Core(Role):
             run.run(["apt-mark", "hold", "a3-core"], root=True)
         finally:
             shutil.rmtree(work, ignore_errors=True)
+
+    stays = ("~/.config: REAPER-Template, i3, qjackctl, die Unit-Dateien",
+             "die Sicherungen in ~/.config/a3-replaced",
+             "~/.ssh/authorized_keys (beim Entfernen gesichert und zurückgelegt)")
+
+    def leaving_units(self, ctx):
+        return list(CORE_UNITS)
+
+    def leaving_packages(self, ctx):
+        return ["a3-core"]
+
+    def leaving_lines(self, ctx):
+        return super().leaving_lines(ctx) + [
+            "  Mit dem Paket gehen seine Dateien in ~/.local (bin, lib, share/a3-core)."]
+
+    def uninstall(self, ctx):
+        super().uninstall(ctx)
+        run = ctx.runner
+        # The package ships ~/.ssh/authorized_keys, so dpkg removes it with
+        # the package; a machine run over ssh would be locked out.
+        keys = ctx.home / ".ssh" / "authorized_keys"
+        kept = keys.with_name("authorized_keys.a3-keep")
+        keep_keys = keys.exists()
+        if keep_keys:
+            run.run(["cp", "-p", keys, kept])
+        try:
+            run.run(["apt-mark", "unhold", "a3-core"], root=True)
+            run.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "remove", "-y",
+                     "a3-core"], root=True)
+        finally:
+            if keep_keys:
+                run.run(["mv", "-f", kept, keys])
 
 
 def build_package(ctx, work):

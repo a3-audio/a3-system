@@ -3,6 +3,8 @@ the install itself. And what the roles share: the run's context, the state
 file, systemd user units and JUCE."""
 
 import configparser
+import datetime
+import getpass
 import os
 import re
 from pathlib import Path
@@ -13,8 +15,11 @@ class RoleError(Exception):
 
 
 class Context:
-    def __init__(self, repo, settings, runner, prompter, platform, home=None):
+    def __init__(self, repo, settings, runner, prompter, platform, home=None, user=None):
         self.repo = Path(repo)
+        # The user the installer runs as, the one whose units it installs and
+        # who is logged in on tty1 (cli.where_problems requires aaa today).
+        self.user = user or getpass.getuser()
         self.settings = settings
         self.runner = runner
         self.prompter = prompter
@@ -46,15 +51,54 @@ class State:
     def get(self, section, key, default=""):
         return self._parser.get(section, key, fallback=default)
 
+    def has_section(self, section):
+        return self._parser.has_section(section)
+
+    def keys(self, section):
+        if not self._parser.has_section(section):
+            return []
+        return list(self._parser.options(section))
+
     def set(self, section, key, value, dry_run=False):
         if not self._parser.has_section(section):
             self._parser.add_section(section)
         self._parser.set(section, key, value)
+        self._write(dry_run)
+
+    def remove(self, section, key, dry_run=False):
+        """The key goes, the section stays: an empty [installed] still says
+        "nothing is installed", which is not the same as "never recorded"."""
+        if self._parser.has_section(section):
+            self._parser.remove_option(section, key)
+        self._write(dry_run)
+
+    def _write(self, dry_run):
         if dry_run:
             return
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.path, "w") as out:
             self._parser.write(out)
+
+
+# The roles whose install() succeeded on this machine, with the date. The
+# settings cannot say it: they hold the new choice before anything installs.
+INSTALLED = "installed"
+
+
+def record_installed(ctx, name):
+    ctx.state.set(INSTALLED, name, datetime.date.today().isoformat(),
+                  dry_run=ctx.runner.dry_run)
+
+
+def forget_installed(ctx, name):
+    ctx.state.remove(INSTALLED, name, dry_run=ctx.runner.dry_run)
+
+
+def recorded_roles(ctx):
+    """The recorded roles, or None on a machine set up before they were."""
+    if not ctx.state.has_section(INSTALLED):
+        return None
+    return ctx.state.keys(INSTALLED)
 
 
 class Role:
@@ -68,6 +112,9 @@ class Role:
     # before any role: a role does not count on another role's package for
     # them (a3nuc2, StemDeck without the Core, 2026-10-05).
     packages = ()
+    # A role that draws on the machine's screen. When any chosen role does,
+    # the installer logs the user in on tty1 and starts X with i3 there.
+    needs_screen = False
 
     def supported(self, platform):
         return platform in self.platforms
@@ -78,6 +125,54 @@ class Role:
 
     def install(self, ctx):
         raise NotImplementedError
+
+    # -- leaving: the counterpart of install(), for a role no longer chosen.
+    # Data, build folders, ~/.config, packages and groups stay.
+
+    # What stays, said in the dialog before the role leaves.
+    stays = ()
+
+    def leaving_units(self, ctx):
+        """The user units stopped and disabled."""
+        return []
+
+    def leaving_files(self, ctx):
+        """The files the installer put there, removed."""
+        return []
+
+    def leaving_packages(self, ctx):
+        """The Debian packages removed (not purged)."""
+        return []
+
+    def leaving_lines(self, ctx):
+        """What goes and what stays, one item per line, for the dialog."""
+        lines = []
+        for title, items in (("Dienste, gestoppt und abgeschaltet",
+                              self.leaving_units(ctx)),
+                             ("Dateien, gelöscht", self.leaving_files(ctx)),
+                             ("Paket, entfernt (nicht purge)",
+                              self.leaving_packages(ctx)),
+                             ("Bleibt", self.stays)):
+            if items:
+                lines.append(f"  {title}:")
+                lines.extend(f"    {item}" for item in items)
+        return lines
+
+    def uninstall(self, ctx):
+        """Stop what install() started and remove the files it wrote."""
+        units, files = self.leaving_units(ctx), self.leaving_files(ctx)
+        for unit in units:
+            # check=False: a unit already gone is what leaving wants.
+            systemctl_user(ctx, "disable", "--now", unit, check=False)
+        remove_files(ctx, files)
+        if units or files:
+            systemctl_user(ctx, "daemon-reload")
+
+
+# What a screen role needs on any machine: X started by startx from the tty1
+# login, i3 on it, and xrandr/xset, which the i3 config and
+# a3-wait-for-the-screen call. Not a display manager (installer/roles/screen.py).
+SCREEN_PACKAGES = ("xinit", "i3", "x11-xserver-utils")
 
 
 # -- systemd user units -------------------------------------------------------
@@ -105,6 +200,16 @@ def write_drop_in(ctx, unit, name, text):
 
 def systemctl_user(ctx, *args, check=True):
     return ctx.runner.run(["systemctl", "--user", *args], check=check)
+
+
+def remove_files(ctx, paths):
+    """rm -f each; a drop-in folder goes too once empty, and stays when it
+    holds drop-ins written by hand."""
+    for path in paths:
+        ctx.runner.run(["rm", "-f", path])
+    for folder in dict.fromkeys(Path(p).parent for p in paths):
+        if folder.name.endswith(".d"):
+            ctx.runner.run(["rmdir", "--ignore-fail-on-non-empty", folder])
 
 
 def enable_and_restart(ctx, unit):

@@ -30,6 +30,12 @@ DEFAULTS = {
         # list like "reaper, i3". Decided 2026-10-04: all, with a backup.
         "replace": "all",
     },
+    "uninstall": {
+        # A role chosen before and no longer is uninstalled after a yes in
+        # the dialog. With no one to ask (--config, --update) only if this
+        # is yes; otherwise what would leave is listed and stays.
+        "allow": "no",
+    },
     "motion": {
         # Flash the panel's firmware when its source changed since the last
         # flash: yes, no, or ask.
@@ -71,5 +77,8 @@ class Settings:
         with open(self.path, "w") as out:
             out.write("# a3-system installer: what this machine was set up as.\n"
                       "# Read by the next run; edit by hand or copy to another\n"
-                      "# machine and run `install --config <file>`.\n\n")
+                      "# machine and run `install --config <file>`.\n"
+                      "# [uninstall] allow = yes lets a role set to no here leave\n"
+                      "# without questions (--config, --update): its units stop,\n"
+                      "# the Core's package is removed; data and configs stay.\n\n")
             self._parser.write(out)

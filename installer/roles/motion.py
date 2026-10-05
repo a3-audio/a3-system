@@ -21,7 +21,7 @@ import grp
 import json
 from pathlib import Path
 
-from .base import (JUCE_PACKAGES, Role, RoleError, ensure_juce,
+from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
                    enable_and_restart, install_user_unit, systemctl_user,
                    write_drop_in)
 
@@ -32,6 +32,8 @@ BY_ID = Path("/dev/serial/by-id")
 SYS_TTY = Path("/sys/class/tty")
 BINARY = Path("build/src/a3-motion-ui/a3-motion-ui_artefacts/Release/Standalone/a3-motion-ui")
 PIO_VENV = Path(".local/share/a3/platformio")
+UNIT = "a3-motion.service"
+DROP_IN = "a3-system.conf"
 
 
 def drop_in_text(ui):
@@ -85,7 +87,9 @@ class Motion(Role):
     submodules = ("a3-motion",)
     platforms = ("debian",)
     # gsl for the motion engine, serial and gpiod for the V3 hardware interface.
-    packages = JUCE_PACKAGES + ("libgsl-dev", "libgpiod-dev", "libserial-dev")
+    packages = SCREEN_PACKAGES + JUCE_PACKAGES + (
+        "libgsl-dev", "libgpiod-dev", "libserial-dev")
+    needs_screen = True
 
     def configure(self, ctx):
         s, ask = ctx.settings, ctx.prompter
@@ -104,11 +108,22 @@ class Motion(Role):
         prefix = ensure_juce(ctx)
         run.run(["./build.sh", "-r"], cwd=ui, env={"JUCE_DIR": str(prefix)})
 
-        install_user_unit(ctx, ui / "platform_config" / "a3-motion.service")
-        write_drop_in(ctx, "a3-motion.service", "a3-system.conf", drop_in_text(ui))
+        install_user_unit(ctx, ui / "platform_config" / UNIT)
+        write_drop_in(ctx, UNIT, DROP_IN, drop_in_text(ui))
         self._dialout(ctx)
         self._firmware(ctx)
-        enable_and_restart(ctx, "a3-motion.service")
+        enable_and_restart(ctx, UNIT)
+
+    stays = ("der Build-Ordner a3-motion/ui/build",
+             "config.json, Patterns, Aufnahmen",
+             "Drop-ins von Hand neben dem des Installers",
+             "die Mitgliedschaft in dialout")
+
+    def leaving_units(self, ctx):
+        return [UNIT]
+
+    def leaving_files(self, ctx):
+        return [ctx.user_units / UNIT, ctx.user_units / f"{UNIT}.d" / DROP_IN]
 
     def _dialout(self, ctx):
         user = getpass.getuser()

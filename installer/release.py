@@ -48,6 +48,29 @@ def check_out(runner, repo, version):
     runner.run(["git", "checkout", "--quiet", version], cwd=repo)
 
 
+def upstream(runner, repo, version):
+    """origin/<version> when `version` is a branch origin has, else None:
+    a tag never moves."""
+    if TAG.match(version):
+        return None
+    ref = f"origin/{version}"
+    try:
+        runner.output(["git", "rev-parse", "--verify", "--quiet",
+                       f"refs/remotes/{ref}"], cwd=repo)
+    except Exception:
+        return None
+    return ref
+
+
+def catch_up(runner, repo, version):
+    """A branch checked out here brought to origin's newest commit, after
+    fetch(). Fast-forward only: a local commit stops the update rather than
+    being overwritten, as in update_submodules()."""
+    ref = upstream(runner, repo, version)
+    if ref:
+        runner.run(["git", "merge", "--ff-only", "--quiet", ref], cwd=repo)
+
+
 def update_submodules(runner, repo, paths):
     """These submodules at the commit this repository records. Run on every
     install, not only on a version change: a role added later needs its

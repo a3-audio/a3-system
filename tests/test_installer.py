@@ -302,7 +302,9 @@ STEMDECK_NEEDS = JUCE_NEEDS + (
     "libflac-dev", "libvorbis-dev", "libogg-dev", "libjack-jackd2-dev",
     # its unit waits for JACK with jack_wait (stemdeck a521412), on a
     # machine without the Core too
-    "jack-example-tools")
+    "jack-example-tools",
+    # its on-screen keyboard starts onboard
+    "onboard")
 # Motion UI and its V3 hardware interface
 MOTION_NEEDS = JUCE_NEEDS + ("libgsl-dev", "libgpiod-dev", "libserial-dev")
 # X started by startx from the tty1 login, i3 on it, xrandr/xset for the screen
@@ -1093,6 +1095,295 @@ class ALongQuestionScrolls(unittest.TestCase):
     def test_a_short_one_keeps_its_box(self):
         args = self.asked("So installieren?")
         self.assertEqual("12", args[args.index("--yesno") + 2])
+
+
+# The real file's shape (~/.config/StemDeck/StemDeck.settings, 2026-10-05):
+# a JUCE PropertiesFile, one VALUE per key; some carry XML, as a child
+# element or escaped in val.
+STEMDECK_SETTINGS = """<?xml version="1.0" encoding="UTF-8"?>
+
+<PROPERTIES>
+  <VALUE name="stemFolder" val="/home/aaa/stems"/>
+  <VALUE name="windowState" val="fs -366 32 1500 960 frame 0 0 0 0"/>
+  <VALUE name="syncSource" val="pio"/>
+  <VALUE name="escaped" val="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;A b=&quot;c &amp;amp; d&quot;/&gt;"/>
+  <VALUE name="audioDeviceState">
+    <DEVICESETUP deviceType="ALSA" audioOutputDeviceName="" audioInputDeviceName=""/>
+  </VALUE>
+</PROPERTIES>
+"""
+
+
+def stemdeck_values(text):
+    import xml.etree.ElementTree as ET
+    root = ET.fromstring(text)
+    return root.tag, {v.get("name"): (v.get("val"), [ET.tostring(c) for c in v])
+                      for v in root.findall("VALUE")}
+
+
+class NotAsked(Prompter):
+    """--update and --config: nobody there, and nothing may be asked."""
+
+    def text(self, question, default):
+        raise AssertionError(f"asked: {question}")
+
+
+class TextAnswers(Prompter):
+    interactive = True
+
+    def __init__(self, answer):
+        self.answer = answer
+        self.asked = []
+
+    def text(self, question, default):
+        self.asked.append((question, default))
+        return self.answer or default
+
+
+class StemDeckAsksForItsLibrary(unittest.TestCase):
+    def configure(self, prompter, stored=None, settings_file=None):
+        from installer.roles.stemdeck import StemDeck
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, _ = context(tmp, {("stemdeck", "library"): stored} if stored else {})
+            ctx.prompter = prompter
+            if settings_file is not None:
+                path = Path(tmp) / ".config" / "StemDeck" / "StemDeck.settings"
+                path.parent.mkdir(parents=True)
+                path.write_text(settings_file)
+            StemDeck().configure(ctx)
+            return ctx.settings.get("stemdeck", "library"), tmp
+
+    def test_the_default_is_the_folder_stemdeck_uses_now(self):
+        prompter = TextAnswers("")
+        stored, _ = self.configure(prompter, settings_file=STEMDECK_SETTINGS)
+        self.assertEqual("/home/aaa/stems", prompter.asked[0][1])
+        self.assertEqual("/home/aaa/stems", stored)
+
+    def test_without_a_settings_file_the_default_is_stems_in_home(self):
+        prompter = TextAnswers("")
+        stored, tmp = self.configure(prompter)
+        self.assertEqual(str(Path(tmp) / "stems"), prompter.asked[0][1])
+        self.assertEqual(str(Path(tmp) / "stems"), stored)
+
+    def test_the_question_names_the_stem_library(self):
+        prompter = TextAnswers("")
+        self.configure(prompter)
+        self.assertIn("Stem-Bibliothek", prompter.asked[0][0])
+
+    def test_the_answer_is_kept_in_the_installer_settings(self):
+        stored, _ = self.configure(TextAnswers("/data/stems"),
+                                   settings_file=STEMDECK_SETTINGS)
+        self.assertEqual("/data/stems", stored)
+
+    def test_a_home_relative_answer_is_made_absolute(self):
+        """StemDeck takes an absolute path only (MainComponent.cpp)."""
+        stored, tmp = self.configure(TextAnswers("~/musik/stems"))
+        self.assertEqual(str(Path(tmp) / "musik" / "stems"), stored)
+
+    def test_stemdecks_own_choice_comes_before_the_stored_answer(self):
+        """The DJ may have changed it in StemDeck since the last install."""
+        prompter = TextAnswers("")
+        self.configure(prompter, stored="/data/stems", settings_file=STEMDECK_SETTINGS)
+        self.assertEqual("/home/aaa/stems", prompter.asked[0][1])
+
+    def test_the_stored_answer_when_stemdeck_names_none(self):
+        prompter = TextAnswers("")
+        self.configure(prompter, stored="/data/stems")
+        self.assertEqual("/data/stems", prompter.asked[0][1])
+
+    def test_a_relative_stem_folder_in_stemdeck_is_no_choice(self):
+        prompter = TextAnswers("")
+        self.configure(prompter, stored="/data/stems", settings_file=STEMDECK_SETTINGS
+                       .replace('val="/home/aaa/stems"', 'val="stems"'))
+        self.assertEqual("/data/stems", prompter.asked[0][1])
+
+    def test_update_and_config_keep_what_stemdeck_uses(self):
+        stored, _ = self.configure(NotAsked(), stored="/data/stems",
+                                   settings_file=STEMDECK_SETTINGS)
+        self.assertEqual("/home/aaa/stems", stored)
+
+    def test_update_and_config_take_the_stored_answer_when_stemdeck_has_none(self):
+        stored, _ = self.configure(NotAsked(), stored="/data/stems")
+        self.assertEqual("/data/stems", stored)
+
+    def test_nothing_stored_and_nobody_to_ask_takes_the_default(self):
+        stored, _ = self.configure(NotAsked(), settings_file=STEMDECK_SETTINGS)
+        self.assertEqual("/home/aaa/stems", stored)
+
+
+class TheLibraryGoesIntoStemDecksSettings(unittest.TestCase):
+    def rewrite(self, text, folder="/data/stems"):
+        from installer.roles.stemdeck import with_stem_folder
+        return with_stem_folder(text, folder)
+
+    def test_only_the_stem_folder_changes(self):
+        tag, before = stemdeck_values(STEMDECK_SETTINGS)
+        after_tag, after = stemdeck_values(self.rewrite(STEMDECK_SETTINGS))
+        self.assertEqual(("PROPERTIES", "PROPERTIES"), (tag, after_tag))
+        self.assertEqual("/data/stems", after.pop("stemFolder")[0])
+        before.pop("stemFolder")
+        self.assertEqual(before, after)
+
+    def test_the_xml_values_survive(self):
+        _, after = stemdeck_values(self.rewrite(STEMDECK_SETTINGS))
+        self.assertEqual('<?xml version="1.0"?><A b="c &amp; d"/>', after["escaped"][0])
+        self.assertIn(b'deviceType="ALSA"', after["audioDeviceState"][1][0])
+
+    def test_a_missing_file_gets_just_the_stem_folder(self):
+        tag, values = stemdeck_values(self.rewrite(None))
+        self.assertEqual("PROPERTIES", tag)
+        self.assertEqual({"stemFolder": ("/data/stems", [])}, values)
+
+    def test_a_missing_entry_is_added(self):
+        text = STEMDECK_SETTINGS.replace(
+            '  <VALUE name="stemFolder" val="/home/aaa/stems"/>\n', "")
+        _, values = stemdeck_values(self.rewrite(text))
+        self.assertEqual("/data/stems", values["stemFolder"][0])
+        self.assertEqual("pio", values["syncSource"][0])
+
+    def test_it_starts_with_an_xml_declaration(self):
+        self.assertTrue(self.rewrite(None).startswith('<?xml version="1.0" encoding="UTF-8"?>'))
+
+    def test_an_unreadable_file_is_left_alone(self):
+        with self.assertRaises(RoleError):
+            self.rewrite("<PROPERTIES><VALUE")
+
+
+class RecordingRunner(Runner):
+    """Not a dry run, but runs nothing: the files are written, the
+    commands only logged (no systemctl against this machine's StemDeck)."""
+
+    def run(self, args, cwd=None, env=None, root=False, check=True, input=None):
+        self.log("$ " + " ".join(str(a) for a in args))
+        return 0
+
+
+class StemDeckInstallsItsLibrary(unittest.TestCase):
+    def install(self, dry_run, settings_file=STEMDECK_SETTINGS, roles=("core",)):
+        from installer.roles import stemdeck
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(__import__("shutil").rmtree, tmp)
+        library = Path(tmp) / "data" / "stems"
+        ctx, log = context(tmp, {("stemdeck", "library"): str(library),
+                                 **{("roles", r): "yes" for r in roles}})
+        if not dry_run:
+            ctx.runner = RecordingRunner(log=log)
+        path = Path(tmp) / ".config" / "StemDeck" / "StemDeck.settings"
+        if settings_file is not None:
+            path.parent.mkdir(parents=True)
+            path.write_text(settings_file)
+        with mock.patch.object(stemdeck, "ensure_juce", lambda _ctx: Path("/juce")):
+            stemdeck.StemDeck().install(ctx)
+        return log, path, library
+
+    def test_stop_then_write_then_start(self):
+        log, _, library = self.install(dry_run=False)
+        lines = [line for line in log
+                 if "stemdeck.service" in line or "stemFolder" in line]
+        stop = lines.index("$ systemctl --user stop stemdeck.service")
+        write = next(i for i, line in enumerate(lines) if "stemFolder" in line)
+        restart = lines.index("$ systemctl --user restart stemdeck.service")
+        self.assertLess(stop, write)
+        self.assertLess(write, restart)
+
+    def test_the_folder_is_made_and_named_in_stemdecks_settings(self):
+        _, path, library = self.install(dry_run=False)
+        self.assertTrue(library.is_dir())
+        _, values = stemdeck_values(path.read_text())
+        self.assertEqual(str(library), values["stemFolder"][0])
+        self.assertEqual("pio", values["syncSource"][0])
+
+    def test_a_missing_settings_file_is_made(self):
+        _, path, library = self.install(dry_run=False, settings_file=None)
+        _, values = stemdeck_values(path.read_text())
+        self.assertEqual({"stemFolder": (str(library), [])}, values)
+
+    def test_a_dry_run_writes_nothing_and_says_what_it_would(self):
+        log, path, library = self.install(dry_run=True)
+        self.assertFalse(library.exists())
+        self.assertEqual(STEMDECK_SETTINGS, path.read_text())
+        self.assertTrue(any(str(library) in line and "stemFolder" in line for line in log))
+        self.assertIn("systemctl --user stop stemdeck.service", log.commands())
+
+
+class AnUnreadableSettingsFileIsNotADarkScreen(unittest.TestCase):
+    def test_stemdeck_is_started_again_and_the_file_left(self):
+        from installer.roles import stemdeck
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, log = context(tmp, {("stemdeck", "library"): str(Path(tmp) / "stems")})
+            ctx.runner = RecordingRunner(log=log)
+            path = Path(tmp) / ".config" / "StemDeck" / "StemDeck.settings"
+            path.parent.mkdir(parents=True)
+            path.write_text("<PROPERTIES><VALUE")
+            with self.assertRaises(RoleError):
+                stemdeck.StemDeck()._hand_over_library(ctx)
+            self.assertEqual(["systemctl --user stop stemdeck.service",
+                              "systemctl --user start stemdeck.service"], log.commands())
+            self.assertEqual("<PROPERTIES><VALUE", path.read_text())
+
+
+class WithoutQuestionsStemDecksChoiceStays(unittest.TestCase):
+    """--update and --config write stemFolder only where StemDeck has none."""
+
+    def run_role(self, settings_file, stored=None):
+        from installer.roles import stemdeck
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(__import__("shutil").rmtree, tmp)
+        ctx, log = context(tmp, {("stemdeck", "library"): stored} if stored else {})
+        ctx.runner = RecordingRunner(log=log)
+        ctx.prompter = NotAsked()
+        path = Path(tmp) / ".config" / "StemDeck" / "StemDeck.settings"
+        if settings_file is not None:
+            path.parent.mkdir(parents=True)
+            path.write_text(settings_file)
+        role = stemdeck.StemDeck()
+        role.configure(ctx)
+        with mock.patch.object(stemdeck, "ensure_juce", lambda _ctx: Path("/juce")):
+            role.install(ctx)
+        return log, path, Path(tmp), ctx
+
+    def test_an_existing_stem_folder_is_neither_written_nor_stopped_for(self):
+        log, path, _, ctx = self.run_role(STEMDECK_SETTINGS, stored="/data/stems")
+        self.assertNotIn("systemctl --user stop stemdeck.service", log.commands())
+        self.assertEqual(STEMDECK_SETTINGS, path.read_text())
+        self.assertTrue(any("StemDeck nutzt bereits /home/aaa/stems" in line
+                            for line in log))
+        self.assertEqual("/home/aaa/stems", ctx.settings.get("stemdeck", "library"))
+
+    def test_a_different_library_in_the_file_is_said_not_applied(self):
+        log, *_ = self.run_role(STEMDECK_SETTINGS, stored="/data/stems")
+        self.assertTrue(any("/data/stems" in line and "nicht übernommen" in line
+                            for line in log))
+
+    def test_without_a_settings_file_it_writes(self):
+        log, path, home, _ = self.run_role(None, stored=None)
+        self.assertIn("systemctl --user stop stemdeck.service", log.commands())
+        _, values = stemdeck_values(path.read_text())
+        self.assertEqual(str(home / "stems"), values["stemFolder"][0])
+        self.assertTrue((home / "stems").is_dir())
+
+    def test_without_a_stem_folder_entry_it_writes_the_stored_one(self):
+        text = STEMDECK_SETTINGS.replace(
+            '  <VALUE name="stemFolder" val="/home/aaa/stems"/>\n', "")
+        log, path, home, _ = self.run_role(text, stored=None)
+        _, values = stemdeck_values(path.read_text())
+        self.assertEqual(str(home / "stems"), values["stemFolder"][0])
+        self.assertEqual("pio", values["syncSource"][0])
+
+    def test_a_relative_stem_folder_is_replaced(self):
+        library = tempfile.mkdtemp()
+        self.addCleanup(__import__("shutil").rmtree, library)
+        log, path, _, _ = self.run_role(
+            STEMDECK_SETTINGS.replace('val="/home/aaa/stems"', 'val="stems"'),
+            stored=library)
+        self.assertIn("systemctl --user stop stemdeck.service", log.commands())
+        self.assertEqual(library, stemdeck_values(path.read_text())[1]["stemFolder"][0])
+
+
+class StemDeckBringsTheKeyboard(unittest.TestCase):
+    def test_onboard_is_among_its_packages(self):
+        """StemDeck's on-screen keyboard starts onboard."""
+        self.assertIn("onboard", BY_NAME["stemdeck"].packages)
 
 
 if __name__ == "__main__":

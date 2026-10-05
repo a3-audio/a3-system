@@ -106,7 +106,11 @@ class WhiptailPrompter(Prompter):
         return str(min(24, 8 + lines))
 
     def yesno(self, question, default):
-        args = ["--yesno", question, "12", "72"]
+        lines = question.count("\n") + 1
+        height = str(max(12, int(self._height(lines))))
+        # --scrolltext: a question longer than the box, such as the list of
+        # what leaves with a role, scrolls instead of being cut off.
+        args = ["--scrolltext", "--yesno", question, height, "72"]
         if not default:
             args.insert(0, "--defaultno")
         code, _ = self._run(args)

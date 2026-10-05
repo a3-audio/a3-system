@@ -57,6 +57,17 @@ Debian packages it builds against; they are installed with one `apt-get` (throug
 next reboot on. `install --dry-run` shows what it would do. For now it
 runs on Debian only, as the user `aaa`, from `/home/aaa/a3-system`.
 
+A role that was installed and is no longer ticked leaves the machine: its
+services are stopped and disabled, the unit files the installer wrote are
+removed, and for the Core the `a3-core` package is removed (not purged). The
+installer lists exactly what goes and asks first; the answer defaults to no,
+and the chosen roles install either way. Data, recordings, build folders,
+`~/.config`, the packages installed for a role and group memberships stay; the
+tty1 autologin stays too, even when no screen role is left. With no one to ask
+(`--config FILE`, `--update`) a role leaves only when the settings file says
+so under `[uninstall]`, `allow = yes`; otherwise the list is printed and the
+role stays installed.
+
 A version is an annotated tag with the same name in every repository; this
 repository's submodules record which commit of each belongs to it. See the
 [release notes](https://a3-audio.github.io/a3-doc/ressources/release-notes.html).

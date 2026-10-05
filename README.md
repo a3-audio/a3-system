@@ -55,7 +55,9 @@ Debian packages it builds against; they are installed with one `apt-get` (throug
 `sudo`) before any role. Roles with a screen (Core, StemDeck, Motion UI) log
 `aaa` in on tty1 and start X with i3 there, without a display manager, from the
 next reboot on. The StemDeck role asks where the stem library is and hands the
-path to StemDeck. `install --dry-run` shows what it would do. For now it
+path to StemDeck. The Core role installs only on the machine that owns the Core
+address in a3-core's `a3-osc.json` (or whose Core network answers set it): a second Core
+would announce itself in the same LAN; the other roles install either way. `install --dry-run` shows what it would do. For now it
 runs on Debian only, as the user `aaa`, from `/home/aaa/a3-system`.
 
 A role that was installed and is no longer ticked leaves the machine: its

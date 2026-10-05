@@ -20,7 +20,9 @@ class StemDeck(Role):
     submodules = (SOURCE,)
     platforms = ("debian",)
     packages = SCREEN_PACKAGES + JUCE_PACKAGES + (
-        "libflac-dev", "libvorbis-dev", "libogg-dev", "libjack-jackd2-dev")
+        "libflac-dev", "libvorbis-dev", "libogg-dev", "libjack-jackd2-dev",
+        # jack_wait: its unit waits for whatever JACK runs, Core or not
+        "jack-example-tools")
     needs_screen = True
 
     def install(self, ctx):

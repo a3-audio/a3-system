@@ -299,7 +299,10 @@ JUCE_NEEDS = (
     "ccache",
 )
 STEMDECK_NEEDS = JUCE_NEEDS + (
-    "libflac-dev", "libvorbis-dev", "libogg-dev", "libjack-jackd2-dev")
+    "libflac-dev", "libvorbis-dev", "libogg-dev", "libjack-jackd2-dev",
+    # its unit waits for JACK with jack_wait (stemdeck a521412), on a
+    # machine without the Core too
+    "jack-example-tools")
 # Motion UI and its V3 hardware interface
 MOTION_NEEDS = JUCE_NEEDS + ("libgsl-dev", "libgpiod-dev", "libserial-dev")
 # X started by startx from the tty1 login, i3 on it, xrandr/xset for the screen

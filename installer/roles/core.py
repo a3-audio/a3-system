@@ -17,7 +17,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from .base import Role, RoleError
+from .base import SCREEN_PACKAGES, Role, RoleError
 
 PACKAGE_DIR = Path("a3-core/platform-config/debian-x86_64/a3-core")
 SHIPPED_CONFIG = PACKAGE_DIR / "home/aaa/.local/share/a3-core/config"
@@ -102,6 +102,9 @@ class Core(Role):
     label = "A³ Core (Sound-Server: JACK, REAPER, a3-core, Beat-Analyzer)"
     submodules = ("a3-core", "beat-analyzer")
     platforms = ("debian",)
+    # REAPER runs on X; a headless Core runs it on the dummy screen.
+    packages = SCREEN_PACKAGES
+    needs_screen = True
 
     def configure(self, ctx):
         s, ask = ctx.settings, ctx.prompter

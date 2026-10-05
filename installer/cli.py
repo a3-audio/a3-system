@@ -17,8 +17,9 @@ from pathlib import Path
 
 from . import release
 from .prompt import make_prompter
-from .roles import ALL, BY_NAME, needed_packages, needed_submodules
+from .roles import ALL, BY_NAME, needed_packages, needed_submodules, needs_screen
 from .roles.base import Context, RoleError
+from .roles.screen import set_up_screen
 from .settings import DEFAULT_PATH, Settings
 from .system import CommandFailed, Runner, platform_name
 
@@ -95,10 +96,31 @@ def install_packages(ctx, names):
                     *packages], root=True)
 
 
+def install_screen(ctx, names):
+    """The autologin into X, once for all screen roles. A result row, or
+    None when no chosen role needs a screen."""
+    if not needs_screen(names):
+        return None
+    ctx.runner.log("\n=== Bildschirm: Autologin auf tty1, X mit i3 ===")
+    try:
+        problems = set_up_screen(ctx)
+    except CommandFailed as error:
+        return ("autologin", f"FEHLER: {error}")
+    if problems:
+        return ("autologin", "WARNUNG: " + "; ".join(problems))
+    return ("autologin", "ok")
+
+
 def install_roles(ctx, names):
-    """The packages, then each role in turn until one fails."""
+    """The packages, the screen, then each role in turn until one fails.
+    A screen that only warns does not stop the roles."""
     install_packages(ctx, names)
     results = []
+    screen = install_screen(ctx, names)
+    if screen:
+        results.append(screen)
+        if screen[1].startswith("FEHLER"):
+            return results
     for name in names:
         ctx.runner.log(f"\n=== {BY_NAME[name].label} ===")
         try:
@@ -161,7 +183,8 @@ def main(argv=None):
     print(f"\n{getpass.getuser()}@{platform_name()} auf {version}:")
     for name, result in results:
         print(f"  {name:10} {result}")
-    skipped = roles[len(results):]
+    done = {name for name, _ in results}
+    skipped = [name for name in roles if name not in done]
     for name in skipped:
         print(f"  {name:10} übersprungen (nach einem Fehler)")
     return 0 if all(r == "ok" for _, r in results) and not skipped else 1

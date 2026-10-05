@@ -52,7 +52,9 @@ git clone https://github.com/a3-audio/a3-system ~/a3-system
 `install` asks which version (a tag) and which roles the machine has, then
 checks out and installs only the parts those roles need. Each role names the
 Debian packages it builds against; they are installed with one `apt-get` (through
-`sudo`) before any role. `install --dry-run` shows what it would do. For now it
+`sudo`) before any role. Roles with a screen (Core, StemDeck, Motion UI) log
+`aaa` in on tty1 and start X with i3 there, without a display manager, from the
+next reboot on. `install --dry-run` shows what it would do. For now it
 runs on Debian only, as the user `aaa`, from `/home/aaa/a3-system`.
 
 A version is an annotated tag with the same name in every repository; this

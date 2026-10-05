@@ -22,3 +22,8 @@ def needed_submodules(names):
 def needed_packages(names):
     """The Debian packages the named roles build against, sorted, once each."""
     return sorted({p for role in ALL if role.name in names for p in role.packages})
+
+
+def needs_screen(names):
+    """Whether any of the named roles draws on this machine's screen."""
+    return any(role.needs_screen for role in ALL if role.name in names)

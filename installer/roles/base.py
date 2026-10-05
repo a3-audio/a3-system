@@ -3,6 +3,7 @@ the install itself. And what the roles share: the run's context, the state
 file, systemd user units and JUCE."""
 
 import configparser
+import getpass
 import os
 import re
 from pathlib import Path
@@ -13,8 +14,11 @@ class RoleError(Exception):
 
 
 class Context:
-    def __init__(self, repo, settings, runner, prompter, platform, home=None):
+    def __init__(self, repo, settings, runner, prompter, platform, home=None, user=None):
         self.repo = Path(repo)
+        # The user the installer runs as, the one whose units it installs and
+        # who is logged in on tty1 (cli.where_problems requires aaa today).
+        self.user = user or getpass.getuser()
         self.settings = settings
         self.runner = runner
         self.prompter = prompter
@@ -68,6 +72,9 @@ class Role:
     # before any role: a role does not count on another role's package for
     # them (a3nuc2, StemDeck without the Core, 2026-10-05).
     packages = ()
+    # A role that draws on the machine's screen. When any chosen role does,
+    # the installer logs the user in on tty1 and starts X with i3 there.
+    needs_screen = False
 
     def supported(self, platform):
         return platform in self.platforms
@@ -78,6 +85,12 @@ class Role:
 
     def install(self, ctx):
         raise NotImplementedError
+
+
+# What a screen role needs on any machine: X started by startx from the tty1
+# login, i3 on it, and xrandr/xset, which the i3 config and
+# a3-wait-for-the-screen call. Not a display manager (installer/roles/screen.py).
+SCREEN_PACKAGES = ("xinit", "i3", "x11-xserver-utils")
 
 
 # -- systemd user units -------------------------------------------------------

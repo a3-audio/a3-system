@@ -21,7 +21,7 @@ import grp
 import json
 from pathlib import Path
 
-from .base import (JUCE_PACKAGES, Role, RoleError, ensure_juce,
+from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
                    enable_and_restart, install_user_unit, systemctl_user,
                    write_drop_in)
 
@@ -85,7 +85,9 @@ class Motion(Role):
     submodules = ("a3-motion",)
     platforms = ("debian",)
     # gsl for the motion engine, serial and gpiod for the V3 hardware interface.
-    packages = JUCE_PACKAGES + ("libgsl-dev", "libgpiod-dev", "libserial-dev")
+    packages = SCREEN_PACKAGES + JUCE_PACKAGES + (
+        "libgsl-dev", "libgpiod-dev", "libserial-dev")
+    needs_screen = True
 
     def configure(self, ctx):
         s, ask = ctx.settings, ctx.prompter

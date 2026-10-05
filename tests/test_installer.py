@@ -17,7 +17,7 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
 from installer import release  # noqa: E402
-from installer.cli import install_roles, where_problems  # noqa: E402
+from installer.cli import install_roles, update_version, where_problems  # noqa: E402
 from installer.prompt import Prompter, TextPrompter  # noqa: E402
 from installer.roles import ALL, BY_NAME, needed_packages, needed_submodules  # noqa: E402
 from installer.roles.base import Context, RoleError, State  # noqa: E402
@@ -112,6 +112,25 @@ class Tags(unittest.TestCase):
             def output(self, args, cwd=None):
                 return "v03.0\nv03.10\nv03.9\nv.0.2\n"
         self.assertEqual(["v03.10", "v03.9", "v03.0"], release.tags(Fake(), REPO))
+
+
+class UpdateWithoutAVersion(unittest.TestCase):
+    TAGS = ["v03.1", "v03.0"]
+
+    def test_a_named_version_wins(self):
+        self.assertEqual("v03.0", update_version("v03.0", "main", self.TAGS, "main"))
+
+    def test_a_stored_branch_stays(self):
+        self.assertEqual("main", update_version("", "main", self.TAGS, "v03.0"))
+
+    def test_a_stored_tag_moves_to_the_newest(self):
+        self.assertEqual("v03.1", update_version("", "v03.0", self.TAGS, "v03.0"))
+
+    def test_nothing_stored_takes_the_newest_tag(self):
+        self.assertEqual("v03.1", update_version("", "", self.TAGS, "main"))
+
+    def test_without_tags_it_stays_where_it_is(self):
+        self.assertEqual("main", update_version("", "", [], "main"))
 
 
 class OnlyWhatTheRolesNeed(unittest.TestCase):

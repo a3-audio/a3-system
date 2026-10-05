@@ -70,7 +70,10 @@ so under `[uninstall]`, `allow = yes`; otherwise the list is printed and the
 role stays installed.
 
 A version is an annotated tag with the same name in every repository; this
-repository's submodules record which commit of each belongs to it. See the
+repository's submodules record which commit of each belongs to it.
+`install --update` without a version keeps a machine on the branch it was set
+to (`version = main` in `~/.config/a3/install.conf`) and moves a machine on a
+tag to the newest tag; `install --update v03.1` names one. See the
 [release notes](https://a3-audio.github.io/a3-doc/ressources/release-notes.html).
 
 ## Pro DJ Link

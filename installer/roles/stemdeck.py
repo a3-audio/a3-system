@@ -89,7 +89,11 @@ class StemDeck(Role):
         # jack_wait: its unit waits for whatever JACK runs, Core or not
         "jack-example-tools",
         # StemDeck's on-screen keyboard starts onboard
-        "onboard")
+        "onboard",
+        # its unit waits for StemDeck's window with xdotool before the screen
+        # goes back (tools/rig-keep-the-screen.sh); without it every start
+        # waited the full 30 s (a3nuc2, 2026-10-05)
+        "xdotool")
     needs_screen = True
 
     def configure(self, ctx):

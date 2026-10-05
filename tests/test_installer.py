@@ -346,7 +346,9 @@ STEMDECK_NEEDS = JUCE_NEEDS + (
     # machine without the Core too
     "jack-example-tools",
     # its on-screen keyboard starts onboard
-    "onboard")
+    "onboard",
+    # its unit waits for the window with xdotool (rig-keep-the-screen.sh)
+    "xdotool")
 # Motion UI and its V3 hardware interface
 MOTION_NEEDS = JUCE_NEEDS + ("libgsl-dev", "libgpiod-dev", "libserial-dev")
 # X started by startx from the tty1 login, i3 on it, xrandr/xset for the screen

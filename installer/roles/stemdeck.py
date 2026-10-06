@@ -3,8 +3,11 @@
 Built in the submodule, in build-make: that is the path its unit starts.
 The unit comes from StemDeck's own repository. On a machine without the Core
 its zita units come too -- they carry the stems to the Core and two channels
-back -- and JACK is that machine's own business: a3-jack exists only on a
-Core.
+back -- and so does qjackctl-stemdeck.service, a QjackCtl whose patchbay
+(in StemDeck's checkout, not copied) wires StemDeck to zita. With the Core
+the Core's own qjackctl.service and patchbay do that wiring, so the unit is
+taken away there: two QjackCtls must not wire one JACK. JACK is that
+machine's own business: a3-jack exists only on a Core.
 
 The stem library is asked for and handed to StemDeck as stemFolder in its
 own settings file, a JUCE PropertiesFile (Source/MainComponent.cpp). StemDeck
@@ -16,11 +19,14 @@ from pathlib import Path
 
 from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
                    enable_and_restart, install_user_unit, recorded_roles,
-                   systemctl_user)
+                   remove_files, systemctl_user)
 
 SOURCE = "stemdeck"
 UNIT = "stemdeck.service"
 ZITA_UNITS = ("zita-n2j.service", "zita-j2n.service")
+# Not qjackctl.service: that is the Core's, and a machine that becomes a Core
+# would have one file for two owners.
+PATCHBAY_UNIT = "qjackctl-stemdeck.service"
 SETTINGS_FILE = Path(".config/StemDeck/StemDeck.settings")
 STEM_FOLDER = "stemFolder"
 XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>'
@@ -93,7 +99,9 @@ class StemDeck(Role):
         # its unit waits for StemDeck's window with xdotool before the screen
         # goes back (tools/rig-keep-the-screen.sh); without it every start
         # waited the full 30 s (a3nuc2, 2026-10-05)
-        "xdotool")
+        "xdotool",
+        # without the Core, PATCHBAY_UNIT runs QjackCtl with StemDeck's patchbay
+        "qjackctl")
     needs_screen = True
 
     def configure(self, ctx):
@@ -124,11 +132,13 @@ class StemDeck(Role):
         units = source / ".config" / "systemd" / "user"
         install_user_unit(ctx, units / UNIT)
         if "core" not in ctx.settings.roles():
-            for zita in ZITA_UNITS:
-                install_user_unit(ctx, units / zita)
-                enable_and_restart(ctx, zita)
+            for unit in ZITA_UNITS + (PATCHBAY_UNIT,):
+                install_user_unit(ctx, units / unit)
+                enable_and_restart(ctx, unit)
             run.log("Hinweis: Ohne Core auf diesem Rechner muss JACK hier "
                     "anders gestartet werden; a3-jack gibt es nur auf dem Core.")
+        else:
+            _remove_patchbay_unit(ctx)
         self._hand_over_library(ctx)
         enable_and_restart(ctx, UNIT)
 
@@ -166,7 +176,8 @@ class StemDeck(Role):
              "Bibliothek, Sessions, Aufnahmen und Stems")
 
     def leaving_units(self, ctx):
-        return [UNIT] + (list(ZITA_UNITS) if _owns_zita(ctx) else [])
+        return ([UNIT, PATCHBAY_UNIT]
+                + (list(ZITA_UNITS) if _owns_zita(ctx) else []))
 
     def leaving_files(self, ctx):
         return [ctx.user_units / unit for unit in self.leaving_units(ctx)]
@@ -177,3 +188,14 @@ def _owns_zita(ctx):
     chosen keeps them running, a Core still installed stops them itself."""
     return ("core" not in ctx.settings.roles()
             and "core" not in (recorded_roles(ctx) or []))
+
+
+def _remove_patchbay_unit(ctx):
+    """A machine that becomes a Core: StemDeck's QjackCtl goes, the Core's
+    own qjackctl.service and patchbay take over."""
+    target = ctx.user_units / PATCHBAY_UNIT
+    if not target.is_file():
+        return
+    systemctl_user(ctx, "disable", "--now", PATCHBAY_UNIT, check=False)
+    remove_files(ctx, [target])
+    systemctl_user(ctx, "daemon-reload")

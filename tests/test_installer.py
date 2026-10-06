@@ -348,7 +348,10 @@ STEMDECK_NEEDS = JUCE_NEEDS + (
     # its on-screen keyboard starts onboard
     "onboard",
     # its unit waits for the window with xdotool (rig-keep-the-screen.sh)
-    "xdotool")
+    "xdotool",
+    # without the Core, qjackctl-stemdeck.service runs QjackCtl with
+    # StemDeck's patchbay (stemdeck .config/rncbc.org)
+    "qjackctl")
 # Motion UI and its V3 hardware interface
 MOTION_NEEDS = JUCE_NEEDS + ("libgsl-dev", "libgpiod-dev", "libserial-dev")
 # X started by startx from the tty1 login, i3 on it, xrandr/xset for the screen
@@ -993,6 +996,18 @@ class StemDeckLeaves(unittest.TestCase):
         commands, _ = uninstall_commands("stemdeck", installed=["core"])
         self.assertFalse(any("zita" in c for c in commands), commands)
 
+    def test_its_patchbay_unit_goes_too(self):
+        """It is StemDeck's alone, by its own name: never the Core's qjackctl."""
+        for chosen in ((), ("core",)):
+            with self.subTest(chosen=chosen):
+                commands, _ = uninstall_commands("stemdeck", chosen=chosen)
+                self.assertIn("systemctl --user disable --now qjackctl-stemdeck.service",
+                              commands)
+                self.assertIn("rm -f ~units/qjackctl-stemdeck.service", commands)
+                self.assertFalse(any(c.endswith(" qjackctl.service") or
+                                     c.endswith("/qjackctl.service") for c in commands),
+                                 commands)
+
     def test_build_and_library_stay(self):
         commands, _ = uninstall_commands("stemdeck")
         self.assertFalse(any("rm -rf" in c or "build-make" in c for c in commands), commands)
@@ -1348,6 +1363,57 @@ class StemDeckInstallsItsLibrary(unittest.TestCase):
         self.assertEqual(STEMDECK_SETTINGS, path.read_text())
         self.assertTrue(any(str(library) in line and "stemFolder" in line for line in log))
         self.assertIn("systemctl --user stop stemdeck.service", log.commands())
+
+
+class StemDeckWiresItselfWithoutTheCore(unittest.TestCase):
+    """Without the Core nothing connects StemDeck to zita-j2n (a3nuc2,
+    2026-10-06): a QjackCtl with StemDeck's patchbay does. With the Core its
+    own patchbay does, and a second QjackCtl must not run there."""
+
+    PATCHBAY_UNIT = "qjackctl-stemdeck.service"
+    PATCHBAY = "/home/aaa/a3-system/stemdeck/.config/rncbc.org/stemdeck-without-core.xml"
+
+    def install(self, roles, installed_before=False):
+        from installer.roles import stemdeck
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(__import__("shutil").rmtree, tmp)
+        ctx, log = context(tmp, {("stemdeck", "library"): str(Path(tmp) / "stems"),
+                                 **{("roles", r): "yes" for r in roles}})
+        ctx.runner = RecordingRunner(log=log)
+        if installed_before:
+            ctx.user_units.mkdir(parents=True, exist_ok=True)
+            (ctx.user_units / self.PATCHBAY_UNIT).touch()
+        with mock.patch.object(stemdeck, "ensure_juce", lambda _ctx: Path("/juce")):
+            stemdeck.StemDeck().install(ctx)
+        return log.commands(), ctx
+
+    def test_without_the_core_its_patchbay_unit_is_installed_and_enabled(self):
+        commands, ctx = self.install(roles=())
+        source = REPO / "stemdeck" / ".config/systemd/user" / self.PATCHBAY_UNIT
+        self.assertIn(f"install -D -m 644 {source} {ctx.user_units / self.PATCHBAY_UNIT}",
+                      commands)
+        self.assertIn(f"systemctl --user enable {self.PATCHBAY_UNIT}", commands)
+        self.assertIn(f"systemctl --user restart {self.PATCHBAY_UNIT}", commands)
+
+    def test_the_patchbay_is_named_in_the_checkout_not_copied(self):
+        commands, _ = self.install(roles=())
+        self.assertFalse(any("rncbc.org" in c for c in commands), commands)
+        unit = (REPO / "stemdeck" / ".config/systemd/user" / self.PATCHBAY_UNIT).read_text()
+        self.assertIn(f"ExecStart=/usr/bin/qjackctl -a {self.PATCHBAY}\n", unit)
+
+    def test_with_the_core_nothing_of_it(self):
+        commands, _ = self.install(roles=("core",))
+        self.assertFalse(any("qjackctl" in c for c in commands), commands)
+
+    def test_a_machine_becoming_a_core_loses_it(self):
+        """Installed earlier without the Core: the Core's qjackctl.service
+        would run beside it, two QjackCtls on one JACK."""
+        commands, ctx = self.install(roles=("core",), installed_before=True)
+        self.assertIn(f"systemctl --user disable --now {self.PATCHBAY_UNIT}", commands)
+        self.assertIn(f"rm -f {ctx.user_units / self.PATCHBAY_UNIT}", commands)
+        self.assertFalse(any(c.startswith(("systemctl --user enable",
+                                           "systemctl --user restart"))
+                             and "qjackctl" in c for c in commands), commands)
 
 
 class AnUnreadableSettingsFileIsNotADarkScreen(unittest.TestCase):

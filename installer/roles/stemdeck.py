@@ -20,7 +20,6 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from .. import package as debs
-from ..system import CommandFailed
 from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
                    enable_and_restart, install_user_unit, recorded_roles,
                    remove_files, systemctl_user)
@@ -128,12 +127,15 @@ class StemDeck(Role):
         juce = ensure_juce(ctx)
         _refuse_shadowing_leftovers(ctx)
         deb = build_stemdeck(ctx, juce)
-        aside = _set_aside_hand_unit(ctx)
+        done = []
         try:
+            _set_aside_hand_unit(ctx, done)
             run.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",
                      "--allow-downgrades", "--allow-change-held-packages", deb], root=True)
-        except CommandFailed:
-            _put_hand_unit_back(ctx, aside)
+        except BaseException:
+            # BaseException: a Ctrl-C at the sudo prompt must not leave the
+            # machine with its unit disabled, renamed and no package either.
+            _put_hand_unit_back(ctx, done)
             raise
         run.run(["apt-mark", "hold", PACKAGE], root=True)
 
@@ -244,6 +246,9 @@ def build_stemdeck(ctx, juce):
     return debs.deb_path(out, PACKAGE, debs.version_of(source, commit))
 
 
+DISABLED, MOVED = "disabled", "moved"
+
+
 def _hand_unit(ctx):
     return ctx.user_units / UNIT
 
@@ -264,28 +269,31 @@ def _refuse_shadowing_leftovers(ctx):
                         "the installer overwrites neither.")
 
 
-def _set_aside_hand_unit(ctx):
+def _set_aside_hand_unit(ctx, done):
     """A stemdeck.service in ~/.config/systemd/user -- the copy earlier installs
     put there, or one made by hand -- shadows the packaged unit: the package
     would seem to change nothing. It is disabled (its wants links go) and
     renamed, never deleted; its drop-ins (a3-core.conf) stay and apply to the
-    packaged unit. Done right before apt, so a failed build leaves it running;
-    returns the new name, or None when there was nothing to move."""
+    packaged unit. Done right before apt, so a failed build leaves it running.
+    Each step is noted in `done` (the disable before it is tried, the rename
+    once it is made) so that _put_hand_unit_back undoes exactly those."""
     hand, aside = _hand_unit(ctx), _aside_name(ctx)
     if not hand.is_file():
-        return None
+        return
     ctx.runner.log(f"{hand} would shadow the package's unit: set aside as {aside.name}.")
+    done.append(DISABLED)
     systemctl_user(ctx, "disable", UNIT, check=False)
     ctx.runner.run(["mv", "-n", hand, aside])
-    return aside
+    done.append(MOVED)
 
 
-def _put_hand_unit_back(ctx, aside):
-    """apt failed: the machine keeps the unit it had."""
-    if aside is None:
+def _put_hand_unit_back(ctx, done):
+    """The package did not go in: the machine keeps the unit it had."""
+    if not done:
         return
-    ctx.runner.log(f"apt failed: {aside.name} goes back to {UNIT}.")
-    ctx.runner.run(["mv", "-n", aside, _hand_unit(ctx)], check=False)
+    ctx.runner.log(f"the package did not go in: {UNIT} is put back as it was.")
+    if MOVED in done:
+        ctx.runner.run(["mv", "-n", _aside_name(ctx), _hand_unit(ctx)], check=False)
     systemctl_user(ctx, "enable", UNIT, check=False)
 
 

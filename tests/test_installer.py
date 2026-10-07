@@ -1340,26 +1340,31 @@ def stemdeck_seams(fragment="/usr/lib/systemd/user/stemdeck.service"):
 class FailingRunner(RecordingRunner):
     """RecordingRunner whose commands containing `fail_on` end with an error."""
 
-    def __init__(self, fail_on, **kwargs):
+    def __init__(self, fail_on, error=None, once=False, **kwargs):
         super().__init__(**kwargs)
         self.fail_on = fail_on
+        self.error = error or (lambda: CommandFailed(f"{fail_on} ended with 100"))
+        self.once = once
 
     def run(self, args, **kwargs):
         super().run(args, **kwargs)
-        if self.fail_on in " ".join(str(a) for a in args):
-            raise CommandFailed(f"{self.fail_on} ended with 100")
+        if self.fail_on and self.fail_on in " ".join(str(a) for a in args):
+            if self.once:
+                self.fail_on = None
+            raise self.error()
         return 0
 
 
 class StemDeckComesAsAPackage(unittest.TestCase):
     def install(self, roles=("core",), hand_unit=None, aside=False, fragment=None,
-                fail_on=None, symlink=False, twice=False, keep=None):
+                fail_on=None, symlink=False, twice=False, keep=None, error=None, once=False):
         from installer.roles import stemdeck
         tmp = tempfile.mkdtemp()
         self.addCleanup(__import__("shutil").rmtree, tmp)
         ctx, log = context(tmp, {("stemdeck", "library"): str(Path(tmp) / "stems"),
                                  **{("roles", r): "yes" for r in roles}})
-        ctx.runner = FailingRunner(fail_on, log=log) if fail_on else RecordingRunner(log=log)
+        ctx.runner = (FailingRunner(fail_on, error=error, once=once, log=log) if fail_on
+                      else RecordingRunner(log=log))
         ctx.user_units.mkdir(parents=True)
         if symlink:
             (ctx.user_units / "stemdeck.service").symlink_to("/nonexistent/stemdeck.service")
@@ -1468,6 +1473,39 @@ class StemDeckComesAsAPackage(unittest.TestCase):
         self.assertLess(away, back)
         self.assertLess(back, commands.index("systemctl --user enable stemdeck.service"))
         self.assertNotIn("apt-mark hold stemdeck", commands)
+
+    def test_ctrl_c_during_apt_puts_the_hand_unit_back(self):
+        """A Ctrl-C at the sudo prompt is no CommandFailed: without the put-back
+        the machine is left with the hand unit renamed, disabled, and no package."""
+        keep = []
+        with self.assertRaises(KeyboardInterrupt):
+            self.install(hand_unit="x", fail_on="apt-get install", error=KeyboardInterrupt,
+                         keep=keep)
+        commands, ctx = keep[0]
+        hand, aside = ctx.user_units / "stemdeck.service", ctx.user_units / "stemdeck.service.before-package"
+        back = commands.index(f"mv -n {aside} {hand}")
+        self.assertLess(back, commands.index("systemctl --user enable stemdeck.service"))
+        self.assertNotIn("apt-mark hold stemdeck", commands)
+
+    def test_ctrl_c_at_the_disable_enables_the_hand_unit_again(self):
+        keep = []
+        with self.assertRaises(KeyboardInterrupt):
+            self.install(hand_unit="x", fail_on="systemctl --user disable", error=KeyboardInterrupt,
+                         keep=keep)
+        commands, _ = keep[0]
+        self.assertIn("systemctl --user enable stemdeck.service", commands)
+        self.assertFalse(any(c.startswith("mv ") for c in commands), commands)
+        self.assertFalse(any("apt-get install" in c for c in commands), commands)
+
+    def test_a_failed_set_aside_enables_the_hand_unit_again(self):
+        keep = []
+        with self.assertRaises(CommandFailed):
+            self.install(hand_unit="x", fail_on="mv -n", once=True, keep=keep)
+        commands, _ = keep[0]
+        self.assertEqual(1, sum(c.startswith("mv ") for c in commands), commands)
+        self.assertLess(commands.index("systemctl --user disable stemdeck.service"),
+                        commands.index("systemctl --user enable stemdeck.service"))
+        self.assertFalse(any("apt-get install" in c for c in commands), commands)
 
     def test_a_symlink_shadowing_the_package_is_refused_before_anything_is_built(self):
         keep = []

@@ -300,12 +300,12 @@ class DebianScripts(unittest.TestCase):
         with self.assertRaises(package.BuildError):
             package.install_debian(src, stage)
 
-    @unittest.skipUnless((Path.home() / "a3-system/wt/stemdeck/feat/deb-package/packaging/DEBIAN").is_dir(),
-                         "stemdeck packaging worktree missing")
+    @unittest.skipUnless((REPO / "stemdeck/packaging/DEBIAN").is_dir(),
+                         "the stemdeck submodule is not checked out here")
     def test_stemdecks_own_four_files_are_all_there(self):
         stage = tmpdir(self) / "stage"
         stage.mkdir()
-        package.install_debian(Path.home() / "a3-system/wt/stemdeck/feat/deb-package", stage)
+        package.install_debian(REPO / "stemdeck", stage)
         self.assertEqual(sorted(self.SCRIPTS), sorted(p.name for p in (stage / "DEBIAN").iterdir()))
 
 

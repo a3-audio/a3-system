@@ -105,6 +105,14 @@ class Preseeding(unittest.TestCase):
     def test_the_chosen_parts(self):
         self.assertIn("a3-core a3-core/replace-config multiselect reaper, i3", self.lines())
 
+    def test_the_network_answers_are_marked_as_the_installers(self):
+        """seen alone is no sign: package 1.0.0 left it set, and the postinst
+        took it for the installer's answer (a3-core#68). The postinst takes
+        the network answers only with this marker, and clears it."""
+        for answer in ("yes", "no"):
+            self.assertIn("a3-core a3-core/preseeded boolean true",
+                          self.lines(configure_network=answer), answer)
+
 
 class Tags(unittest.TestCase):
     def test_newest_first_and_numbers_as_numbers(self):

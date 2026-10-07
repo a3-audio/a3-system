@@ -7,8 +7,8 @@ from the submodule it is exactly the release's, also offline. It is then
 held, so `apt upgrade` does not move it off the release.
 
 Its debconf questions are asked here, with the rest, and handed over
-preseeded and marked seen; the postinst takes them as given (a3-core
-8573e2b, 8dcb2c7). The beat-analyzer comes with it: the package's
+preseeded and marked seen, the network answers with the a3-core/preseeded
+marker; the postinst takes them as given (a3-core 8573e2b, 8dcb2c7, #68). The beat-analyzer comes with it: the package's
 a3-user-install.service builds it from ~/a3-system/beat-analyzer.
 """
 
@@ -98,6 +98,9 @@ def preseed_lines(settings, replace):
             ("dns", "string", settings.get("core", "dns")),
             ("bridge-with", "string", settings.get("core", "bridge_with")),
         ]
+    # The sign the postinst takes the network answers by, and clears; seen
+    # is none, an older package left it set (a3-core#68).
+    lines.append(("preseeded", "boolean", "true"))
     lines.append(("headless-display", "boolean", flag("headless")))
     if replace is not None:
         lines.append(("replace-config", "multiselect", ", ".join(replace)))

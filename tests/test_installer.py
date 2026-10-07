@@ -342,13 +342,6 @@ JUCE_NEEDS = (
 )
 STEMDECK_NEEDS = JUCE_NEEDS + (
     "libflac-dev", "libvorbis-dev", "libogg-dev", "libjack-jackd2-dev",
-    # its unit waits for JACK with jack_wait (stemdeck a521412), on a
-    # machine without the Core too
-    "jack-example-tools",
-    # its on-screen keyboard starts onboard
-    "onboard",
-    # its unit waits for the window with xdotool (rig-keep-the-screen.sh)
-    "xdotool",
     # without the Core, qjackctl-stemdeck.service runs QjackCtl with
     # StemDeck's patchbay (stemdeck .config/rncbc.org)
     "qjackctl")
@@ -861,7 +854,8 @@ class RolesFoundOnAMachineSetUpBefore(unittest.TestCase):
                 (units / "stemdeck.service").touch()
             if motion:
                 (units / "a3-motion.service").touch()
-            return discover_roles(units, core_installed=lambda: core)
+            return discover_roles(units, core_installed=lambda: core,
+                                  stemdeck_installed=lambda: False)
 
     def test_every_combination(self):
         import itertools
@@ -870,6 +864,13 @@ class RolesFoundOnAMachineSetUpBefore(unittest.TestCase):
                 expected = [n for n, there in (("core", core), ("stemdeck", stemdeck),
                                                ("motion", motion)) if there]
                 self.assertEqual(expected, self.discover(core, stemdeck, motion))
+
+    def test_stemdeck_is_found_by_its_package_too(self):
+        from installer.leave import discover_roles
+        with tempfile.TemporaryDirectory() as tmp:
+            found = discover_roles(Path(tmp), core_installed=lambda: False,
+                                   stemdeck_installed=lambda: True)
+        self.assertEqual(["stemdeck"], found)
 
     def test_the_package_counts_when_dpkg_says_installed(self):
         from installer.leave import package_installed
@@ -980,15 +981,16 @@ class CoreLeaves(unittest.TestCase):
 class StemDeckLeaves(unittest.TestCase):
     def test_without_a_core_its_zita_units_go_too(self):
         commands, _ = uninstall_commands("stemdeck")
-        for unit in ("stemdeck.service", "zita-n2j.service", "zita-j2n.service"):
+        for unit in ("zita-n2j.service", "zita-j2n.service"):
             self.assertIn(f"systemctl --user disable --now {unit}", commands)
             self.assertIn(f"rm -f ~units/{unit}", commands)
-        self.assertEqual("systemctl --user daemon-reload", commands[-1])
+        self.assertIn("systemctl --user disable --now stemdeck.service", commands)
+        self.assertIn("systemctl --user daemon-reload", commands)
 
     def test_with_the_core_chosen_only_stemdeck(self):
         commands, _ = uninstall_commands("stemdeck", chosen=["core"])
         self.assertIn("systemctl --user disable --now stemdeck.service", commands)
-        self.assertIn("rm -f ~units/stemdeck.service", commands)
+        self.assertNotIn("rm -f ~units/stemdeck.service", commands)
         self.assertFalse(any("zita" in c for c in commands), commands)
 
     def test_a_core_still_installed_keeps_its_zita_files(self):
@@ -1317,6 +1319,125 @@ class RecordingRunner(Runner):
         return 0
 
 
+PIN = "0123456789abcdef0123456789abcdef01234567"
+
+
+def stemdeck_seams(fragment="/usr/lib/systemd/user/stemdeck.service"):
+    """The StemDeck role without JUCE, git or this machine's systemd."""
+    from contextlib import ExitStack
+    from installer.roles import stemdeck
+    stack = ExitStack()
+    stack.enter_context(mock.patch.object(stemdeck, "ensure_juce", lambda _ctx: Path("/juce")))
+    stack.enter_context(mock.patch.object(stemdeck, "pinned_commit", lambda _ctx: PIN))
+    stack.enter_context(mock.patch.object(stemdeck.debs, "version_of", lambda *_: "03.0+7"))
+    stack.enter_context(mock.patch.object(stemdeck, "fragment_path", lambda _ctx: fragment))
+    return stack
+
+
+class StemDeckComesAsAPackage(unittest.TestCase):
+    def install(self, roles=("core",), hand_unit=None, aside=False, fragment=None):
+        from installer.roles import stemdeck
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(__import__("shutil").rmtree, tmp)
+        ctx, log = context(tmp, {("stemdeck", "library"): str(Path(tmp) / "stems"),
+                                 **{("roles", r): "yes" for r in roles}})
+        ctx.runner = RecordingRunner(log=log)
+        ctx.user_units.mkdir(parents=True)
+        if hand_unit is not None:
+            (ctx.user_units / "stemdeck.service").write_text(hand_unit)
+        if aside:
+            (ctx.user_units / "stemdeck.service.before-package").write_text("older")
+        seams = stemdeck_seams(fragment) if fragment else stemdeck_seams()
+        with seams:
+            stemdeck.StemDeck().install(ctx)
+        return log.commands(), ctx
+
+    def test_it_builds_the_pinned_commit_off_the_checkout(self):
+        commands, ctx = self.install()
+        build = next(c for c in commands if "installer/package.py" in c)
+        self.assertIn(f"--rev {PIN}", build)
+        self.assertIn(f"--out {ctx.home / 'a3-debs'}", build)
+        self.assertIn(f"--cache {ctx.home / '.cache/a3-build'}", build)
+        self.assertIn("--jobs 2", build)
+        self.assertIn("--juce /juce", build)
+        self.assertFalse(any(c.startswith("cmake") or "build-make" in c for c in commands), commands)
+
+    def test_the_build_goes_through_the_cli_which_runs_at_nice_19(self):
+        """package.main() lowers the priority itself; a bare package.build()
+        call from the installer would not."""
+        import inspect
+        from installer import package
+        self.assertIn("lower_priority()", inspect.getsource(package.main))
+        commands, _ = self.install()
+        build = next(c for c in commands if "installer/package.py" in c)
+        self.assertTrue(build.startswith("python3 "), build)
+
+    def test_install_then_hold_then_restart(self):
+        commands, ctx = self.install()
+        deb = ctx.home / "a3-debs" / "stemdeck_03.0+7_amd64.deb"
+        install = next(i for i, c in enumerate(commands) if "apt-get install" in c)
+        self.assertIn(str(deb), commands[install])
+        hold = commands.index("apt-mark hold stemdeck")
+        restart = commands.index("systemctl --user restart stemdeck.service")
+        build = next(i for i, c in enumerate(commands) if "installer/package.py" in c)
+        self.assertLess(build, install)
+        self.assertLess(install, hold)
+        self.assertLess(hold, restart)
+
+    def test_the_unit_is_no_longer_copied_into_the_home(self):
+        commands, _ = self.install()
+        self.assertFalse(any(c.startswith("install -D") and c.endswith("/stemdeck.service")
+                             for c in commands), commands)
+
+    def test_a_hand_unit_is_disabled_and_set_aside_before_the_package(self):
+        commands, ctx = self.install(hand_unit="[Service]\nExecStart=/old\n")
+        disable = commands.index("systemctl --user disable stemdeck.service")
+        move = commands.index(f"mv -n {ctx.user_units / 'stemdeck.service'} "
+                              f"{ctx.user_units / 'stemdeck.service.before-package'}")
+        install = next(i for i, c in enumerate(commands) if "apt-get install" in c)
+        self.assertLess(disable, move)
+        self.assertLess(move, install)
+        self.assertFalse(any(c.startswith("rm") and "stemdeck.service" in c for c in commands))
+
+    def test_the_drop_in_folder_stays_where_it_is(self):
+        """stemdeck.service.d/a3-core.conf supplies After=/BindsTo=a3-jack to
+        the packaged unit."""
+        commands, _ = self.install(hand_unit="[Service]\n")
+        self.assertFalse(any("stemdeck.service.d" in c for c in commands), commands)
+        self.assertFalse(any(c.startswith("rmdir") for c in commands), commands)
+
+    def test_no_hand_unit_nothing_set_aside(self):
+        commands, _ = self.install()
+        self.assertFalse(any(c.startswith("mv ") for c in commands), commands)
+        self.assertNotIn("systemctl --user disable stemdeck.service", commands)
+
+    def test_two_hand_units_stop_it_before_anything_is_built(self):
+        with self.assertRaises(RoleError):
+            self.install(hand_unit="x", aside=True)
+
+    def test_a_unit_still_shadowing_the_package_is_an_error(self):
+        with self.assertRaises(RoleError) as raised:
+            self.install(fragment="/home/aaa/.config/systemd/user/stemdeck.service")
+        self.assertIn("shadows", str(raised.exception))
+
+
+class StemDeckLeavesThroughApt(unittest.TestCase):
+    def test_unhold_then_remove_never_purge(self):
+        commands, _ = uninstall_commands("stemdeck", chosen=["core"])
+        unhold = commands.index("apt-mark unhold stemdeck")
+        remove = next(i for i, c in enumerate(commands) if "apt-get remove" in c and "stemdeck" in c)
+        self.assertLess(unhold, remove)
+        self.assertFalse(any("purge" in c for c in commands), commands)
+
+    def test_its_data_stays(self):
+        commands, _ = uninstall_commands("stemdeck")
+        self.assertFalse(any(".local/share/stemdeck" in c for c in commands), commands)
+
+    def test_it_names_its_package(self):
+        from installer.roles.stemdeck import StemDeck
+        self.assertEqual(["stemdeck"], StemDeck().leaving_packages(None))
+
+
 class StemDeckInstallsItsLibrary(unittest.TestCase):
     def install(self, dry_run, settings_file=STEMDECK_SETTINGS, roles=("core",)):
         from installer.roles import stemdeck
@@ -1325,13 +1446,14 @@ class StemDeckInstallsItsLibrary(unittest.TestCase):
         library = Path(tmp) / "data" / "stems"
         ctx, log = context(tmp, {("stemdeck", "library"): str(library),
                                  **{("roles", r): "yes" for r in roles}})
+        ctx.user_units.mkdir(parents=True, exist_ok=True)
         if not dry_run:
             ctx.runner = RecordingRunner(log=log)
         path = Path(tmp) / ".config" / "StemDeck" / "StemDeck.settings"
         if settings_file is not None:
             path.parent.mkdir(parents=True)
             path.write_text(settings_file)
-        with mock.patch.object(stemdeck, "ensure_juce", lambda _ctx: Path("/juce")):
+        with stemdeck_seams():
             stemdeck.StemDeck().install(ctx)
         return log, path, library
 
@@ -1371,7 +1493,6 @@ class StemDeckWiresItselfWithoutTheCore(unittest.TestCase):
     own patchbay does, and a second QjackCtl must not run there."""
 
     PATCHBAY_UNIT = "qjackctl-stemdeck.service"
-    PATCHBAY = "/home/aaa/a3-system/stemdeck/.config/rncbc.org/stemdeck-without-core.xml"
 
     def install(self, roles, installed_before=False):
         from installer.roles import stemdeck
@@ -1380,10 +1501,10 @@ class StemDeckWiresItselfWithoutTheCore(unittest.TestCase):
         ctx, log = context(tmp, {("stemdeck", "library"): str(Path(tmp) / "stems"),
                                  **{("roles", r): "yes" for r in roles}})
         ctx.runner = RecordingRunner(log=log)
+        ctx.user_units.mkdir(parents=True, exist_ok=True)
         if installed_before:
-            ctx.user_units.mkdir(parents=True, exist_ok=True)
             (ctx.user_units / self.PATCHBAY_UNIT).touch()
-        with mock.patch.object(stemdeck, "ensure_juce", lambda _ctx: Path("/juce")):
+        with stemdeck_seams():
             stemdeck.StemDeck().install(ctx)
         return log.commands(), ctx
 
@@ -1395,11 +1516,9 @@ class StemDeckWiresItselfWithoutTheCore(unittest.TestCase):
         self.assertIn(f"systemctl --user enable {self.PATCHBAY_UNIT}", commands)
         self.assertIn(f"systemctl --user restart {self.PATCHBAY_UNIT}", commands)
 
-    def test_the_patchbay_is_named_in_the_checkout_not_copied(self):
+    def test_the_patchbay_is_not_copied(self):
         commands, _ = self.install(roles=())
         self.assertFalse(any("rncbc.org" in c for c in commands), commands)
-        unit = (REPO / "stemdeck" / ".config/systemd/user" / self.PATCHBAY_UNIT).read_text()
-        self.assertIn(f"ExecStart=/usr/bin/qjackctl -a {self.PATCHBAY}\n", unit)
 
     def test_with_the_core_nothing_of_it(self):
         commands, _ = self.install(roles=("core",))
@@ -1442,13 +1561,14 @@ class WithoutQuestionsStemDecksChoiceStays(unittest.TestCase):
         ctx, log = context(tmp, {("stemdeck", "library"): stored} if stored else {})
         ctx.runner = RecordingRunner(log=log)
         ctx.prompter = NotAsked()
+        ctx.user_units.mkdir(parents=True, exist_ok=True)
         path = Path(tmp) / ".config" / "StemDeck" / "StemDeck.settings"
         if settings_file is not None:
             path.parent.mkdir(parents=True)
             path.write_text(settings_file)
         role = stemdeck.StemDeck()
         role.configure(ctx)
-        with mock.patch.object(stemdeck, "ensure_juce", lambda _ctx: Path("/juce")):
+        with stemdeck_seams():
             role.install(ctx)
         return log, path, Path(tmp), ctx
 
@@ -1491,9 +1611,10 @@ class WithoutQuestionsStemDecksChoiceStays(unittest.TestCase):
 
 
 class StemDeckBringsTheKeyboard(unittest.TestCase):
-    def test_onboard_is_among_its_packages(self):
-        """StemDeck's on-screen keyboard starts onboard."""
-        self.assertIn("onboard", BY_NAME["stemdeck"].packages)
+    def test_onboard_comes_with_the_package_not_the_role(self):
+        """StemDeck's on-screen keyboard starts onboard; since the role installs
+        the stemdeck package, apt gets it from the package's Depends."""
+        self.assertNotIn("onboard", BY_NAME["stemdeck"].packages)
 
 
 IP_OUTPUT = """1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever

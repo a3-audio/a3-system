@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+"""Queue a package build on a3coreV01 by hand.
+
+    a3-rebuild <repo> [commit]
+
+The commit defaults to the repo's main on the local gitolite. The entry is
+written exactly as the gitolite hook writes it: into the spool's tmp/ as
+user git, then moved into queue/, so the builder never sees half a file.
+"""
+
+import re
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from a3common import Runner  # noqa: E402
+
+SPOOL = "/var/spool/a3-build"
+REPO_NAME = re.compile(r"^[a-z0-9][a-z0-9.+-]*$")
+COMMIT = re.compile(r"^[0-9a-f]{40}$")
+# $1 = commit, $2 = repo; both validated before they get here.
+ENQUEUE = (f'printf "%s\\n" "$1" > "{SPOOL}/tmp/$2" && '
+           f'mv -f "{SPOOL}/tmp/$2" "{SPOOL}/queue/$2"')
+
+
+def valid_repo(name):
+    return bool(REPO_NAME.match(name))
+
+
+def valid_commit(commit):
+    return bool(COMMIT.match(commit))
+
+
+def main_commit(runner, repo):
+    """The repo's main as gitolite has it, or None."""
+    listed = runner.capture(["git", "ls-remote", f"git@localhost:{repo}", "refs/heads/main"])
+    if listed.returncode != 0:
+        return None, listed.stderr.strip()
+    for line in listed.stdout.splitlines():
+        sha, _, ref = line.partition("\t")
+        if ref == "refs/heads/main" and valid_commit(sha):
+            return sha, ""
+    return None, f"{repo} has no main"
+
+
+def main(argv=None, runner=None, out=print):
+    argv = sys.argv[1:] if argv is None else argv
+    if not 1 <= len(argv) <= 2 or argv[0] in ("-h", "--help"):
+        out(__doc__.strip())
+        return 0 if argv and argv[0] in ("-h", "--help") else 2
+    repo = argv[0]
+    if not valid_repo(repo):
+        out(f"{repo!r} is not a repository name ([a-z0-9][a-z0-9.+-]*)")
+        return 2
+    commit = argv[1].lower() if len(argv) == 2 else None
+    if commit is not None and not valid_commit(commit):
+        out(f"{argv[1]!r} is not a commit: give the full 40 hex digits")
+        return 2
+
+    runner = runner or Runner()
+    if commit is None:
+        commit, why = main_commit(runner, repo)
+        if commit is None:
+            out(f"cannot read main of {repo}: {why}")
+            return 1
+
+    if runner.run(["sudo", "-u", "git", "sh", "-c", ENQUEUE, "a3-rebuild", commit, repo]) != 0:
+        out(f"could not queue {repo} {commit}")
+        return 1
+    out(f"queued {repo} {commit}")
+    out("follow it: a3-build-status, or sudo journalctl -u a3-build -f")
+    out("a commit that is already published is refused by reprepro (same version, new .deb)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

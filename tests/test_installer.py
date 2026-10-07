@@ -26,7 +26,7 @@ from installer.roles import core, motion, screen  # noqa: E402
 from installer.roles.motion import (Motion, drop_in_text, panel_usb_ids,  # noqa: E402
                                     serial_candidates)
 from installer.settings import Settings  # noqa: E402
-from installer.system import Runner  # noqa: E402
+from installer.system import CommandFailed, Runner  # noqa: E402
 
 
 class Log(list):
@@ -923,7 +923,7 @@ CORE_UNITS_SHIPPED = REPO / ("a3-core/platform-config/debian-x86_64/a3-core/home
                              ".local/share/a3-core/config/systemd/user")
 
 
-def uninstall_commands(name, chosen=(), installed=(), home_files=()):
+def uninstall_commands(name, chosen=(), installed=(), home_files=(), package_installed=True):
     """A role's uninstall in a dry run: the commands, without sudo, and the log."""
     with tempfile.TemporaryDirectory() as tmp:
         settings = {("roles", r): "yes" for r in chosen}
@@ -933,7 +933,10 @@ def uninstall_commands(name, chosen=(), installed=(), home_files=()):
         for rel in home_files:
             (Path(tmp) / rel).parent.mkdir(parents=True, exist_ok=True)
             (Path(tmp) / rel).touch()
-        BY_NAME[name].uninstall(ctx)
+        from installer.roles import stemdeck as stemdeck_module
+        with mock.patch.object(stemdeck_module, "package_is_installed",
+                               lambda _ctx: package_installed):
+            BY_NAME[name].uninstall(ctx)
         units = str(ctx.user_units)
         commands = [c.removeprefix("sudo ").replace(units, "~units").replace(tmp, "~")
                     for c in log.commands()]
@@ -1334,22 +1337,49 @@ def stemdeck_seams(fragment="/usr/lib/systemd/user/stemdeck.service"):
     return stack
 
 
+class FailingRunner(RecordingRunner):
+    """RecordingRunner whose commands containing `fail_on` end with an error."""
+
+    def __init__(self, fail_on, **kwargs):
+        super().__init__(**kwargs)
+        self.fail_on = fail_on
+
+    def run(self, args, **kwargs):
+        super().run(args, **kwargs)
+        if self.fail_on in " ".join(str(a) for a in args):
+            raise CommandFailed(f"{self.fail_on} ended with 100")
+        return 0
+
+
 class StemDeckComesAsAPackage(unittest.TestCase):
-    def install(self, roles=("core",), hand_unit=None, aside=False, fragment=None):
+    def install(self, roles=("core",), hand_unit=None, aside=False, fragment=None,
+                fail_on=None, symlink=False, twice=False, keep=None):
         from installer.roles import stemdeck
         tmp = tempfile.mkdtemp()
         self.addCleanup(__import__("shutil").rmtree, tmp)
         ctx, log = context(tmp, {("stemdeck", "library"): str(Path(tmp) / "stems"),
                                  **{("roles", r): "yes" for r in roles}})
-        ctx.runner = RecordingRunner(log=log)
+        ctx.runner = FailingRunner(fail_on, log=log) if fail_on else RecordingRunner(log=log)
         ctx.user_units.mkdir(parents=True)
+        if symlink:
+            (ctx.user_units / "stemdeck.service").symlink_to("/nonexistent/stemdeck.service")
         if hand_unit is not None:
             (ctx.user_units / "stemdeck.service").write_text(hand_unit)
         if aside:
             (ctx.user_units / "stemdeck.service.before-package").write_text("older")
         seams = stemdeck_seams(fragment) if fragment else stemdeck_seams()
         with seams:
-            stemdeck.StemDeck().install(ctx)
+            try:
+                stemdeck.StemDeck().install(ctx)
+            finally:
+                if keep is not None:
+                    keep.append((log.commands(), ctx))
+            if twice:
+                hand = ctx.user_units / "stemdeck.service"
+                if hand.exists():  # the recording runner moved nothing; do it as mv would
+                    hand.rename(hand.with_name("stemdeck.service.before-package"))
+                log.clear()
+                stemdeck.StemDeck().install(ctx)
         return log.commands(), ctx
 
     def test_it_builds_the_pinned_commit_off_the_checkout(self):
@@ -1362,15 +1392,19 @@ class StemDeckComesAsAPackage(unittest.TestCase):
         self.assertIn("--juce /juce", build)
         self.assertFalse(any(c.startswith("cmake") or "build-make" in c for c in commands), commands)
 
-    def test_the_build_goes_through_the_cli_which_runs_at_nice_19(self):
-        """package.main() lowers the priority itself; a bare package.build()
-        call from the installer would not."""
-        import inspect
-        from installer import package
-        self.assertIn("lower_priority()", inspect.getsource(package.main))
+    def test_the_build_goes_through_the_cli(self):
         commands, _ = self.install()
         build = next(c for c in commands if "installer/package.py" in c)
         self.assertTrue(build.startswith("python3 "), build)
+
+    def test_the_cli_lowers_the_priority_before_it_builds(self):
+        from installer import package
+        order = []
+        with mock.patch.object(package, "lower_priority", lambda: order.append("nice")), \
+                mock.patch.object(package, "build",
+                                  lambda *a, **k: order.append("build") or Path("/x.deb")):
+            package.main(["/some/repo", "--rev", PIN])
+        self.assertEqual(["nice", "build"], order)
 
     def test_install_then_hold_then_restart(self):
         commands, ctx = self.install()
@@ -1415,6 +1449,40 @@ class StemDeckComesAsAPackage(unittest.TestCase):
         with self.assertRaises(RoleError):
             self.install(hand_unit="x", aside=True)
 
+    def test_a_failed_build_leaves_the_hand_unit_alone(self):
+        keep = []
+        with self.assertRaises(CommandFailed):
+            self.install(hand_unit="x", fail_on="installer/package.py", keep=keep)
+        commands, _ = keep[0]
+        self.assertFalse(any(c.startswith("mv ") for c in commands), commands)
+        self.assertNotIn("systemctl --user disable stemdeck.service", commands)
+
+    def test_a_failed_apt_install_puts_the_hand_unit_back(self):
+        keep = []
+        with self.assertRaises(CommandFailed):
+            self.install(hand_unit="x", fail_on="apt-get install", keep=keep)
+        commands, ctx = keep[0]
+        hand, aside = ctx.user_units / "stemdeck.service", ctx.user_units / "stemdeck.service.before-package"
+        away = commands.index(f"mv -n {hand} {aside}")
+        back = commands.index(f"mv -n {aside} {hand}")
+        self.assertLess(away, back)
+        self.assertLess(back, commands.index("systemctl --user enable stemdeck.service"))
+        self.assertNotIn("apt-mark hold stemdeck", commands)
+
+    def test_a_symlink_shadowing_the_package_is_refused_before_anything_is_built(self):
+        keep = []
+        with self.assertRaises(RoleError) as raised:
+            self.install(symlink=True, keep=keep)
+        self.assertIn("stemdeck.service", str(raised.exception))
+        self.assertEqual([], [c for c in keep[0][0] if "package.py" in c or "apt" in c])
+
+    def test_a_second_run_changes_nothing_but_apt_hold_and_restart(self):
+        commands, _ = self.install(hand_unit="x", twice=True)
+        self.assertFalse(any(c.startswith("mv ") or " disable " in c for c in commands), commands)
+        self.assertTrue(any("apt-get install" in c for c in commands))
+        self.assertIn("apt-mark hold stemdeck", commands)
+        self.assertIn("systemctl --user restart stemdeck.service", commands)
+
     def test_a_unit_still_shadowing_the_package_is_an_error(self):
         with self.assertRaises(RoleError) as raised:
             self.install(fragment="/home/aaa/.config/systemd/user/stemdeck.service")
@@ -1428,6 +1496,17 @@ class StemDeckLeavesThroughApt(unittest.TestCase):
         remove = next(i for i, c in enumerate(commands) if "apt-get remove" in c and "stemdeck" in c)
         self.assertLess(unhold, remove)
         self.assertFalse(any("purge" in c for c in commands), commands)
+
+    def test_an_old_style_install_loses_its_unit_file_and_needs_no_apt(self):
+        commands, _ = uninstall_commands(
+            "stemdeck", home_files=[".config/systemd/user/stemdeck.service"],
+            package_installed=False)
+        self.assertIn("rm -f ~units/stemdeck.service", commands)
+        self.assertFalse(any("apt" in c for c in commands), commands)
+
+    def test_a_missing_unit_file_is_not_removed(self):
+        commands, _ = uninstall_commands("stemdeck", package_installed=True)
+        self.assertNotIn("rm -f ~units/stemdeck.service", commands)
 
     def test_its_data_stays(self):
         commands, _ = uninstall_commands("stemdeck")
@@ -1478,6 +1557,10 @@ class StemDeckInstallsItsLibrary(unittest.TestCase):
         _, path, library = self.install(dry_run=False, settings_file=None)
         _, values = stemdeck_values(path.read_text())
         self.assertEqual({"stemFolder": (str(library), [])}, values)
+
+    def test_a_dry_run_says_it_skipped_the_shadow_check(self):
+        log, _, _ = self.install(dry_run=True)
+        self.assertTrue(any("shadow" in line and "skipped" in line for line in log))
 
     def test_a_dry_run_writes_nothing_and_says_what_it_would(self):
         log, path, library = self.install(dry_run=True)

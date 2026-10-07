@@ -20,6 +20,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from .. import package as debs
+from ..system import CommandFailed
 from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
                    enable_and_restart, install_user_unit, recorded_roles,
                    remove_files, systemctl_user)
@@ -125,10 +126,15 @@ class StemDeck(Role):
     def install(self, ctx):
         run = ctx.runner
         juce = ensure_juce(ctx)
-        _set_aside_hand_unit(ctx)
+        _refuse_shadowing_leftovers(ctx)
         deb = build_stemdeck(ctx, juce)
-        run.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",
-                 "--allow-downgrades", "--allow-change-held-packages", deb], root=True)
+        aside = _set_aside_hand_unit(ctx)
+        try:
+            run.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",
+                     "--allow-downgrades", "--allow-change-held-packages", deb], root=True)
+        except CommandFailed:
+            _put_hand_unit_back(ctx, aside)
+            raise
         run.run(["apt-mark", "hold", PACKAGE], root=True)
 
         units = ctx.repo / SOURCE / ".config" / "systemd" / "user"
@@ -183,13 +189,19 @@ class StemDeck(Role):
 
     def leaving_files(self, ctx):
         """The units the installer put into ~/.config; stemdeck.service is the package's."""
-        return [ctx.user_units / unit for unit in self.leaving_units(ctx) if unit != UNIT]
+        files = [ctx.user_units / unit for unit in self.leaving_units(ctx) if unit != UNIT]
+        hand = ctx.user_units / UNIT
+        if hand.is_file() and not hand.is_symlink():
+            files.append(hand)  # an install from before the package
+        return files
 
     def leaving_packages(self, ctx):
         return [PACKAGE]
 
     def uninstall(self, ctx):
         super().uninstall(ctx)
+        if not package_is_installed(ctx):
+            return
         ctx.runner.run(["apt-mark", "unhold", PACKAGE], root=True)
         ctx.runner.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "remove", "-y",
                         PACKAGE], root=True)
@@ -232,22 +244,54 @@ def build_stemdeck(ctx, juce):
     return debs.deb_path(out, PACKAGE, debs.version_of(source, commit))
 
 
+def _hand_unit(ctx):
+    return ctx.user_units / UNIT
+
+
+def _aside_name(ctx):
+    return _hand_unit(ctx).with_name(UNIT + BEFORE_PACKAGE)
+
+
+def _refuse_shadowing_leftovers(ctx):
+    """Up front, before anything is built: what the installer will not resolve
+    by itself."""
+    hand, aside = _hand_unit(ctx), _aside_name(ctx)
+    if hand.is_symlink():
+        raise RoleError(f"{hand} is a symlink and would shadow the package's unit; "
+                        "remove it by hand and run the installer again.")
+    if hand.is_file() and aside.exists():
+        raise RoleError(f"{hand} and {aside} both exist; move one of them away by hand -- "
+                        "the installer overwrites neither.")
+
+
 def _set_aside_hand_unit(ctx):
     """A stemdeck.service in ~/.config/systemd/user -- the copy earlier installs
     put there, or one made by hand -- shadows the packaged unit: the package
     would seem to change nothing. It is disabled (its wants links go) and
     renamed, never deleted; its drop-ins (a3-core.conf) stay and apply to the
-    packaged unit."""
-    hand = ctx.user_units / UNIT
-    if hand.is_symlink() or not hand.is_file():
-        return
-    aside = hand.with_name(UNIT + BEFORE_PACKAGE)
-    if aside.exists():
-        raise RoleError(f"{hand} and {aside} both exist; move one of them away by hand -- "
-                        "the installer overwrites neither.")
+    packaged unit. Done right before apt, so a failed build leaves it running;
+    returns the new name, or None when there was nothing to move."""
+    hand, aside = _hand_unit(ctx), _aside_name(ctx)
+    if not hand.is_file():
+        return None
     ctx.runner.log(f"{hand} would shadow the package's unit: set aside as {aside.name}.")
     systemctl_user(ctx, "disable", UNIT, check=False)
     ctx.runner.run(["mv", "-n", hand, aside])
+    return aside
+
+
+def _put_hand_unit_back(ctx, aside):
+    """apt failed: the machine keeps the unit it had."""
+    if aside is None:
+        return
+    ctx.runner.log(f"apt failed: {aside.name} goes back to {UNIT}.")
+    ctx.runner.run(["mv", "-n", aside, _hand_unit(ctx)], check=False)
+    systemctl_user(ctx, "enable", UNIT, check=False)
+
+
+def package_is_installed(ctx):
+    from ..leave import package_installed  # leave imports the roles
+    return package_installed(PACKAGE)
 
 
 def fragment_path(ctx):
@@ -257,6 +301,7 @@ def fragment_path(ctx):
 
 def _check_packaged_unit_wins(ctx):
     if ctx.runner.dry_run:
+        ctx.runner.log(f"# dry run: the check that no unit file shadows {PACKAGED_UNIT} is skipped.")
         return
     found = fragment_path(ctx)
     if found != PACKAGED_UNIT:

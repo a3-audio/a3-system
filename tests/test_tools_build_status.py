@@ -19,6 +19,13 @@ SubState=start
 StateChangeTimestamp=Wed 2026-10-07 21:40:02 CEST
 """
 
+SHOW_DONE = """ActiveState=inactive
+SubState=dead
+StateChangeTimestamp=Wed 2026-10-07 23:33:39 CEST
+Result=success
+ExecMainExitTimestamp=Wed 2026-10-07 23:33:39 CEST
+"""
+
 PACKAGES = """Package: stemdeck
 Version: 03.0+7
 Architecture: amd64
@@ -73,6 +80,28 @@ class Service(unittest.TestCase):
             self.assertIn("a3-build.service: activating (start) since Wed 2026-10-07 21:40:02 CEST",
                           text)
 
+    def test_inactive_shows_the_last_result(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            runner = FakeRunner([(["systemctl", "show", "a3-build.service"], 0, SHOW_DONE, "")])
+            _, text = report(runner, tmp)
+            self.assertIn("a3-build.service: inactive (dead) since Wed 2026-10-07 23:33:39 CEST"
+                          " — last run: success, 23:33:39", text)
+
+    def test_running_shows_no_last_result(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            runner = FakeRunner([(["systemctl", "show", "a3-build.service"], 0,
+                                  SHOW_RUNNING + "Result=success\n", "")])
+            _, text = report(runner, tmp)
+            self.assertNotIn("last run", text)
+
+    def test_result_is_asked_for(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            runner = FakeRunner()
+            report(runner, tmp)
+            [args] = [a for a in runner.everything() if a[:3] == ["systemctl", "show", "a3-build.service"]]
+            self.assertIn("Result", args)
+            self.assertIn("ExecMainExitTimestamp", args)
+
 
 class Published(unittest.TestCase):
     def test_reprepro_list_is_shown(self):
@@ -98,22 +127,65 @@ class Published(unittest.TestCase):
             self.assertEqual(0, code)
 
 
+def build_journal(builds):
+    """A journal of `builds` runs, each drowned in compiler output."""
+    lines = []
+    for n in range(builds):
+        lines.append(f"Oct 07 23:{n:02d}:00 a3coreV01 systemd[1]: Starting a3-build.service - Build queued A3 packages...")
+        lines.append(f"Oct 07 23:{n:02d}:01 a3coreV01 drain[9]: a3-build: stemdeck at {SHA}")
+        lines += [f"Oct 07 23:{n:02d}:02 a3coreV01 drain[9]: juce_core.cpp:{i}: warning: unused" for i in range(40)]
+        lines.append(f"Oct 07 23:{n:02d}:30 a3coreV01 drain[9]: a3-build: published stemdeck_03.0+{n}_amd64.deb")
+        lines.append(f"Oct 07 23:{n:02d}:31 a3coreV01 systemd[1]: a3-build.service: Deactivated successfully.")
+        lines.append(f"Oct 07 23:{n:02d}:31 a3coreV01 systemd[1]: Finished a3-build.service - Build queued A3 packages.")
+    return "\n".join(lines) + "\n"
+
+
 class Journal(unittest.TestCase):
-    def test_last_lines_are_asked_for(self):
+    def journal(self, text, err=""):
         with tempfile.TemporaryDirectory() as tmp:
-            runner = FakeRunner([(["journalctl"], 0, "a3-build: published x.deb\n", "")])
-            _, text = report(runner, tmp)
-            self.assertIn("a3-build: published x.deb", text)
-            self.assertIn(["journalctl", "-u", "a3-build", "-n", "15", "--no-pager"],
-                          runner.everything())
+            runner = FakeRunner([(["journalctl"], 0, text, err)])
+            code, out = report(runner, tmp)
+        return code, out, runner
+
+    def test_compiler_output_is_left_out(self):
+        _, text, _ = self.journal(build_journal(1))
+        self.assertIn(f"a3-build: stemdeck at {SHA}", text)
+        self.assertIn("a3-build: published stemdeck_03.0+0_amd64.deb", text)
+        self.assertNotIn("warning", text)
+
+    def test_only_the_last_ten_build_lines(self):
+        _, text, _ = self.journal(build_journal(8))
+        shown = [line for line in text.splitlines() if "a3-build: " in line and "drain" in line]
+        self.assertEqual(10, len(shown))
+        self.assertIn("published stemdeck_03.0+7_amd64.deb", shown[-1])
+        self.assertNotIn("03.0+2_amd64", text)
+
+    def test_the_last_systemd_result_is_shown(self):
+        _, text, _ = self.journal(build_journal(2))
+        result = [line for line in text.splitlines() if "systemd[1]" in line]
+        self.assertEqual(1, len(result))
+        self.assertIn("23:01:31", result[0])
+        self.assertIn("Finished a3-build.service", result[0])
+
+    def test_a_failed_run_is_the_result(self):
+        text = build_journal(1) + (
+            "Oct 07 23:50:00 a3coreV01 systemd[1]: a3-build.service: Failed with result 'exit-code'.\n"
+            "Oct 07 23:50:00 a3coreV01 systemd[1]: Failed to start a3-build.service - Build.\n")
+        _, out, _ = self.journal(text)
+        self.assertIn("Failed to start a3-build.service", out)
+        self.assertNotIn("Finished a3-build.service", out)
+
+    def test_enough_of_the_journal_is_read(self):
+        _, _, runner = self.journal("")
+        [args] = [a for a in runner.everything() if a[0] == "journalctl"]
+        self.assertEqual(["journalctl", "-u", "a3-build", "--no-pager"], args[:4])
+        self.assertGreaterEqual(int(args[args.index("-n") + 1]), 1000)
 
     def test_unreadable_gives_the_one_line_hint(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            runner = FakeRunner([(["journalctl"], 0, "-- No entries --\n", JOURNAL_DENIED_STDERR)])
-            code, text = report(runner, tmp)
-            self.assertIn("sudo adduser $USER adm, then log in again", text)
-            self.assertNotIn("No entries", text)
-            self.assertEqual(0, code)
+        code, text, _ = self.journal("-- No entries --\n", JOURNAL_DENIED_STDERR)
+        self.assertIn("sudo adduser $USER adm, then log in again", text)
+        self.assertNotIn("No entries", text)
+        self.assertEqual(0, code)
 
 
 class OnlyLooks(unittest.TestCase):

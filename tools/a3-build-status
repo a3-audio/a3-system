@@ -6,6 +6,7 @@
 Only looks; needs no rights. What the user may not read is said, not failed on.
 """
 
+import re
 import sys
 from pathlib import Path
 
@@ -16,7 +17,12 @@ from a3common import Runner  # noqa: E402
 QUEUE_DIR = Path("/var/spool/a3-build/queue")
 PACKAGES_FILE = Path("/srv/apt/dists/a3/main/binary-amd64/Packages")
 UNITS = ("a3-build.service", "a3-build.path")
-JOURNAL_LINES = 15
+# A build logs thousands of compiler lines; read far enough back to find the
+# drain's own lines, then show only those.
+JOURNAL_READ = 5000
+BUILD_LINES = 10
+BUILD_MARKER = "a3-build: "
+RESULT_MARKERS = ("Finished a3-build", "Failed", "Deactivated successfully")
 # journalctl prints this to a user outside adm/systemd-journal instead of the log.
 JOURNAL_DENIED = ("not seeing messages from other users", "insufficient permissions")
 
@@ -36,15 +42,31 @@ def parse_show(text):
     return dict(line.split("=", 1) for line in text.splitlines() if "=" in line)
 
 
+def time_of_day(timestamp):
+    """'Wed 2026-10-07 23:33:39 CEST' -> '23:33:39'."""
+    found = re.search(r"\d\d:\d\d:\d\d", timestamp)
+    return found.group(0) if found else timestamp
+
+
+def last_run(values):
+    result = values.get("Result")
+    if values["ActiveState"] not in ("inactive", "failed") or not result:
+        return ""
+    ended = values.get("ExecMainExitTimestamp")
+    return f" — last run: {result}, {time_of_day(ended)}" if ended else f" — last run: {result}"
+
+
 def unit_line(runner, unit):
     shown = runner.capture(["systemctl", "show", unit,
-                            "-p", "ActiveState", "-p", "SubState", "-p", "StateChangeTimestamp"])
+                            "-p", "ActiveState", "-p", "SubState", "-p", "StateChangeTimestamp",
+                            "-p", "Result", "-p", "ExecMainExitTimestamp"])
     values = parse_show(shown.stdout)
     if shown.returncode != 0 or "ActiveState" not in values:
         return f"{unit}: unknown"
     line = f"{unit}: {values['ActiveState']} ({values.get('SubState', '?')})"
     since = values.get("StateChangeTimestamp")
-    return f"{line} since {since}" if since else line
+    line = f"{line} since {since}" if since else line
+    return line + last_run(values)
 
 
 def from_reprepro(runner):
@@ -79,14 +101,27 @@ def published_lines(runner, packages_file):
     return ["published:", *(f"  {v}" for v in versions)] if versions else ["published: none"]
 
 
+def is_result(line):
+    return "systemd[" in line and any(marker in line for marker in RESULT_MARKERS)
+
+
+def build_log(journal):
+    """The drain's last lines and systemd's last word on the run, no compiler output."""
+    lines = journal.splitlines()
+    builds = [line for line in lines if BUILD_MARKER in line][-BUILD_LINES:]
+    results = [line for line in lines if is_result(line)][-1:]
+    return builds + results
+
+
 def journal_lines(runner):
-    shown = runner.capture(["journalctl", "-u", "a3-build", "-n", str(JOURNAL_LINES), "--no-pager"])
+    shown = runner.capture(["journalctl", "-u", "a3-build", "--no-pager", "-n", str(JOURNAL_READ)])
     said = shown.stdout + shown.stderr
     if any(marker in said for marker in JOURNAL_DENIED):
         return ["log: not readable — sudo adduser $USER adm, then log in again"]
     if shown.returncode != 0:
         return [f"log: journalctl failed: {shown.stderr.strip()}"]
-    return ["log:", *(f"  {line}" for line in shown.stdout.splitlines())]
+    picked = build_log(shown.stdout)
+    return ["log:", *(f"  {line}" for line in picked)] if picked else ["log: no builds yet"]
 
 
 def main(argv=None, runner=None, out=print, queue_dir=QUEUE_DIR, packages_file=PACKAGES_FILE):

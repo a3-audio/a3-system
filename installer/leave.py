@@ -29,13 +29,15 @@ def package_installed(package, status=dpkg_status):
     return bool(found) and found.split()[-1] == "installed"
 
 
-def discover_roles(user_units, core_installed=None):
+def discover_roles(user_units, core_installed=None, stemdeck_installed=None):
     """The roles on a machine without an [installed] record, in install order."""
     if core_installed is None:
         core_installed = lambda: package_installed("a3-core")  # noqa: E731
+    if stemdeck_installed is None:
+        stemdeck_installed = lambda: package_installed("stemdeck")  # noqa: E731
     found = {
         "core": core_installed(),
-        "stemdeck": (user_units / "stemdeck.service").exists(),
+        "stemdeck": (user_units / "stemdeck.service").exists() or stemdeck_installed(),
         "motion": (user_units / "a3-motion.service").exists(),
     }
     return [name for name in ("core", "stemdeck", "motion") if found[name]]

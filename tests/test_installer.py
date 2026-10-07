@@ -1336,12 +1336,12 @@ PIN = "0123456789abcdef0123456789abcdef01234567"
 def stemdeck_seams(fragment="/usr/lib/systemd/user/stemdeck.service"):
     """The StemDeck role without JUCE, git or this machine's systemd."""
     from contextlib import ExitStack
-    from installer.roles import stemdeck
+    from installer.roles import apppackage, stemdeck
     stack = ExitStack()
     stack.enter_context(mock.patch.object(stemdeck, "ensure_juce", lambda _ctx: Path("/juce")))
     stack.enter_context(mock.patch.object(stemdeck, "pinned_commit", lambda _ctx: PIN))
-    stack.enter_context(mock.patch.object(stemdeck.debs, "version_of", lambda *_: "03.0+7"))
-    stack.enter_context(mock.patch.object(stemdeck, "fragment_path", lambda _ctx: fragment))
+    stack.enter_context(mock.patch.object(apppackage.debs, "version_of", lambda *_: "03.0+7"))
+    stack.enter_context(mock.patch.object(apppackage, "fragment_path", lambda _ctx, _app: fragment))
     return stack
 
 
@@ -1361,6 +1361,54 @@ class FailingRunner(RecordingRunner):
                 self.fail_on = None
             raise self.error()
         return 0
+
+
+class MovingRunner(RecordingRunner):
+    """RecordingRunner that also does what `mv -n a b` would, so a check that
+    reads the files afterwards sees them where the role put them."""
+
+    def run(self, args, **kwargs):
+        super().run(args, **kwargs)
+        words = [str(a) for a in args]
+        if words[:2] == ["mv", "-n"] and not Path(words[3]).exists():
+            Path(words[2]).rename(words[3])
+        return 0
+
+
+class DropInsThatShadowThePackage(unittest.TestCase):
+    def ctx(self):
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(__import__("shutil").rmtree, tmp)
+        ctx, _ = context(tmp, {})
+        (ctx.user_units / "a3-motion.service.d").mkdir(parents=True)
+        return ctx
+
+    def drop_in(self, ctx, name, text):
+        path = ctx.user_units / "a3-motion.service.d" / name
+        path.write_text(text)
+        return path
+
+    def test_lines_that_set_what_is_started_or_where(self):
+        from installer.roles.apppackage import shadowing_lines
+        text = ("[Service]\n# ExecStart=commented\nEnvironment=DISPLAY=:0\n"
+                "WorkingDirectory=/x\nExecStart=\nExecStart=/y\nExecStartPost=/z\n")
+        self.assertEqual(["WorkingDirectory=/x", "ExecStart=", "ExecStart=/y"],
+                         shadowing_lines(text))
+
+    def test_only_those_drop_ins_shadow(self):
+        from installer.roles.apppackage import AppPackage, shadowing_drop_ins
+        ctx = self.ctx()
+        self.drop_in(ctx, "display.conf", "[Service]\nEnvironment=DISPLAY=:0\n")
+        self.drop_in(ctx, "restart.conf", "[Service]\nRestart=on-failure\nRestartSec=5\n")
+        branch = self.drop_in(ctx, "zz-branch-test.conf",
+                              "[Service]\nWorkingDirectory=/w\nExecStart=\nExecStart=/b\n")
+        self.drop_in(ctx, "old.conf.before-package", "[Service]\nExecStart=/old\n")
+        self.assertEqual([branch], shadowing_drop_ins(ctx, AppPackage("a3-motion-ui", "a3-motion.service")))
+
+    def test_an_add_only_drop_in_of_stemdeck_is_not_shadowing(self):
+        from installer.roles.apppackage import shadowing_lines
+        self.assertEqual([], shadowing_lines(
+            "[Unit]\nAfter=a3-jack.service\nBindsTo=a3-jack.service\n"))
 
 
 class StemDeckComesAsAPackage(unittest.TestCase):

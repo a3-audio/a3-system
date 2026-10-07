@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+"""Show the package build on a3coreV01: queue, service, published versions, log.
+
+    a3-build-status
+
+Only looks; needs no rights. What the user may not read is said, not failed on.
+"""
+
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from a3common import Runner  # noqa: E402
+
+QUEUE_DIR = Path("/var/spool/a3-build/queue")
+PACKAGES_FILE = Path("/srv/apt/dists/a3/main/binary-amd64/Packages")
+UNITS = ("a3-build.service", "a3-build.path")
+JOURNAL_LINES = 15
+# journalctl prints this to a user outside adm/systemd-journal instead of the log.
+JOURNAL_DENIED = ("not seeing messages from other users", "insufficient permissions")
+
+
+def queue_lines(queue_dir):
+    try:
+        entries = sorted(p for p in queue_dir.iterdir() if p.is_file())
+        queued = [f"  {p.name} {p.read_text().strip()[:40]}" for p in entries]
+    except PermissionError:
+        return [f"queue: not readable ({queue_dir} is builder:git 2770)"]
+    except FileNotFoundError:
+        return [f"queue: {queue_dir} does not exist"]
+    return ["queue:", *queued] if queued else ["queue: empty"]
+
+
+def parse_show(text):
+    return dict(line.split("=", 1) for line in text.splitlines() if "=" in line)
+
+
+def unit_line(runner, unit):
+    shown = runner.capture(["systemctl", "show", unit,
+                            "-p", "ActiveState", "-p", "SubState", "-p", "StateChangeTimestamp"])
+    values = parse_show(shown.stdout)
+    if shown.returncode != 0 or "ActiveState" not in values:
+        return f"{unit}: unknown"
+    line = f"{unit}: {values['ActiveState']} ({values.get('SubState', '?')})"
+    since = values.get("StateChangeTimestamp")
+    return f"{line} since {since}" if since else line
+
+
+def from_reprepro(runner):
+    listed = runner.capture(["reprepro", "-b", "/srv/reprepro", "list", "a3"])
+    if listed.returncode != 0:
+        return None
+    return [line.split(": ", 1)[-1] for line in listed.stdout.splitlines() if line.strip()]
+
+
+def from_index(packages_file):
+    try:
+        text = packages_file.read_text(errors="replace")
+    except OSError:
+        return None
+    found, name = [], None
+    for line in text.splitlines():
+        if line.startswith("Package:"):
+            name = line.split(":", 1)[1].strip()
+        elif line.startswith("Version:") and name:
+            found.append(f"{name} {line.split(':', 1)[1].strip()}")
+            name = None
+    return found
+
+
+def published_lines(runner, packages_file):
+    # reprepro may want its database writable; the published index is world-readable.
+    versions = from_reprepro(runner)
+    if versions is None:
+        versions = from_index(packages_file)
+    if versions is None:
+        return ["published: unknown (neither reprepro nor the index could be read)"]
+    return ["published:", *(f"  {v}" for v in versions)] if versions else ["published: none"]
+
+
+def journal_lines(runner):
+    shown = runner.capture(["journalctl", "-u", "a3-build", "-n", str(JOURNAL_LINES), "--no-pager"])
+    said = shown.stdout + shown.stderr
+    if any(marker in said for marker in JOURNAL_DENIED):
+        return ["log: not readable — sudo adduser $USER adm, then log in again"]
+    if shown.returncode != 0:
+        return [f"log: journalctl failed: {shown.stderr.strip()}"]
+    return ["log:", *(f"  {line}" for line in shown.stdout.splitlines())]
+
+
+def main(argv=None, runner=None, out=print, queue_dir=QUEUE_DIR, packages_file=PACKAGES_FILE):
+    if argv is None:
+        argv = sys.argv[1:]
+    if argv:
+        out(__doc__.strip())
+        return 0 if argv[0] in ("-h", "--help") else 2
+    runner = runner or Runner()
+    lines = [
+        *queue_lines(queue_dir),
+        *(unit_line(runner, unit) for unit in UNITS),
+        *published_lines(runner, packages_file),
+        *journal_lines(runner),
+    ]
+    for line in lines:
+        out(line)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

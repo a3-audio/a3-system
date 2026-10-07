@@ -138,8 +138,9 @@ class Motion(Role):
 
     def uninstall(self, ctx):
         super().uninstall(ctx)
-        if package_is_installed(ctx):
-            apppackage.remove(ctx, APP)
+        if not package_is_installed(ctx):
+            return
+        apppackage.remove(ctx, APP)
 
     def _dialout(self, ctx):
         user = getpass.getuser()

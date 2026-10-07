@@ -1042,6 +1042,17 @@ class MotionLeaves(unittest.TestCase):
         self.assertIn("rm -f ~units/a3-motion.service.d/a3-system.conf", commands)
         self.assertFalse(any("display.conf" in c for c in commands), commands)
 
+    def test_a_hand_unit_is_listed_a_symlink_is_not(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, _ = context(tmp, {})
+            ctx.user_units.mkdir(parents=True)
+            unit = ctx.user_units / "a3-motion.service"
+            unit.write_text("[Service]\n")
+            self.assertIn(unit, BY_NAME["motion"].leaving_files(ctx))
+            unit.unlink()
+            unit.symlink_to("/nonexistent/a3-motion.service")
+            self.assertNotIn(unit, BY_NAME["motion"].leaving_files(ctx))
+
     def test_without_the_package_apt_is_not_called(self):
         commands, _ = uninstall_commands("motion", package_installed=False)
         self.assertFalse(any("apt-get" in c for c in commands), commands)
@@ -1672,6 +1683,23 @@ def motion_seams(fragment="/usr/lib/systemd/user/a3-motion.service", packaged=Tr
     stack.enter_context(mock.patch.object(motion.Motion, "_dialout", lambda self, ctx: None))
     stack.enter_context(mock.patch.object(motion.Motion, "_firmware", lambda self, ctx: None))
     return stack
+
+
+class MotionPinnedCommit(unittest.TestCase):
+    def test_umbrella_pins_a3_motion_and_that_pins_ui(self):
+        from installer.roles import motion
+        calls = []
+        answers = iter(["motionsha\n", "uisha\n"])
+
+        class Fake:
+            def output(self, args, cwd=None):
+                calls.append([str(a) for a in args])
+                return next(answers)
+
+        ctx = mock.Mock(runner=Fake(), repo=Path("/repo"))
+        self.assertEqual("uisha", motion.pinned_commit(ctx))
+        self.assertEqual([["git", "-C", "/repo", "rev-parse", "HEAD:a3-motion"],
+                          ["git", "-C", "/repo/a3-motion", "rev-parse", "motionsha:ui"]], calls)
 
 
 class MotionComesAsAPackage(unittest.TestCase):

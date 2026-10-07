@@ -75,9 +75,17 @@ def has_user_unit(runner, unit):
     return shown.returncode == 0 and shown.stdout.strip() == "loaded"
 
 
+# A package whose user unit is not <package>.service.
+UNITS = {"a3-motion-ui": "a3-motion.service"}
+
+
+def unit_of(package):
+    return UNITS.get(package, f"{package}.service")
+
+
 def offer_restarts(runner, packages, ask, out):
     for package in packages:
-        unit = f"{package}.service"
+        unit = unit_of(package)
         if not has_user_unit(runner, unit):
             continue
         if ask_yes(f"restart {unit} now? [y/N] ", ask):

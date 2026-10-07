@@ -147,6 +147,16 @@ class Answering(unittest.TestCase):
             self.assertNotIn(["systemctl", "--user", "restart", "stemdeck.service"], runner.ran())
             self.assertIn("runs after the next restart", out.text())
 
+    def test_motion_ui_restarts_its_own_unit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            policy = POLICY_OUTDATED.replace("stemdeck:", "a3-motion-ui:")
+            runner = FakeRunner(replies(policy=policy))
+            answers = Answers("y", "y")
+            run_update([], runner, answers, lists_with(tmp, "a3-motion-ui"))
+            self.assertIn("restart a3-motion.service now? [y/N] ", answers.questions)
+            self.assertEqual(["systemctl", "--user", "restart", "a3-motion.service"],
+                             runner.ran()[-1])
+
     def test_restart_on_yes(self):
         with tempfile.TemporaryDirectory() as tmp:
             runner = FakeRunner(replies())

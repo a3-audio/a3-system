@@ -112,6 +112,16 @@ class Control(unittest.TestCase):
         with self.assertRaises(package.BuildError):
             package.package_name("Version: 0\n")
 
+    def test_a_name_that_is_a_path_is_refused(self):
+        """The name becomes a folder under the build cache: `../..` would put
+        the build -- and its rm -rf of src.fresh -- outside it."""
+        for name in ("../..", "a/b", "Stemdeck", "x", ".hidden", "-x"):
+            with self.subTest(name=name), self.assertRaises(package.BuildError):
+                package.package_name(f"Package: {name}\nVersion: 0\n")
+
+    def test_a_debian_name_with_plus_dot_and_dash_is_taken(self):
+        self.assertEqual("lib-a3.x+y", package.package_name("Package: lib-a3.x+y\n"))
+
     def test_version_and_libraries_are_stamped_and_the_rest_kept(self):
         stamped = package.stamp_control(CONTROL, "03.0+7", "libc6 (>= 2.43), libjack-jackd2-0")
         self.assertIn("Version: 03.0+7\n", stamped)

@@ -108,10 +108,18 @@ def refuse_inside(repo, *paths):
             raise BuildError(f"{path} is under {NEVER_WRITTEN}: only apt puts files there")
 
 
+PACKAGE_NAME = re.compile(r"^[a-z0-9][a-z0-9+.-]+$")
+
+
 def package_name(control_text):
+    """The name from the commit's control; it becomes a folder in the build
+    cache, so only a Debian package name is taken, never a path."""
     for line in control_text.splitlines():
         if line.startswith("Package:"):
-            return line.split(":", 1)[1].strip()
+            name = line.split(":", 1)[1].strip()
+            if not PACKAGE_NAME.match(name):
+                raise BuildError(f"packaging/DEBIAN/control names {name!r}, not a Debian package name")
+            return name
     raise BuildError("packaging/DEBIAN/control names no Package")
 
 

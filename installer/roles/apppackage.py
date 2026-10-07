@@ -98,9 +98,10 @@ def _set_aside(ctx, app, done):
         note = ""
         if path != hand:
             text = path.read_text(errors="replace")
+            shadowing = shadowing_lines(text)
             others = [l.strip() for l in text.splitlines()
                       if "=" in l and not l.strip().startswith(("#", ";"))
-                      and l.strip() not in shadowing_lines(text)]
+                      and l.strip() not in shadowing]
             note = f" It also set: {'; '.join(others)}." if others else ""
         ctx.runner.log(f"{path} would shadow the package's unit: set aside as "
                        f"{_aside(path).name}.{note}")

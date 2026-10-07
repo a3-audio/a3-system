@@ -1375,6 +1375,16 @@ class MovingRunner(RecordingRunner):
         return 0
 
 
+class MovingFailingRunner(FailingRunner):
+    """FailingRunner that also moves files as `mv -n` would."""
+
+    def run(self, args, **kwargs):
+        words = [str(a) for a in args]
+        if words[:2] == ["mv", "-n"] and not Path(words[3]).exists():
+            Path(words[2]).rename(words[3])
+        return super().run(args, **kwargs)
+
+
 class DropInsThatShadowThePackage(unittest.TestCase):
     def ctx(self):
         tmp = tempfile.mkdtemp()
@@ -1413,15 +1423,23 @@ class DropInsThatShadowThePackage(unittest.TestCase):
 
 class StemDeckComesAsAPackage(unittest.TestCase):
     def install(self, roles=("core",), hand_unit=None, aside=False, fragment=None,
-                fail_on=None, symlink=False, twice=False, keep=None, error=None, once=False):
+                fail_on=None, symlink=False, twice=False, keep=None, error=None, once=False,
+                drop_ins=None, moving=False):
         from installer.roles import stemdeck
         tmp = tempfile.mkdtemp()
         self.addCleanup(__import__("shutil").rmtree, tmp)
         ctx, log = context(tmp, {("stemdeck", "library"): str(Path(tmp) / "stems"),
                                  **{("roles", r): "yes" for r in roles}})
-        ctx.runner = (FailingRunner(fail_on, error=error, once=once, log=log) if fail_on
-                      else RecordingRunner(log=log))
+        if fail_on:
+            runner = MovingFailingRunner if moving else FailingRunner
+            ctx.runner = runner(fail_on, error=error, once=once, log=log)
+        else:
+            ctx.runner = (MovingRunner if moving else RecordingRunner)(log=log)
         ctx.user_units.mkdir(parents=True)
+        for name, text in (drop_ins or {}).items():
+            folder = ctx.user_units / "stemdeck.service.d"
+            folder.mkdir(exist_ok=True)
+            (folder / name).write_text(text)
         if symlink:
             (ctx.user_units / "stemdeck.service").symlink_to("/nonexistent/stemdeck.service")
         if hand_unit is not None:
@@ -1494,12 +1512,59 @@ class StemDeckComesAsAPackage(unittest.TestCase):
         self.assertLess(move, install)
         self.assertFalse(any(c.startswith("rm") and "stemdeck.service" in c for c in commands))
 
+    CORE_CONF = "[Unit]\nAfter=a3-jack.service\nBindsTo=a3-jack.service\n"
+    BRANCH_CONF = "[Service]\nWorkingDirectory=/w\nExecStart=\nExecStart=/b\n"
+    DROP_INS = {"a3-core.conf": CORE_CONF, "zz-branch-test.conf": BRANCH_CONF}
+
+    def folder(self, ctx):
+        return ctx.user_units / "stemdeck.service.d"
+
     def test_the_drop_in_folder_stays_where_it_is(self):
         """stemdeck.service.d/a3-core.conf supplies After=/BindsTo=a3-jack to
-        the packaged unit."""
-        commands, _ = self.install(hand_unit="[Service]\n")
-        self.assertFalse(any("stemdeck.service.d" in c for c in commands), commands)
+        the packaged unit; only the drop-in that sets ExecStart goes."""
+        commands, ctx = self.install(hand_unit="[Service]\n", drop_ins=self.DROP_INS,
+                                     moving=True)
+        folder = self.folder(ctx)
+        self.assertEqual(self.CORE_CONF, (folder / "a3-core.conf").read_text())
+        self.assertFalse((folder / "zz-branch-test.conf").exists())
+        self.assertEqual(self.BRANCH_CONF, (folder / "zz-branch-test.conf.before-package").read_text())
+        self.assertFalse(any("a3-core.conf" in c for c in commands), commands)
         self.assertFalse(any(c.startswith("rmdir") for c in commands), commands)
+
+    def test_a_shadowing_drop_in_is_set_aside_before_apt(self):
+        commands, ctx = self.install(drop_ins=self.DROP_INS, moving=True)
+        branch = self.folder(ctx) / "zz-branch-test.conf"
+        aside = self.folder(ctx) / "zz-branch-test.conf.before-package"
+        self.assertLess(commands.index(f"mv -n {branch} {aside}"),
+                        next(i for i, c in enumerate(commands) if "apt-get install" in c))
+        self.assertIn("apt-mark hold stemdeck", commands)
+
+    def test_a_failed_apt_install_puts_the_drop_in_back(self):
+        _, ctx = self.install_failing_apt(error=None)
+        self.assert_drop_ins_back(ctx)
+
+    def test_ctrl_c_during_apt_puts_the_drop_in_back(self):
+        _, ctx = self.install_failing_apt(error=KeyboardInterrupt, raises=KeyboardInterrupt)
+        self.assert_drop_ins_back(ctx)
+
+    def install_failing_apt(self, error, raises=CommandFailed):
+        keep = []
+        with self.assertRaises(raises):
+            self.install(drop_ins=self.DROP_INS, moving=True, fail_on="apt-get install",
+                         error=error, keep=keep)
+        return keep[0]
+
+    def assert_drop_ins_back(self, ctx):
+        folder = self.folder(ctx)
+        self.assertEqual(self.CORE_CONF, (folder / "a3-core.conf").read_text())
+        self.assertEqual(self.BRANCH_CONF, (folder / "zz-branch-test.conf").read_text())
+        self.assertFalse((folder / "zz-branch-test.conf.before-package").exists())
+
+    def test_a_shadowing_drop_in_that_is_still_there_after_install_is_an_error(self):
+        with self.assertRaises(RoleError) as raised:
+            self.install(drop_ins=self.DROP_INS)  # the recording runner moves nothing
+        self.assertIn("zz-branch-test.conf", str(raised.exception))
+        self.assertNotIn("a3-core.conf", str(raised.exception))
 
     def test_no_hand_unit_nothing_set_aside(self):
         commands, _ = self.install()

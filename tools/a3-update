@@ -1,0 +1,139 @@
+#!/usr/bin/env python3
+"""Update the A³ packages on a rig machine from the LAN apt repository.
+
+    a3-update [--yes] [--dry-run] [package ...]
+
+Without package names it takes every package the A³ source
+(http://192.168.8.5/apt a3 main) offers. Only those packages are touched:
+never `apt upgrade`, never `apt autoremove`. An updated package is held
+again, and a running service is restarted only when you say so.
+"""
+
+import argparse
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from a3common import Runner, ask_yes  # noqa: E402
+
+LISTS_DIR = Path("/var/lib/apt/lists")
+# apt names a downloaded index after its URL; this is the one for
+# "deb http://192.168.8.5/apt a3 main", any architecture.
+A3_LIST_PREFIX = "192.168.8.5_apt_dists_a3_main_binary-"
+A3_LIST_SUFFIX = "_Packages"
+
+
+def parse_policy(text):
+    """(installed, candidate) from `apt-cache policy <pkg>`; None where apt says (none)."""
+    found = {"Installed": None, "Candidate": None}
+    for line in text.splitlines():
+        key, _, value = line.strip().partition(":")
+        if key in found and value.strip() not in ("", "(none)"):
+            found[key] = value.strip()
+    return found["Installed"], found["Candidate"]
+
+
+def offered_packages(lists_dir):
+    """Package names in the A³ source's downloaded index."""
+    names = set()
+    for index in lists_dir.glob(A3_LIST_PREFIX + "*" + A3_LIST_SUFFIX):
+        for line in index.read_text(errors="replace").splitlines():
+            if line.startswith("Package:"):
+                names.add(line.split(":", 1)[1].strip())
+    return sorted(names)
+
+
+def plan_line(package, installed, candidate):
+    if installed is None:
+        return f"  {package} not installed — skipped, install it first"
+    if candidate is None or installed == candidate:
+        return f"  {package} {installed} up to date"
+    return f"  {package} {installed} → {candidate}"
+
+
+def outdated(runner, packages, out):
+    """Print the plan; return the packages that have a newer candidate."""
+    todo = []
+    for package in packages:
+        installed, candidate = parse_policy(runner.capture(["apt-cache", "policy", package]).stdout)
+        out(plan_line(package, installed, candidate))
+        if installed is not None and candidate is not None and installed != candidate:
+            todo.append(package)
+    return todo
+
+
+def install_commands(packages):
+    return [
+        ["sudo", "apt-get", "install", "--allow-change-held-packages", *packages],
+        ["sudo", "apt-mark", "hold", *packages],
+    ]
+
+
+def has_user_unit(runner, unit):
+    shown = runner.capture(["systemctl", "--user", "show", "-p", "LoadState", "--value", unit])
+    return shown.returncode == 0 and shown.stdout.strip() == "loaded"
+
+
+def offer_restarts(runner, packages, ask, out):
+    for package in packages:
+        unit = f"{package}.service"
+        if not has_user_unit(runner, unit):
+            continue
+        if ask_yes(f"restart {unit} now? [y/N] ", ask):
+            if runner.run(["systemctl", "--user", "restart", unit]) != 0:
+                out(f"restarting {unit} failed — see: journalctl --user -u {unit}")
+            continue
+        out(f"{package}: the new version runs after the next restart of {unit}")
+
+
+def parse_args(argv):
+    parser = argparse.ArgumentParser(prog="a3-update", description=__doc__.split("\n")[1])
+    parser.add_argument("packages", nargs="*", help="default: every package of the A³ source")
+    parser.add_argument("--yes", action="store_true",
+                        help="do not ask before updating (restarts are still asked)")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="show the plan, change nothing (uses the lists of the last apt update)")
+    return parser.parse_args(argv)
+
+
+def main(argv=None, runner=None, ask=input, out=print, lists_dir=LISTS_DIR):
+    args = parse_args(sys.argv[1:] if argv is None else argv)
+    runner = runner or Runner()
+
+    if args.dry_run:
+        out("dry run: skipping `sudo apt update`, using the lists apt already has")
+    elif runner.run(["sudo", "apt", "update"]) != 0:
+        out("apt update failed — nothing changed")
+        return 1
+
+    packages = args.packages or offered_packages(Path(lists_dir))
+    if not packages:
+        out("the A³ source offers no packages (is http://192.168.8.5/apt a3 main in the apt sources?)")
+        return 1
+
+    out("A³ packages:")
+    todo = outdated(runner, packages, out)
+    if not todo:
+        out("nothing to update")
+        return 0
+
+    if args.dry_run:
+        out("would run:")
+        for command in install_commands(todo):
+            out("  " + " ".join(command[1:]) + "   (as root)")
+        return 0
+    if not args.yes and not ask_yes("update these? [y/N] ", ask):
+        out("nothing changed")
+        return 0
+
+    for command in install_commands(todo):
+        if runner.run(command) != 0:
+            out(f"failed: {' '.join(command)}")
+            return 1
+    offer_restarts(runner, todo, ask, out)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

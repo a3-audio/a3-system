@@ -68,7 +68,8 @@ Without the option no key is added.
 
 A role that was installed and is no longer ticked leaves the machine: its
 services are stopped and disabled, the unit files the installer wrote are
-removed, and for the Core the `a3-core` package is removed (not purged). The
+removed, and for the Core the `a3-core` and `beat-analyzer` packages are removed
+(not purged). The
 installer lists exactly what goes and asks first; the answer defaults to no,
 and the chosen roles install either way. Data, recordings, build folders,
 `~/.config`, the packages installed for a role and group memberships stay; the

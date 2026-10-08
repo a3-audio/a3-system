@@ -1,5 +1,6 @@
-"""StemDeck and Motion UI as Debian packages: the steps both roles take the
-same way (extracted from roles/stemdeck.py at its second user, 2026-10-08).
+"""StemDeck, Motion UI and the beat-analyzer as Debian packages: the steps
+these roles take the same way (extracted from roles/stemdeck.py at its second
+user, 2026-10-08).
 
 The .deb is built from the pinned commit by installer/package.py into
 ~/.cache/a3-build and ~/a3-debs -- never in a checkout a unit starts from --
@@ -8,7 +9,9 @@ shadows the packaged one, and so does a drop-in that sets what the unit
 starts or where: both are disabled and renamed, never deleted, right before
 apt, and put back if apt does not finish -- a Ctrl-C at the sudo prompt
 included. A drop-in that only adds settings (a3-core.conf, display.conf)
-stays and applies to the packaged unit.
+stays and applies to the packaged unit, and so does a drop-in the app names
+as its own (a3-core's beat-analyzer.service.d/a3-core.conf, whose
+ExecStartPre= adds a wait before the packaged ExecStart).
 """
 
 from dataclasses import dataclass
@@ -32,10 +35,25 @@ DISABLED = "disabled"
 class AppPackage:
     package: str
     unit: str
+    # Drop-ins another package ships for this unit: they add, they are kept.
+    kept_drop_ins: tuple = ()
 
     @property
     def packaged_unit(self):
         return str(PACKAGED_UNITS / self.unit)
+
+
+def pinned_commit(ctx, submodule):
+    """The commit the umbrella pins for `submodule` -- the release's, whatever
+    the submodule's working copy holds."""
+    return ctx.runner.output(["git", "-C", ctx.repo, "rev-parse", f"HEAD:{submodule}"]).strip()
+
+
+def has_packaging(ctx, source, commit):
+    """Whether `commit` of the repository at `source` carries the recipe
+    installer/package.py builds from."""
+    return bool(ctx.runner.output(["git", "-C", source, "ls-tree", "--name-only", commit,
+                                   "packaging/stage"]).strip())
 
 
 def build(ctx, app, source, commit, juce):
@@ -73,7 +91,8 @@ def shadowing_drop_ins(ctx, app):
     if not folder.is_dir():
         return []
     return sorted(path for path in folder.glob("*.conf")
-                  if path.is_file() and shadowing_lines(path.read_text(errors="replace")))
+                  if path.is_file() and path.name not in app.kept_drop_ins
+                  and shadowing_lines(path.read_text(errors="replace")))
 
 
 def refuse_shadowing_leftovers(ctx, app):

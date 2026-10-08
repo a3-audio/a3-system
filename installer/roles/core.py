@@ -8,8 +8,14 @@ held, so `apt upgrade` does not move it off the release.
 
 Its debconf questions are asked here, with the rest, and handed over
 preseeded and marked seen, the network answers with the a3-core/preseeded
-marker; the postinst takes them as given (a3-core 8573e2b, 8dcb2c7, #68). The beat-analyzer comes with it: the package's
-a3-user-install.service builds it from ~/a3-system/beat-analyzer.
+marker; the postinst takes them as given (a3-core 8573e2b, 8dcb2c7, #68).
+
+The beat-analyzer comes with it as a package of its own, `beat-analyzer`,
+built from the pinned commit like StemDeck and held. a3-core only recommends
+it and adds what is A3 about its unit as a drop-in (a3-core.conf: part of
+a3-main, after JACK, off CPU 0); the package does not enable its unit,
+a3-main wants it. Before the package, a3-core's a3-user-install.service
+built it in ~/a3-system/beat-analyzer and its unit ran that build.
 """
 
 import json
@@ -19,7 +25,9 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from .base import SCREEN_PACKAGES, Role, RoleError
+from . import apppackage
+from .apppackage import has_packaging
+from .base import SCREEN_PACKAGES, Role, RoleError, juce_prefix, systemctl_user
 
 PACKAGE_DIR = Path("a3-core/platform-config/debian-x86_64/a3-core")
 SHIPPED_CONFIG = PACKAGE_DIR / "home/aaa/.local/share/a3-core/config"
@@ -32,9 +40,18 @@ TRUTH = PACKAGE_DIR / "usr/share/a3/a3-osc.json"
 # disabled when the Core leaves; the files stay with the rest of ~/.config.
 CORE_UNITS = (
     "a3-main.service", "a3-jack.service", "a3-reaper.service", "a3-core.service",
-    "beat-analyzer.service", "qjackctl.service", "zita-n2j.service",
+    "qjackctl.service", "zita-n2j.service",
     "zita-j2n.service", "a3-bar-per-workspace.service", "a3-user-install.service",
 )
+
+ANALYZER_SOURCE = "beat-analyzer"
+ANALYZER_UNIT = "beat-analyzer.service"
+ANALYZER = apppackage.AppPackage("beat-analyzer", ANALYZER_UNIT,
+                                 kept_drop_ins=("a3-core.conf",))
+# What the beat-analyzer's packaging/stage builds with (no JUCE): CMake and a
+# compiler, curl for the pinned BTrack, JACK and libsamplerate.
+ANALYZER_BUILD_PACKAGES = ("cmake", "g++", "pkg-config", "patch", "curl",
+                           "libjack-jackd2-dev", "libsamplerate0-dev")
 
 GROUP_LABELS = {
     "reaper": "REAPER: Template, OSC-Map, Presets, Effekte",
@@ -211,7 +228,7 @@ class Core(Role):
     submodules = ("a3-core", "beat-analyzer")
     platforms = ("debian",)
     # REAPER runs on X; a headless Core runs it on the dummy screen.
-    packages = SCREEN_PACKAGES
+    packages = SCREEN_PACKAGES + ANALYZER_BUILD_PACKAGES
     needs_screen = True
 
     def configure(self, ctx):
@@ -252,6 +269,13 @@ class Core(Role):
 
     def install(self, ctx):
         run = ctx.runner
+        # Up front, before anything is built: what would stop the analyzer.
+        source, commit = ctx.repo / ANALYZER_SOURCE, analyzer_commit(ctx)
+        if not has_packaging(ctx, source, commit):
+            raise RoleError(f"beat-analyzer at {commit[:10]} has no packaging/stage: the "
+                            "umbrella's beat-analyzer pin is older than its package; "
+                            "raise it first.")
+        apppackage.refuse_shadowing_leftovers(ctx, ANALYZER)
         work = Path(tempfile.mkdtemp(prefix="a3-core-"))
         try:
             deb = build_package(ctx, work)
@@ -263,16 +287,27 @@ class Core(Role):
             run.run(["apt-mark", "hold", "a3-core"], root=True)
         finally:
             shutil.rmtree(work, ignore_errors=True)
+        self._analyzer(ctx, source, commit)
+
+    def _analyzer(self, ctx, source, commit):
+        """After a3-core, whose postinst moves its old checkout unit aside and
+        writes the drop-in and the OSC targets. Not enabled: a3-main wants
+        it; a running one is restarted onto the package."""
+        deb = apppackage.build(ctx, ANALYZER, source, commit, juce_prefix(ctx))
+        apppackage.install(ctx, ANALYZER, deb)
+        systemctl_user(ctx, "daemon-reload")
+        systemctl_user(ctx, "try-restart", ANALYZER_UNIT)
+        apppackage.check_packaged_unit_wins(ctx, ANALYZER)
 
     stays = ("~/.config: REAPER-Template, i3, qjackctl, die Unit-Dateien",
              "die Sicherungen in ~/.config/a3-replaced",
              "~/.ssh/authorized_keys (beim Entfernen gesichert und zurückgelegt)")
 
     def leaving_units(self, ctx):
-        return list(CORE_UNITS)
+        return list(CORE_UNITS) + [ANALYZER_UNIT]
 
     def leaving_packages(self, ctx):
-        return ["a3-core"]
+        return ["a3-core", ANALYZER.package]
 
     def leaving_lines(self, ctx):
         return super().leaving_lines(ctx) + [
@@ -296,6 +331,17 @@ class Core(Role):
         finally:
             if keep_keys:
                 run.run(["mv", "-f", kept, keys])
+        if analyzer_is_installed(ctx):
+            apppackage.remove(ctx, ANALYZER)
+
+
+def analyzer_commit(ctx):
+    return apppackage.pinned_commit(ctx, ANALYZER_SOURCE)
+
+
+def analyzer_is_installed(ctx):
+    from ..leave import package_installed  # leave imports the roles
+    return package_installed(ANALYZER.package)
 
 
 def build_package(ctx, work):

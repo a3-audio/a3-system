@@ -1,13 +1,10 @@
 """Motion UI and the panel's firmware, on whatever machine the PCB is on.
 
-Motion UI is built in the submodule (a3-motion/ui) with its own build.sh,
-which also links resources/ and config/ next to the binary. Its unit comes
-from its repository and was written for the Raspberry Pi; a drop-in gives
-it what any other machine needs (found on a3nuc2, 2026-10-04): DISPLAY,
-since the user manager starts it before the X session hands that over; the
-working directory, since config/config.json is read relative to it; the
-binary built here; and the screen wait from its own repository, since the
-Core's copy is not on a machine without the Core.
+Motion UI comes as the Debian package `a3-motion-ui` (2026-10-08). It is built
+from the ui commit that a3-motion pins, installed with apt and held. The
+package carries the unit, its working directory and its seed. The old drop-in
+that pointed the hand unit at a build in the checkout is set aside like any
+drop-in that sets what is started.
 
 The ESP32 panel is flashed with PlatformIO when its firmware changed since
 the last flash -- told by the git tree of a3-motion/firmware -- and the user
@@ -21,33 +18,39 @@ import grp
 import json
 from pathlib import Path
 
+from .. import package as debs
+from . import apppackage
 from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
-                   enable_and_restart, install_user_unit, systemctl_user,
-                   write_drop_in)
+                   enable_and_restart, systemctl_user)
 
 UI = Path("a3-motion/ui")
 FIRMWARE = Path("a3-motion/firmware")
 BOARD_FILE = FIRMWARE / "boards" / "esp32-s3-devkitc-1-n16r8.json"
 BY_ID = Path("/dev/serial/by-id")
 SYS_TTY = Path("/sys/class/tty")
-BINARY = Path("build/src/a3-motion-ui/a3-motion-ui_artefacts/Release/Standalone/a3-motion-ui")
 PIO_VENV = Path(".local/share/a3/platformio")
 UNIT = "a3-motion.service"
-DROP_IN = "a3-system.conf"
+# The drop-in the installer wrote before the package; only leaving removes it.
+OLD_DROP_IN = "a3-system.conf"
+PACKAGE = "a3-motion-ui"
+APP = apppackage.AppPackage(PACKAGE, UNIT)
 
 
-def drop_in_text(ui):
-    return (
-        "# Written by the a3-system installer. Motion UI's unit is the\n"
-        "# Raspberry Pi's; what any machine needs on top (a3nuc2, 2026-10-04):\n"
-        "[Service]\n"
-        "Environment=DISPLAY=:0\n"
-        f"WorkingDirectory={ui}\n"
-        "ExecStartPre=\n"
-        f"ExecStartPre={ui / 'platform_config' / 'a3-wait-for-the-screen'}\n"
-        "ExecStart=\n"
-        f"ExecStart={ui / BINARY}\n"
-    )
+def pinned_commit(ctx):
+    """The ui commit the release pins: the umbrella pins a3-motion, a3-motion pins ui."""
+    motion = ctx.runner.output(["git", "-C", ctx.repo, "rev-parse", "HEAD:a3-motion"]).strip()
+    return ctx.runner.output(["git", "-C", ctx.repo / "a3-motion", "rev-parse",
+                              f"{motion}:ui"]).strip()
+
+
+def has_packaging(ctx, ui, commit):
+    return bool(ctx.runner.output(["git", "-C", ui, "ls-tree", "--name-only", commit,
+                                   "packaging/stage"]).strip())
+
+
+def package_is_installed(ctx):
+    from ..leave import package_installed  # leave imports the roles
+    return package_installed(PACKAGE)
 
 
 def panel_usb_ids(board_file):
@@ -100,30 +103,44 @@ class Motion(Role):
                 s.get("motion", "flash_firmware")))
 
     def install(self, ctx):
-        run = ctx.runner
         ui = ctx.repo / UI
-        if not (ui / "build.sh").is_file():
-            raise RoleError("a3-motion/ui hat in diesem Stand kein build.sh. "
-                            "Der ui-Pin in a3-motion ist zu alt; erst hochziehen.")
-        prefix = ensure_juce(ctx)
-        run.run(["./build.sh", "-r"], cwd=ui, env={"JUCE_DIR": str(prefix)})
-
-        install_user_unit(ctx, ui / "platform_config" / UNIT)
-        write_drop_in(ctx, UNIT, DROP_IN, drop_in_text(ui))
+        commit = pinned_commit(ctx)
+        if not has_packaging(ctx, ui, commit):
+            raise RoleError(f"a3-motion/ui at {commit[:10]} has no packaging/stage: a3-motion's "
+                            "ui pin is older than the package; raise it first.")
+        juce = ensure_juce(ctx)
+        apppackage.refuse_shadowing_leftovers(ctx, APP)
+        deb = apppackage.build(ctx, APP, ui, commit, juce)
+        apppackage.install(ctx, APP, deb)
         self._dialout(ctx)
         self._firmware(ctx)
         enable_and_restart(ctx, UNIT)
+        apppackage.check_packaged_unit_wins(ctx, APP)
 
-    stays = ("der Build-Ordner a3-motion/ui/build",
-             "config.json, Patterns, Aufnahmen",
-             "Drop-ins von Hand neben dem des Installers",
-             "die Mitgliedschaft in dialout")
+    stays = ("the build cache ~/.cache/a3-build/a3-motion-ui and the packages in ~/a3-debs",
+             "~/.local/share/a3-motion (config, skins, patterns, takes) "
+             "and the log in ~/.local/state/a3-motion",
+             "drop-ins made by hand", "the membership in dialout")
 
     def leaving_units(self, ctx):
         return [UNIT]
 
     def leaving_files(self, ctx):
-        return [ctx.user_units / UNIT, ctx.user_units / f"{UNIT}.d" / DROP_IN]
+        """The installer's drop-in of before the package; the unit is the package's."""
+        files = [ctx.user_units / f"{UNIT}.d" / OLD_DROP_IN]
+        hand = ctx.user_units / UNIT
+        if hand.is_file() and not hand.is_symlink():
+            files.append(hand)  # an install from before the package
+        return files
+
+    def leaving_packages(self, ctx):
+        return [PACKAGE]
+
+    def uninstall(self, ctx):
+        super().uninstall(ctx)
+        if not package_is_installed(ctx):
+            return
+        apppackage.remove(ctx, APP)
 
     def _dialout(self, ctx):
         user = getpass.getuser()

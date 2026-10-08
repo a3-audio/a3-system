@@ -23,8 +23,7 @@ from installer.roles import ALL, BY_NAME, needed_packages, needed_submodules  # 
 from installer.roles.base import Context, RoleError, State  # noqa: E402
 from installer.roles.core import chosen_groups, preseed_lines  # noqa: E402
 from installer.roles import core, motion, screen  # noqa: E402
-from installer.roles.motion import (Motion, drop_in_text, panel_usb_ids,  # noqa: E402
-                                    serial_candidates)
+from installer.roles.motion import Motion, panel_usb_ids, serial_candidates  # noqa: E402
 from installer.settings import Settings  # noqa: E402
 from installer.system import CommandFailed, Runner  # noqa: E402
 
@@ -606,15 +605,6 @@ class AutologinWithoutADisplayManager(unittest.TestCase):
 
 
 class MotionOnAnyMachine(unittest.TestCase):
-    def test_the_drop_in_has_what_a3nuc2_was_missing(self):
-        text = drop_in_text(Path("/home/aaa/a3-system/a3-motion/ui"))
-        self.assertIn("Environment=DISPLAY=:0", text)
-        self.assertIn("WorkingDirectory=/home/aaa/a3-system/a3-motion/ui\n", text)
-        # Reset before set: a second ExecStart on a simple unit is an error.
-        self.assertIn("ExecStart=\nExecStart=/home/aaa/a3-system/a3-motion/ui/build/", text)
-        self.assertIn("ExecStartPre=\nExecStartPre=/home/aaa/a3-system/a3-motion/ui/"
-                      "platform_config/a3-wait-for-the-screen", text)
-
     def firmware(self, mode, flashed_tree="", force=False):
         with tempfile.TemporaryDirectory() as tmp:
             ctx, log = context(tmp, {("motion", "flash_firmware"): mode,
@@ -863,7 +853,8 @@ class RolesFoundOnAMachineSetUpBefore(unittest.TestCase):
             if motion:
                 (units / "a3-motion.service").touch()
             return discover_roles(units, core_installed=lambda: core,
-                                  stemdeck_installed=lambda: False)
+                                  stemdeck_installed=lambda: False,
+                                  motion_installed=lambda: False)
 
     def test_every_combination(self):
         import itertools
@@ -879,6 +870,14 @@ class RolesFoundOnAMachineSetUpBefore(unittest.TestCase):
             found = discover_roles(Path(tmp), core_installed=lambda: False,
                                    stemdeck_installed=lambda: True)
         self.assertEqual(["stemdeck"], found)
+
+    def test_motion_is_found_by_its_package_too(self):
+        from installer.leave import discover_roles
+        with tempfile.TemporaryDirectory() as tmp:
+            found = discover_roles(Path(tmp), core_installed=lambda: False,
+                                   stemdeck_installed=lambda: False,
+                                   motion_installed=lambda: True)
+        self.assertEqual(["motion"], found)
 
     def test_the_package_counts_when_dpkg_says_installed(self):
         from installer.leave import package_installed
@@ -941,9 +940,12 @@ def uninstall_commands(name, chosen=(), installed=(), home_files=(), package_ins
         for rel in home_files:
             (Path(tmp) / rel).parent.mkdir(parents=True, exist_ok=True)
             (Path(tmp) / rel).touch()
+        from installer.roles import motion as motion_module
         from installer.roles import stemdeck as stemdeck_module
         with mock.patch.object(stemdeck_module, "package_is_installed",
-                               lambda _ctx: package_installed):
+                               lambda _ctx: package_installed), \
+                mock.patch.object(motion_module, "package_is_installed",
+                                  lambda _ctx: package_installed):
             BY_NAME[name].uninstall(ctx)
         units = str(ctx.user_units)
         commands = [c.removeprefix("sudo ").replace(units, "~units").replace(tmp, "~")
@@ -1027,23 +1029,41 @@ class StemDeckLeaves(unittest.TestCase):
 
 
 class MotionLeaves(unittest.TestCase):
-    def test_unit_and_drop_in_go(self):
+    def test_its_unit_stops_and_the_package_goes(self):
         commands, _ = uninstall_commands("motion")
-        self.assertEqual([
-            "systemctl --user disable --now a3-motion.service",
-            "rm -f ~units/a3-motion.service",
-            "rm -f ~units/a3-motion.service.d/a3-system.conf",
-            "rmdir --ignore-fail-on-non-empty ~units/a3-motion.service.d",
-            "systemctl --user daemon-reload",
-        ], commands)
+        self.assertIn("systemctl --user disable --now a3-motion.service", commands)
+        self.assertIn("apt-mark unhold a3-motion-ui", commands)
+        self.assertTrue(any("apt-get remove -y a3-motion-ui" in c for c in commands), commands)
 
-    def test_the_drop_in_is_the_one_install_writes(self):
+    def test_the_installers_old_drop_in_goes_and_his_stay(self):
+        commands, _ = uninstall_commands(
+            "motion", home_files=(".config/systemd/user/a3-motion.service.d/a3-system.conf",
+                                  ".config/systemd/user/a3-motion.service.d/display.conf"))
+        self.assertIn("rm -f ~units/a3-motion.service.d/a3-system.conf", commands)
+        self.assertFalse(any("display.conf" in c for c in commands), commands)
+
+    def test_a_hand_unit_is_listed_a_symlink_is_not(self):
         with tempfile.TemporaryDirectory() as tmp:
-            ctx, _ = context(tmp)
-            ctx.runner.dry_run = False
-            from installer.roles.base import write_drop_in
-            written = write_drop_in(ctx, "a3-motion.service", "a3-system.conf", "x")
-            self.assertIn(written, BY_NAME["motion"].leaving_files(ctx))
+            ctx, _ = context(tmp, {})
+            ctx.user_units.mkdir(parents=True)
+            unit = ctx.user_units / "a3-motion.service"
+            unit.write_text("[Service]\n")
+            self.assertIn(unit, BY_NAME["motion"].leaving_files(ctx))
+            unit.unlink()
+            unit.symlink_to("/nonexistent/a3-motion.service")
+            self.assertNotIn(unit, BY_NAME["motion"].leaving_files(ctx))
+
+    def test_without_the_package_apt_is_not_called(self):
+        commands, _ = uninstall_commands("motion", package_installed=False)
+        self.assertFalse(any("apt-get" in c for c in commands), commands)
+
+    def test_what_stays_is_named(self):
+        from installer.leave import leaving_text
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, _ = context(tmp, {})
+            text = leaving_text(ctx, ["motion"])
+        for word in ("~/.local/share/a3-motion", "a3-motion-ui"):
+            self.assertIn(word, text)
 
 
 class TheDialogBeforeAnythingLeaves(unittest.TestCase):
@@ -1336,12 +1356,12 @@ PIN = "0123456789abcdef0123456789abcdef01234567"
 def stemdeck_seams(fragment="/usr/lib/systemd/user/stemdeck.service"):
     """The StemDeck role without JUCE, git or this machine's systemd."""
     from contextlib import ExitStack
-    from installer.roles import stemdeck
+    from installer.roles import apppackage, stemdeck
     stack = ExitStack()
     stack.enter_context(mock.patch.object(stemdeck, "ensure_juce", lambda _ctx: Path("/juce")))
     stack.enter_context(mock.patch.object(stemdeck, "pinned_commit", lambda _ctx: PIN))
-    stack.enter_context(mock.patch.object(stemdeck.debs, "version_of", lambda *_: "03.0+7"))
-    stack.enter_context(mock.patch.object(stemdeck, "fragment_path", lambda _ctx: fragment))
+    stack.enter_context(mock.patch.object(apppackage.debs, "version_of", lambda *_: "03.0+7"))
+    stack.enter_context(mock.patch.object(apppackage, "fragment_path", lambda _ctx, _app: fragment))
     return stack
 
 
@@ -1363,17 +1383,83 @@ class FailingRunner(RecordingRunner):
         return 0
 
 
+class MovingRunner(RecordingRunner):
+    """RecordingRunner that also does what `mv -n a b` would, so a check that
+    reads the files afterwards sees them where the role put them."""
+
+    def run(self, args, **kwargs):
+        super().run(args, **kwargs)
+        words = [str(a) for a in args]
+        if words[:2] == ["mv", "-n"] and not Path(words[3]).exists():
+            Path(words[2]).rename(words[3])
+        return 0
+
+
+class MovingFailingRunner(FailingRunner):
+    """FailingRunner that also moves files as `mv -n` would."""
+
+    def run(self, args, **kwargs):
+        words = [str(a) for a in args]
+        if words[:2] == ["mv", "-n"] and not Path(words[3]).exists():
+            Path(words[2]).rename(words[3])
+        return super().run(args, **kwargs)
+
+
+class DropInsThatShadowThePackage(unittest.TestCase):
+    def ctx(self):
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(__import__("shutil").rmtree, tmp)
+        ctx, _ = context(tmp, {})
+        (ctx.user_units / "a3-motion.service.d").mkdir(parents=True)
+        return ctx
+
+    def drop_in(self, ctx, name, text):
+        path = ctx.user_units / "a3-motion.service.d" / name
+        path.write_text(text)
+        return path
+
+    def test_lines_that_set_what_is_started_or_where(self):
+        from installer.roles.apppackage import shadowing_lines
+        text = ("[Service]\n# ExecStart=commented\nEnvironment=DISPLAY=:0\n"
+                "WorkingDirectory=/x\nExecStart=\nExecStart=/y\nExecStartPost=/z\n")
+        self.assertEqual(["WorkingDirectory=/x", "ExecStart=", "ExecStart=/y"],
+                         shadowing_lines(text))
+
+    def test_only_those_drop_ins_shadow(self):
+        from installer.roles.apppackage import AppPackage, shadowing_drop_ins
+        ctx = self.ctx()
+        self.drop_in(ctx, "display.conf", "[Service]\nEnvironment=DISPLAY=:0\n")
+        self.drop_in(ctx, "restart.conf", "[Service]\nRestart=on-failure\nRestartSec=5\n")
+        branch = self.drop_in(ctx, "zz-branch-test.conf",
+                              "[Service]\nWorkingDirectory=/w\nExecStart=\nExecStart=/b\n")
+        self.drop_in(ctx, "old.conf.before-package", "[Service]\nExecStart=/old\n")
+        self.assertEqual([branch], shadowing_drop_ins(ctx, AppPackage("a3-motion-ui", "a3-motion.service")))
+
+    def test_an_add_only_drop_in_of_stemdeck_is_not_shadowing(self):
+        from installer.roles.apppackage import shadowing_lines
+        self.assertEqual([], shadowing_lines(
+            "[Unit]\nAfter=a3-jack.service\nBindsTo=a3-jack.service\n"))
+
+
 class StemDeckComesAsAPackage(unittest.TestCase):
     def install(self, roles=("core",), hand_unit=None, aside=False, fragment=None,
-                fail_on=None, symlink=False, twice=False, keep=None, error=None, once=False):
+                fail_on=None, symlink=False, twice=False, keep=None, error=None, once=False,
+                drop_ins=None, moving=False):
         from installer.roles import stemdeck
         tmp = tempfile.mkdtemp()
         self.addCleanup(__import__("shutil").rmtree, tmp)
         ctx, log = context(tmp, {("stemdeck", "library"): str(Path(tmp) / "stems"),
                                  **{("roles", r): "yes" for r in roles}})
-        ctx.runner = (FailingRunner(fail_on, error=error, once=once, log=log) if fail_on
-                      else RecordingRunner(log=log))
+        if fail_on:
+            runner = MovingFailingRunner if moving else FailingRunner
+            ctx.runner = runner(fail_on, error=error, once=once, log=log)
+        else:
+            ctx.runner = (MovingRunner if moving else RecordingRunner)(log=log)
         ctx.user_units.mkdir(parents=True)
+        for name, text in (drop_ins or {}).items():
+            folder = ctx.user_units / "stemdeck.service.d"
+            folder.mkdir(exist_ok=True)
+            (folder / name).write_text(text)
         if symlink:
             (ctx.user_units / "stemdeck.service").symlink_to("/nonexistent/stemdeck.service")
         if hand_unit is not None:
@@ -1446,12 +1532,59 @@ class StemDeckComesAsAPackage(unittest.TestCase):
         self.assertLess(move, install)
         self.assertFalse(any(c.startswith("rm") and "stemdeck.service" in c for c in commands))
 
+    CORE_CONF = "[Unit]\nAfter=a3-jack.service\nBindsTo=a3-jack.service\n"
+    BRANCH_CONF = "[Service]\nWorkingDirectory=/w\nExecStart=\nExecStart=/b\n"
+    DROP_INS = {"a3-core.conf": CORE_CONF, "zz-branch-test.conf": BRANCH_CONF}
+
+    def folder(self, ctx):
+        return ctx.user_units / "stemdeck.service.d"
+
     def test_the_drop_in_folder_stays_where_it_is(self):
         """stemdeck.service.d/a3-core.conf supplies After=/BindsTo=a3-jack to
-        the packaged unit."""
-        commands, _ = self.install(hand_unit="[Service]\n")
-        self.assertFalse(any("stemdeck.service.d" in c for c in commands), commands)
+        the packaged unit; only the drop-in that sets ExecStart goes."""
+        commands, ctx = self.install(hand_unit="[Service]\n", drop_ins=self.DROP_INS,
+                                     moving=True)
+        folder = self.folder(ctx)
+        self.assertEqual(self.CORE_CONF, (folder / "a3-core.conf").read_text())
+        self.assertFalse((folder / "zz-branch-test.conf").exists())
+        self.assertEqual(self.BRANCH_CONF, (folder / "zz-branch-test.conf.before-package").read_text())
+        self.assertFalse(any("a3-core.conf" in c for c in commands), commands)
         self.assertFalse(any(c.startswith("rmdir") for c in commands), commands)
+
+    def test_a_shadowing_drop_in_is_set_aside_before_apt(self):
+        commands, ctx = self.install(drop_ins=self.DROP_INS, moving=True)
+        branch = self.folder(ctx) / "zz-branch-test.conf"
+        aside = self.folder(ctx) / "zz-branch-test.conf.before-package"
+        self.assertLess(commands.index(f"mv -n {branch} {aside}"),
+                        next(i for i, c in enumerate(commands) if "apt-get install" in c))
+        self.assertIn("apt-mark hold stemdeck", commands)
+
+    def test_a_failed_apt_install_puts_the_drop_in_back(self):
+        _, ctx = self.install_failing_apt(error=None)
+        self.assert_drop_ins_back(ctx)
+
+    def test_ctrl_c_during_apt_puts_the_drop_in_back(self):
+        _, ctx = self.install_failing_apt(error=KeyboardInterrupt, raises=KeyboardInterrupt)
+        self.assert_drop_ins_back(ctx)
+
+    def install_failing_apt(self, error, raises=CommandFailed):
+        keep = []
+        with self.assertRaises(raises):
+            self.install(drop_ins=self.DROP_INS, moving=True, fail_on="apt-get install",
+                         error=error, keep=keep)
+        return keep[0]
+
+    def assert_drop_ins_back(self, ctx):
+        folder = self.folder(ctx)
+        self.assertEqual(self.CORE_CONF, (folder / "a3-core.conf").read_text())
+        self.assertEqual(self.BRANCH_CONF, (folder / "zz-branch-test.conf").read_text())
+        self.assertFalse((folder / "zz-branch-test.conf.before-package").exists())
+
+    def test_a_shadowing_drop_in_that_is_still_there_after_install_is_an_error(self):
+        with self.assertRaises(RoleError) as raised:
+            self.install(drop_ins=self.DROP_INS)  # the recording runner moves nothing
+        self.assertIn("zz-branch-test.conf", str(raised.exception))
+        self.assertNotIn("a3-core.conf", str(raised.exception))
 
     def test_no_hand_unit_nothing_set_aside(self):
         commands, _ = self.install()
@@ -1533,6 +1666,152 @@ class StemDeckComesAsAPackage(unittest.TestCase):
         with self.assertRaises(RoleError) as raised:
             self.install(fragment="/home/aaa/.config/systemd/user/stemdeck.service")
         self.assertIn("shadows", str(raised.exception))
+
+
+UI_PIN = "fedcba9876543210fedcba9876543210fedcba98"
+
+
+def motion_seams(fragment="/usr/lib/systemd/user/a3-motion.service", packaged=True):
+    from contextlib import ExitStack
+    from installer.roles import apppackage, motion
+    stack = ExitStack()
+    stack.enter_context(mock.patch.object(motion, "ensure_juce", lambda _ctx: Path("/juce")))
+    stack.enter_context(mock.patch.object(motion, "pinned_commit", lambda _ctx: UI_PIN))
+    stack.enter_context(mock.patch.object(motion, "has_packaging", lambda *_: packaged))
+    stack.enter_context(mock.patch.object(motion.debs, "version_of", lambda *_: "03.0+570"))
+    stack.enter_context(mock.patch.object(apppackage, "fragment_path", lambda _ctx, _app: fragment))
+    stack.enter_context(mock.patch.object(motion.Motion, "_dialout", lambda self, ctx: None))
+    stack.enter_context(mock.patch.object(motion.Motion, "_firmware", lambda self, ctx: None))
+    return stack
+
+
+class MotionPinnedCommit(unittest.TestCase):
+    def test_umbrella_pins_a3_motion_and_that_pins_ui(self):
+        from installer.roles import motion
+        calls = []
+        answers = iter(["motionsha\n", "uisha\n"])
+
+        class Fake:
+            def output(self, args, cwd=None):
+                calls.append([str(a) for a in args])
+                return next(answers)
+
+        ctx = mock.Mock(runner=Fake(), repo=Path("/repo"))
+        self.assertEqual("uisha", motion.pinned_commit(ctx))
+        self.assertEqual([["git", "-C", "/repo", "rev-parse", "HEAD:a3-motion"],
+                          ["git", "-C", "/repo/a3-motion", "rev-parse", "motionsha:ui"]], calls)
+
+
+class MotionComesAsAPackage(unittest.TestCase):
+    def install(self, drop_ins=None, hand_unit=None, packaged=True, fail_on=None, error=None,
+                keep=None):
+        from installer.roles import motion
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(__import__("shutil").rmtree, tmp)
+        ctx, log = context(tmp, {})
+        ctx.runner = (FailingRunner(fail_on, error=error, log=log) if fail_on
+                      else MovingRunner(log=log))
+        (ctx.user_units / "a3-motion.service.d").mkdir(parents=True)
+        for name, text in (drop_ins or {}).items():
+            (ctx.user_units / "a3-motion.service.d" / name).write_text(text)
+        if hand_unit is not None:
+            (ctx.user_units / "a3-motion.service").write_text(hand_unit)
+        with motion_seams(packaged=packaged):
+            try:
+                motion.Motion().install(ctx)
+            finally:
+                if keep is not None:
+                    keep.append((log.commands(), ctx))
+        return log.commands(), ctx
+
+    def test_it_builds_the_pinned_ui_commit_off_the_checkout(self):
+        commands, ctx = self.install()
+        build = next(c for c in commands if "installer/package.py" in c)
+        self.assertTrue(build.startswith("python3 "), build)
+        self.assertIn(str(ctx.repo / "a3-motion/ui"), build)
+        self.assertIn(f"--rev {UI_PIN}", build)
+        self.assertIn("--jobs 2", build)
+        self.assertFalse(any("build.sh" in c for c in commands), commands)
+
+    def test_install_then_hold_then_restart(self):
+        commands, ctx = self.install()
+        deb = ctx.home / "a3-debs" / "a3-motion-ui_03.0+570_amd64.deb"
+        install = next(i for i, c in enumerate(commands) if "apt-get install" in c)
+        self.assertIn(str(deb), commands[install])
+        self.assertLess(install, commands.index("apt-mark hold a3-motion-ui"))
+        self.assertLess(commands.index("apt-mark hold a3-motion-ui"),
+                        commands.index("systemctl --user restart a3-motion.service"))
+
+    def test_no_unit_and_no_drop_in_is_written_into_the_home(self):
+        _, ctx = self.install()
+        self.assertFalse((ctx.user_units / "a3-motion.service").exists())
+        self.assertFalse((ctx.user_units / "a3-motion.service.d/a3-system.conf").exists())
+
+    def test_a_drop_in_that_starts_the_checkout_is_set_aside_and_the_rest_stay(self):
+        commands, ctx = self.install(drop_ins={
+            "display.conf": "[Service]\nEnvironment=DISPLAY=:0\n",
+            "zz-branch-test.conf": "[Service]\nWorkingDirectory=/w\nExecStart=\nExecStart=/b\n",
+            "a3-system.conf": "[Service]\nEnvironment=DISPLAY=:0\nExecStart=\nExecStart=/c\n"})
+        d = ctx.user_units / "a3-motion.service.d"
+        self.assertTrue((d / "display.conf").is_file())
+        self.assertTrue((d / "zz-branch-test.conf.before-package").is_file())
+        self.assertTrue((d / "a3-system.conf.before-package").is_file())
+        self.assertFalse((d / "display.conf.before-package").exists())
+
+    def test_a_hand_unit_is_disabled_and_set_aside(self):
+        commands, ctx = self.install(hand_unit="[Service]\nExecStart=/usr/bin/a3-motion\n")
+        self.assertIn("systemctl --user disable a3-motion.service", commands)
+        self.assertTrue((ctx.user_units / "a3-motion.service.before-package").is_file())
+
+    def test_a_pin_without_packaging_is_refused_before_anything_is_built(self):
+        from installer.roles.base import RoleError
+        with self.assertRaises(RoleError):
+            self.install(packaged=False)
+
+    def test_an_interrupted_apt_puts_everything_back(self):
+        keep = []
+        with self.assertRaises(KeyboardInterrupt):
+            self.install(hand_unit="[Service]\nExecStart=/old\n",
+                         drop_ins={"zz-branch-test.conf": "[Service]\nExecStart=\nExecStart=/b\n"},
+                         fail_on="apt-get install", error=KeyboardInterrupt, keep=keep)
+        commands, ctx = keep[0]
+        apt = next(i for i, c in enumerate(commands) if "apt-get install" in c)
+        after = commands[apt + 1:]
+        d = ctx.user_units / "a3-motion.service.d"
+        self.assertIn(f"mv -n {d / 'zz-branch-test.conf.before-package'} {d / 'zz-branch-test.conf'}", after)
+        self.assertIn(f"mv -n {ctx.user_units / 'a3-motion.service.before-package'} "
+                      f"{ctx.user_units / 'a3-motion.service'}", after)
+        self.assertIn("systemctl --user enable a3-motion.service", after)
+
+    def test_a_shadowing_drop_in_left_over_is_refused(self):
+        from installer.roles import apppackage, motion
+        from installer.roles.base import RoleError
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(__import__("shutil").rmtree, tmp)
+        ctx, log = context(tmp, {})
+        ctx.runner = RecordingRunner(log=log)   # does not move: the drop-in stays
+        (ctx.user_units / "a3-motion.service.d").mkdir(parents=True)
+        (ctx.user_units / "a3-motion.service.d/zz.conf").write_text("[Service]\nExecStart=/b\n")
+        with motion_seams(), self.assertRaises(RoleError):
+            motion.Motion().install(ctx)
+
+    def test_a3nuc1_as_it_is_sets_aside_the_hand_unit_and_the_branch_drop_in_only(self):
+        commands, ctx = self.install(
+            hand_unit="[Service]\nExecStart=/home/aaa/a3-system/a3-motion/ui/build/x\n",
+            drop_ins={
+                "display.conf": "[Service]\nEnvironment=DISPLAY=:0\n",
+                "restart.conf": "[Service]\nRestart=on-failure\nRestartSec=5\n",
+                "zz-branch-test.conf": ("[Service]\nWorkingDirectory=/w\n"
+                                        "ExecStart=\nExecStart=/w/a3-motion-ui\n")})
+        d = ctx.user_units / "a3-motion.service.d"
+        self.assertTrue((ctx.user_units / "a3-motion.service.before-package").is_file())
+        self.assertFalse((ctx.user_units / "a3-motion.service").exists())
+        self.assertTrue((d / "zz-branch-test.conf.before-package").is_file())
+        self.assertFalse((d / "zz-branch-test.conf").exists())
+        for stays in ("display.conf", "restart.conf"):
+            self.assertTrue((d / stays).is_file(), stays)
+            self.assertFalse((d / (stays + ".before-package")).exists(), stays)
+        self.assertEqual(2, len([c for c in commands if c.startswith("mv -n")]), commands)
 
 
 class StemDeckLeavesThroughApt(unittest.TestCase):

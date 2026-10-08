@@ -19,7 +19,7 @@ writes that file when it quits, so it is stopped before the file is changed.
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from .. import package as debs
+from . import apppackage
 from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
                    enable_and_restart, install_user_unit, recorded_roles,
                    remove_files, systemctl_user)
@@ -34,10 +34,7 @@ SETTINGS_FILE = Path(".config/StemDeck/StemDeck.settings")
 STEM_FOLDER = "stemFolder"
 XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>'
 PACKAGE = "stemdeck"
-PACKAGED_UNIT = f"/usr/lib/systemd/user/{UNIT}"
-BEFORE_PACKAGE = ".before-package"
-# -j2: a -j4 build on a3nuc1 made the desk lag (2026-10-02).
-BUILD_JOBS = 2
+APP = apppackage.AppPackage(PACKAGE, UNIT)
 
 
 def settings_path(ctx):
@@ -125,19 +122,9 @@ class StemDeck(Role):
     def install(self, ctx):
         run = ctx.runner
         juce = ensure_juce(ctx)
-        _refuse_shadowing_leftovers(ctx)
-        deb = build_stemdeck(ctx, juce)
-        done = []
-        try:
-            _set_aside_hand_unit(ctx, done)
-            run.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",
-                     "--allow-downgrades", "--allow-change-held-packages", deb], root=True)
-        except BaseException:
-            # BaseException: a Ctrl-C at the sudo prompt must not leave the
-            # machine with its unit disabled, renamed and no package either.
-            _put_hand_unit_back(ctx, done)
-            raise
-        run.run(["apt-mark", "hold", PACKAGE], root=True)
+        apppackage.refuse_shadowing_leftovers(ctx, APP)
+        deb = apppackage.build(ctx, APP, ctx.repo / SOURCE, pinned_commit(ctx), juce)
+        apppackage.install(ctx, APP, deb)
 
         units = ctx.repo / SOURCE / ".config" / "systemd" / "user"
         if "core" not in ctx.settings.roles():
@@ -150,7 +137,7 @@ class StemDeck(Role):
             _remove_patchbay_unit(ctx)
         self._hand_over_library(ctx)
         enable_and_restart(ctx, UNIT)
-        _check_packaged_unit_wins(ctx)
+        apppackage.check_packaged_unit_wins(ctx, APP)
 
     def _hand_over_library(self, ctx):
         """The library folder made if missing and written into StemDeck's
@@ -204,9 +191,7 @@ class StemDeck(Role):
         super().uninstall(ctx)
         if not package_is_installed(ctx):
             return
-        ctx.runner.run(["apt-mark", "unhold", PACKAGE], root=True)
-        ctx.runner.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "remove", "-y",
-                        PACKAGE], root=True)
+        apppackage.remove(ctx, APP)
 
 
 def _owns_zita(ctx):
@@ -233,85 +218,6 @@ def pinned_commit(ctx):
     return ctx.runner.output(["git", "-C", ctx.repo, "rev-parse", f"HEAD:{SOURCE}"]).strip()
 
 
-def build_stemdeck(ctx, juce):
-    """The .deb of the pinned commit, built by installer/package.py (whose CLI
-    lowers its own priority to nice 19); its path."""
-    source = ctx.repo / SOURCE
-    commit = pinned_commit(ctx)
-    out = ctx.home / "a3-debs"
-    cache = ctx.home / ".cache" / "a3-build"
-    ctx.runner.run(["python3", ctx.repo / "installer" / "package.py", source,
-                    "--rev", commit, "--out", out, "--cache", cache,
-                    "--jobs", BUILD_JOBS, "--juce", juce])
-    return debs.deb_path(out, PACKAGE, debs.version_of(source, commit))
-
-
-DISABLED, MOVED = "disabled", "moved"
-
-
-def _hand_unit(ctx):
-    return ctx.user_units / UNIT
-
-
-def _aside_name(ctx):
-    return _hand_unit(ctx).with_name(UNIT + BEFORE_PACKAGE)
-
-
-def _refuse_shadowing_leftovers(ctx):
-    """Up front, before anything is built: what the installer will not resolve
-    by itself."""
-    hand, aside = _hand_unit(ctx), _aside_name(ctx)
-    if hand.is_symlink():
-        raise RoleError(f"{hand} is a symlink and would shadow the package's unit; "
-                        "remove it by hand and run the installer again.")
-    if hand.is_file() and aside.exists():
-        raise RoleError(f"{hand} and {aside} both exist; move one of them away by hand -- "
-                        "the installer overwrites neither.")
-
-
-def _set_aside_hand_unit(ctx, done):
-    """A stemdeck.service in ~/.config/systemd/user -- the copy earlier installs
-    put there, or one made by hand -- shadows the packaged unit: the package
-    would seem to change nothing. It is disabled (its wants links go) and
-    renamed, never deleted; its drop-ins (a3-core.conf) stay and apply to the
-    packaged unit. Done right before apt, so a failed build leaves it running.
-    Each step is noted in `done` (the disable before it is tried, the rename
-    once it is made) so that _put_hand_unit_back undoes exactly those."""
-    hand, aside = _hand_unit(ctx), _aside_name(ctx)
-    if not hand.is_file():
-        return
-    ctx.runner.log(f"{hand} would shadow the package's unit: set aside as {aside.name}.")
-    done.append(DISABLED)
-    systemctl_user(ctx, "disable", UNIT, check=False)
-    ctx.runner.run(["mv", "-n", hand, aside])
-    done.append(MOVED)
-
-
-def _put_hand_unit_back(ctx, done):
-    """The package did not go in: the machine keeps the unit it had."""
-    if not done:
-        return
-    ctx.runner.log(f"the package did not go in: {UNIT} is put back as it was.")
-    if MOVED in done:
-        ctx.runner.run(["mv", "-n", _aside_name(ctx), _hand_unit(ctx)], check=False)
-    systemctl_user(ctx, "enable", UNIT, check=False)
-
-
 def package_is_installed(ctx):
     from ..leave import package_installed  # leave imports the roles
     return package_installed(PACKAGE)
-
-
-def fragment_path(ctx):
-    return ctx.runner.output(["systemctl", "--user", "show", "-p", "FragmentPath",
-                              "--value", UNIT]).strip()
-
-
-def _check_packaged_unit_wins(ctx):
-    if ctx.runner.dry_run:
-        ctx.runner.log(f"# dry run: the check that no unit file shadows {PACKAGED_UNIT} is skipped.")
-        return
-    found = fragment_path(ctx)
-    if found != PACKAGED_UNIT:
-        raise RoleError(f"{UNIT} runs from {found}, not {PACKAGED_UNIT}: a unit file there "
-                        "shadows the package. Move it aside and run the installer again.")

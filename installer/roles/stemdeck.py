@@ -215,7 +215,7 @@ def _remove_patchbay_unit(ctx):
 def pinned_commit(ctx):
     """The commit the umbrella pins for StemDeck -- the release's, whatever the
     submodule's working copy holds."""
-    return ctx.runner.output(["git", "-C", ctx.repo, "rev-parse", f"HEAD:{SOURCE}"]).strip()
+    return apppackage.pinned_commit(ctx, SOURCE)
 
 
 def package_is_installed(ctx):

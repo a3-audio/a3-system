@@ -20,6 +20,7 @@ from pathlib import Path
 
 from .. import package as debs
 from . import apppackage
+from .apppackage import has_packaging
 from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
                    enable_and_restart, systemctl_user)
 
@@ -41,11 +42,6 @@ def pinned_commit(ctx):
     motion = ctx.runner.output(["git", "-C", ctx.repo, "rev-parse", "HEAD:a3-motion"]).strip()
     return ctx.runner.output(["git", "-C", ctx.repo / "a3-motion", "rev-parse",
                               f"{motion}:ui"]).strip()
-
-
-def has_packaging(ctx, ui, commit):
-    return bool(ctx.runner.output(["git", "-C", ui, "ls-tree", "--name-only", commit,
-                                   "packaging/stage"]).strip())
 
 
 def package_is_installed(ctx):

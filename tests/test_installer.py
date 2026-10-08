@@ -45,6 +45,32 @@ def context(tmp, settings=None):
     return Context(REPO, s, runner, Prompter(), "debian", home=tmp, user="aaa"), log
 
 
+class CoreClearsItsMarker(unittest.TestCase):
+    """apt installs nothing when the deb is the installed version, so the
+    postinst never clears a3-core/preseeded; the next dpkg-reconfigure took
+    the installer's network answers unasked (a3-system#76)."""
+
+    def install(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, log = context(tmp, {("core", "configure_network"): "yes"})
+            with mock.patch.object(core, "build_package", lambda _ctx, _work: "/tmp/a3-core.deb"):
+                core.Core().install(ctx)
+            return log
+
+    def test_the_marker_is_cleared_after_the_install(self):
+        log = self.install()
+        commands = log.commands()
+        apt = next(i for i, c in enumerate(commands) if "apt-get install" in c)
+        cleared = [i for i, line in enumerate(log)
+                   if "a3-core a3-core/preseeded boolean false" in line]
+        self.assertTrue(cleared, "nothing clears the marker")
+        self.assertGreater(cleared[-1], log.index("$ " + commands[apt]))
+
+    def test_the_answers_still_carry_it(self):
+        log = self.install()
+        self.assertTrue(any("a3-core a3-core/preseeded boolean true" in line for line in log))
+
+
 class SettingsKeepAnswers(unittest.TestCase):
     def test_a_saved_answer_is_read_back(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -582,7 +608,7 @@ class AutologinWithoutADisplayManager(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             commands = self.set_up(tmp).commands()
             verify = [c for c in commands if c.startswith("systemd-analyze verify")]
-            self.assertEqual(["systemd-analyze verify getty@tty1.service"], verify)
+            self.assertEqual(["systemd-analyze verify --man=no getty@tty1.service"], verify)
             self.assertLess(commands.index(f"sudo install -D -m 644 /dev/stdin "
                                            f"{AUTOLOGIN_TARGET}"),
                             commands.index(verify[0]))

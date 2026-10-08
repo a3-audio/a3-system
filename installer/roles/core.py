@@ -13,6 +13,7 @@ a3-user-install.service builds it from ~/a3-system/beat-analyzer.
 """
 
 import json
+import re
 import shutil
 import subprocess
 import tempfile
@@ -82,9 +83,37 @@ def chosen_groups(setting, differing):
     return [g for g in differing if g in wanted]
 
 
-def preseed_lines(settings, replace):
+#: The public keys a3-core's postinst takes for a3-core/ssh-key, the same
+#: pattern: no options in front, nothing but the key and a comment.
+PUBLIC_KEY = re.compile(
+    r"^(ssh-ed25519|ssh-rsa|ecdsa-sha2-nistp(256|384|521)|sk-ssh-ed25519@openssh\.com"
+    r"|sk-ecdsa-sha2-nistp256@openssh\.com) AAAA[A-Za-z0-9+/]+={0,3}( .*)?$")
+
+
+def read_ssh_key(path):
+    """The one public key line in `path` (install --ssh-key), or a RoleError
+    saying why not -- before anything is installed."""
+    try:
+        text = Path(path).read_text()
+    except (OSError, UnicodeDecodeError) as error:
+        raise RoleError(f"--ssh-key: {path} lässt sich nicht lesen ({error})")
+    if "PRIVATE KEY" in text:
+        raise RoleError(f"--ssh-key: {path} ist ein privater Schlüssel; "
+                        "gemeint ist der öffentliche (.pub)")
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    if len(lines) != 1:
+        raise RoleError(f"--ssh-key: {path} muss genau eine Zeile mit einem "
+                        f"öffentlichen Schlüssel haben, hat {len(lines)}")
+    if not PUBLIC_KEY.match(lines[0]):
+        raise RoleError(f"--ssh-key: {path} ist kein öffentlicher ssh-Schlüssel "
+                        "(z. B. \"ssh-ed25519 AAAA... du@laptop\")")
+    return lines[0]
+
+
+def preseed_lines(settings, replace, ssh_key=None):
     """debconf-set-selections input: every question the postinst asks,
-    answered and marked seen."""
+    answered and marked seen. a3-core/ssh-key only with a key; without one
+    the question keeps whatever answer it has."""
     def flag(key):
         return "true" if settings.flag("core", key) else "false"
 
@@ -104,6 +133,8 @@ def preseed_lines(settings, replace):
     lines.append(("headless-display", "boolean", flag("headless")))
     if replace is not None:
         lines.append(("replace-config", "multiselect", ", ".join(replace)))
+    if ssh_key:
+        lines.append(("ssh-key", "string", ssh_key))
 
     out = []
     for question, kind, value in lines:
@@ -225,7 +256,8 @@ class Core(Role):
         try:
             deb = build_package(ctx, work)
             run.run(["debconf-set-selections"], root=True,
-                    input=preseed_lines(ctx.settings, ctx.answers.get("replace")))
+                    input=preseed_lines(ctx.settings, ctx.answers.get("replace"),
+                                      ctx.answers.get("ssh_key")))
             run.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",
                      "--allow-downgrades", "--allow-change-held-packages", deb], root=True)
             run.run(["apt-mark", "hold", "a3-core"], root=True)
@@ -249,8 +281,9 @@ class Core(Role):
     def uninstall(self, ctx):
         super().uninstall(ctx)
         run = ctx.runner
-        # The package ships ~/.ssh/authorized_keys, so dpkg removes it with
-        # the package; a machine run over ssh would be locked out.
+        # a3-core before #66 shipped ~/.ssh/authorized_keys, so removing such
+        # a package takes the file with it; a machine run over ssh would be
+        # locked out. Newer packages leave it alone, and the copy is harmless.
         keys = ctx.home / ".ssh" / "authorized_keys"
         kept = keys.with_name("authorized_keys.a3-keep")
         keep_keys = keys.exists()

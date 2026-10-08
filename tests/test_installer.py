@@ -53,7 +53,8 @@ class CoreClearsItsMarker(unittest.TestCase):
     def install(self):
         with tempfile.TemporaryDirectory() as tmp:
             ctx, log = context(tmp, {("core", "configure_network"): "yes"})
-            with mock.patch.object(core, "build_package", lambda _ctx, _work: "/tmp/a3-core.deb"):
+            with core_seams(), \
+                    mock.patch.object(core, "build_package", lambda _ctx, _work: "/tmp/a3-core.deb"):
                 core.Core().install(ctx)
             return log
 
@@ -187,7 +188,8 @@ class AnSshKeyFromTheCommandLine(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             ctx, log = context(tmp)
             ctx.answers["ssh_key"] = PUBLIC_KEY
-            with mock.patch.object(core, "build_package", return_value=Path(tmp) / "a3-core.deb"):
+            with core_seams(), \
+                    mock.patch.object(core, "build_package", return_value=Path(tmp) / "a3-core.deb"):
                 BY_NAME["core"].install(ctx)
         self.assertIn(f"    | a3-core a3-core/ssh-key string {PUBLIC_KEY}", "\n".join(log))
 

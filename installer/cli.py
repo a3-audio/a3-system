@@ -7,6 +7,7 @@
     install --config FILE        no questions: FILE's roles and settings
     install --dry-run            show every command, run none
     install --flash-firmware     flash the Motion panel even if unchanged
+    install --ssh-key FILE       the Core lets FILE's public key log in as aaa
 
 The stored answers are in ~/.config/a3/install.conf.
 """
@@ -21,7 +22,7 @@ from .leave import discover_roles, leave_roles
 from .prompt import make_prompter
 from .roles import ALL, BY_NAME, needed_packages, needed_submodules, needs_screen
 from .roles.base import Context, RoleError, record_installed
-from .roles.core import check_core
+from .roles.core import check_core, read_ssh_key
 from .roles.screen import set_up_screen
 from .settings import DEFAULT_PATH, Settings
 from .system import CommandFailed, Runner, platform_name
@@ -42,6 +43,7 @@ def parse(argv):
     parser.add_argument("--config", type=Path, metavar="FILE")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--flash-firmware", action="store_true")
+    parser.add_argument("--ssh-key", type=Path, metavar="FILE")
     return parser.parse_args(argv)
 
 
@@ -184,12 +186,19 @@ def summary_text(version, names, refused):
 
 def main(argv=None):
     args = parse(sys.argv[1:] if argv is None else argv)
+    try:
+        ssh_key = read_ssh_key(args.ssh_key) if args.ssh_key else None
+    except RoleError as error:
+        print(error, file=sys.stderr)
+        return 2
     settings = Settings(args.config or DEFAULT_PATH)
     interactive = args.update is None and args.config is None
     runner = Runner(dry_run=args.dry_run)
     ctx = Context(REPO, settings, runner, make_prompter(interactive), platform_name())
     if args.flash_firmware:
         ctx.answers["flash_firmware"] = True
+    if ssh_key:
+        ctx.answers["ssh_key"] = ssh_key
 
     problems = where_problems(REPO, getpass.getuser())
     if problems and not args.dry_run:

@@ -113,6 +113,68 @@ class Preseeding(unittest.TestCase):
                           self.lines(configure_network=answer), answer)
 
 
+PUBLIC_KEY = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEXAMPLEexampleEXAMPLEexample0123456789ab you@laptop"
+
+
+class AnSshKeyFromTheCommandLine(unittest.TestCase):
+    """install --ssh-key FILE hands one public key to the a3-core package's
+    question a3-core/ssh-key, which a noninteractive install never asks."""
+
+    def key_file(self, text):
+        tmp = tempfile.mkdtemp()
+        path = Path(tmp) / "key.pub"
+        path.write_text(text)
+        return path
+
+    def test_one_public_key_line_is_read(self):
+        self.assertEqual(PUBLIC_KEY, core.read_ssh_key(self.key_file(PUBLIC_KEY + "\n")))
+
+    def test_a_private_key_is_refused(self):
+        private = ("-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAA\n"
+                   "-----END OPENSSH PRIVATE KEY-----\n")
+        with self.assertRaisesRegex(RoleError, "privat"):
+            core.read_ssh_key(self.key_file(private))
+
+    def test_several_keys_are_refused(self):
+        with self.assertRaisesRegex(RoleError, "eine Zeile"):
+            core.read_ssh_key(self.key_file(PUBLIC_KEY + "\n" + PUBLIC_KEY + "\n"))
+
+    def test_options_in_front_of_the_key_are_refused(self):
+        with self.assertRaises(RoleError):
+            core.read_ssh_key(self.key_file('command="/bin/sh" ' + PUBLIC_KEY))
+
+    def test_a_missing_file_is_said_plainly(self):
+        with self.assertRaisesRegex(RoleError, "nicht lesen"):
+            core.read_ssh_key(Path("/nonexistent/key.pub"))
+
+    def test_the_key_is_preseeded_and_marked_seen(self):
+        lines = preseed_lines(Settings("/nonexistent/install.conf"), None,
+                              ssh_key=PUBLIC_KEY).splitlines()
+        self.assertIn(f"a3-core a3-core/ssh-key string {PUBLIC_KEY}", lines)
+        self.assertIn("a3-core a3-core/ssh-key seen true", lines)
+
+    def test_without_the_option_the_question_is_left_alone(self):
+        text = preseed_lines(Settings("/nonexistent/install.conf"), None)
+        self.assertNotIn("ssh-key", text)
+
+    def test_the_core_install_hands_the_key_over(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, log = context(tmp)
+            ctx.answers["ssh_key"] = PUBLIC_KEY
+            with mock.patch.object(core, "build_package", return_value=Path(tmp) / "a3-core.deb"):
+                BY_NAME["core"].install(ctx)
+        self.assertIn(f"    | a3-core a3-core/ssh-key string {PUBLIC_KEY}", "\n".join(log))
+
+    def test_a_bad_key_stops_the_installer_before_anything_runs(self):
+        from installer import cli
+        bad = self.key_file("not a key\n")
+        with mock.patch.object(cli, "Runner") as runner, \
+                mock.patch("sys.stderr", new_callable=lambda: __import__("io").StringIO()) as err:
+            self.assertEqual(2, cli.main(["--dry-run", "--ssh-key", str(bad)]))
+        runner.assert_not_called()
+        self.assertIn("--ssh-key", err.getvalue())
+
+
 class Tags(unittest.TestCase):
     def test_newest_first_and_numbers_as_numbers(self):
         class Fake:

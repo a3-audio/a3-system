@@ -60,6 +60,12 @@ address in a3-core's `a3-osc.json` (or whose Core network answers set it): a sec
 would announce itself in the same LAN; the other roles install either way. `install --dry-run` shows what it would do. For now it
 runs on Debian only, as the user `aaa`, from `/home/aaa/a3-system`.
 
+`install --ssh-key ~/.ssh/id_ed25519.pub` lets that public key log in as `aaa`
+on a Core: the installer hands it to the `a3-core` package, which adds it to
+`~/.ssh/authorized_keys` once. The file must hold exactly one public key line;
+a private key or several lines stop the installer before anything is installed.
+Without the option no key is added.
+
 A role that was installed and is no longer ticked leaves the machine: its
 services are stopped and disabled, the unit files the installer wrote are
 removed, and for the Core the `a3-core` package is removed (not purged). The

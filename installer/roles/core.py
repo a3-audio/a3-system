@@ -285,6 +285,11 @@ class Core(Role):
             run.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",
                      "--allow-downgrades", "--allow-change-held-packages", deb], root=True)
             run.run(["apt-mark", "hold", "a3-core"], root=True)
+            # The postinst clears the marker, but apt runs no postinst when the
+            # deb is the installed version: the marker then stayed, and the next
+            # dpkg-reconfigure took these network answers unasked (a3-system#76).
+            run.run(["debconf-set-selections"], root=True,
+                    input="a3-core a3-core/preseeded boolean false\n")
         finally:
             shutil.rmtree(work, ignore_errors=True)
         self._analyzer(ctx, source, commit)

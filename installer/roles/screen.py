@@ -120,7 +120,10 @@ def _verify_drop_in(ctx):
     if not shutil.which("systemd-analyze"):
         ctx.runner.log("systemd-analyze fehlt, der Autologin-Drop-in bleibt ungeprüft.")
         return []
-    code = ctx.runner.run(["systemd-analyze", "verify", AUTOLOGIN_UNIT], check=False)
+    # --man=no: without man the check failed on the unit's own man pages, not on
+    # the drop-in (a3-system#77).
+    code = ctx.runner.run(["systemd-analyze", "verify", "--man=no", AUTOLOGIN_UNIT],
+                          check=False)
     if code != 0:
         return [f"systemd-analyze verify {AUTOLOGIN_UNIT} meldet Fehler (siehe oben)"]
     return []

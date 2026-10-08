@@ -871,7 +871,8 @@ class RolesFoundOnAMachineSetUpBefore(unittest.TestCase):
         from installer.leave import discover_roles
         with tempfile.TemporaryDirectory() as tmp:
             found = discover_roles(Path(tmp), core_installed=lambda: False,
-                                   stemdeck_installed=lambda: True)
+                                   stemdeck_installed=lambda: True,
+                                   motion_installed=lambda: False)
         self.assertEqual(["stemdeck"], found)
 
     def test_motion_is_found_by_its_package_too(self):

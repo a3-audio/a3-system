@@ -439,6 +439,8 @@ JUCE_NEEDS = (
 )
 STEMDECK_NEEDS = JUCE_NEEDS + (
     "libflac-dev", "libvorbis-dev", "libogg-dev", "libjack-jackd2-dev",
+    # key lock: Rubber Band's time stretcher
+    "librubberband-dev",
     # without the Core, qjackctl-stemdeck.service runs QjackCtl with
     # StemDeck's patchbay (stemdeck .config/rncbc.org)
     "qjackctl")

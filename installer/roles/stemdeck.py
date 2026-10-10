@@ -97,6 +97,8 @@ class StemDeck(Role):
     platforms = ("debian",)
     packages = SCREEN_PACKAGES + JUCE_PACKAGES + (
         "libflac-dev", "libvorbis-dev", "libogg-dev", "libjack-jackd2-dev",
+        # key lock: Rubber Band's time stretcher
+        "librubberband-dev",
         # without the Core, PATCHBAY_UNIT runs QjackCtl with StemDeck's patchbay
         # (the runtime tools of stemdeck.service are the package's Depends)
         "qjackctl")

@@ -24,7 +24,10 @@ DEFAULTS = {
         "address": "192.168.8.10/24",
         "gateway": "192.168.8.1",
         "dns": "192.168.8.1",
-        "bridge_with": "",
+        # The second socket carries AES67 and PTP on a subnet of its own
+        # (no bridge since 2026-10-14); empty is one socket only.
+        "audio_port": "enp5s0",
+        "audio_address": "192.168.9.10/24",
         "headless": "no",
         # Which differing parts of ~/.config to replace: "all", "none", or a
         # list like "reaper, i3". Decided 2026-10-04: all, with a backup.

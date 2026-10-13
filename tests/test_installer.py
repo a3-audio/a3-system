@@ -128,6 +128,17 @@ class Preseeding(unittest.TestCase):
         joined = "\n".join(self.lines(configure_network="yes", address="192.168.8.11/24"))
         self.assertIn("a3-core/address string 192.168.8.11/24", joined)
 
+    def test_a_network_hands_over_the_audio_network(self):
+        """The second socket carries AES67 and PTP since 2026-10-14, no bridge."""
+        joined = "\n".join(self.lines(configure_network="yes"))
+        self.assertIn("a3-core/audio-port string enp5s0", joined)
+        self.assertIn("a3-core/audio-address string 192.168.9.10/24", joined)
+        self.assertNotIn("bridge", joined)
+
+    def test_an_empty_audio_port_is_handed_over_as_none(self):
+        joined = "\n".join(self.lines(configure_network="yes", audio_port=""))
+        self.assertIn("a3-core a3-core/audio-port string \n", joined + "\n")
+
     def test_the_chosen_parts(self):
         self.assertIn("a3-core a3-core/replace-config multiselect reaper, i3", self.lines())
 

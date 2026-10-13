@@ -142,7 +142,8 @@ def preseed_lines(settings, replace, ssh_key=None):
             ("address", "string", settings.get("core", "address")),
             ("gateway", "string", settings.get("core", "gateway")),
             ("dns", "string", settings.get("core", "dns")),
-            ("bridge-with", "string", settings.get("core", "bridge_with")),
+            ("audio-port", "string", settings.get("core", "audio_port")),
+            ("audio-address", "string", settings.get("core", "audio_address")),
         ]
     # The sign the postinst takes the network answers by, and clears; seen
     # is none, an older package left it set (a3-core#68).
@@ -241,7 +242,8 @@ class Core(Role):
                                   ("address", "Statische Adresse mit Präfix (z.B. 192.168.8.10/24)"),
                                   ("gateway", "Gateway"),
                                   ("dns", "DNS-Server"),
-                                  ("bridge_with", "Zweite Buchse für die Bridge (leer: keine)")):
+                                  ("audio_port", "Second socket for AES67 audio and PTP (empty: none)"),
+                                  ("audio_address", "Address on the audio network (e.g. 192.168.9.10/24)")):
                 s.set("core", key, ask.text(question, s.get("core", key)))
         s.set_flag("core", "headless", ask.yesno(
             "Ohne Monitor betreiben (Dummy-Bildschirm, nur VNC)?",

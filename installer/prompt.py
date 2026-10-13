@@ -45,7 +45,7 @@ class TextPrompter(Prompter):
         self._write = write
 
     def yesno(self, question, default):
-        hint = "J/n" if default else "j/N"
+        hint = "Y/n" if default else "y/N"
         while True:
             answer = self._read(f"{question} [{hint}] ").strip().lower()
             if not answer:
@@ -65,7 +65,7 @@ class TextPrompter(Prompter):
             mark = "*" if key == default else " "
             self._write(f"  {mark}{number}) {label}")
         while True:
-            answer = self._read("Nummer (Enter = *): ").strip()
+            answer = self._read("Number (Enter = *): ").strip()
             if not answer:
                 return default
             if answer.isdigit() and 1 <= int(answer) <= len(options):
@@ -77,7 +77,7 @@ class TextPrompter(Prompter):
             mark = "x" if key in chosen else " "
             self._write(f"  [{mark}] {number}) {label}")
         while True:
-            answer = self._read("Nummern mit Leerzeichen, - für keine (Enter = [x]): ").strip()
+            answer = self._read("Numbers separated by spaces, - for none (Enter = [x]): ").strip()
             if not answer:
                 return list(chosen)
             if answer == "-":

@@ -128,6 +128,17 @@ class Preseeding(unittest.TestCase):
         joined = "\n".join(self.lines(configure_network="yes", address="192.168.8.11/24"))
         self.assertIn("a3-core/address string 192.168.8.11/24", joined)
 
+    def test_a_network_hands_over_the_audio_network(self):
+        """The second socket carries AES67 and PTP since 2026-10-14, no bridge."""
+        joined = "\n".join(self.lines(configure_network="yes"))
+        self.assertIn("a3-core/audio-port string enp5s0", joined)
+        self.assertIn("a3-core/audio-address string 192.168.9.10/24", joined)
+        self.assertNotIn("bridge", joined)
+
+    def test_an_empty_audio_port_is_handed_over_as_none(self):
+        joined = "\n".join(self.lines(configure_network="yes", audio_port=""))
+        self.assertIn("a3-core a3-core/audio-port string \n", joined + "\n")
+
     def test_the_chosen_parts(self):
         self.assertIn("a3-core a3-core/replace-config multiselect reaper, i3", self.lines())
 
@@ -163,7 +174,7 @@ class AnSshKeyFromTheCommandLine(unittest.TestCase):
             core.read_ssh_key(self.key_file(private))
 
     def test_several_keys_are_refused(self):
-        with self.assertRaisesRegex(RoleError, "eine Zeile"):
+        with self.assertRaisesRegex(RoleError, "exactly one line"):
             core.read_ssh_key(self.key_file(PUBLIC_KEY + "\n" + PUBLIC_KEY + "\n"))
 
     def test_options_in_front_of_the_key_are_refused(self):
@@ -171,7 +182,7 @@ class AnSshKeyFromTheCommandLine(unittest.TestCase):
             core.read_ssh_key(self.key_file('command="/bin/sh" ' + PUBLIC_KEY))
 
     def test_a_missing_file_is_said_plainly(self):
-        with self.assertRaisesRegex(RoleError, "nicht lesen"):
+        with self.assertRaisesRegex(RoleError, "cannot be read"):
             core.read_ssh_key(Path("/nonexistent/key.pub"))
 
     def test_the_key_is_preseeded_and_marked_seen(self):
@@ -642,7 +653,7 @@ class AutologinWithoutADisplayManager(unittest.TestCase):
             xinitrc.write_text("exec openbox\n")
             screen.ensure_xinitrc(ctx)
             self.assertEqual("exec openbox\n", xinitrc.read_text())
-            self.assertTrue(any(".xinitrc" in line and "gelassen" in line for line in log),
+            self.assertTrue(any(".xinitrc" in line and "left as it is" in line for line in log),
                             list(log))
 
     def set_up(self, tmp):
@@ -671,7 +682,7 @@ class AutologinWithoutADisplayManager(unittest.TestCase):
             self.assertFalse(any("purge" in c or "remove" in c for c in log.commands()))
             joined = "\n".join(log)
             self.assertIn("sudo apt purge lightdm", joined)
-            self.assertIn("Neustart", joined)
+            self.assertIn("next reboot", joined)
 
     def test_the_drop_in_is_verified(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -810,7 +821,7 @@ class MissingUnitsAreSaidPlainly(unittest.TestCase):
             ctx, _ = context(tmp)
             with self.assertRaises(RoleError) as caught:
                 install_user_unit(ctx, REPO / "stemdeck" / "no-such.service")
-            self.assertIn("Pin", str(caught.exception))
+            self.assertIn("pin", str(caught.exception))
 
 
 class StateIsKept(unittest.TestCase):
@@ -1177,9 +1188,9 @@ class TheDialogBeforeAnythingLeaves(unittest.TestCase):
             ctx, _ = context(tmp)
             text = leaving_text(ctx, ["core", "motion"])
         for expected in ("a3-main.service", "a3-jack.service", "a3-reaper.service",
-                         "a3-core", "a3-motion.service", "a3-system.conf", "Bleibt"):
+                         "a3-core", "a3-motion.service", "a3-system.conf", "Stays"):
             self.assertIn(expected, text)
-        self.assertIn("Pakete", text)
+        self.assertIn("Packages", text)
 
     def test_asked_with_no_as_default(self):
         prompter = AnsweringPrompter(False)
@@ -1195,21 +1206,21 @@ class TheDialogBeforeAnythingLeaves(unittest.TestCase):
         self.assertNotIn("uninstall a", commands)
         self.assertIn("install b", commands)
         self.assertEqual("2026-10-01", recorded["a"])
-        self.assertTrue(any("trotzdem" in line for line in log), log)
+        self.assertTrue(any("anyway" in line for line in log), log)
 
     def test_yes_removes_and_forgets_the_role(self):
         commands, results, _, recorded = apply_fakes(
             [LeavingRole("a"), LeavingRole("b")], ["b"], ["a", "b"], AnsweringPrompter(True))
         self.assertIn("uninstall a", commands)
         self.assertEqual("", recorded["a"])
-        self.assertIn(("a", "entfernt"), results)
+        self.assertIn(("a", "removed"), results)
 
     def test_a_failed_uninstall_keeps_the_record(self):
         _, results, _, recorded = apply_fakes(
             [LeavingRole("a", fails=True), LeavingRole("b")], ["b"], ["a", "b"],
             AnsweringPrompter(True))
         self.assertEqual("2026-10-01", recorded["a"])
-        self.assertTrue(any(n == "a" and r.startswith("FEHLER") for n, r in results), results)
+        self.assertTrue(any(n == "a" and r.startswith("ERROR") for n, r in results), results)
 
     def test_nothing_to_leave_asks_nothing(self):
         prompter = AnsweringPrompter(True)
@@ -1364,7 +1375,7 @@ class StemDeckAsksForItsLibrary(unittest.TestCase):
     def test_the_question_names_the_stem_library(self):
         prompter = TextAnswers("")
         self.configure(prompter)
-        self.assertIn("Stem-Bibliothek", prompter.asked[0][0])
+        self.assertIn("stem library", prompter.asked[0][0])
 
     def test_the_answer_is_kept_in_the_installer_settings(self):
         stored, _ = self.configure(TextAnswers("/data/stems"),
@@ -2088,13 +2099,13 @@ class WithoutQuestionsStemDecksChoiceStays(unittest.TestCase):
         log, path, _, ctx = self.run_role(STEMDECK_SETTINGS, stored="/data/stems")
         self.assertNotIn("systemctl --user stop stemdeck.service", log.commands())
         self.assertEqual(STEMDECK_SETTINGS, path.read_text())
-        self.assertTrue(any("StemDeck nutzt bereits /home/aaa/stems" in line
+        self.assertTrue(any("StemDeck already uses /home/aaa/stems" in line
                             for line in log))
         self.assertEqual("/home/aaa/stems", ctx.settings.get("stemdeck", "library"))
 
     def test_a_different_library_in_the_file_is_said_not_applied(self):
         log, *_ = self.run_role(STEMDECK_SETTINGS, stored="/data/stems")
-        self.assertTrue(any("/data/stems" in line and "nicht übernommen" in line
+        self.assertTrue(any("/data/stems" in line and "not taken over" in line
                             for line in log))
 
     def test_without_a_settings_file_it_writes(self):
@@ -2158,7 +2169,7 @@ class OneCoreInTheLan(unittest.TestCase):
     def test_neither_refuses_naming_the_address_and_the_second_core(self):
         message = core.core_refusal(self.TRUTH, ["192.168.8.20"], "192.168.8.20")
         self.assertIn(self.TRUTH, message)
-        self.assertIn("zweiter Core", message)
+        self.assertIn("second Core", message)
 
     def test_a_truth_without_a_core_refuses(self):
         self.assertIsNotNone(core.core_refusal(None, ["192.168.8.10"], None))
@@ -2217,14 +2228,14 @@ class OneCoreInTheLan(unittest.TestCase):
         self.assertIn("install motion", commands)
         self.assertNotIn("install core", commands)
         self.assertNotIn("uninstall core", commands)
-        self.assertEqual(("core", "ABGELEHNT: nein"), rows[0])
+        self.assertEqual(("core", "REFUSED: nein"), rows[0])
         self.assertIn(("stemdeck", "ok"), rows)
 
     def test_the_summary_says_it(self):
         from installer.cli import summary_text
         text = summary_text("v03.0", ["core", "stemdeck"], {"core": "Grund"})
         self.assertIn("Grund", text)
-        self.assertNotIn("A³ Core", text.split("Rollen:")[1].splitlines()[0])
+        self.assertNotIn("A³ Core", text.split("Roles:")[1].splitlines()[0])
 
 
 ANALYZER_PIN = "fedcba9876543210fedcba9876543210fedcba98"

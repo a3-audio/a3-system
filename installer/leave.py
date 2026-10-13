@@ -61,14 +61,14 @@ def deselected(installed, chosen):
 
 
 def leaving_text(ctx, names):
-    lines = ["Diese Rollen sind installiert, aber nicht mehr gewählt:"]
+    lines = ["These roles are installed but no longer chosen:"]
     for name in names:
         lines.append("")
         lines.append(BY_NAME[name].label)
         lines.extend(BY_NAME[name].leaving_lines(ctx))
     lines.append("")
-    lines.append("Pakete, die für die Rollen installiert wurden, bleiben, "
-                 "ebenso Gruppen und alle Daten.")
+    lines.append("Packages installed for the roles stay, "
+                 "as do groups and all data.")
     return "\n".join(lines)
 
 
@@ -76,33 +76,33 @@ def agree_to_leave(ctx, names):
     text = leaving_text(ctx, names)
     log = ctx.runner.log
     if ctx.prompter.interactive:
-        if ctx.prompter.yesno(text + "\n\nDiese Rollen jetzt entfernen?", False):
+        if ctx.prompter.yesno(text + "\n\nRemove these roles now?", False):
             return True
-        log("Nichts wird entfernt; die gewählten Rollen werden trotzdem installiert.")
+        log("Nothing is removed; the chosen roles are installed anyway.")
         return False
     log("\n" + text)
     if ctx.settings.flag("uninstall", "allow"):
         return True
-    log(f"Nicht entfernt: {ctx.settings.path} erlaubt es nicht "
-        "([uninstall] allow = yes). Die gewählten Rollen werden trotzdem installiert.")
+    log(f"Not removed: {ctx.settings.path} does not allow it "
+        "([uninstall] allow = yes). The chosen roles are installed anyway.")
     return False
 
 
 def uninstall_one(ctx, name):
-    ctx.runner.log(f"\n=== {BY_NAME[name].label} entfernen ===")
+    ctx.runner.log(f"\n=== Removing {BY_NAME[name].label} ===")
     try:
         BY_NAME[name].uninstall(ctx)
     except (RoleError, CommandFailed) as error:
-        return (name, f"FEHLER beim Entfernen: {error}")
+        return (name, f"ERROR while removing: {error}")
     forget_installed(ctx, name)
-    return (name, "entfernt")
+    return (name, "removed")
 
 
 def name_the_autologin(ctx, chosen, left):
     if needs_screen(chosen) or not any(BY_NAME[name].needs_screen for name in left):
         return
-    ctx.runner.log("Keine gewählte Rolle braucht noch den Bildschirm. Der Autologin auf "
-                   "tty1 bleibt trotzdem; entfernen mit "
+    ctx.runner.log("No chosen role needs the screen any more. The autologin on "
+                   "tty1 stays anyway; remove it with "
                    f"sudo rm {AUTOLOGIN_DROP_IN}")
 
 
@@ -116,8 +116,8 @@ def leave_roles(ctx, chosen, discover=discover_roles):
     for name in installed if found else ():
         record_installed(ctx, name)
     if not agreed:
-        return [(name, "bleibt installiert (nicht entfernt)") for name in going]
+        return [(name, "stays installed (not removed)") for name in going]
     # Reverse install order: the Core last, so StemDeck still sees it.
     rows = [uninstall_one(ctx, name) for name in reversed(going)]
-    name_the_autologin(ctx, chosen, [name for name, result in rows if result == "entfernt"])
+    name_the_autologin(ctx, chosen, [name for name, result in rows if result == "removed"])
     return rows[::-1]

@@ -88,9 +88,9 @@ def ensure_bash_profile(ctx):
 def ensure_xinitrc(ctx):
     path = ctx.home / ".xinitrc"
     if path.exists() and XINITRC_MARKER not in path.read_text():
-        ctx.runner.log(f"{path} ist von Hand geschrieben und wird gelassen, wie sie ist. "
-                       "Sie muss i3 starten und DISPLAY/XAUTHORITY an systemd --user "
-                       "geben, sonst finden REAPER und qjackctl kein X.")
+        ctx.runner.log(f"{path} was written by hand and is left as it is. "
+                       "It must start i3 and pass DISPLAY/XAUTHORITY to systemd --user, "
+                       "or REAPER and qjackctl will not find X.")
         return
     _write_home_file(ctx, path, XINITRC_TEXT)
 
@@ -111,21 +111,21 @@ def screen_problems(home, which=shutil.which):
     problems = []
     profile = Path(home) / ".bash_profile"
     if not profile.exists() or autologin_block() not in profile.read_text():
-        problems.append(f"{profile} startet X nicht (der a3-system-Block fehlt)")
-    problems.extend(f"{program} fehlt" for program in SCREEN_PROGRAMS if not which(program))
+        problems.append(f"{profile} does not start X (the a3-system block is missing)")
+    problems.extend(f"{program} is missing" for program in SCREEN_PROGRAMS if not which(program))
     return problems
 
 
 def _verify_drop_in(ctx):
     if not shutil.which("systemd-analyze"):
-        ctx.runner.log("systemd-analyze fehlt, der Autologin-Drop-in bleibt ungeprüft.")
+        ctx.runner.log("systemd-analyze is missing, the autologin drop-in stays unchecked.")
         return []
     # --man=no: without man the check failed on the unit's own man pages, not on
     # the drop-in (a3-system#77).
     code = ctx.runner.run(["systemd-analyze", "verify", "--man=no", AUTOLOGIN_UNIT],
                           check=False)
     if code != 0:
-        return [f"systemd-analyze verify {AUTOLOGIN_UNIT} meldet Fehler (siehe oben)"]
+        return [f"systemd-analyze verify {AUTOLOGIN_UNIT} reports errors (see above)"]
     return []
 
 
@@ -140,7 +140,7 @@ def set_up_screen(ctx):
     problems = _verify_drop_in(ctx)
     if not run.dry_run:
         problems += screen_problems(ctx.home)
-    run.log(f"{ctx.user} wird ab dem nächsten Neustart auf tty1 angemeldet und startet "
-            "X mit i3, ohne lightdm. lightdm ist nur abgeschaltet; entfernen mit "
+    run.log(f"From the next reboot {ctx.user} is logged in on tty1 and starts "
+            "X with i3, without lightdm. lightdm is only disabled; remove it with "
             "sudo apt purge lightdm")
     return problems

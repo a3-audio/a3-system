@@ -50,9 +50,9 @@ def parse(argv):
 def where_problems(repo, user):
     problems = []
     if user != EXPECTED_USER:
-        problems.append(f"läuft als {user}, die Units erwarten {EXPECTED_USER}")
+        problems.append(f"running as {user}, the units expect {EXPECTED_USER}")
     if repo != EXPECTED_REPO:
-        problems.append(f"liegt in {repo}, die Units erwarten {EXPECTED_REPO}")
+        problems.append(f"located in {repo}, the units expect {EXPECTED_REPO}")
     return problems
 
 
@@ -72,7 +72,7 @@ def choose_version(ctx, args):
     try:
         release.fetch(run, repo)
     except CommandFailed:
-        run.log("Keine Verbindung zu GitHub: es gibt nur die Versionen, die schon da sind.")
+        run.log("No connection to GitHub: only the versions already here are available.")
     tags = release.tags(run, repo)
     here = release.current(run, repo)
     if args.update is not None:
@@ -81,8 +81,8 @@ def choose_version(ctx, args):
     stored = ctx.settings.get("system", "version") or here
     if not ctx.prompter.interactive:
         return stored
-    options = [(here, f"{here} (wie jetzt)")] + [(t, t) for t in tags if t != here]
-    return ctx.prompter.choose("Welcher Stand des Systems?", options,
+    options = [(here, f"{here} (as now)")] + [(t, t) for t in tags if t != here]
+    return ctx.prompter.choose("Which version of the system?", options,
                                stored if stored in dict(options) else here)
 
 
@@ -94,9 +94,9 @@ def choose_roles(ctx):
     for role in ALL:
         label = role.label
         if not role.supported(ctx.platform):
-            label += f"  -- noch nicht auf {ctx.platform}"
+            label += f"  -- not yet on {ctx.platform}"
         options.append((role.name, label))
-    picked = ask.checklist("Was soll auf diesem Rechner laufen?", options, s.roles())
+    picked = ask.checklist("What should run on this machine?", options, s.roles())
     for role in ALL:
         s.set_flag("roles", role.name, role.name in picked)
     return picked
@@ -108,7 +108,7 @@ def install_packages(ctx, names):
     packages = needed_packages(names)
     if not packages or ctx.platform != "debian":
         return
-    ctx.runner.log("\n=== Pakete der Rollen ===")
+    ctx.runner.log("\n=== Packages for the roles ===")
     ctx.runner.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",
                     *packages], root=True)
 
@@ -118,13 +118,13 @@ def install_screen(ctx, names):
     None when no chosen role needs a screen."""
     if not needs_screen(names):
         return None
-    ctx.runner.log("\n=== Bildschirm: Autologin auf tty1, X mit i3 ===")
+    ctx.runner.log("\n=== Screen: autologin on tty1, X with i3 ===")
     try:
         problems = set_up_screen(ctx)
     except CommandFailed as error:
-        return ("autologin", f"FEHLER: {error}")
+        return ("autologin", f"ERROR: {error}")
     if problems:
-        return ("autologin", "WARNUNG: " + "; ".join(problems))
+        return ("autologin", "WARNING: " + "; ".join(problems))
     return ("autologin", "ok")
 
 
@@ -136,7 +136,7 @@ def install_roles(ctx, names):
     screen = install_screen(ctx, names)
     if screen:
         results.append(screen)
-        if screen[1].startswith("FEHLER"):
+        if screen[1].startswith("ERROR"):
             return results
     for name in names:
         ctx.runner.log(f"\n=== {BY_NAME[name].label} ===")
@@ -145,7 +145,7 @@ def install_roles(ctx, names):
             record_installed(ctx, name)
             results.append((name, "ok"))
         except (RoleError, CommandFailed) as error:
-            results.append((name, f"FEHLER: {error}"))
+            results.append((name, f"ERROR: {error}"))
             break
     return results
 
@@ -158,7 +158,7 @@ def apply_roles(ctx, names, discover=discover_roles, refused=None):
     (rows of the roles that were to leave, rows of the install)."""
     refused = refused or {}
     left = leave_roles(ctx, names, discover)
-    rows = [(name, f"ABGELEHNT: {refused[name]}") for name in names if name in refused]
+    rows = [(name, f"REFUSED: {refused[name]}") for name in names if name in refused]
     return left, rows + install_roles(ctx, [n for n in names if n not in refused])
 
 
@@ -167,20 +167,20 @@ def refused_roles(ctx, names):
     anywhere but on the truth's core address."""
     if "core" not in names:
         return {}
-    ctx.runner.log("\n=== Ein Core im LAN ===")
+    ctx.runner.log("\n=== One Core on the LAN ===")
     why = check_core(ctx)
     if why is None:
         return {}
-    ctx.runner.log(f"A³ Core abgelehnt: {why}")
+    ctx.runner.log(f"A³ Core refused: {why}")
     return {"core": why}
 
 
 def summary_text(version, names, refused):
     installing = [n for n in names if n not in refused]
-    text = (f"Stand: {version}\nRollen: "
-            + (", ".join(BY_NAME[r].label for r in installing) or "keine"))
+    text = (f"Version: {version}\nRoles: "
+            + (", ".join(BY_NAME[r].label for r in installing) or "none"))
     for name, why in refused.items():
-        text += f"\n\nNicht installiert: {BY_NAME[name].label}\n{why}"
+        text += f"\n\nNot installed: {BY_NAME[name].label}\n{why}"
     return text
 
 
@@ -202,8 +202,8 @@ def main(argv=None):
 
     problems = where_problems(REPO, getpass.getuser())
     if problems and not args.dry_run:
-        print("Der Installer kann so nicht laufen:\n  " + "\n  ".join(problems)
-              + "\nMit --dry-run lässt er sich trotzdem ansehen.", file=sys.stderr)
+        print("The installer cannot run like this:\n  " + "\n  ".join(problems)
+              + "\nWith --dry-run you can still look at what it would do.", file=sys.stderr)
         return 2
 
     try:
@@ -216,7 +216,7 @@ def main(argv=None):
         roles = choose_roles(ctx)
         unsupported = [r for r in roles if not BY_NAME[r].supported(ctx.platform)]
         if unsupported:
-            raise RoleError(f"Auf {ctx.platform} noch nicht möglich: "
+            raise RoleError(f"Not yet possible on {ctx.platform}: "
                             + ", ".join(BY_NAME[r].label for r in unsupported))
         # Before the questions: the Core's read what this release ships.
         release.update_submodules(runner, REPO, needed_submodules(roles))
@@ -225,26 +225,26 @@ def main(argv=None):
 
         refused = refused_roles(ctx, roles)
         if ctx.prompter.interactive and not ctx.prompter.yesno(
-                summary_text(version, roles, refused) + "\n\nSo installieren?", True):
-            print("Abgebrochen, nichts installiert.")
+                summary_text(version, roles, refused) + "\n\nInstall like this?", True):
+            print("Cancelled, nothing installed.")
             return 1
         if not args.dry_run and args.config is None:
             settings.save()
 
         left, results = apply_roles(ctx, roles, refused=refused)
     except KeyboardInterrupt:
-        print("\nAbgebrochen.")
+        print("\nCancelled.")
         return 1
     except (RoleError, CommandFailed) as error:
         print(f"\n{error}", file=sys.stderr)
         return 1
 
-    print(f"\n{getpass.getuser()}@{platform_name()} auf {version}:")
+    print(f"\n{getpass.getuser()}@{platform_name()} on {version}:")
     for name, result in left + results:
         print(f"  {name:10} {result}")
     done = {name for name, _ in results}
     skipped = [name for name in roles if name not in done]
     for name in skipped:
-        print(f"  {name:10} übersprungen (nach einem Fehler)")
-    left_failed = any(r.startswith("FEHLER") for _, r in left)
+        print(f"  {name:10} skipped (after an error)")
+    left_failed = any(r.startswith("ERROR") for _, r in left)
     return 0 if all(r == "ok" for _, r in results) and not skipped and not left_failed else 1

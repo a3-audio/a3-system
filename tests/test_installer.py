@@ -1107,23 +1107,16 @@ class CoreLeaves(unittest.TestCase):
 
 
 class StemDeckLeaves(unittest.TestCase):
-    def test_without_a_core_its_zita_units_go_too(self):
+    def test_it_stops_only_itself_and_its_patchbay(self):
         commands, _ = uninstall_commands("stemdeck")
-        for unit in ("zita-n2j.service", "zita-j2n.service"):
-            self.assertIn(f"systemctl --user disable --now {unit}", commands)
-            self.assertIn(f"rm -f ~units/{unit}", commands)
         self.assertIn("systemctl --user disable --now stemdeck.service", commands)
         self.assertIn("systemctl --user daemon-reload", commands)
+        self.assertFalse(any("zita" in c for c in commands), commands)
 
     def test_with_the_core_chosen_only_stemdeck(self):
         commands, _ = uninstall_commands("stemdeck", chosen=["core"])
         self.assertIn("systemctl --user disable --now stemdeck.service", commands)
         self.assertNotIn("rm -f ~units/stemdeck.service", commands)
-        self.assertFalse(any("zita" in c for c in commands), commands)
-
-    def test_a_core_still_installed_keeps_its_zita_files(self):
-        """The zita files then are the Core's; the Core stops them when it leaves."""
-        commands, _ = uninstall_commands("stemdeck", installed=["core"])
         self.assertFalse(any("zita" in c for c in commands), commands)
 
     def test_its_patchbay_unit_goes_too(self):
@@ -1187,10 +1180,22 @@ class TheDialogBeforeAnythingLeaves(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             ctx, _ = context(tmp)
             text = leaving_text(ctx, ["core", "motion"])
-        for expected in ("a3-main.service", "a3-jack.service", "a3-reaper.service",
+        for expected in ("a3-main.service", "a3-aes67.service", "a3-reaper.service",
                          "a3-core", "a3-motion.service", "a3-system.conf", "Stays"):
             self.assertIn(expected, text)
         self.assertIn("Packages", text)
+
+    def test_it_knows_pipewire_and_not_jack_or_zita(self):
+        from installer.leave import leaving_text
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, _ = context(tmp)
+            text = leaving_text(ctx, ["core"])
+        for gone in ("a3-jack", "zita"):
+            self.assertNotIn(gone, text)
+
+    def test_the_pipewire_group_has_the_packages_label(self):
+        from installer.roles.core import GROUP_LABELS
+        self.assertEqual("PipeWire: rate + block + AES67", GROUP_LABELS["pipewire"])
 
     def test_asked_with_no_as_default(self):
         prompter = AnsweringPrompter(False)
@@ -1553,7 +1558,7 @@ class DropInsThatShadowThePackage(unittest.TestCase):
     def test_an_add_only_drop_in_of_stemdeck_is_not_shadowing(self):
         from installer.roles.apppackage import shadowing_lines
         self.assertEqual([], shadowing_lines(
-            "[Unit]\nAfter=a3-jack.service\nBindsTo=a3-jack.service\n"))
+            "[Unit]\nAfter=pipewire.service\nBindsTo=pipewire.service\n"))
 
 
 class StemDeckComesAsAPackage(unittest.TestCase):
@@ -1647,7 +1652,7 @@ class StemDeckComesAsAPackage(unittest.TestCase):
         self.assertLess(move, install)
         self.assertFalse(any(c.startswith("rm") and "stemdeck.service" in c for c in commands))
 
-    CORE_CONF = "[Unit]\nAfter=a3-jack.service\nBindsTo=a3-jack.service\n"
+    CORE_CONF = "[Unit]\nAfter=pipewire.service\nBindsTo=pipewire.service\n"
     BRANCH_CONF = "[Service]\nWorkingDirectory=/w\nExecStart=\nExecStart=/b\n"
     DROP_INS = {"a3-core.conf": CORE_CONF, "zz-branch-test.conf": BRANCH_CONF}
 
@@ -1655,7 +1660,7 @@ class StemDeckComesAsAPackage(unittest.TestCase):
         return ctx.user_units / "stemdeck.service.d"
 
     def test_the_drop_in_folder_stays_where_it_is(self):
-        """stemdeck.service.d/a3-core.conf supplies After=/BindsTo=a3-jack to
+        """stemdeck.service.d/a3-core.conf supplies After=/BindsTo=pipewire.service to
         the packaged unit; only the drop-in that sets ExecStart goes."""
         commands, ctx = self.install(hand_unit="[Service]\n", drop_ins=self.DROP_INS,
                                      moving=True)
@@ -2011,7 +2016,7 @@ class StemDeckInstallsItsLibrary(unittest.TestCase):
 
 
 class StemDeckWiresItselfWithoutTheCore(unittest.TestCase):
-    """Without the Core nothing connects StemDeck to zita-j2n (a3nuc2,
+    """Without the Core nothing wires StemDeck into the JACK graph (a3nuc2,
     2026-10-06): a QjackCtl with StemDeck's patchbay does. With the Core its
     own patchbay does, and a second QjackCtl must not run there."""
 
@@ -2030,6 +2035,12 @@ class StemDeckWiresItselfWithoutTheCore(unittest.TestCase):
         with stemdeck_seams():
             stemdeck.StemDeck().install(ctx)
         return log.commands(), ctx
+
+    def test_no_zita_unit_is_installed_with_or_without_the_core(self):
+        for roles in ((), ("core",)):
+            with self.subTest(roles=roles):
+                commands, _ = self.install(roles=roles)
+                self.assertFalse(any("zita" in c for c in commands), commands)
 
     def test_without_the_core_its_patchbay_unit_is_installed_and_enabled(self):
         commands, ctx = self.install(roles=())

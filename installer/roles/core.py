@@ -39,9 +39,9 @@ TRUTH = PACKAGE_DIR / "usr/share/a3/a3-osc.json"
 # SHIPPED_CONFIG) and enables through default.target.wants. Stopped and
 # disabled when the Core leaves; the files stay with the rest of ~/.config.
 CORE_UNITS = (
-    "a3-main.service", "a3-jack.service", "a3-reaper.service", "a3-core.service",
-    "qjackctl.service", "zita-n2j.service",
-    "zita-j2n.service", "a3-bar-per-workspace.service", "a3-user-install.service",
+    "a3-main.service", "a3-reaper.service", "a3-core.service",
+    "qjackctl.service", "a3-aes67.service",
+    "a3-bar-per-workspace.service", "a3-user-install.service",
 )
 
 ANALYZER_SOURCE = "beat-analyzer"
@@ -57,6 +57,7 @@ GROUP_LABELS = {
     "reaper": "REAPER: template, OSC map, presets, effects",
     "i3": "i3 config",
     "systemd": "systemd user units",
+    "pipewire": "PipeWire: rate + block + AES67",
     "qjackctl": "QjackCtl and patchbay",
     "iem": "IEM plugin settings",
     "other": "other files",

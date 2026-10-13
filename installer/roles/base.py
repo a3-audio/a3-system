@@ -147,12 +147,12 @@ class Role:
     def leaving_lines(self, ctx):
         """What goes and what stays, one item per line, for the dialog."""
         lines = []
-        for title, items in (("Dienste, gestoppt und abgeschaltet",
+        for title, items in (("Services, stopped and disabled",
                               self.leaving_units(ctx)),
-                             ("Dateien, gelöscht", self.leaving_files(ctx)),
-                             ("Paket, entfernt (nicht purge)",
+                             ("Files, deleted", self.leaving_files(ctx)),
+                             ("Package, removed (not purged)",
                               self.leaving_packages(ctx)),
-                             ("Bleibt", self.stays)):
+                             ("Stays", self.stays)):
             if items:
                 lines.append(f"  {title}:")
                 lines.extend(f"    {item}" for item in items)
@@ -181,9 +181,9 @@ def install_user_unit(ctx, source, name=None):
     """The unit file from a component's repository, into ~/.config/systemd/user."""
     source = Path(source)
     if not source.is_file():
-        raise RoleError(f"{source.relative_to(ctx.repo)} fehlt in diesem Stand. "
-                        "Der Pin im a3-system-Repo ist älter als die Unit; "
-                        "erst den Pin hochziehen.")
+        raise RoleError(f"{source.relative_to(ctx.repo)} is missing in this version. "
+                        "The pin in the a3-system repo is older than the unit; "
+                        "raise the pin first.")
     target = ctx.user_units / (name or source.name)
     ctx.runner.run(["install", "-D", "-m", "644", source, target])
     return target
@@ -281,10 +281,10 @@ def ensure_juce(ctx):
     _name_a_newer_juce(ctx)
     installed = sorted(p.name for p in (prefix / "lib" / "cmake").glob("JUCE-*"))
     if installed == [f"JUCE-{JUCE_VERSION}"]:
-        ctx.runner.log(f"JUCE {JUCE_VERSION} ist da ({prefix}).")
+        ctx.runner.log(f"JUCE {JUCE_VERSION} is already there ({prefix}).")
         return prefix
     if installed:
-        ctx.runner.log(f"Ersetze {', '.join(installed)} in {prefix} durch JUCE {JUCE_VERSION}.")
+        ctx.runner.log(f"Replacing {', '.join(installed)} in {prefix} with JUCE {JUCE_VERSION}.")
         ctx.runner.run(["rm", "-rf", prefix])
     source = ctx.home / "src" / "JUCE"
     ctx.runner.run(["rm", "-rf", source])
@@ -300,5 +300,5 @@ def ensure_juce(ctx):
 def _name_a_newer_juce(ctx):
     latest = latest_juce(ctx)
     if latest and _version_key(latest) > _version_key(JUCE_VERSION):
-        ctx.runner.log(f"Hinweis: JUCE {latest} ist erschienen, gebaut wird weiter "
-                       f"gegen {JUCE_VERSION} (JUCE_VERSION in installer/roles/base.py).")
+        ctx.runner.log(f"Note: JUCE {latest} is out, but the build stays "
+                       f"on {JUCE_VERSION} (JUCE_VERSION in installer/roles/base.py).")

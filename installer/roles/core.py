@@ -54,12 +54,12 @@ ANALYZER_BUILD_PACKAGES = ("cmake", "g++", "pkg-config", "patch", "curl",
                            "libjack-jackd2-dev", "libsamplerate0-dev")
 
 GROUP_LABELS = {
-    "reaper": "REAPER: Template, OSC-Map, Presets, Effekte",
-    "i3": "i3-Config",
-    "systemd": "systemd-User-Units",
-    "qjackctl": "QjackCtl und Patchbay",
-    "iem": "IEM-Plugin-Settings",
-    "other": "sonstige Dateien",
+    "reaper": "REAPER: template, OSC map, presets, effects",
+    "i3": "i3 config",
+    "systemd": "systemd user units",
+    "qjackctl": "QjackCtl and patchbay",
+    "iem": "IEM plugin settings",
+    "other": "other files",
 }
 
 
@@ -70,8 +70,8 @@ def postinst_function(repo, *names):
     bodies = []
     for name in names:
         if f"\n{name}() {{" not in text:
-            raise RoleError(f"a3-core in diesem Stand kennt {name}() nicht; er ist "
-                            "älter als der Installer. Erst den a3-core-Pin hochziehen.")
+            raise RoleError(f"a3-core in this version does not know {name}(); it is "
+                            "older than the installer. Raise the a3-core pin first.")
         start = text.index(f"\n{name}() {{") + 1
         end = text.index("\n}\n", start) + 3
         bodies.append(text[start:end])
@@ -113,17 +113,17 @@ def read_ssh_key(path):
     try:
         text = Path(path).read_text()
     except (OSError, UnicodeDecodeError) as error:
-        raise RoleError(f"--ssh-key: {path} lässt sich nicht lesen ({error})")
+        raise RoleError(f"--ssh-key: {path} cannot be read ({error})")
     if "PRIVATE KEY" in text:
-        raise RoleError(f"--ssh-key: {path} ist ein privater Schlüssel; "
-                        "gemeint ist der öffentliche (.pub)")
+        raise RoleError(f"--ssh-key: {path} is a private key; "
+                        "the public one (.pub) is meant")
     lines = [line.strip() for line in text.splitlines() if line.strip()]
     if len(lines) != 1:
-        raise RoleError(f"--ssh-key: {path} muss genau eine Zeile mit einem "
-                        f"öffentlichen Schlüssel haben, hat {len(lines)}")
+        raise RoleError(f"--ssh-key: {path} must have exactly one line with a "
+                        f"public key, it has {len(lines)}")
     if not PUBLIC_KEY.match(lines[0]):
-        raise RoleError(f"--ssh-key: {path} ist kein öffentlicher ssh-Schlüssel "
-                        "(z. B. \"ssh-ed25519 AAAA... du@laptop\")")
+        raise RoleError(f"--ssh-key: {path} is not a public ssh key "
+                        "(e.g. \"ssh-ed25519 AAAA... you@laptop\")")
     return lines[0]
 
 
@@ -203,12 +203,12 @@ def core_refusal(truth_address, own, answered):
     if truth_address and (truth_address in own or truth_address == answered):
         return None
     if not truth_address:
-        return ("Die Wahrheit (a3-osc.json) dieses Stands nennt keine Core-Adresse; "
-                "ob dieser Rechner der Core ist, lässt sich nicht prüfen.")
-    return (f"Dieser Rechner hat nicht die Core-Adresse der Wahrheit ({truth_address}), "
-            "und die Netzwerk-Antworten des Cores setzen sie nicht. Ein zweiter Core "
-            "würde sich im selben LAN melden (/core/here), und das Pult könnte beim "
-            "falschen landen. Der Core wird nicht installiert, die anderen Rollen schon.")
+        return ("The truth (a3-osc.json) of this version names no Core address; "
+                "whether this machine is the Core cannot be checked.")
+    return (f"This machine does not have the truth's Core address ({truth_address}), "
+            "and the Core's network answers do not set it. A second Core "
+            "would announce itself on the same LAN (/core/here), and the desk could end up on "
+            "the wrong one. The Core is not installed, the other roles are.")
 
 
 def check_core(ctx, lookup=own_addresses):
@@ -217,15 +217,15 @@ def check_core(ctx, lookup=own_addresses):
     truth = truth_core_address(ctx.repo)
     own = lookup(ctx.runner)
     answered = answered_address(ctx.settings)
-    ctx.runner.log(f"Core-Adresse der Wahrheit: {truth or 'keine'}; "
-                   f"dieser Rechner: {', '.join(own) or 'keine'}; "
-                   f"aus den Netzwerk-Antworten: {answered or 'keine'}")
+    ctx.runner.log(f"Core address of the truth: {truth or 'none'}; "
+                   f"this machine: {', '.join(own) or 'none'}; "
+                   f"from the network answers: {answered or 'none'}")
     return core_refusal(truth, own, answered)
 
 
 class Core(Role):
     name = "core"
-    label = "A³ Core (Sound-Server: JACK, REAPER, a3-core, Beat-Analyzer)"
+    label = "A³ Core (sound server: JACK, REAPER, a3-core, beat analyzer)"
     submodules = ("a3-core", "beat-analyzer")
     platforms = ("debian",)
     # REAPER runs on X; a headless Core runs it on the dummy screen.
@@ -235,18 +235,18 @@ class Core(Role):
     def configure(self, ctx):
         s, ask = ctx.settings, ctx.prompter
         s.set_flag("core", "configure_network", ask.yesno(
-            "Netzwerk dieses Cores einrichten?\n(Nein lässt das Netzwerk, wie es ist.)",
+            "Set up this Core's network?\n(No leaves the network as it is.)",
             s.flag("core", "configure_network")))
         if s.flag("core", "configure_network"):
-            for key, question in (("interface", "Netzwerk-Schnittstelle (z.B. eno1)"),
-                                  ("address", "Statische Adresse mit Präfix (z.B. 192.168.8.10/24)"),
+            for key, question in (("interface", "Network interface (e.g. eno1)"),
+                                  ("address", "Static address with prefix (e.g. 192.168.8.10/24)"),
                                   ("gateway", "Gateway"),
-                                  ("dns", "DNS-Server"),
+                                  ("dns", "DNS server"),
                                   ("audio_port", "Second socket for AES67 audio and PTP (empty: none)"),
                                   ("audio_address", "Address on the audio network (e.g. 192.168.9.10/24)")):
                 s.set("core", key, ask.text(question, s.get("core", key)))
         s.set_flag("core", "headless", ask.yesno(
-            "Ohne Monitor betreiben (Dummy-Bildschirm, nur VNC)?",
+            "Run without a monitor (dummy screen, VNC only)?",
             s.flag("core", "headless")))
 
         differing = differing_groups(ctx.repo, ctx.home)
@@ -256,8 +256,8 @@ class Core(Role):
         default = chosen_groups(s.get("core", "replace"), differing)
         if ask.interactive:
             picked = ask.checklist(
-                "Diese Teile von ~/.config weichen von diesem Stand ab.\n"
-                "Welche sollen ersetzt werden? (Gesichert nach ~/.config/a3-replaced/)",
+                "These parts of ~/.config differ from this version.\n"
+                "Which should be replaced? (Backed up to ~/.config/a3-replaced/)",
                 [(g, GROUP_LABELS.get(g, g)) for g in differing], default)
             ctx.answers["replace"] = picked
             if set(picked) == set(differing):
@@ -306,9 +306,9 @@ class Core(Role):
         systemctl_user(ctx, "try-restart", ANALYZER_UNIT)
         apppackage.check_packaged_unit_wins(ctx, ANALYZER)
 
-    stays = ("~/.config: REAPER-Template, i3, qjackctl, die Unit-Dateien",
-             "die Sicherungen in ~/.config/a3-replaced",
-             "~/.ssh/authorized_keys (beim Entfernen gesichert und zurückgelegt)")
+    stays = ("~/.config: REAPER template, i3, qjackctl, the unit files",
+             "the backups in ~/.config/a3-replaced",
+             "~/.ssh/authorized_keys (backed up and put back on removal)")
 
     def leaving_units(self, ctx):
         return list(CORE_UNITS) + [ANALYZER_UNIT]
@@ -318,7 +318,7 @@ class Core(Role):
 
     def leaving_lines(self, ctx):
         return super().leaving_lines(ctx) + [
-            "  Mit dem Paket gehen seine Dateien in ~/.local (bin, lib, share/a3-core)."]
+            "  With the package go its files in ~/.local (bin, lib, share/a3-core)."]
 
     def uninstall(self, ctx):
         super().uninstall(ctx)
@@ -356,12 +356,12 @@ def build_package(ctx, work):
     a3-core's own workflow does it (tools/package_version.py: 03.0+258)."""
     run = ctx.runner
     if not shutil.which("dpkg-deb"):
-        raise RoleError("dpkg-deb fehlt -- ist das ein Debian?")
+        raise RoleError("dpkg-deb is missing -- is this a Debian?")
     version = run.output(["python3", "a3-core/tools/package_version.py"],
                          cwd=ctx.repo).strip()
     tree = work / "a3-core"
     deb = work / f"a3-core_{version}_amd64.deb"
-    run.log(f"Baue a3-core {version} aus {ctx.repo / PACKAGE_DIR}")
+    run.log(f"Building a3-core {version} from {ctx.repo / PACKAGE_DIR}")
     if not run.dry_run:
         shutil.copytree(ctx.repo / PACKAGE_DIR, tree, symlinks=True)
         control = tree / "DEBIAN" / "control"

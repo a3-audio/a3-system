@@ -62,8 +62,8 @@ def with_stem_folder(text, folder):
         try:
             root = ET.fromstring(text)
         except ET.ParseError as error:
-            raise RoleError(f"{SETTINGS_FILE} ist kein lesbares XML ({error}); "
-                            "von Hand prüfen, der Installer ändert es so nicht.")
+            raise RoleError(f"{SETTINGS_FILE} is not readable XML ({error}); "
+                            "check it by hand, the installer does not change it like this.")
     entry = next((v for v in root.findall("VALUE") if v.get("name") == STEM_FOLDER), None)
     if entry is None:
         entry = ET.Element("VALUE", {"name": STEM_FOLDER})
@@ -92,7 +92,7 @@ def absolute_folder(ctx, answer):
 
 class StemDeck(Role):
     name = "stemdeck"
-    label = "StemDeck (Stem-Player)"
+    label = "StemDeck (stem player)"
     submodules = (SOURCE,)
     platforms = ("debian",)
     packages = SCREEN_PACKAGES + JUCE_PACKAGES + (
@@ -112,13 +112,13 @@ class StemDeck(Role):
         now, stored = stemdeck_library(ctx), s.get("stemdeck", "library")
         default = now or stored or str(ctx.home / "stems")
         if ask.interactive:
-            answer = ask.text("Wo liegt die Stem-Bibliothek von StemDeck "
+            answer = ask.text("Where is StemDeck's stem library "
                               "(Artist/Album/Sets)?", default) or default
         else:
             answer = default
             if now and stored and absolute_folder(ctx, stored) != now:
-                ctx.runner.log(f"Stem-Bibliothek: {stored} aus den Einstellungen "
-                               f"nicht übernommen, StemDeck nutzt {now}.")
+                ctx.runner.log(f"Stem library: {stored} from the settings "
+                               f"not taken over, StemDeck uses {now}.")
         s.set("stemdeck", "library", absolute_folder(ctx, answer))
 
     def install(self, ctx):
@@ -133,8 +133,8 @@ class StemDeck(Role):
             for unit in ZITA_UNITS + (PATCHBAY_UNIT,):
                 install_user_unit(ctx, units / unit)
                 enable_and_restart(ctx, unit)
-            run.log("Hinweis: Ohne Core auf diesem Rechner muss JACK hier "
-                    "anders gestartet werden; a3-jack gibt es nur auf dem Core.")
+            run.log("Note: Without a Core on this machine, JACK has to be "
+                    "started differently here; a3-jack exists only on the Core.")
         else:
             _remove_patchbay_unit(ctx)
         self._hand_over_library(ctx)
@@ -151,7 +151,7 @@ class StemDeck(Role):
         folder = Path(ctx.settings.get("stemdeck", "library")
                       or now or ctx.home / "stems")
         if now == str(folder):
-            run.log(f"Stem-Bibliothek: StemDeck nutzt bereits {folder}.")
+            run.log(f"Stem library: StemDeck already uses {folder}.")
             return
         path = settings_path(ctx)
         # check=False: on the first install there is no unit to stop yet.
@@ -163,8 +163,8 @@ class StemDeck(Role):
             systemctl_user(ctx, "start", UNIT, check=False)
             raise
         if not folder.is_dir():
-            run.log(f"# Stem-Bibliothek {folder} fehlt, wird angelegt.")
-        run.log(f"Stem-Bibliothek: {folder}, eingetragen in {path} ({STEM_FOLDER}).")
+            run.log(f"# Stem library {folder} is missing, creating it.")
+        run.log(f"Stem library: {folder}, entered in {path} ({STEM_FOLDER}).")
         if run.dry_run:
             return
         folder.mkdir(parents=True, exist_ok=True)
@@ -172,7 +172,7 @@ class StemDeck(Role):
         path.write_text(text)
 
     stays = ("the build cache ~/.cache/a3-build/stemdeck and the packages in ~/a3-debs",
-             "Bibliothek, Sessions, Aufnahmen und Stems")
+             "library, sessions, recordings and stems")
 
     def leaving_units(self, ctx):
         return ([UNIT, PATCHBAY_UNIT]

@@ -82,7 +82,7 @@ def serial_candidates(usb_ids, by_id=None, sys_tty=None):
 
 class Motion(Role):
     name = "motion"
-    label = "Motion UI mit dem PCB an diesem Rechner (inkl. Firmware)"
+    label = "Motion UI with the PCB on this machine (incl. firmware)"
     submodules = ("a3-motion",)
     platforms = ("debian",)
     # gsl for the motion engine, serial and gpiod for the V3 hardware interface.
@@ -94,8 +94,8 @@ class Motion(Role):
         s, ask = ctx.settings, ctx.prompter
         if ask.interactive:
             s.set("motion", "flash_firmware", ask.choose(
-                "Firmware des Motion-Panels flashen, wenn sie sich geändert hat?",
-                [("yes", "ja, immer"), ("ask", "jedes Mal fragen"), ("no", "nein")],
+                "Flash the Motion panel firmware when it has changed?",
+                [("yes", "yes, always"), ("ask", "ask each time"), ("no", "no")],
                 s.get("motion", "flash_firmware")))
 
     def install(self, ctx):
@@ -147,8 +147,8 @@ class Motion(Role):
         if user in members:
             return
         ctx.runner.run(["usermod", "-aG", "dialout", user], root=True)
-        ctx.runner.log("Hinweis: dialout gilt erst nach dem nächsten Login "
-                       "(oder Neustart). Bis dahin findet Motion UI das PCB nicht.")
+        ctx.runner.log("Note: dialout only takes effect after the next login "
+                       "(or reboot). Until then Motion UI cannot find the PCB.")
 
     def _firmware(self, ctx):
         run, s = ctx.runner, ctx.settings
@@ -158,15 +158,15 @@ class Motion(Role):
             self.flash(ctx, tree)
             return
         if ctx.state.get("motion", "firmware_tree") == tree:
-            run.log("Firmware unverändert seit dem letzten Flashen.")
+            run.log("Firmware unchanged since the last flash.")
             return
         mode = s.get("motion", "flash_firmware")
         if mode == "no":
-            run.log("Firmware hat sich geändert, flashen ist abgeschaltet.")
+            run.log("Firmware has changed, flashing is turned off.")
             return
         if mode == "ask" and not ctx.prompter.yesno(
-                "Die Firmware des Motion-Panels hat sich geändert. Jetzt flashen?", False):
-            run.log("Firmware nicht geflasht. Nachholen: install --flash-firmware")
+                "The Motion panel firmware has changed. Flash it now?", False):
+            run.log("Firmware not flashed. To do it later: install --flash-firmware")
             return
         self.flash(ctx, tree)
 
@@ -179,13 +179,13 @@ class Motion(Role):
             if len(found) == 1:
                 port = found[0]
             elif ctx.prompter.interactive and found:
-                port = ctx.prompter.choose("An welchem Port hängt das Motion-Panel?",
+                port = ctx.prompter.choose("Which port is the Motion panel on?",
                                            [(p, p) for p in found], found[0])
             else:
                 ids = ", ".join(f"{v}:{p}" for v, p in sorted(usb_ids))
-                raise RoleError("Motion-Panel nicht eindeutig gefunden "
-                                f"({', '.join(found) or f'kein Gerät mit USB-ID {ids}'}). "
-                                "In install.conf unter [motion] serial_port setzen.")
+                raise RoleError("Motion panel not found unambiguously "
+                                f"({', '.join(found) or f'no device with USB ID {ids}'}). "
+                                "Set serial_port under [motion] in install.conf.")
         pio = self._platformio(ctx)
         # Motion UI holds the port; it is stopped for the flash and started
         # again even when the flash fails, so a failed flash is not also a

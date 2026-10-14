@@ -6,10 +6,10 @@ The package is built from the pinned commit by installer/package.py into
 old unit started, so a rebuild can no longer leave the service without an
 executable -- then installed with apt and held, like a3-core. The package
 carries the unit (/usr/lib/systemd/user/stemdeck.service) and its runtime
-dependencies. On a machine without the Core the zita units and
-qjackctl-stemdeck.service still come from StemDeck's repository into
-~/.config, now naming the packaged tools and patchbay; with the Core they
-are taken away: two QjackCtls must not wire one JACK.
+dependencies, among them pipewire-jack. On a machine without the Core
+qjackctl-stemdeck.service still comes from StemDeck's repository into
+~/.config, naming the packaged patchbay; with the Core it is taken away: two
+QjackCtls must not wire one graph.
 
 The stem library is asked for and handed to StemDeck as stemFolder in its
 own settings file, a JUCE PropertiesFile (Source/MainComponent.cpp). StemDeck
@@ -21,12 +21,11 @@ from pathlib import Path
 
 from . import apppackage
 from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
-                   enable_and_restart, install_user_unit, recorded_roles,
+                   enable_and_restart, install_user_unit,
                    remove_files, systemctl_user)
 
 SOURCE = "stemdeck"
 UNIT = "stemdeck.service"
-ZITA_UNITS = ("zita-n2j.service", "zita-j2n.service")
 # Not qjackctl.service: that is the Core's, and a machine that becomes a Core
 # would have one file for two owners.
 PATCHBAY_UNIT = "qjackctl-stemdeck.service"
@@ -122,7 +121,6 @@ class StemDeck(Role):
         s.set("stemdeck", "library", absolute_folder(ctx, answer))
 
     def install(self, ctx):
-        run = ctx.runner
         juce = ensure_juce(ctx)
         apppackage.refuse_shadowing_leftovers(ctx, APP)
         deb = apppackage.build(ctx, APP, ctx.repo / SOURCE, pinned_commit(ctx), juce)
@@ -130,11 +128,8 @@ class StemDeck(Role):
 
         units = ctx.repo / SOURCE / ".config" / "systemd" / "user"
         if "core" not in ctx.settings.roles():
-            for unit in ZITA_UNITS + (PATCHBAY_UNIT,):
-                install_user_unit(ctx, units / unit)
-                enable_and_restart(ctx, unit)
-            run.log("Note: Without a Core on this machine, JACK has to be "
-                    "started differently here; a3-jack exists only on the Core.")
+            install_user_unit(ctx, units / PATCHBAY_UNIT)
+            enable_and_restart(ctx, PATCHBAY_UNIT)
         else:
             _remove_patchbay_unit(ctx)
         self._hand_over_library(ctx)
@@ -175,8 +170,7 @@ class StemDeck(Role):
              "library, sessions, recordings and stems")
 
     def leaving_units(self, ctx):
-        return ([UNIT, PATCHBAY_UNIT]
-                + (list(ZITA_UNITS) if _owns_zita(ctx) else []))
+        return [UNIT, PATCHBAY_UNIT]
 
     def leaving_files(self, ctx):
         """The units the installer put into ~/.config; stemdeck.service is the package's."""
@@ -194,13 +188,6 @@ class StemDeck(Role):
         if not package_is_installed(ctx):
             return
         apppackage.remove(ctx, APP)
-
-
-def _owns_zita(ctx):
-    """The zita units are StemDeck's only on a machine without a Core: a Core
-    chosen keeps them running, a Core still installed stops them itself."""
-    return ("core" not in ctx.settings.roles()
-            and "core" not in (recorded_roles(ctx) or []))
 
 
 def _remove_patchbay_unit(ctx):

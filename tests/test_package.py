@@ -3,6 +3,7 @@
 Run with:  python3 -m unittest discover -s tests
 """
 
+import contextlib
 import io
 import os
 import shutil
@@ -262,6 +263,26 @@ class ArchiveWithSubmodules(unittest.TestCase):
             package.archive(outer, "HEAD", tmpdir(self) / "out")
         self.assertIn("external/lib", str(raised.exception))
         self.assertIn(absent[:10], str(raised.exception))
+
+    def test_an_uninitialised_submodule_is_skipped_as_before(self):
+        outer, _ = self.outer_with_sub()
+        (outer / "external/lib/.git").unlink()
+        (outer / "external/lib/lib.txt").unlink()
+        dest = tmpdir(self) / "out"
+        with contextlib.redirect_stderr(io.StringIO()) as note:
+            package.archive(outer, "HEAD", dest)
+        self.assertEqual("top", (dest / "top.txt").read_text())
+        self.assertFalse((dest / "external/lib/lib.txt").exists())
+        self.assertIn("external/lib", note.getvalue())
+
+    def test_a_submodule_whose_folder_is_missing_is_skipped_too(self):
+        outer, _ = self.outer_with_sub()
+        shutil.rmtree(outer / "external/lib")
+        dest = tmpdir(self) / "out"
+        with contextlib.redirect_stderr(io.StringIO()) as note:
+            package.archive(outer, "HEAD", dest)
+        self.assertEqual("top", (dest / "top.txt").read_text())
+        self.assertIn("external/lib", note.getvalue())
 
     def test_a_nested_submodule_is_archived_too(self):
         outer, _ = self.outer_with_sub()

@@ -52,10 +52,12 @@ git clone https://github.com/a3-audio/a3-system ~/a3-system
 `install` asks which version (a tag) and which roles the machine has, then
 checks out and installs only the parts those roles need. Each role names the
 Debian packages it builds against; they are installed with one `apt-get` (through
-`sudo`) before any role. Roles with a screen (Core, StemDeck, Motion UI) log
+`sudo`) before any role. Roles with a screen (Core, StemDeck, Motion UI, Desk) log
 `aaa` in on tty1 and start X with i3 there, without a display manager, from the
 next reboot on. The StemDeck role asks where the stem library is and hands the
-path to StemDeck. The Core role installs only on the machine that owns the Core
+path to StemDeck. The Desk role installs the virtual desk, the A³ Mixer on a
+screen, as the app `a3-desk` from the pinned a3-mixer (no service). The Core
+role installs only on the machine that owns the Core
 address in a3-core's `a3-osc.json` (or whose Core network answers set it): a second Core
 would announce itself in the same LAN; the other roles install either way. `install --dry-run` shows what it would do. For now it
 runs on Debian only, as the user `aaa`, from `/home/aaa/a3-system`.

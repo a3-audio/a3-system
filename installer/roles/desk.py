@@ -9,7 +9,8 @@ the hardware desk's Pi, and it stays as it is.
 """
 
 from . import apppackage
-from .base import JUCE_PACKAGES, SCREEN_PACKAGES, Role, ensure_juce
+from .apppackage import has_packaging
+from .base import JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce
 
 SOURCE = "a3-mixer"
 PACKAGE = "a3-desk"
@@ -35,8 +36,13 @@ class Desk(Role):
     stays = ("the build cache ~/.cache/a3-build/a3-desk and the packages in ~/a3-debs",)
 
     def install(self, ctx):
+        source = ctx.repo / SOURCE
+        commit = pinned_commit(ctx)
+        if not has_packaging(ctx, source, commit):
+            raise RoleError(f"a3-mixer at {commit[:10]} has no packaging/stage: the a3-mixer pin "
+                            "is older than the desk; raise it first.")
         juce = ensure_juce(ctx)
-        deb = apppackage.build(ctx, APP, ctx.repo / SOURCE, pinned_commit(ctx), juce)
+        deb = apppackage.build(ctx, APP, source, commit, juce)
         apppackage.install(ctx, APP, deb)
 
     def leaving_packages(self, ctx):

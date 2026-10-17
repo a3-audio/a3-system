@@ -17,9 +17,10 @@ from test_installer import PIN, RecordingRunner, context  # noqa: E402
 from installer.roles import BY_NAME, needed_submodules  # noqa: E402
 
 
-def desk_seams():
+def desk_seams(packaged=True):
     from installer.roles import apppackage, desk
     stack = ExitStack()
+    stack.enter_context(mock.patch.object(desk, "has_packaging", lambda *_: packaged))
     stack.enter_context(mock.patch.object(desk, "ensure_juce", lambda _ctx: Path("/juce")))
     stack.enter_context(mock.patch.object(desk, "pinned_commit", lambda _ctx: PIN))
     stack.enter_context(mock.patch.object(apppackage.debs, "version_of", lambda *_: "03.0+9"))
@@ -45,16 +46,25 @@ class TheDeskIsARole(unittest.TestCase):
 
 
 class TheDeskComesAsAPackage(unittest.TestCase):
-    def install(self):
+    def install(self, packaged=True):
         from installer.roles import desk
         tmp = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, tmp)
         ctx, log = context(tmp, {("roles", "desk"): "yes"})
         ctx.runner = RecordingRunner(log=log)
         ctx.user_units.mkdir(parents=True)
-        with desk_seams():
+        with desk_seams(packaged):
             desk.Desk().install(ctx)
         return log.commands(), ctx
+
+    def test_a_pin_older_than_the_desk_is_refused_before_any_build(self):
+        """The umbrella's a3-mixer pin may predate packaging/: say so, rather
+        than let installer/package.py fail with a raw git error."""
+        from installer.roles.base import RoleError
+        with self.assertRaises(RoleError) as caught:
+            self.install(packaged=False)
+        self.assertIn("a3-mixer", str(caught.exception))
+        self.assertIn("raise it first", str(caught.exception))
 
     def test_it_builds_the_pinned_commit_through_the_cli(self):
         commands, ctx = self.install()

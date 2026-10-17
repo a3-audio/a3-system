@@ -42,6 +42,7 @@ CORE_UNITS = (
     "a3-main.service", "a3-reaper.service", "a3-core.service",
     "qjackctl.service", "a3-aes67.service",
     "a3-bar-per-workspace.service", "a3-user-install.service",
+    "a3-screencast.service",
 )
 
 ANALYZER_SOURCE = "beat-analyzer"

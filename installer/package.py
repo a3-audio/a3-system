@@ -199,14 +199,45 @@ def deb_path(out, package, version):
     return Path(out) / f"{package}_{version}_amd64.deb"
 
 
+GITLINK_MODE = "160000"
+
+
+def submodule_pins(repo, commit):
+    """(path, sha) of every gitlink in the commit's tree."""
+    listing = subprocess.run(["git", "-C", str(repo), "ls-tree", "-r", "-z", commit],
+                             check=True, capture_output=True, text=True).stdout
+    pins = []
+    for entry in filter(None, listing.split("\0")):
+        meta, path = entry.split("\t", 1)
+        mode, _kind, sha = meta.split()
+        if mode == GITLINK_MODE:
+            pins.append((path, sha))
+    return pins
+
+
+def has_commit(checkout, sha):
+    """A folder without its own .git would make git fall back to the
+    enclosing repository, so it counts as lacking the commit."""
+    if not (Path(checkout) / ".git").exists():
+        return False
+    return subprocess.run(["git", "-C", str(checkout), "cat-file", "-e", f"{sha}^{{commit}}"],
+                          capture_output=True).returncode == 0
+
+
 def archive(repo, commit, dest):
-    """The committed tree of `commit`, modes kept, into `dest`."""
+    """The committed tree of `commit`, modes kept, into `dest`; every
+    submodule at its pinned commit, from its local checkout. Never fetches."""
     refuse_option_like(commit)
     data = subprocess.run(["git", "-C", str(repo), "archive", "--format=tar", commit],
                           check=True, capture_output=True).stdout
-    Path(dest).mkdir(parents=True)
+    Path(dest).mkdir(parents=True, exist_ok=True)
     with tarfile.open(fileobj=io.BytesIO(data)) as tar:
         tar.extractall(dest, filter="tar")
+    for path, sha in submodule_pins(repo, commit):
+        checkout = Path(repo) / path
+        if not has_commit(checkout, sha):
+            raise BuildError(f"submodule {path} lacks {sha[:10]}: fetch it into {checkout}")
+        archive(checkout, sha, Path(dest) / path)
 
 
 def elf_files(root):

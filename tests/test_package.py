@@ -216,6 +216,78 @@ class Archive(unittest.TestCase):
                 package.archive(Path("/r"), "--output=/tmp/x", tmpdir(self) / "src")
 
 
+def run_git(repo, *args):
+    env = {**os.environ, "GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@example.org",
+           "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@example.org"}
+    return subprocess.run(["git", "-c", "protocol.file.allow=always", "-C", str(repo), *args],
+                          check=True, capture_output=True, text=True, env=env).stdout.strip()
+
+
+def commit_file(repo, name, text):
+    (Path(repo) / name).write_text(text)
+    run_git(repo, "add", name)
+    run_git(repo, "commit", "-m", f"{name}: {text}")
+    return run_git(repo, "rev-parse", "HEAD")
+
+
+class ArchiveWithSubmodules(unittest.TestCase):
+    def outer_with_sub(self):
+        root = tmpdir(self)
+        origin = root / "origin"
+        origin.mkdir()
+        run_git(origin, "init", "-q")
+        pinned = commit_file(origin, "lib.txt", "A")
+        outer = root / "outer"
+        outer.mkdir()
+        run_git(outer, "init", "-q")
+        commit_file(outer, "top.txt", "top")
+        run_git(outer, "submodule", "add", "-q", str(origin), "external/lib")
+        run_git(outer, "commit", "-m", "pin lib")
+        return outer, pinned
+
+    def test_a_submodule_is_archived_at_its_pinned_commit(self):
+        outer, pinned = self.outer_with_sub()
+        commit_file(outer / "external/lib", "lib.txt", "B")
+        dest = tmpdir(self) / "out"
+        package.archive(outer, run_git(outer, "rev-parse", "HEAD"), dest)
+        self.assertEqual("top", (dest / "top.txt").read_text())
+        self.assertEqual("A", (dest / "external/lib/lib.txt").read_text())
+
+    def test_a_missing_submodule_commit_is_refused(self):
+        outer, _ = self.outer_with_sub()
+        absent = "1234567890abcdef1234567890abcdef12345678"
+        run_git(outer, "update-index", "--cacheinfo", f"160000,{absent},external/lib")
+        run_git(outer, "commit", "-m", "pin a sha the checkout lacks")
+        with self.assertRaises(package.BuildError) as raised:
+            package.archive(outer, "HEAD", tmpdir(self) / "out")
+        self.assertIn("external/lib", str(raised.exception))
+        self.assertIn(absent[:10], str(raised.exception))
+
+    def test_a_nested_submodule_is_archived_too(self):
+        outer, _ = self.outer_with_sub()
+        lib = outer / "external/lib"
+        inner = tmpdir(self) / "inner"
+        inner.mkdir()
+        run_git(inner, "init", "-q")
+        commit_file(inner, "deep.txt", "deep")
+        run_git(lib, "submodule", "add", "-q", str(inner), "vendor/inner")
+        run_git(lib, "commit", "-m", "pin inner")
+        run_git(outer, "add", "external/lib")
+        run_git(outer, "commit", "-m", "advance lib")
+        dest = tmpdir(self) / "out"
+        package.archive(outer, "HEAD", dest)
+        self.assertEqual("deep", (dest / "external/lib/vendor/inner/deep.txt").read_text())
+
+    def test_a_repo_without_submodules_archives_as_before(self):
+        repo = tmpdir(self) / "plain"
+        repo.mkdir()
+        run_git(repo, "init", "-q")
+        commit_file(repo, "a.txt", "plain")
+        dest = tmpdir(self) / "out"
+        package.archive(repo, "HEAD", dest)
+        self.assertEqual(["a.txt"], [p.name for p in dest.iterdir()])
+
+
 class RevisionCheck(unittest.TestCase):
     def test_a_dash_first_revision_is_refused_before_git_is_asked(self):
         with mock.patch.object(package, "git", side_effect=AssertionError("git asked")):

@@ -10,7 +10,7 @@ from pathlib import Path
 
 DEFAULT_PATH = Path.home() / ".config" / "a3" / "install.conf"
 
-ROLES = ("core", "stemdeck", "motion", "mixer")
+ROLES = ("core", "stemdeck", "motion", "desk", "mixer")
 
 DEFAULTS = {
     "system": {

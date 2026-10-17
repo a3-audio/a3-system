@@ -141,7 +141,8 @@ def _put_back(ctx, app, done):
 def install(ctx, app, deb):
     done = []
     try:
-        _set_aside(ctx, app, done)
+        if app.unit:   # an app without a unit (the desk) has nothing to set aside
+            _set_aside(ctx, app, done)
         ctx.runner.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",
                         "--allow-downgrades", "--allow-change-held-packages", deb], root=True)
     except BaseException:

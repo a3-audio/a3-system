@@ -950,7 +950,7 @@ class InstalledRolesAreRecorded(unittest.TestCase):
 class RolesFoundOnAMachineSetUpBefore(unittest.TestCase):
     """No [installed] section: the roles are taken from what is there."""
 
-    def discover(self, core, stemdeck, motion):
+    def discover(self, core, stemdeck, motion, desk=False):
         from installer.leave import discover_roles
         with tempfile.TemporaryDirectory() as tmp:
             units = Path(tmp)
@@ -960,15 +960,25 @@ class RolesFoundOnAMachineSetUpBefore(unittest.TestCase):
                 (units / "a3-motion.service").touch()
             return discover_roles(units, core_installed=lambda: core,
                                   stemdeck_installed=lambda: False,
-                                  motion_installed=lambda: False)
+                                  motion_installed=lambda: False,
+                                  desk_installed=lambda: desk)
 
     def test_every_combination(self):
         import itertools
-        for core, stemdeck, motion in itertools.product((False, True), repeat=3):
-            with self.subTest(core=core, stemdeck=stemdeck, motion=motion):
+        for core, stemdeck, motion, desk in itertools.product((False, True), repeat=4):
+            with self.subTest(core=core, stemdeck=stemdeck, motion=motion, desk=desk):
                 expected = [n for n, there in (("core", core), ("stemdeck", stemdeck),
-                                               ("motion", motion)) if there]
-                self.assertEqual(expected, self.discover(core, stemdeck, motion))
+                                               ("motion", motion), ("desk", desk)) if there]
+                self.assertEqual(expected, self.discover(core, stemdeck, motion, desk))
+
+    def test_the_desk_is_found_by_its_package(self):
+        from installer.leave import discover_roles
+        with tempfile.TemporaryDirectory() as tmp:
+            found = discover_roles(Path(tmp), core_installed=lambda: False,
+                                   stemdeck_installed=lambda: False,
+                                   motion_installed=lambda: False,
+                                   desk_installed=lambda: True)
+        self.assertEqual(["desk"], found)
 
     def test_stemdeck_is_found_by_its_package_too(self):
         from installer.leave import discover_roles

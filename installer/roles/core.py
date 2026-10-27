@@ -16,6 +16,11 @@ it and adds what is A3 about its unit as a drop-in (a3-core.conf: part of
 a3-main, after JACK, off CPU 0); the package does not enable its unit,
 a3-main wants it. Before the package, a3-core's a3-user-install.service
 built it in ~/a3-system/beat-analyzer and its unit ran that build.
+
+a3-core is one C++ program now, shipped by the `a3-engine` package, which
+a3-core's package Depends on. It is built from the a3-engine submodule the
+same way, held, and installed before a3-core. The beat-analyzer is the
+beat-clock only; the meters come from the program.
 """
 
 import json
@@ -27,7 +32,8 @@ from pathlib import Path
 
 from . import apppackage
 from .apppackage import has_packaging
-from .base import SCREEN_PACKAGES, Role, RoleError, juce_prefix, systemctl_user
+from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
+                   juce_prefix, systemctl_user)
 
 PACKAGE_DIR = Path("a3-core/platform-config/debian-x86_64/a3-core")
 SHIPPED_CONFIG = PACKAGE_DIR / "home/aaa/.local/share/a3-core/config"
@@ -53,6 +59,14 @@ ANALYZER = apppackage.AppPackage("beat-analyzer", ANALYZER_UNIT,
 # compiler, curl for the pinned BTrack, JACK and libsamplerate.
 ANALYZER_BUILD_PACKAGES = ("cmake", "g++", "pkg-config", "patch", "curl",
                            "libjack-jackd2-dev", "libsamplerate0-dev")
+
+ENGINE_SOURCE = "a3-engine"
+ENGINE_UNIT = "a3-engine.service"
+ENGINE = apppackage.AppPackage("a3-engine", ENGINE_UNIT)
+# What a3-engine's packaging/stage builds with: JUCE's build packages and the
+# JACK development files.
+ENGINE_BUILD_PACKAGES = JUCE_PACKAGES + ("libjack-jackd2-dev",)
+CORE_BUILD_PACKAGES = tuple(dict.fromkeys(ENGINE_BUILD_PACKAGES + ANALYZER_BUILD_PACKAGES))
 
 GROUP_LABELS = {
     "reaper": "REAPER: template, OSC map, presets, effects",
@@ -227,11 +241,12 @@ def check_core(ctx, lookup=own_addresses):
 
 class Core(Role):
     name = "core"
-    label = "A³ Core (sound server: JACK, REAPER, a3-core, beat analyzer)"
-    submodules = ("a3-core", "beat-analyzer")
+    label = "A³ Core (sound server: JACK, the a3-core program, beat analyzer)"
+    submodules = ("a3-core", ENGINE_SOURCE, "beat-analyzer")
     platforms = ("debian",)
-    # REAPER runs on X; a headless Core runs it on the dummy screen.
-    packages = SCREEN_PACKAGES + ANALYZER_BUILD_PACKAGES
+    # qjackctl and the Core's windows run on X; a headless Core uses the dummy screen.
+    packages = SCREEN_PACKAGES + tuple(
+        p for p in CORE_BUILD_PACKAGES if p not in SCREEN_PACKAGES)
     needs_screen = True
 
     def configure(self, ctx):
@@ -275,11 +290,17 @@ class Core(Role):
         run = ctx.runner
         # Up front, before anything is built: what would stop the analyzer.
         source, commit = ctx.repo / ANALYZER_SOURCE, analyzer_commit(ctx)
-        if not has_packaging(ctx, source, commit):
-            raise RoleError(f"beat-analyzer at {commit[:10]} has no packaging/stage: the "
-                            "umbrella's beat-analyzer pin is older than its package; "
-                            "raise it first.")
+        engine_source, engine_pin = ctx.repo / ENGINE_SOURCE, engine_commit(ctx)
+        for name, path, pin in ((ANALYZER_SOURCE, source, commit),
+                                (ENGINE_SOURCE, engine_source, engine_pin)):
+            if not has_packaging(ctx, path, pin):
+                raise RoleError(f"{name} at {pin[:10]} has no packaging/stage: the "
+                                f"umbrella's {name} pin is older than its package; "
+                                "raise it first.")
         apppackage.refuse_shadowing_leftovers(ctx, ANALYZER)
+        apppackage.refuse_shadowing_leftovers(ctx, ENGINE)
+        # Before a3-core: its package Depends on the program.
+        self._engine(ctx, engine_source, engine_pin)
         work = Path(tempfile.mkdtemp(prefix="a3-core-"))
         try:
             deb = build_package(ctx, work)
@@ -298,6 +319,15 @@ class Core(Role):
             shutil.rmtree(work, ignore_errors=True)
         self._analyzer(ctx, source, commit)
 
+    def _engine(self, ctx, source, commit):
+        """The a3-core program, held. Its unit is a3-main's to start (as the
+        analyzer's), so it is not enabled here; a running one moves over."""
+        deb = apppackage.build(ctx, ENGINE, source, commit, ensure_juce(ctx))
+        apppackage.install(ctx, ENGINE, deb)
+        systemctl_user(ctx, "daemon-reload")
+        systemctl_user(ctx, "try-restart", ENGINE_UNIT)
+        apppackage.check_packaged_unit_wins(ctx, ENGINE)
+
     def _analyzer(self, ctx, source, commit):
         """After a3-core, whose postinst moves its old checkout unit aside and
         writes the drop-in and the OSC targets. Not enabled: a3-main wants
@@ -313,10 +343,10 @@ class Core(Role):
              "~/.ssh/authorized_keys (backed up and put back on removal)")
 
     def leaving_units(self, ctx):
-        return list(CORE_UNITS) + [ANALYZER_UNIT]
+        return list(CORE_UNITS) + [ANALYZER_UNIT, ENGINE_UNIT]
 
     def leaving_packages(self, ctx):
-        return ["a3-core", ANALYZER.package]
+        return ["a3-core", ANALYZER.package, ENGINE.package]
 
     def leaving_lines(self, ctx):
         return super().leaving_lines(ctx) + [
@@ -342,10 +372,22 @@ class Core(Role):
                 run.run(["mv", "-f", kept, keys])
         if analyzer_is_installed(ctx):
             apppackage.remove(ctx, ANALYZER)
+        # After a3-core, which depends on it.
+        if engine_is_installed(ctx):
+            apppackage.remove(ctx, ENGINE)
 
 
 def analyzer_commit(ctx):
     return apppackage.pinned_commit(ctx, ANALYZER_SOURCE)
+
+
+def engine_commit(ctx):
+    return apppackage.pinned_commit(ctx, ENGINE_SOURCE)
+
+
+def engine_is_installed(ctx):
+    from ..leave import package_installed  # leave imports the roles
+    return package_installed(ENGINE.package)
 
 
 def analyzer_is_installed(ctx):

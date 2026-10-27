@@ -278,12 +278,12 @@ class OnlyWhatTheRolesNeed(unittest.TestCase):
         return [c for c in commands if "submodule" in c or "checkout" in c]
 
     def test_each_role_names_what_it_builds_from(self):
-        self.assertEqual(["a3-core", "beat-analyzer"], needed_submodules(["core"]))
+        self.assertEqual(["a3-core", "a3-engine", "beat-analyzer"], needed_submodules(["core"]))
         self.assertEqual(["stemdeck"], needed_submodules(["stemdeck"]))
         self.assertEqual(["a3-motion"], needed_submodules(["motion"]))
 
     def test_in_install_order_and_once(self):
-        self.assertEqual(["a3-core", "beat-analyzer", "stemdeck", "a3-motion"],
+        self.assertEqual(["a3-core", "a3-engine", "beat-analyzer", "stemdeck", "a3-motion"],
                          needed_submodules(["motion", "stemdeck", "core", "core"]))
 
     def test_only_those_are_initialised(self):
@@ -476,10 +476,13 @@ class RolesNameTheirPackages(unittest.TestCase):
     def test_motion_covers_its_build(self):
         self.assertEqual(set(), set(MOTION_NEEDS) - set(BY_NAME["motion"].packages))
 
-    def test_core_installs_the_screen_and_the_analyzer_build_and_mixer_none(self):
+    def test_core_installs_the_screen_and_the_engine_and_analyzer_builds_and_mixer_none(self):
         from installer.roles.base import SCREEN_PACKAGES
-        from installer.roles.core import ANALYZER_BUILD_PACKAGES
-        self.assertEqual(SCREEN_PACKAGES + ANALYZER_BUILD_PACKAGES, BY_NAME["core"].packages)
+        from installer.roles.core import ANALYZER_BUILD_PACKAGES, ENGINE_BUILD_PACKAGES
+        self.assertEqual(sorted(set(SCREEN_PACKAGES) | set(ENGINE_BUILD_PACKAGES)
+                                | set(ANALYZER_BUILD_PACKAGES)),
+                         sorted(BY_NAME["core"].packages))
+        self.assertEqual(len(set(BY_NAME["core"].packages)), len(BY_NAME["core"].packages))
         self.assertEqual((), BY_NAME["mixer"].packages)
 
     def test_stemdeck_alone_gets_nothing_of_motion(self):
@@ -487,9 +490,10 @@ class RolesNameTheirPackages(unittest.TestCase):
         self.assertEqual(set(), set(STEMDECK_NEEDS) - set(packages))
         self.assertEqual(set(), {"libgsl-dev", "libgpiod-dev", "libserial-dev"} & set(packages))
 
-    def test_core_alone_installs_the_screen_and_the_analyzer_build(self):
-        from installer.roles.core import ANALYZER_BUILD_PACKAGES
-        self.assertEqual(sorted(set(SCREEN_NEEDS) | set(ANALYZER_BUILD_PACKAGES)),
+    def test_core_alone_installs_the_screen_and_the_engine_and_analyzer_builds(self):
+        from installer.roles.core import ANALYZER_BUILD_PACKAGES, ENGINE_BUILD_PACKAGES
+        self.assertEqual(sorted(set(SCREEN_NEEDS) | set(ENGINE_BUILD_PACKAGES)
+                                | set(ANALYZER_BUILD_PACKAGES)),
                          needed_packages(["core"]))
 
     def test_sorted_and_once(self):
@@ -1064,7 +1068,9 @@ def uninstall_commands(name, chosen=(), installed=(), home_files=(), package_ins
                 mock.patch.object(motion_module, "package_is_installed",
                                   lambda _ctx: package_installed), \
                 mock.patch.object(core, "analyzer_is_installed",
-                                  lambda _ctx: package_installed, create=True):
+                                  lambda _ctx: package_installed, create=True), \
+                mock.patch.object(core, "engine_is_installed",
+                                  lambda _ctx: package_installed):
             BY_NAME[name].uninstall(ctx)
         units = str(ctx.user_units)
         commands = [c.removeprefix("sudo ").replace(units, "~units").replace(tmp, "~")
@@ -2260,20 +2266,30 @@ class OneCoreInTheLan(unittest.TestCase):
 
 
 ANALYZER_PIN = "fedcba9876543210fedcba9876543210fedcba98"
+ENGINE_PIN = "0123456789abcdef0123456789abcdef01234567"
 
 
-def core_seams(fragment="/usr/lib/systemd/user/beat-analyzer.service", packaged=True):
-    """The Core role without dpkg-deb, git or this machine's systemd."""
+def core_seams(fragment=None, packaged=True):
+    """The Core role without dpkg-deb, git or this machine's systemd.
+    `fragment` is where the beat-analyzer's unit comes from; the program's is
+    always the packaged one."""
     from contextlib import ExitStack
     from installer.roles import apppackage
     stack = ExitStack()
     stack.enter_context(mock.patch.object(core, "build_package",
                                           lambda _ctx, work: work / "a3-core_03.0+400_amd64.deb"))
     stack.enter_context(mock.patch.object(core, "analyzer_commit", lambda _ctx: ANALYZER_PIN))
-    stack.enter_context(mock.patch.object(core, "has_packaging", lambda *_: packaged))
+    stack.enter_context(mock.patch.object(core, "engine_commit", lambda _ctx: ENGINE_PIN))
+    stack.enter_context(mock.patch.object(core, "ensure_juce",
+                                          lambda ctx: ctx.home / "local" / "juce"))
+    stack.enter_context(mock.patch.object(
+        core, "has_packaging",
+        lambda _ctx, source, _commit: packaged(source.name) if callable(packaged) else packaged))
     stack.enter_context(mock.patch.object(apppackage.debs, "version_of", lambda *_: "03.0+52"))
-    stack.enter_context(mock.patch.object(apppackage, "fragment_path",
-                                          lambda _ctx, _app: fragment))
+    stack.enter_context(mock.patch.object(
+        apppackage, "fragment_path",
+        lambda _ctx, app: fragment if fragment and app.package == "beat-analyzer"
+        else app.packaged_unit))
     return stack
 
 
@@ -2300,7 +2316,8 @@ class TheAnalyzerComesWithTheCoreAsAPackage(unittest.TestCase):
 
     def test_the_pinned_analyzer_commit_is_built_off_the_checkout(self):
         commands, ctx = self.install()
-        build = next(c for c in commands if "installer/package.py" in c)
+        build = next(c for c in commands
+                     if "installer/package.py" in c and "beat-analyzer" in c)
         self.assertIn(str(ctx.repo / "beat-analyzer"), build)
         self.assertIn(f"--rev {ANALYZER_PIN}", build)
 
@@ -2353,6 +2370,60 @@ class TheAnalyzerComesWithTheCoreAsAPackage(unittest.TestCase):
         for needed in ("cmake", "g++", "pkg-config", "curl",
                        "libjack-jackd2-dev", "libsamplerate0-dev"):
             self.assertIn(needed, BY_NAME["core"].packages)
+
+
+    def test_core_role_builds_and_holds_the_program_package(self):
+        commands, ctx = self.install()
+        build = next(c for c in commands
+                     if "installer/package.py" in c and "a3-engine" in c)
+        self.assertIn(str(ctx.repo / "a3-engine"), build)
+        self.assertIn(f"--rev {ENGINE_PIN}", build)
+        self.assertIn(f"--juce {ctx.home / 'local' / 'juce'}", build)
+        deb = ctx.home / "a3-debs" / "a3-engine_03.0+52_amd64.deb"
+        self.assertTrue(any("apt-get install" in c and str(deb) in c for c in commands))
+        self.assertIn("apt-mark hold a3-engine", commands)
+
+    def test_core_role_installs_the_program_before_a3_core(self):
+        commands, ctx = self.install()
+        deb = ctx.home / "a3-debs" / "a3-engine_03.0+52_amd64.deb"
+        engine_apt = next(i for i, c in enumerate(commands)
+                          if "apt-get install" in c and str(deb) in c)
+        core_apt = next(i for i, c in enumerate(commands)
+                        if "apt-get install" in c and "a3-core_" in c)
+        self.assertLess(engine_apt, core_apt)
+        self.assertLess(commands.index("apt-mark hold a3-engine"), core_apt)
+
+    def test_core_role_installs_the_beat_clock_only_analyzer(self):
+        """The no-vu analyzer is a version of the beat-analyzer repo; the role
+        can only pin that it is the pinned submodule commit that is built and
+        installed, after the program and a3-core, held, with no VU wiring of
+        its own and no JUCE (the program owns the meters)."""
+        commands, ctx = self.install()
+        build = next(c for c in commands
+                     if "installer/package.py" in c and "beat-analyzer" in c)
+        self.assertIn(f"--rev {ANALYZER_PIN}", build)
+        self.assertNotIn(ENGINE_PIN, build)
+        deb = ctx.home / "a3-debs" / "beat-analyzer_03.0+52_amd64.deb"
+        analyzer_apt = next(i for i, c in enumerate(commands)
+                            if "apt-get install" in c and str(deb) in c)
+        core_apt = next(i for i, c in enumerate(commands)
+                        if "apt-get install" in c and "a3-core_" in c)
+        self.assertLess(core_apt, analyzer_apt)
+        self.assertIn("apt-mark hold beat-analyzer", commands)
+        self.assertNotIn("REAPER", BY_NAME["core"].label)
+        self.assertNotIn("libsndfile1-dev", core.ANALYZER_BUILD_PACKAGES)
+
+    def test_the_program_leaves_with_the_core_after_a3_core(self):
+        commands, _ = uninstall_commands("core")
+        remove = "env DEBIAN_FRONTEND=noninteractive apt-get remove -y a3-engine"
+        self.assertIn(remove, commands)
+        self.assertLess(commands.index("apt-mark unhold a3-engine"), commands.index(remove))
+        self.assertLess(commands.index("env DEBIAN_FRONTEND=noninteractive apt-get remove -y a3-core"),
+                        commands.index(remove))
+
+    def test_a_pin_without_packaging_is_refused_for_the_program_too(self):
+        with self.assertRaises(RoleError):
+            self.install(packaged=lambda name: name != "a3-engine")
 
 
 class TheAnalyzerLeavesWithTheCore(unittest.TestCase):

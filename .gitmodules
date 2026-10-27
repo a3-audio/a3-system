@@ -39,3 +39,6 @@
 [submodule "stemdeck"]
 	path = stemdeck
 	url = https://github.com/rafjagger/stemdeck
+[submodule "a3-engine"]
+	path = a3-engine
+	url = https://github.com/a3-audio/a3-engine

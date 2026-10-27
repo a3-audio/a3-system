@@ -2424,6 +2424,16 @@ class TheAnalyzerComesWithTheCoreAsAPackage(unittest.TestCase):
         self.assertLess(core_rm, analyzer_rm)
         self.assertFalse(any("a3-engine" in c and "apt" in c for c in commands), commands)
 
+    def test_an_a3_core_pin_without_packaging_is_refused_before_anything_runs(self):
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(__import__("shutil").rmtree, tmp)
+        ctx, log = context(tmp, {("roles", "core"): "yes"})
+        with core_seams(packaged=lambda name: name != "a3-core"):
+            with self.assertRaises(RoleError) as raised:
+                core.Core().install(ctx)
+        self.assertIn("raise the a3-core pin", str(raised.exception))
+        self.assertEqual([], log.commands())
+
     def test_the_umbrella_no_longer_carries_a3_engine(self):
         text = (REPO / ".gitmodules").read_text()
         self.assertNotIn("a3-engine", text)

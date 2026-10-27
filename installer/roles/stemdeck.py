@@ -8,8 +8,8 @@ executable -- then installed with apt and held, like a3-core. The package
 carries the unit (/usr/lib/systemd/user/stemdeck.service) and its runtime
 dependencies, among them pipewire-jack. On a machine without the Core
 qjackctl-stemdeck.service still comes from StemDeck's repository into
-~/.config, naming the packaged patchbay; with the Core it is taken away: two
-QjackCtls must not wire one graph.
+~/.config, naming the packaged patchbay; with the Core it is taken away: the
+Core's own wiring takes over.
 
 The stem library is asked for and handed to StemDeck as stemFolder in its
 own settings file, a JUCE PropertiesFile (Source/MainComponent.cpp). StemDeck
@@ -26,7 +26,7 @@ from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
 
 SOURCE = "stemdeck"
 UNIT = "stemdeck.service"
-# Not qjackctl.service: that is the Core's, and a machine that becomes a Core
+# Not qjackctl.service: an older Core's, and a machine that becomes a Core
 # would have one file for two owners.
 PATCHBAY_UNIT = "qjackctl-stemdeck.service"
 SETTINGS_FILE = Path(".config/StemDeck/StemDeck.settings")
@@ -198,7 +198,7 @@ def install_package(ctx):
 
 def _remove_patchbay_unit(ctx):
     """A machine that becomes a Core: StemDeck's QjackCtl goes, the Core's
-    own qjackctl.service and patchbay take over."""
+    own wiring takes over."""
     target = ctx.user_units / PATCHBAY_UNIT
     if not target.is_file():
         return

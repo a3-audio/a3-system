@@ -17,7 +17,7 @@ BLOCK_BEGIN = "# >>> a3-system autologin >>>"
 BLOCK_END = "# <<< a3-system autologin <<<"
 
 XINITRC_MARKER = "# a3-system autologin: written by the installer, rewritten on every run."
-# a3-core's a3-reaper and qjackctl units set no DISPLAY: they get it from the
+# a3-core's graphical user units set no DISPLAY: they get it from the
 # systemd user manager. Under lightdm, Xsession.d imported it; with startx
 # nothing does unless ~/.xinitrc says so. The explicit import does not depend
 # on the dbus tools; Xsession afterwards runs the rest of what lightdm ran
@@ -90,7 +90,7 @@ def ensure_xinitrc(ctx):
     if path.exists() and XINITRC_MARKER not in path.read_text():
         ctx.runner.log(f"{path} was written by hand and is left as it is. "
                        "It must start i3 and pass DISPLAY/XAUTHORITY to systemd --user, "
-                       "or REAPER and qjackctl will not find X.")
+                       "or the Core's windows will not find X.")
         return
     _write_home_file(ctx, path, XINITRC_TEXT)
 

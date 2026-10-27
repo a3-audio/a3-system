@@ -259,10 +259,15 @@ def sibling_repo(repo, commit, path):
 
 
 def archive_submodule_from_forge(repo, commit, path, sha, dest):
+    """A sibling that is absent leaves the submodule out with a note (the
+    build may bring its own copy); one that lacks the pin is an error."""
     sibling = sibling_repo(repo, commit, path)
-    if not sibling.is_dir() or not has_commit(sibling, sha):
-        raise BuildError(f"submodule {path}: the forge repo {sibling} must hold {sha[:10]} "
-                         f"(missing or lacking the commit)")
+    if not sibling.is_dir():
+        print(f"note: submodule {path} has no forge repo {sibling.name}, left out of the archive",
+              file=sys.stderr)
+        return
+    if not has_commit(sibling, sha):
+        raise BuildError(f"submodule {path}: the forge repo {sibling} lacks {sha[:10]}")
     archive(sibling, sha, dest)
 
 
@@ -270,8 +275,8 @@ def archive(repo, commit, dest):
     """The committed tree of `commit`, modes kept, into `dest`; every
     initialised submodule at its pinned commit, from its local checkout; an
     uninitialised one is skipped with a note. A bare `repo` has no checkouts:
-    its submodules come from sibling bare repos, and a missing one is an
-    error, since the result would not build. Never fetches."""
+    its submodules come from sibling bare repos; a sibling without the pinned
+    commit is an error, an absent one a note. Never fetches."""
     refuse_option_like(commit)
     data = subprocess.run(["git", "-C", str(repo), "archive", "--format=tar", commit],
                           check=True, capture_output=True).stdout

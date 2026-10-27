@@ -355,12 +355,15 @@ class ArchiveFromBareForge(unittest.TestCase):
         self.assertEqual("mid", (dest / "third_party/mid/mid.txt").read_text())
         self.assertEqual("deep", (dest / "third_party/mid/vendor/leaf/deep.txt").read_text())
 
-    def test_a_missing_sibling_is_a_build_error_naming_it(self):
+    def test_a_missing_sibling_is_left_out_with_a_note(self):
         forge, bare, top_sha, _mid, _leaf = self.forge_with_chain()
         shutil.rmtree(forge / "mid.git")
-        with self.assertRaises(package.BuildError) as raised:
-            package.archive(bare, top_sha, tmpdir(self) / "out")
-        self.assertIn("mid.git", str(raised.exception))
+        dest = tmpdir(self) / "out"
+        with contextlib.redirect_stderr(io.StringIO()) as note:
+            package.archive(bare, top_sha, dest)
+        self.assertEqual("top", (dest / "top.txt").read_text())
+        self.assertFalse((dest / "third_party/mid/mid.txt").exists())
+        self.assertIn("mid.git", note.getvalue())
 
     def test_a_sibling_lacking_the_pinned_commit_is_a_build_error(self):
         forge, bare, top_sha, mid_sha, _leaf = self.forge_with_chain()

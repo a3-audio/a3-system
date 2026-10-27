@@ -17,17 +17,16 @@ a3-main, after JACK, off CPU 0); the package does not enable its unit,
 a3-main wants it. Before the package, a3-core's a3-user-install.service
 built it in ~/a3-system/beat-analyzer and its unit ran that build.
 
-a3-core is one C++ program now, shipped by the `a3-engine` package, which
-a3-core's package Depends on. It is built from the a3-engine submodule the
-same way, held, and installed before a3-core. The beat-analyzer is the
-beat-clock only; the meters come from the program.
+a3-core is one package now: the C++ program, its window and the deployment
+(units, i3, PipeWire, the postinst), built from the one a3-core submodule by
+installer/package.py. It Conflicts with and Replaces the a3-engine package
+of before, which is unheld here if a machine still has it. The beat-analyzer
+is the beat-clock only; the meters come from the program.
 """
 
 import json
 import re
-import shutil
 import subprocess
-import tempfile
 from pathlib import Path
 
 from . import apppackage
@@ -37,7 +36,7 @@ from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
 
 PACKAGE_DIR = Path("a3-core/platform-config/debian-x86_64/a3-core")
 SHIPPED_CONFIG = PACKAGE_DIR / "home/aaa/.local/share/a3-core/config"
-POSTINST = PACKAGE_DIR / "DEBIAN/postinst"
+POSTINST = Path("a3-core/packaging/DEBIAN/postinst")
 # The OSC truth: which host is which, among them the Core's address.
 TRUTH = PACKAGE_DIR / "usr/share/a3/a3-osc.json"
 
@@ -45,10 +44,8 @@ TRUTH = PACKAGE_DIR / "usr/share/a3/a3-osc.json"
 # SHIPPED_CONFIG) and enables through default.target.wants. Stopped and
 # disabled when the Core leaves; the files stay with the rest of ~/.config.
 CORE_UNITS = (
-    "a3-main.service", "a3-reaper.service", "a3-core.service",
-    "qjackctl.service", "a3-aes67.service",
-    "a3-bar-per-workspace.service", "a3-user-install.service",
-    "a3-screencast.service",
+    "a3-main.service", "a3-core.service", "a3-aes67.service",
+    "a3-bar-per-workspace.service", "a3-screencast.service",
 )
 
 ANALYZER_SOURCE = "beat-analyzer"
@@ -60,21 +57,18 @@ ANALYZER = apppackage.AppPackage("beat-analyzer", ANALYZER_UNIT,
 ANALYZER_BUILD_PACKAGES = ("cmake", "g++", "pkg-config", "patch", "curl",
                            "libjack-jackd2-dev", "libsamplerate0-dev")
 
-ENGINE_SOURCE = "a3-engine"
-ENGINE_UNIT = "a3-engine.service"
-ENGINE = apppackage.AppPackage("a3-engine", ENGINE_UNIT)
-# What a3-engine's packaging/stage builds with: JUCE's build packages and the
+CORE_SOURCE = "a3-core"
+# The unit whose shadowing is checked: the program's, a3-core's own.
+CORE = apppackage.AppPackage("a3-core", "a3-engine.service")
+# What a3-core's packaging/stage builds with: JUCE's build packages and the
 # JACK development files.
-ENGINE_BUILD_PACKAGES = JUCE_PACKAGES + ("libjack-jackd2-dev",)
-CORE_BUILD_PACKAGES = tuple(dict.fromkeys(ENGINE_BUILD_PACKAGES + ANALYZER_BUILD_PACKAGES))
+CORE_BUILD_PACKAGES = tuple(dict.fromkeys(
+    JUCE_PACKAGES + ("libjack-jackd2-dev",) + ANALYZER_BUILD_PACKAGES))
 
 GROUP_LABELS = {
-    "reaper": "REAPER: template, OSC map, presets, effects",
     "i3": "i3 config",
     "systemd": "systemd user units",
     "pipewire": "PipeWire: rate + block + AES67",
-    "qjackctl": "QjackCtl and patchbay",
-    "iem": "IEM plugin settings",
     "other": "other files",
 }
 
@@ -106,7 +100,7 @@ def differing_groups(repo, home):
 
 
 def chosen_groups(setting, differing):
-    """The setting ("all", "none", "reaper, i3") applied to what differs."""
+    """The setting ("all", "none", "i3, systemd") applied to what differs."""
     setting = setting.strip()
     if setting == "all":
         return list(differing)
@@ -241,10 +235,10 @@ def check_core(ctx, lookup=own_addresses):
 
 class Core(Role):
     name = "core"
-    label = "A³ Core (sound server: JACK, the a3-core program, beat analyzer)"
-    submodules = ("a3-core", ENGINE_SOURCE, "beat-analyzer")
+    label = "A³ Core (sound server: the a3-core program, beat analyzer)"
+    submodules = ("a3-core", "beat-analyzer")
     platforms = ("debian",)
-    # qjackctl and the Core's windows run on X; a headless Core uses the dummy screen.
+    # The Core's windows run on X; a headless Core uses the dummy screen.
     packages = SCREEN_PACKAGES + tuple(
         p for p in CORE_BUILD_PACKAGES if p not in SCREEN_PACKAGES)
     needs_screen = True
@@ -288,45 +282,41 @@ class Core(Role):
 
     def install(self, ctx):
         run = ctx.runner
-        # Up front, before anything is built: what would stop the analyzer.
+        # Up front, before anything is built: what would stop either package.
         source, commit = ctx.repo / ANALYZER_SOURCE, analyzer_commit(ctx)
-        engine_source, engine_pin = ctx.repo / ENGINE_SOURCE, engine_commit(ctx)
-        for name, path, pin in ((ANALYZER_SOURCE, source, commit),
-                                (ENGINE_SOURCE, engine_source, engine_pin)):
-            if not has_packaging(ctx, path, pin):
-                raise RoleError(f"{name} at {pin[:10]} has no packaging/stage: the "
-                                f"umbrella's {name} pin is older than its package; "
-                                "raise it first.")
+        core_source, core_pin = ctx.repo / CORE_SOURCE, core_commit(ctx)
+        if not has_packaging(ctx, core_source, core_pin):
+            raise RoleError(f"a3-core at {core_pin[:10]} has no packaging/stage: the "
+                            "umbrella's a3-core pin is older than its package; "
+                            "raise the a3-core pin first.")
+        if not has_packaging(ctx, source, commit):
+            raise RoleError(f"{ANALYZER_SOURCE} at {commit[:10]} has no packaging/stage: the "
+                            f"umbrella's {ANALYZER_SOURCE} pin is older than its package; "
+                            "raise it first.")
+        apppackage.refuse_shadowing_leftovers(ctx, CORE)
         apppackage.refuse_shadowing_leftovers(ctx, ANALYZER)
-        apppackage.refuse_shadowing_leftovers(ctx, ENGINE)
-        # Before a3-core: its package Depends on the program.
-        self._engine(ctx, engine_source, engine_pin)
-        work = Path(tempfile.mkdtemp(prefix="a3-core-"))
-        try:
-            deb = build_package(ctx, work)
-            run.run(["debconf-set-selections"], root=True,
-                    input=preseed_lines(ctx.settings, ctx.answers.get("replace"),
-                                      ctx.answers.get("ssh_key")))
-            run.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",
-                     "--allow-downgrades", "--allow-change-held-packages", deb], root=True)
-            run.run(["apt-mark", "hold", "a3-core"], root=True)
-            # The postinst clears the marker, but apt runs no postinst when the
-            # deb is the installed version: the marker then stayed, and the next
-            # dpkg-reconfigure took these network answers unasked (a3-system#76).
-            run.run(["debconf-set-selections"], root=True,
-                    input="a3-core a3-core/preseeded boolean false\n")
-        finally:
-            shutil.rmtree(work, ignore_errors=True)
-        self._analyzer(ctx, source, commit)
-
-    def _engine(self, ctx, source, commit):
-        """The a3-core program, held. Its unit is a3-main's to start (as the
-        analyzer's), so it is not enabled here; a running one moves over."""
-        deb = apppackage.build(ctx, ENGINE, source, commit, ensure_juce(ctx))
-        apppackage.install(ctx, ENGINE, deb)
+        deb = apppackage.build(ctx, CORE, core_source, core_pin, ensure_juce(ctx))
+        # The package of before: a3-core Conflicts with and Replaces it, but a
+        # held package is not replaced unless it is unheld first.
+        if leftover_engine_installed(ctx):
+            run.run(["apt-mark", "unhold", "a3-engine"], root=True)
+        run.run(["debconf-set-selections"], root=True,
+                input=preseed_lines(ctx.settings, ctx.answers.get("replace"),
+                                  ctx.answers.get("ssh_key")))
+        run.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",
+                 "--allow-downgrades", "--allow-change-held-packages", deb], root=True)
+        run.run(["apt-mark", "hold", "a3-core"], root=True)
+        # The postinst clears the marker, but apt runs no postinst when the
+        # deb is the installed version: the marker then stayed, and the next
+        # dpkg-reconfigure took these network answers unasked (a3-system#76).
+        run.run(["debconf-set-selections"], root=True,
+                input="a3-core a3-core/preseeded boolean false\n")
+        # The program's unit is a3-main's to start (as the analyzer's), so it
+        # is not enabled here; a running one moves over.
         systemctl_user(ctx, "daemon-reload")
-        systemctl_user(ctx, "try-restart", ENGINE_UNIT)
-        apppackage.check_packaged_unit_wins(ctx, ENGINE)
+        systemctl_user(ctx, "try-restart", CORE.unit)
+        apppackage.check_packaged_unit_wins(ctx, CORE)
+        self._analyzer(ctx, source, commit)
 
     def _analyzer(self, ctx, source, commit):
         """After a3-core, whose postinst moves its old checkout unit aside and
@@ -338,15 +328,15 @@ class Core(Role):
         systemctl_user(ctx, "try-restart", ANALYZER_UNIT)
         apppackage.check_packaged_unit_wins(ctx, ANALYZER)
 
-    stays = ("~/.config: REAPER template, i3, qjackctl, the unit files",
+    stays = ("~/.config: i3, the unit files",
              "the backups in ~/.config/a3-replaced",
              "~/.ssh/authorized_keys (backed up and put back on removal)")
 
     def leaving_units(self, ctx):
-        return list(CORE_UNITS) + [ANALYZER_UNIT, ENGINE_UNIT]
+        return list(CORE_UNITS) + [ANALYZER_UNIT, CORE.unit]
 
     def leaving_packages(self, ctx):
-        return ["a3-core", ANALYZER.package, ENGINE.package]
+        return [CORE.package, ANALYZER.package]
 
     def leaving_lines(self, ctx):
         return super().leaving_lines(ctx) + [
@@ -372,47 +362,22 @@ class Core(Role):
                 run.run(["mv", "-f", kept, keys])
         if analyzer_is_installed(ctx):
             apppackage.remove(ctx, ANALYZER)
-        # After a3-core, which depends on it.
-        if engine_is_installed(ctx):
-            apppackage.remove(ctx, ENGINE)
 
 
 def analyzer_commit(ctx):
     return apppackage.pinned_commit(ctx, ANALYZER_SOURCE)
 
 
-def engine_commit(ctx):
-    return apppackage.pinned_commit(ctx, ENGINE_SOURCE)
+def core_commit(ctx):
+    return apppackage.pinned_commit(ctx, CORE_SOURCE)
 
 
-def engine_is_installed(ctx):
+def leftover_engine_installed(ctx):
+    """The a3-engine package of before a3-core carried the program."""
     from ..leave import package_installed  # leave imports the roles
-    return package_installed(ENGINE.package)
+    return package_installed("a3-engine")
 
 
 def analyzer_is_installed(ctx):
     from ..leave import package_installed  # leave imports the roles
     return package_installed(ANALYZER.package)
-
-
-def build_package(ctx, work):
-    """The a3-core .deb of this release, built into `work`. Versioned like
-    a3-core's own workflow does it (tools/package_version.py: 03.0+258)."""
-    run = ctx.runner
-    if not shutil.which("dpkg-deb"):
-        raise RoleError("dpkg-deb is missing -- is this a Debian?")
-    version = run.output(["python3", "a3-core/tools/package_version.py"],
-                         cwd=ctx.repo).strip()
-    tree = work / "a3-core"
-    deb = work / f"a3-core_{version}_amd64.deb"
-    run.log(f"Building a3-core {version} from {ctx.repo / PACKAGE_DIR}")
-    if not run.dry_run:
-        shutil.copytree(ctx.repo / PACKAGE_DIR, tree, symlinks=True)
-        control = tree / "DEBIAN" / "control"
-        control.write_text("".join(
-            f"Version: {version}\n" if line.startswith("Version:") else line
-            for line in control.read_text().splitlines(keepends=True)))
-        # apt reads a local package as the user _apt.
-        work.chmod(0o755)
-    run.run(["dpkg-deb", "--build", "--root-owner-group", tree, deb])
-    return deb

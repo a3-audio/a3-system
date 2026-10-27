@@ -226,17 +226,68 @@ def has_commit(checkout, sha):
                           capture_output=True).returncode == 0
 
 
+def is_bare(repo):
+    return subprocess.run(["git", "-C", str(repo), "rev-parse", "--is-bare-repository"],
+                          check=True, capture_output=True, text=True).stdout.strip() == "true"
+
+
+def _url_for_path(gitmodules_text, path):
+    listing = subprocess.run(["git", "config", "--file", "/dev/stdin", "--null", "--get-regexp",
+                              r"^submodule\..*\.(path|url)$"],
+                             input=gitmodules_text, capture_output=True, text=True).stdout
+    paths, urls = {}, {}
+    for item in filter(None, listing.split("\0")):
+        key, value = item.split("\n", 1)
+        section, kind = key[len("submodule."):].rsplit(".", 1)
+        (paths if kind == "path" else urls)[section] = value
+    for section, value in paths.items():
+        if value == path:
+            return urls.get(section)
+    return None
+
+
+def sibling_repo(repo, commit, path):
+    """The bare repo next to `repo` that holds the submodule at `path`: named
+    by the last element of its URL in the commit's .gitmodules, minus `.git`."""
+    shown = subprocess.run(["git", "-C", str(repo), "show", f"{commit}:.gitmodules"],
+                           capture_output=True, text=True)
+    url = _url_for_path(shown.stdout, path) if shown.returncode == 0 else None
+    if url is None:
+        raise BuildError(f"{repo}: no .gitmodules entry for submodule {path} at {commit[:10]}")
+    name = url.rstrip("/").rsplit("/", 1)[-1].removesuffix(".git")
+    return Path(repo).resolve().parent / f"{name}.git"
+
+
+def archive_submodule_from_forge(repo, commit, path, sha, dest):
+    """A sibling that is absent leaves the submodule out with a note (the
+    build may bring its own copy); one that lacks the pin is an error."""
+    sibling = sibling_repo(repo, commit, path)
+    if not sibling.is_dir():
+        print(f"note: submodule {path} has no forge repo {sibling.name}, left out of the archive",
+              file=sys.stderr)
+        return
+    if not has_commit(sibling, sha):
+        raise BuildError(f"submodule {path}: the forge repo {sibling} lacks {sha[:10]}")
+    archive(sibling, sha, dest)
+
+
 def archive(repo, commit, dest):
     """The committed tree of `commit`, modes kept, into `dest`; every
     initialised submodule at its pinned commit, from its local checkout; an
-    uninitialised one is skipped with a note. Never fetches."""
+    uninitialised one is skipped with a note. A bare `repo` has no checkouts:
+    its submodules come from sibling bare repos; a sibling without the pinned
+    commit is an error, an absent one a note. Never fetches."""
     refuse_option_like(commit)
     data = subprocess.run(["git", "-C", str(repo), "archive", "--format=tar", commit],
                           check=True, capture_output=True).stdout
     Path(dest).mkdir(parents=True, exist_ok=True)
     with tarfile.open(fileobj=io.BytesIO(data)) as tar:
         tar.extractall(dest, filter="tar")
+    bare = is_bare(repo)
     for path, sha in submodule_pins(repo, commit):
+        if bare:
+            archive_submodule_from_forge(repo, commit, path, sha, Path(dest) / path)
+            continue
         checkout = Path(repo) / path
         if not is_initialised(checkout):
             print(f"note: submodule {path} is not initialised, left out of the archive",

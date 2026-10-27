@@ -309,6 +309,80 @@ class ArchiveWithSubmodules(unittest.TestCase):
         self.assertEqual(["a.txt"], [p.name for p in dest.iterdir()])
 
 
+class ArchiveFromBareForge(unittest.TestCase):
+    """The LAN builder archives bare gitolite repos: no checkouts exist, so a
+    submodule comes from the sibling bare repo named by its .gitmodules URL."""
+
+    def work_repo(self, name, files, links=()):
+        """A working repo; `links` are (path, url, sha) gitlinks with a .gitmodules."""
+        repo = tmpdir(self) / name
+        repo.mkdir()
+        run_git(repo, "init", "-q")
+        for file, text in files.items():
+            (repo / file).write_text(text)
+            run_git(repo, "add", file)
+        if links:
+            modules = "".join(f'[submodule "{p}"]\n\tpath = {p}\n\turl = {u}\n' for p, u, _ in links)
+            (repo / ".gitmodules").write_text(modules)
+            run_git(repo, "add", ".gitmodules")
+            for path, _url, sha in links:
+                run_git(repo, "update-index", "--add", "--cacheinfo", f"160000,{sha},{path}")
+        run_git(repo, "commit", "-q", "-m", name)
+        return repo, run_git(repo, "rev-parse", "HEAD")
+
+    def publish(self, forge, work, name):
+        run_git(work, "clone", "-q", "--bare", str(work), str(forge / f"{name}.git"))
+        return forge / f"{name}.git"
+
+    def forge_with_chain(self):
+        forge = tmpdir(self) / "forge"
+        forge.mkdir()
+        leaf, leaf_sha = self.work_repo("leaf", {"deep.txt": "deep"})
+        mid, mid_sha = self.work_repo("mid", {"mid.txt": "mid"},
+                                      [("vendor/leaf", "https://example.org/x/leaf.git", leaf_sha)])
+        top, top_sha = self.work_repo("top", {"top.txt": "top"},
+                                      [("third_party/mid", "https://example.org/x/mid", mid_sha)])
+        self.publish(forge, leaf, "leaf")
+        self.publish(forge, mid, "mid")
+        bare = self.publish(forge, top, "top")
+        return forge, bare, top_sha, mid_sha, leaf_sha
+
+    def test_submodules_come_from_sibling_repos_two_levels_deep(self):
+        _forge, bare, top_sha, _mid, _leaf = self.forge_with_chain()
+        dest = tmpdir(self) / "out"
+        package.archive(bare, top_sha, dest)
+        self.assertEqual("top", (dest / "top.txt").read_text())
+        self.assertEqual("mid", (dest / "third_party/mid/mid.txt").read_text())
+        self.assertEqual("deep", (dest / "third_party/mid/vendor/leaf/deep.txt").read_text())
+
+    def test_a_missing_sibling_is_a_build_error_naming_it(self):
+        forge, bare, top_sha, _mid, _leaf = self.forge_with_chain()
+        shutil.rmtree(forge / "mid.git")
+        with self.assertRaises(package.BuildError) as raised:
+            package.archive(bare, top_sha, tmpdir(self) / "out")
+        self.assertIn("mid.git", str(raised.exception))
+
+    def test_a_sibling_lacking_the_pinned_commit_is_a_build_error(self):
+        forge, bare, top_sha, mid_sha, _leaf = self.forge_with_chain()
+        other, _ = self.work_repo("other", {"x.txt": "x"})
+        shutil.rmtree(forge / "mid.git")
+        run_git(other, "clone", "-q", "--bare", str(other), str(forge / "mid.git"))
+        with self.assertRaises(package.BuildError) as raised:
+            package.archive(bare, top_sha, tmpdir(self) / "out")
+        self.assertIn("mid.git", str(raised.exception))
+        self.assertIn(mid_sha[:10], str(raised.exception))
+
+    def test_a_non_bare_repo_still_skips_an_absent_checkout(self):
+        _forge, bare, top_sha, _mid, _leaf = self.forge_with_chain()
+        clone = tmpdir(self) / "clone"
+        run_git(tmpdir(self), "clone", "-q", str(bare), str(clone))
+        dest = tmpdir(self) / "out"
+        with contextlib.redirect_stderr(io.StringIO()) as note:
+            package.archive(clone, top_sha, dest)
+        self.assertFalse((dest / "third_party/mid/mid.txt").exists())
+        self.assertIn("third_party/mid", note.getvalue())
+
+
 class RevisionCheck(unittest.TestCase):
     def test_a_dash_first_revision_is_refused_before_git_is_asked(self):
         with mock.patch.object(package, "git", side_effect=AssertionError("git asked")):

@@ -53,13 +53,15 @@ class InputRunner(RecordingRunner):
         return 0
 
 
-def deckhost_seams(stock):
+def deckhost_seams(stock, core_package=False):
     from installer.roles import apppackage, deckhost, stemdeck
     stack = ExitStack()
     stack.enter_context(mock.patch.object(stemdeck, "ensure_juce", lambda _ctx: Path("/juce")))
     stack.enter_context(mock.patch.object(stemdeck, "pinned_commit", lambda _ctx: PIN))
     stack.enter_context(mock.patch.object(apppackage.debs, "version_of", lambda *_: "03.0+7"))
     stack.enter_context(mock.patch.object(deckhost, "STOCK_PTP4L", stock))
+    stack.enter_context(mock.patch.object(deckhost, "core_package_installed",
+                                          lambda: core_package))
     return stack
 
 
@@ -80,9 +82,11 @@ class DeckHostCase(unittest.TestCase):
         ctx.runner.dry_run = dry_run
         return ctx, log
 
+    core_package = False
+
     def install(self, ctx):
         from installer.roles import deckhost
-        with deckhost_seams(self.stock):
+        with deckhost_seams(self.stock, self.core_package):
             deckhost.DeckHost().install(ctx)
 
     def drop_in(self, ctx, letter="B"):
@@ -183,6 +187,132 @@ class ThePanel(DeckHostCase):
         shutil.rmtree(alone.home / ".config")
         self.install(alone)
         self.assertFalse(self.panel(alone).exists())
+
+
+class TheStemDeckAes67Units(DeckHostCase):
+    def base_drop_in(self, ctx):
+        return ctx.user_units / "stemdeck-aes67.service.d" / "deck-host.conf"
+
+    def sender_drop_in(self, ctx):
+        return ctx.user_units / "a3-aes67-deck@.service.d" / "deck-host.conf"
+
+    def test_the_instance_pulls_in_the_base_and_the_sender(self):
+        ctx, _ = self.ctx()
+        self.install(ctx)
+        lines = self.drop_in(ctx).read_text().splitlines()
+        for line in ("Wants=stemdeck-aes67.service", "After=stemdeck-aes67.service",
+                     "Wants=a3-aes67-deck@%i.service", "After=a3-aes67-deck@%i.service"):
+            self.assertIn(line, lines)
+
+    def test_the_rendering_units_get_the_audio_port(self):
+        ctx, _ = self.ctx()
+        self.install(ctx)
+        for path in (self.base_drop_in(ctx), self.sender_drop_in(ctx)):
+            self.assertIn("Environment=STEMDECK_AUDIO_PORT=enp2s0",
+                          path.read_text().splitlines())
+
+    def test_without_an_audio_port_those_drop_ins_are_not_written(self):
+        ctx, _ = self.ctx({("deck-host", "audio_port"): ""})
+        self.install(ctx)
+        self.assertFalse(self.base_drop_in(ctx).exists())
+        self.assertFalse(self.sender_drop_in(ctx).exists())
+
+    def test_an_emptied_audio_port_removes_the_old_drop_ins(self):
+        ctx, _ = self.ctx()
+        self.install(ctx)
+        ctx.settings.set("deck-host", "audio_port", "")
+        self.install(ctx)
+        self.assertFalse(self.base_drop_in(ctx).exists())
+        self.assertFalse(self.sender_drop_in(ctx).exists())
+
+    def test_the_unchanged_environment_is_all_still_there(self):
+        ctx, _ = self.ctx({("roles", "motion"): "yes"})
+        self.install(ctx)
+        self.assertIn("Environment=STEMDECK_LINK_MAP=/usr/share/stemdeck/links-aes67.json",
+                      self.drop_in(ctx).read_text().splitlines())
+        self.assertIn("Environment=STEMDECK_PANEL_WORKSPACE=2:STEMDECK",
+                      self.drop_in(ctx).read_text().splitlines())
+        self.assertIn("Environment=A3_MOTION_PANEL_WORKSPACE=1:MOTION",
+                      (ctx.user_units / "a3-motion.service.d" / "panel-follows.conf")
+                      .read_text().splitlines())
+
+
+class TheA3CoreLeftovers(DeckHostCase):
+    ASIDE = ".a3-system-aside"
+
+    def leftovers(self, ctx):
+        unit = ctx.user_units / "a3-aes67.service"
+        conf = ctx.home / ".config" / "pipewire" / "pipewire-aes67.conf"
+        confd = ctx.home / ".config" / "pipewire" / "pipewire-aes67.conf.d"
+        unit.parent.mkdir(parents=True, exist_ok=True)
+        conf.parent.mkdir(parents=True, exist_ok=True)
+        unit.write_text("[Unit]\n")
+        conf.write_text("context.properties = {}\n")
+        confd.mkdir()
+        (confd / "x.conf").write_text("x\n")
+        return unit, conf, confd
+
+    def test_they_are_disabled_and_moved_aside_not_deleted(self):
+        ctx, log = self.ctx()
+        unit, conf, confd = self.leftovers(ctx)
+        self.install(ctx)
+        for path in (unit, conf, confd):
+            self.assertFalse(path.exists(), path)
+            self.assertTrue(path.with_name(path.name + self.ASIDE).exists(), path)
+        self.assertEqual("x\n", (confd.with_name(confd.name + self.ASIDE) / "x.conf").read_text())
+        commands = log.commands()
+        self.assertIn("systemctl --user disable --now a3-aes67.service", commands)
+        self.assertLess(commands.index("systemctl --user disable --now a3-aes67.service"),
+                        commands.index("systemctl --user restart stemdeck@B.service"))
+
+    def test_a_second_run_changes_nothing(self):
+        ctx, _ = self.ctx()
+        unit, conf, _ = self.leftovers(ctx)
+        self.install(ctx)
+        self.install(ctx)
+        self.assertEqual("[Unit]\n", unit.with_name(unit.name + self.ASIDE).read_text())
+
+    def test_nothing_is_moved_on_a_host_with_the_a3_core_package(self):
+        self.core_package = True
+        ctx, log = self.ctx()
+        unit, conf, confd = self.leftovers(ctx)
+        self.install(ctx)
+        self.assertTrue(unit.exists() and conf.exists() and confd.exists())
+        self.assertFalse(any("a3-aes67.service" in c for c in log.commands()))
+
+    def test_dry_run_moves_nothing(self):
+        ctx, _ = self.ctx(dry_run=True)
+        unit, conf, confd = self.leftovers(ctx)
+        self.install(ctx)
+        self.assertTrue(unit.exists() and conf.exists() and confd.exists())
+        self.assertFalse(unit.with_name(unit.name + self.ASIDE).exists())
+
+    def test_leaving_puts_them_back(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx()
+        unit, conf, confd = self.leftovers(ctx)
+        self.install(ctx)
+        deckhost.DeckHost().uninstall(ctx)
+        self.assertEqual("[Unit]\n", unit.read_text())
+        self.assertTrue(conf.is_file() and (confd / "x.conf").is_file())
+        self.assertFalse(unit.with_name(unit.name + self.ASIDE).exists())
+
+    def test_leaving_does_not_overwrite_a_file_that_is_back_already(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx()
+        unit, _, _ = self.leftovers(ctx)
+        self.install(ctx)
+        unit.write_text("new\n")
+        deckhost.DeckHost().uninstall(ctx)
+        self.assertEqual("new\n", unit.read_text())
+        self.assertTrue(unit.with_name(unit.name + self.ASIDE).exists())
+
+    def test_the_dialog_says_they_come_back(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx()
+        lines = "\n".join(deckhost.DeckHost().leaving_lines(ctx))
+        self.assertIn("pipewire-aes67.conf", lines)
+        self.assertIn("put back", lines)
 
 
 class TheRefusals(DeckHostCase):
@@ -308,14 +438,28 @@ class Leaving(DeckHostCase):
             str(self.drop_in(ctx)),
             str(ctx.user_units / "default.target.wants" / "stemdeck@B.service"),
             str(ctx.user_units / "a3-motion.service.d" / "panel-follows.conf"),
+            str(ctx.user_units / "stemdeck-aes67.service.d" / "deck-host.conf"),
+            str(ctx.user_units / "a3-aes67-deck@.service.d" / "deck-host.conf"),
             "/etc/linuxptp/a3-ptp4l.conf",
             "/etc/systemd/system/ptp4l@.service.d/a3.conf"]), sorted(removed))
         self.assertIn("sudo rm -f /etc/linuxptp/a3-ptp4l.conf", commands)
         self.assertIn("systemctl --user disable --now stemdeck@B.service", commands)
         self.assertIn("sudo systemctl disable ptp4l@enp2s0.service", commands)
+        self.assertIn("systemctl --user disable --now a3-aes67-deck@B.service", commands)
+        self.assertIn("systemctl --user disable --now stemdeck-aes67.service", commands)
         self.assertFalse(any("apt-get" in c for c in commands), commands)
         self.assertEqual("set $mod Mod4\n", i3.read_text())
         self.assertTrue(hand.exists() and motion_own.exists())
+
+    def test_leaving_with_an_emptied_audio_port_still_disables_the_enabled_ptp4l(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx()
+        self.install(ctx)
+        ctx.settings.set("deck-host", "audio_port", "")
+        ctx.runner = InputRunner(log=ctx.runner.log)
+        ctx.runner.log.clear()
+        deckhost.DeckHost().uninstall(ctx)
+        self.assertIn("sudo systemctl disable ptp4l@enp2s0.service", ctx.runner.log.commands())
 
     def test_leaving_keeps_a_stemdeck_rule_it_did_not_write(self):
         from installer.roles import deckhost
@@ -332,6 +476,20 @@ class Leaving(DeckHostCase):
         self.assertIn("deck-host.conf", lines)
         self.assertIn("/etc/linuxptp/a3-ptp4l.conf", lines)
         self.assertIn("stemdeck package", lines)
+
+
+class Discovery(unittest.TestCase):
+    def test_a_machine_with_the_deck_host_drop_in_has_the_role_not_stemdeck(self):
+        from installer.leave import discover_roles
+        units = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, units)
+        drop_in = units / "stemdeck@B.service.d" / "deck-host.conf"
+        drop_in.parent.mkdir()
+        drop_in.write_text("[Service]\n")
+        found = discover_roles(units, core_installed=lambda: False,
+                               stemdeck_installed=lambda: True,
+                               motion_installed=lambda: True, desk_installed=lambda: False)
+        self.assertEqual(["deck-host", "motion"], found)
 
 
 if __name__ == "__main__":

@@ -4,7 +4,10 @@
 Motion, 2026-10-27). The deck's audio reaches the Core over AES67.
 
 The stemdeck package comes the StemDeck role's way (stemdeck.install_package).
-Then one deck instance, stemdeck@<letter>, enabled by a link in
+The package also ships the AES67 base instance (stemdeck-aes67.service: PTP
+clock and receiver) and the deck's sender (a3-aes67-deck@<X>.service); this role
+only pulls them in and tells them the host's audio socket (STEMDECK_AUDIO_PORT,
+because the truth on this machine is the Core's copy). Then one deck instance, stemdeck@<letter>, enabled by a link in
 default.target.wants -- the template has no [Install] section -- with a
 drop-in naming the AES67 link map, the path latency and the panel's
 workspace. With Motion on the machine, Motion gets the panel's workspace as
@@ -19,7 +22,12 @@ a3-core checkout. The stock /etc/linuxptp/ptp4l.conf is only read.
 
 Not beside the Core (deck A is local there) and not beside the role
 stemdeck: the two-deck player and a deck instance fight over JACK names and
-the panel. The base a3-aes67 instance is not this role's (plan ruling P10).
+the panel.
+
+a3-core's leftovers of an AES67 base on a machine that never had the package
+(a3-aes67.service, pipewire-aes67.conf and its .conf.d) are disabled and moved
+aside, never deleted, because two PTP drivers must not run (plan ruling P27).
+Leaving puts them back.
 """
 
 import re
@@ -33,6 +41,11 @@ LETTERS = "ABCD"
 LINK_MAP = "/usr/share/stemdeck/links-aes67.json"
 STEMDECK_WORKSPACE = "2:STEMDECK"
 MOTION_WORKSPACE = "1:MOTION"
+BASE_UNIT = "stemdeck-aes67.service"
+SENDER_TEMPLATE = "a3-aes67-deck@.service"
+LEFTOVER_UNIT = "a3-aes67.service"
+LEFTOVER_PIPEWIRE = ("pipewire-aes67.conf", "pipewire-aes67.conf.d")
+ASIDE = ".a3-system-aside"
 INSTANCE_TEMPLATE = Path("/usr/lib/systemd/user/stemdeck@.service")
 DROP_IN = "deck-host.conf"
 PANEL_DROP_IN = "panel-follows.conf"
@@ -74,6 +87,8 @@ def instance_unit(letter):
 def deck_drop_in(latency_ms):
     return (WRITTEN_BY
             + "[Unit]\n"
+            f"Wants={BASE_UNIT}\n"
+            f"After={BASE_UNIT}\n"
             "Wants=a3-aes67-deck@%i.service\n"
             "After=a3-aes67-deck@%i.service\n"
             "\n"
@@ -81,6 +96,12 @@ def deck_drop_in(latency_ms):
             f"Environment=STEMDECK_LINK_MAP={LINK_MAP}\n"
             f"Environment=STEMDECK_PATH_LATENCY_MS={latency_ms}\n"
             f"Environment=STEMDECK_PANEL_WORKSPACE={STEMDECK_WORKSPACE}\n")
+
+
+def audio_port_drop_in(port):
+    return (WRITTEN_BY
+            + "[Service]\n"
+            f"Environment=STEMDECK_AUDIO_PORT={port}\n")
 
 
 def panel_drop_in():
@@ -207,11 +228,47 @@ class DeckHost(Role):
         _refuse_beside(ctx.settings.roles())
         letter, latency = deck_letter(ctx.settings), path_latency_ms(ctx.settings)
         stemdeck.install_package(ctx)
+        self._set_aside_leftovers(ctx)
         write_drop_in(ctx, instance_unit(letter), DROP_IN, deck_drop_in(latency))
+        self._audio_port_drop_ins(ctx)
         self._panel(ctx)
         self._i3_rule(ctx)
         self._ptp_client(ctx)
         self._enable_instance(ctx, letter)
+
+    def _audio_port_drop_ins(self, ctx):
+        port = _audio_port(ctx)
+        for unit in (BASE_UNIT, SENDER_TEMPLATE):
+            if port:
+                write_drop_in(ctx, unit, DROP_IN, audio_port_drop_in(port))
+            else:
+                _drop_stale(ctx, _audio_port_path(ctx, unit))
+
+    def _set_aside_leftovers(self, ctx):
+        if core_package_installed():
+            return
+        run = ctx.runner
+        leftovers = _leftovers(ctx)
+        if not any(path.exists() for path in leftovers):
+            return
+        # Stopped before the move: a running unit would keep PTP0.
+        systemctl_user(ctx, "disable", "--now", LEFTOVER_UNIT, check=False)
+        for path in leftovers:
+            aside = _aside(path)
+            if not path.exists() or aside.exists():
+                continue
+            run.log(f"# {path} -> {aside}")
+            if not run.dry_run:
+                path.rename(aside)
+
+    def _put_leftovers_back(self, ctx):
+        for path in _leftovers(ctx):
+            aside = _aside(path)
+            if not aside.exists() or path.exists():
+                continue
+            ctx.runner.log(f"# {aside} -> {path}")
+            if not ctx.runner.dry_run:
+                aside.rename(path)
 
     def _panel(self, ctx):
         if "motion" in ctx.settings.roles():
@@ -241,6 +298,7 @@ class DeckHost(Role):
         if not port:
             run.log("No audio port under [deck-host]: ptp4l not set up.")
             return
+        ctx.state.set("deck-host", "audio_port", port, dry_run=run.dry_run)
         if not STOCK_PTP4L.is_file():
             if run.dry_run:
                 run.log(f"# dry run: {STOCK_PTP4L} is missing (linuxptp not installed yet); "
@@ -267,30 +325,37 @@ class DeckHost(Role):
     # -- leaving
 
     stays = ("the stemdeck package (the StemDeck role removes it when it leaves)",
+             "a3-core's AES67 files moved aside, which are put back (see below)",
              "the stock /etc/linuxptp/ptp4l.conf",
              "library, sessions, recordings and stems")
 
     def leaving_units(self, ctx):
-        return [instance_unit(deck_letter(ctx.settings))]
+        letter = deck_letter(ctx.settings)
+        return [instance_unit(letter), f"a3-aes67-deck@{letter}.service", BASE_UNIT]
 
     def leaving_files(self, ctx):
         letter = deck_letter(ctx.settings)
         return [ctx.user_units / f"{instance_unit(letter)}.d" / DROP_IN,
                 _wants_link(ctx, letter),
-                _panel_path(ctx)]
+                _panel_path(ctx),
+                *(_audio_port_path(ctx, unit) for unit in (BASE_UNIT, SENDER_TEMPLATE))]
 
     def leaving_lines(self, ctx):
         return super().leaving_lines(ctx) + [
             "  System files, deleted (as root):",
             *(f"    {path}" for path in (PTP4L_CONF, PTP4L_DROP_IN)),
-            f"  The deck-host block in ~/{I3_CONFIG}, removed."]
+            f"  The deck-host block in ~/{I3_CONFIG}, removed.",
+            "  a3-core's AES67 files moved aside, put back where they were:",
+            *(f"    {path}" for path in _leftovers(ctx))]
 
     def uninstall(self, ctx):
         super().uninstall(ctx)
         run = ctx.runner
-        port = _audio_port(ctx)
-        if port:
+        # The port enabled at install, too: the setting may have been emptied since.
+        ports = {_audio_port(ctx), ctx.state.get("deck-host", "audio_port")} - {""}
+        for port in sorted(ports):
             run.run(["systemctl", "disable", f"ptp4l@{port}.service"], root=True, check=False)
+        ctx.state.remove("deck-host", "audio_port", dry_run=run.dry_run)
         for path in (PTP4L_CONF, PTP4L_DROP_IN):
             run.run(["rm", "-f", path], root=True)
         run.run(["rmdir", "--ignore-fail-on-non-empty", PTP4L_DROP_IN.parent], root=True)
@@ -300,6 +365,7 @@ class DeckHost(Role):
             text = path.read_text()
             if without_i3_block(text) != text:
                 _write_home_file(ctx, path, without_i3_block(text))
+        self._put_leftovers_back(ctx)
 
 
 def _refuse_beside(roles):
@@ -321,3 +387,34 @@ def _wants_link(ctx, letter):
 
 def _panel_path(ctx):
     return ctx.user_units / f"{MOTION_UNIT}.d" / PANEL_DROP_IN
+
+
+def core_package_installed():
+    from ..leave import package_installed  # leave imports the roles
+    return package_installed("a3-core")
+
+
+def _audio_port_path(ctx, unit):
+    return ctx.user_units / f"{unit}.d" / DROP_IN
+
+
+def _drop_stale(ctx, path):
+    if not path.is_file():
+        return
+    ctx.runner.log(f"# {path} removed: no audio port under [deck-host].")
+    if ctx.runner.dry_run:
+        return
+    path.unlink()
+    try:
+        path.parent.rmdir()
+    except OSError:
+        pass  # drop-ins written by hand stay
+
+
+def _leftovers(ctx):
+    return [ctx.user_units / LEFTOVER_UNIT,
+            *(ctx.home / ".config" / "pipewire" / name for name in LEFTOVER_PIPEWIRE)]
+
+
+def _aside(path):
+    return path.with_name(path.name + ASIDE)

@@ -59,6 +59,7 @@ DROP_IN = "deck-host.conf"
 SHIPPED_RATE = Path("/usr/share/stemdeck/10-stemdeck-rate.conf")
 RATE_LINK = Path(".config/pipewire/pipewire.conf.d") / SHIPPED_RATE.name
 PANEL_DROP_IN = "panel-follows.conf"
+MOTION_CONFLICT_DROP_IN = "deck-host.conf"
 WRITTEN_BY = "# Written by the a3-system installer (role deck-host); removed when it leaves.\n"
 
 STOCK_PTP4L = Path("/etc/linuxptp/ptp4l.conf")
@@ -113,13 +114,38 @@ def path_latency_ms(settings):
     return value
 
 
+def stemdeck_workspace(settings):
+    """The i3 workspace StemDeck lives on, as written: a name or a bare number."""
+    value = settings.get("deck-host", "stemdeck_workspace").strip()
+    if not value or '"' in value or "\n" in value:
+        raise RoleError(f"[deck-host] stemdeck_workspace = {value!r}: a workspace name "
+                        "('2:STEMDECK') or a number ('1'), without quotes.")
+    return value
+
+
+def i3_workspace_ref(workspace):
+    """How an assign names it: a bare number as it is, a name quoted."""
+    return workspace if workspace.isdigit() else f'"{workspace}"'
+
+
+def motion_here(settings):
+    return settings.flag("deck-host", "motion_here")
+
+
+def motion_workspace(settings):
+    """Where Motion's panel goes: with StemDeck's workspace when the two share the screen."""
+    return stemdeck_workspace(settings) if motion_here(settings) else MOTION_WORKSPACE
+
+
 def instance_unit(letter):
     return f"stemdeck@{letter}.service"
 
 
-def deck_drop_in(latency_ms):
+def deck_drop_in(latency_ms, workspace=STEMDECK_WORKSPACE, beside_motion=False):
     return (WRITTEN_BY
             + "[Unit]\n"
+            + (f"Conflicts={MOTION_UNIT}\n" if beside_motion else "")
+            +
             f"Wants={BASE_UNIT}\n"
             f"After={BASE_UNIT}\n"
             "Wants=a3-aes67-deck@%i.service\n"
@@ -128,7 +154,7 @@ def deck_drop_in(latency_ms):
             "[Service]\n"
             f"Environment=STEMDECK_LINK_MAP={LINK_MAP}\n"
             f"Environment=STEMDECK_PATH_LATENCY_MS={latency_ms}\n"
-            f"Environment=STEMDECK_PANEL_WORKSPACE={STEMDECK_WORKSPACE}\n")
+            f"Environment=STEMDECK_PANEL_WORKSPACE={workspace}\n")
 
 
 def audio_port_drop_in(port):
@@ -137,10 +163,16 @@ def audio_port_drop_in(port):
             f"Environment=STEMDECK_AUDIO_PORT={port}\n")
 
 
-def panel_drop_in():
+def panel_drop_in(workspace=MOTION_WORKSPACE):
     return (WRITTEN_BY
             + "[Service]\n"
-            f"Environment=A3_MOTION_PANEL_WORKSPACE={MOTION_WORKSPACE}\n")
+            f"Environment=A3_MOTION_PANEL_WORKSPACE={workspace}\n")
+
+
+def motion_conflict_drop_in(letter):
+    return (WRITTEN_BY
+            + "[Unit]\n"
+            f"Conflicts={instance_unit(letter)}\n")
 
 
 # -- PTP ------------------------------------------------------------------------
@@ -192,11 +224,11 @@ def ptp4l_drop_in():
 
 # -- i3 -------------------------------------------------------------------------
 
-def i3_block():
+def i3_block(workspace=STEMDECK_WORKSPACE):
     return (f"{I3_BEGIN}\n"
             "# StemDeck's deck on this deck host, on its workspace; as a3-core's i3 config,\n"
             "# the main window tiles without a border and every other window (a dialog) floats.\n"
-            f'assign [class="StemDeck"] number "{STEMDECK_WORKSPACE}"\n'
+            f'assign [class="StemDeck"] number {i3_workspace_ref(workspace)}\n'
             'for_window [class="StemDeck" title="^StemDeck( [A-D])?$"] floating disable, border none\n'
             'for_window [class="StemDeck" title="^(?!StemDeck( [A-D])?$)"] floating enable\n'
             f"{I3_END}\n")
@@ -249,7 +281,7 @@ def _same_workspace(target, by_number, wanted):
     return target == wanted
 
 
-def rules_moving_deck_away(text, letter):
+def rules_moving_deck_away(text, letter, workspace=STEMDECK_WORKSPACE):
     """(rule, workspace) for every own rule that puts "StemDeck <letter>" on a
     workspace other than the one its panel follows."""
     variables, window = i3_variables(text), f"StemDeck {letter}"
@@ -259,7 +291,7 @@ def rules_moving_deck_away(text, letter):
         if title and not re.search(title.group(1), window):
             continue
         placed = _workspace_of(rule, variables)
-        if placed and not _same_workspace(*placed, STEMDECK_WORKSPACE):
+        if placed and not _same_workspace(*placed, workspace):
             found.append((rule.strip(), placed[0]))
     return found
 
@@ -270,13 +302,13 @@ def missing_workspace_names(text, names):
     return [name for name in names if not any(name in line for line in lines)]
 
 
-def neutralised_i3_rules(text, letter):
+def neutralised_i3_rules(text, letter, workspace=STEMDECK_WORKSPACE):
     """(the config with the conflicting old StemDeck rules commented out, those
     rules). Conflicting: every for_window rule for the class (it would float or
     frame the deck against the block) and every rule putting this deck on a
     workspace its panel does not follow. An assign to the right workspace stays.
     The installer's block is left alone."""
-    away = {rule for rule, _ in rules_moving_deck_away(text, letter)}
+    away = {rule for rule, _ in rules_moving_deck_away(text, letter, workspace)}
     lines, touched, in_block = [], [], False
     for line in text.splitlines(keepends=True):
         stripped = line.strip()
@@ -295,18 +327,18 @@ def restored_i3_rules(text):
                    for line in text.splitlines(keepends=True))
 
 
-def with_i3_block(text, force=False):
+def with_i3_block(text, force=False, workspace=STEMDECK_WORKSPACE):
     """The config with the block, or None when it has its own StemDeck rule
     (unless forced: the conflicting ones are out of the way then)."""
     if has_own_stemdeck_rule(text) and not force:
         return None
     if I3_BEGIN + "\n" in text:
         begin = text.index(I3_BEGIN + "\n")
-        return text[:begin] + i3_block() + without_i3_block(text)[begin:]
+        return text[:begin] + i3_block(workspace) + without_i3_block(text)[begin:]
     if text and not text.endswith("\n"):
         text += "\n"
     # No blank line before it: leaving takes out the block and gives the file back as it was.
-    return text + i3_block()
+    return text + i3_block(workspace)
 
 
 def _write_home_file(ctx, path, text):
@@ -339,18 +371,28 @@ class DeckHost(Role):
         s.set("deck-host", "audio_port", ask.text(
             "Socket on the audio network, for PTP (empty: no PTP)",
             s.get("deck-host", "audio_port")))
+        s.set("deck-host", "stemdeck_workspace", ask.text(
+            "On which i3 workspace does StemDeck live? (a name such as 2:STEMDECK, "
+            "or a number such as 1)", s.get("deck-host", "stemdeck_workspace")))
+        s.set_flag("deck-host", "motion_here", ask.yesno(
+            "Does Motion run on this machine too, never at the same time as StemDeck?\n"
+            "(Each stops the other; StemDeck starts at boot.)",
+            s.flag("deck-host", "motion_here")))
 
     def install(self, ctx):
         _refuse_beside(ctx.settings.roles())
         letter, latency = deck_letter(ctx.settings), path_latency_ms(ctx.settings)
+        workspace = stemdeck_workspace(ctx.settings)
         stemdeck.install_package(ctx)
         self._set_aside_leftovers(ctx)
         self._leave_old_letter(ctx, letter)
-        write_drop_in(ctx, instance_unit(letter), DROP_IN, deck_drop_in(latency))
+        write_drop_in(ctx, instance_unit(letter), DROP_IN,
+                      deck_drop_in(latency, workspace, motion_here(ctx.settings)))
         self._audio_port_drop_ins(ctx)
         self._server_rate(ctx)
         self._panel(ctx)
-        self._i3_rule(ctx, letter)
+        self._motion_never_beside(ctx, letter)
+        self._i3_rule(ctx, letter, workspace)
         self._ptp_client(ctx)
         self._pipewire_jack_path(ctx)
         self._enable_instance(ctx, letter)
@@ -411,15 +453,38 @@ class DeckHost(Role):
         link.unlink(missing_ok=True)
         link.symlink_to(SHIPPED_RATE)
 
+    def _motion_never_beside(self, ctx, letter):
+        """StemDeck and Motion share one screen: each Conflicts= the other, and
+        only StemDeck is enabled at boot. Motion is not stopped now."""
+        run, path = ctx.runner, _motion_conflict_path(ctx)
+        if not motion_here(ctx.settings):
+            if ctx.state.get("deck-host", "motion_here"):
+                self._motion_back(ctx)
+            return
+        write_drop_in(ctx, MOTION_UNIT, MOTION_CONFLICT_DROP_IN, motion_conflict_drop_in(letter))
+        run.log(f"# Motion and StemDeck never run together: {MOTION_UNIT} is disabled at boot "
+                "(left running if it is now); starting one stops the other.")
+        systemctl_user(ctx, "disable", MOTION_UNIT, check=False)
+        ctx.state.set("deck-host", "motion_here", "yes", dry_run=run.dry_run)
+
+    def _motion_back(self, ctx):
+        """Undo _motion_never_beside: the drop-in goes, Motion is enabled at boot again."""
+        ctx.runner.log(f"# {MOTION_UNIT} enabled at boot again (deck-host: Motion no longer "
+                       "excluded by StemDeck).")
+        remove_files(ctx, [_motion_conflict_path(ctx)])
+        systemctl_user(ctx, "enable", MOTION_UNIT, check=False)
+        ctx.state.remove("deck-host", "motion_here", dry_run=ctx.runner.dry_run)
+
     def _panel(self, ctx):
-        if "motion" in ctx.settings.roles():
-            write_drop_in(ctx, MOTION_UNIT, PANEL_DROP_IN, panel_drop_in())
+        if "motion" in ctx.settings.roles() or motion_here(ctx.settings):
+            write_drop_in(ctx, MOTION_UNIT, PANEL_DROP_IN,
+                          panel_drop_in(motion_workspace(ctx.settings)))
             return
         stale = _panel_path(ctx)
         if stale.is_file():
             remove_files(ctx, [stale])
 
-    def _i3_rule(self, ctx, letter):
+    def _i3_rule(self, ctx, letter, workspace):
         run, path = ctx.runner, ctx.home / I3_CONFIG
         if not path.is_file():
             # i3 then reads /etc/i3/config; a file of one rule would replace it.
@@ -427,12 +492,12 @@ class DeckHost(Role):
                     "config places no deck.")
             return
         original = path.read_text()
-        self._check_workspace_names(ctx, path, original)
-        text, touched = neutralised_i3_rules(original, letter)
+        self._check_workspace_names(ctx, path, original, workspace)
+        text, touched = neutralised_i3_rules(original, letter, workspace)
         for rule in touched:
             run.log(f"{path}: old StemDeck rule commented out (given back when the role "
                     f"leaves): {rule}")
-        wanted = with_i3_block(text, force=bool(touched))
+        wanted = with_i3_block(text, force=bool(touched), workspace=workspace)
         if wanted is None:
             run.log(f"{path} places StemDeck itself; left as it is:\n"
                     + "".join(f"#   {rule}\n" for rule in own_stemdeck_rules(text)))
@@ -440,8 +505,10 @@ class DeckHost(Role):
         if wanted != original:
             _write_home_file(ctx, path, wanted)
 
-    def _check_workspace_names(self, ctx, path, text):
-        names = [STEMDECK_WORKSPACE] + ([MOTION_WORKSPACE] if "motion" in ctx.settings.roles() else [])
+    def _check_workspace_names(self, ctx, path, text, workspace):
+        names = [workspace]
+        if "motion" in ctx.settings.roles():
+            names.append(motion_workspace(ctx.settings))
         for name in missing_workspace_names(text, names):
             ctx.runner.log(f"WARNING: {path} names no workspace {name!r}: the panel follows "
                            "workspaces by that name and never moves to one named otherwise.")
@@ -496,11 +563,14 @@ class DeckHost(Role):
     def leaving_files(self, ctx):
         return [*(path for letter in _letters(ctx) for path in _letter_files(ctx, letter)),
                 _panel_path(ctx),
+                *([_motion_conflict_path(ctx)] if _motion_excluded(ctx) else []),
                 *(_audio_port_path(ctx, unit) for unit in (BASE_UNIT, SENDER_TEMPLATE)),
                 _rate_link(ctx)]
 
     def leaving_lines(self, ctx):
         return super().leaving_lines(ctx) + [
+            *([f"  Motion is enabled at boot again ({MOTION_UNIT}, not started now)."]
+              if _motion_excluded(ctx) else []),
             "  System files, deleted (as root):",
             *(f"    {path}" for path in (PTP4L_CONF, PTP4L_DROP_IN)),
             f"  The deck-host block in ~/{I3_CONFIG}, removed; StemDeck rules it commented out come back.",
@@ -515,6 +585,8 @@ class DeckHost(Role):
     def uninstall(self, ctx):
         super().uninstall(ctx)
         run = ctx.runner
+        if _motion_excluded(ctx):
+            self._motion_back(ctx)
         # The port enabled at install, too: the setting may have been emptied since.
         ports = {_audio_port(ctx), ctx.state.get("deck-host", "audio_port")} - {""}
         for port in sorted(ports):
@@ -570,6 +642,15 @@ def _audio_port(ctx):
 
 def _wants_link(ctx, letter):
     return ctx.user_units / "default.target.wants" / instance_unit(letter)
+
+
+def _motion_conflict_path(ctx):
+    return ctx.user_units / f"{MOTION_UNIT}.d" / MOTION_CONFLICT_DROP_IN
+
+
+def _motion_excluded(ctx):
+    """Whether Motion is, or was at the last install, kept from running beside StemDeck."""
+    return motion_here(ctx.settings) or bool(ctx.state.get("deck-host", "motion_here"))
 
 
 def _panel_path(ctx):

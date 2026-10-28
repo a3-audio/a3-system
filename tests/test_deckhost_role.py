@@ -774,5 +774,155 @@ class AChangedLetter(DeckHostCase):
         self.assertEqual("", ctx.state.get("deck-host", "letter"))
 
 
+class AskedStrings:
+    """A prompter that answers text questions by the question's first words and yes/no by a table."""
+    interactive = True
+
+    def __init__(self, texts=None, yesnos=None):
+        self.texts, self.yesnos, self.asked = texts or {}, yesnos or {}, []
+
+    def text(self, question, default):
+        self.asked.append(question)
+        return next((a for q, a in self.texts.items() if question.startswith(q)), default)
+
+    def yesno(self, question, default):
+        self.asked.append(question)
+        return next((a for q, a in self.yesnos.items() if question.startswith(q)), default)
+
+
+class TheWorkspaceQuestion(DeckHostCase):
+    PI = {("deck-host", "stemdeck_workspace"): "1"}
+
+    def test_the_default_is_the_workspace_of_a3nuc2(self):
+        from installer.settings import Settings
+        s = Settings(self.tmp / "none.conf")
+        self.assertEqual("2:STEMDECK", s.get("deck-host", "stemdeck_workspace"))
+        self.assertFalse(s.flag("deck-host", "motion_here"))
+
+    def test_it_is_asked_with_the_current_value_as_default(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx()
+        ctx.prompter = AskedStrings(texts={"On which i3 workspace": "1"})
+        deckhost.DeckHost().configure(ctx)
+        self.assertEqual("1", ctx.settings.get("deck-host", "stemdeck_workspace"))
+        self.assertTrue(any(q.startswith("On which i3 workspace") for q in ctx.prompter.asked))
+
+    def test_a_bare_number_feeds_the_drop_in_the_assign_and_motion(self):
+        ctx, _ = self.ctx({**self.PI, ("roles", "motion"): "yes"})
+        i3 = self.i3_config(ctx, "set $mod Mod4\n")
+        self.install(ctx)
+        self.assertIn("Environment=STEMDECK_PANEL_WORKSPACE=1",
+                      self.drop_in(ctx).read_text().splitlines())
+        self.assertIn('assign [class="StemDeck"] number 1', i3.read_text().splitlines())
+        ctx.settings.set("deck-host", "motion_here", "yes")
+        self.install(ctx)
+        panel = ctx.user_units / "a3-motion.service.d" / "panel-follows.conf"
+        self.assertIn("Environment=A3_MOTION_PANEL_WORKSPACE=1", panel.read_text().splitlines())
+
+    def test_a_named_workspace_keeps_the_quoted_assign(self):
+        ctx, _ = self.ctx({("deck-host", "stemdeck_workspace"): "3:DECK"})
+        i3 = self.i3_config(ctx, "set $mod Mod4\n")
+        self.install(ctx)
+        self.assertIn('assign [class="StemDeck"] number "3:DECK"', i3.read_text().splitlines())
+
+    def test_nothing_or_a_quote_is_refused(self):
+        for value in ("", '1"', "a\nb"):
+            with self.subTest(value=value):
+                ctx, _ = self.ctx({("deck-host", "stemdeck_workspace"): value})
+                with self.assertRaises(RoleError):
+                    self.install(ctx)
+
+    def test_an_assign_to_the_chosen_number_is_no_conflict(self):
+        ctx, _ = self.ctx(self.PI)
+        i3 = self.i3_config(ctx, 'assign [class="StemDeck"] number 1\n')
+        self.install(ctx)
+        self.assertEqual('assign [class="StemDeck"] number 1\n', i3.read_text())
+
+
+class MotionNeverBesideStemDeck(DeckHostCase):
+    HERE = {("deck-host", "motion_here"): "yes", ("deck-host", "stemdeck_workspace"): "1",
+            ("roles", "motion"): "yes"}
+
+    def motion_drop_in(self, ctx):
+        return ctx.user_units / "a3-motion.service.d" / "deck-host.conf"
+
+    def test_it_is_asked_default_no(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx()
+        ctx.prompter = AskedStrings(yesnos={"Does Motion run on this machine too": True})
+        deckhost.DeckHost().configure(ctx)
+        self.assertTrue(ctx.settings.flag("deck-host", "motion_here"))
+        self.assertTrue(any(q.startswith("Does Motion run on this machine too")
+                            for q in ctx.prompter.asked))
+
+    def test_each_side_conflicts_with_the_other(self):
+        ctx, _ = self.ctx(self.HERE)
+        self.install(ctx)
+        self.assertIn("Conflicts=a3-motion.service", self.drop_in(ctx).read_text().splitlines())
+        self.assertIn("Conflicts=stemdeck@B.service",
+                      self.motion_drop_in(ctx).read_text().splitlines())
+
+    def test_stemdeck_is_enabled_at_boot_and_motion_is_not_stopped(self):
+        ctx, log = self.ctx(self.HERE)
+        self.install(ctx)
+        commands = log.commands()
+        self.assertIn("systemctl --user disable a3-motion.service", commands)
+        self.assertFalse(any("a3-motion" in c and ("--now" in c or "stop" in c or "restart" in c)
+                             for c in commands), commands)
+        self.assertTrue((ctx.user_units / "default.target.wants" / "stemdeck@B.service")
+                        .is_symlink())
+        self.assertTrue(any("never run together" in line for line in log),
+                        list(log))
+
+    def test_without_the_answer_nothing_of_it_is_written(self):
+        ctx, log = self.ctx({("roles", "motion"): "yes"})
+        self.install(ctx)
+        self.assertNotIn("Conflicts", self.drop_in(ctx).read_text())
+        self.assertFalse(self.motion_drop_in(ctx).exists())
+        self.assertFalse(any("disable a3-motion" in c for c in log.commands()))
+
+    def test_leaving_removes_both_and_enables_motion_again(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx(self.HERE)
+        self.install(ctx)
+        ctx.runner = InputRunner(log=ctx.runner.log)
+        ctx.runner.log.clear()
+        role = deckhost.DeckHost()
+        self.assertIn(self.motion_drop_in(ctx), role.leaving_files(ctx))
+        with deckhost_seams(self.stock, False):
+            role.uninstall(ctx)
+        commands = ctx.runner.log.commands()
+        self.assertIn(f"rm -f {self.motion_drop_in(ctx)}", commands)
+        self.assertIn("systemctl --user enable a3-motion.service", commands)
+        self.assertFalse(any("a3-motion" in c and ("--now" in c or "restart" in c)
+                             for c in commands), commands)
+
+    def test_leaving_after_the_answer_was_taken_back_still_undoes_it(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx(self.HERE)
+        self.install(ctx)
+        ctx.settings.set("deck-host", "motion_here", "no")
+        ctx.runner.log.clear()
+        deckhost.DeckHost().uninstall(ctx)
+        self.assertIn("systemctl --user enable a3-motion.service", ctx.runner.log.commands())
+
+    def test_taking_the_answer_back_on_a_second_install_undoes_it(self):
+        ctx, log = self.ctx(self.HERE)
+        self.install(ctx)
+        ctx.settings.set("deck-host", "motion_here", "no")
+        log.clear()
+        self.install(ctx)
+        self.assertIn(f"rm -f {self.motion_drop_in(ctx)}", log.commands())
+        self.assertNotIn("Conflicts", self.drop_in(ctx).read_text())
+        self.assertIn("systemctl --user enable a3-motion.service", log.commands())
+
+    def test_the_motion_role_does_not_restart_motion_over_it(self):
+        from installer.roles import motion
+        ctx, log = self.ctx(self.HERE)
+        self.assertTrue(motion.runs_beside_stemdeck(ctx))
+        ctx2, _ = self.ctx({("roles", "motion"): "yes"})
+        self.assertFalse(motion.runs_beside_stemdeck(ctx2))
+
+
 if __name__ == "__main__":
     unittest.main()

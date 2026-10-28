@@ -53,6 +53,8 @@ DEFAULTS = {
         # The socket on the audio network, where ptp4l runs as a PTP client;
         # empty is no PTP. Asked: only the Core's postinst knows its own.
         "audio_port": "",
+        # StemDeck's i3 workspace: a name ("2:STEMDECK") or a bare number ("1").
+        "stemdeck_workspace": "2:STEMDECK",
     },
     "motion": {
         # Flash the panel's firmware when its source changed since the last

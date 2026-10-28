@@ -10,19 +10,26 @@ only pulls them in and tells them the host's audio socket (STEMDECK_AUDIO_PORT,
 because the truth on this machine is the Core's copy). Then one deck instance, stemdeck@<letter>, enabled by a link in
 default.target.wants -- the template has no [Install] section -- with a
 drop-in naming the AES67 link map, the path latency and the panel's
-workspace. With Motion on the machine, Motion gets the panel's workspace as
-well, so the two hand the panel over by workspace instead of fighting for it.
+workspace. With Motion on the machine, Motion gets its own workspace for the panel; the
+two hand the panel over by workspace instead of fighting for it. Which of the two
+runs is the maintainer's to start and stop by hand.
 
 PTP: the deck's AES67 stream needs the Core's clock. ptp4l runs as a client
 on the audio socket with the Core's config made a client's: linuxptp's stock
 file with step_threshold 0.001 (as the Core's), clientOnly 1, priority1 128.
 It is derived from this machine's stock file -- the rule a3-core's own copy
 follows -- so the installer carries no copy of it, and a deck host needs no
-a3-core checkout. The stock /etc/linuxptp/ptp4l.conf is only read.
+a3-core checkout. The stock /etc/linuxptp/ptp4l.conf is only read. A port
+whose driver offers no PTP receive filter, only "all" (a Raspberry Pi 5's
+macb), gets hwts_filter full, or ptp4l sees no timestamp on any frame. A udev
+rule lets the audio group read /dev/ptp*: PipeWire's PTP0 driver opens the
+port's clock as the user and falls back to CLOCK_MONOTONIC when it cannot.
 
 Not beside the Core (deck A is local there) and not beside the role
 stemdeck: the two-deck player and a deck instance fight over JACK names and
-the panel.
+the panel. The package enables the two-deck player globally; a user drop-in
+on stemdeck.service (ExecCondition=/bin/false, as on a Core) keeps it from
+starting.
 
 a3-core's leftovers of an AES67 base on a machine that never had the package
 (a3-aes67.service, its copy in a3-core's deployment tree, pipewire-aes67.conf
@@ -35,9 +42,14 @@ pipewire.conf.d/ (ruling P32), because only the role knows the machine is a
 deck host.
 """
 
+import array
+import fcntl
 import re
+import socket
+import struct
 from pathlib import Path
 
+from .. import package as debs
 from . import stemdeck
 from .base import Role, RoleError, remove_files, systemctl_user, write_drop_in
 from .motion import UNIT as MOTION_UNIT
@@ -58,20 +70,59 @@ DROP_IN = "deck-host.conf"
 SHIPPED_RATE = Path("/usr/share/stemdeck/10-stemdeck-rate.conf")
 RATE_LINK = Path(".config/pipewire/pipewire.conf.d") / SHIPPED_RATE.name
 PANEL_DROP_IN = "panel-follows.conf"
+# Written by an earlier run that had the "Motion here too" option; only cleaned up now.
+MOTION_CONFLICT_DROP_IN = "deck-host.conf"
+TWO_DECK_UNIT = stemdeck.UNIT
+TWO_DECK_OFF = "ExecCondition=/bin/false"
 WRITTEN_BY = "# Written by the a3-system installer (role deck-host); removed when it leaves.\n"
 
 STOCK_PTP4L = Path("/etc/linuxptp/ptp4l.conf")
 PTP4L_CONF = Path("/etc/linuxptp/a3-ptp4l.conf")
 PTP4L_DROP_IN = Path("/etc/systemd/system/ptp4l@.service.d/a3.conf")
 CLIENT_KEYS = {"clientOnly": "1", "priority1": "128", "step_threshold": "0.001"}
+PTP_UDEV_RULE = Path("/etc/udev/rules.d/60-a3-ptp.rules")
+UDEV_TRIGGER_PTP = ["udevadm", "trigger", "--action=change", "--subsystem-match=ptp"]
+
+# linux/net_tstamp.h, enum hwtstamp_rx_filters, by bit; named as ethtool -T names them.
+RX_FILTER_NAMES = ("none", "all", "some", "ptpv1-l4-event", "ptpv1-l4-sync",
+                   "ptpv1-l4-delay-req", "ptpv2-l4-event", "ptpv2-l4-sync",
+                   "ptpv2-l4-delay-req", "ptpv2-l2-event", "ptpv2-l2-sync",
+                   "ptpv2-l2-delay-req", "ptpv2-event", "ptpv2-sync", "ptpv2-delay-req",
+                   "ntp-all")
+# What ptp4l's hwts_filter normal asks for, in the order it tries them.
+PTP_EVENT_FILTERS = {"ptpv2-event", "ptpv2-l4-event", "ptpv2-l2-event"}
+SIOCETHTOOL = 0x8946
+ETHTOOL_GET_TS_INFO = 0x41
+# struct ethtool_ts_info: cmd, so_timestamping, phc_index, tx_types, tx_reserved[3],
+# rx_filters, rx_reserved[3].
+TS_INFO = struct.Struct("IIiI3II3I")
 
 # PipeWire's libjack before jackd's, as a3-core's package ships it: without it jack_wait and
 # StemDeck load jackd's libjack and wait for a jack server that PipeWire does not run as one.
-JACK_LD_CONF = Path("/etc/ld.so.conf.d/pipewire-jack-x86_64-linux-gnu.conf")
-JACK_LD_TEXT = ("# PipeWire's libjack before jackd's: every JACK program on this deck host --\n"
-                "# StemDeck, jack_wait, one started by hand -- talks to PipeWire.\n"
-                "# Written by the a3-system installer (role deck-host); a3-core ships the same file.\n"
-                "/usr/lib/x86_64-linux-gnu/pipewire-0.3/jack/\n")
+# Named by the machine's multiarch triplet, as pipewire-jack's own example file is: a3nuc2
+# is x86_64-linux-gnu, a Raspberry Pi 5 aarch64-linux-gnu. ld.so.conf.d is read in name
+# order and the first libjack wins, so the name starts with 00-: on aarch64
+# aarch64-linux-gnu.conf sorts before pipewire-jack-aarch64-linux-gnu.conf and jackd's
+# libjack won. (a3-core's own file keeps pipewire-jack-x86_64-linux-gnu.conf: x86_64
+# sorts after "pipewire" there.)
+JACK_LD_DIR = Path("/etc/ld.so.conf.d")
+JACK_LD_OWN_MARK = "role deck-host"
+
+
+def jack_ld_conf(multiarch):
+    return JACK_LD_DIR / f"00-pipewire-jack-{multiarch}.conf"
+
+
+def old_jack_ld_conf(multiarch):
+    """The name this role wrote before it sorted first."""
+    return JACK_LD_DIR / f"pipewire-jack-{multiarch}.conf"
+
+
+def jack_ld_text(multiarch):
+    return ("# PipeWire's libjack before jackd's: every JACK program on this deck host --\n"
+            "# StemDeck, jack_wait, one started by hand -- talks to PipeWire.\n"
+            "# Written by the a3-system installer (role deck-host); a3-core ships the same file.\n"
+            f"/usr/lib/{multiarch}/pipewire-0.3/jack/\n")
 
 I3_CONFIG = Path(".config/i3/config")
 I3_BEGIN = "# >>> a3-system deck-host >>>"
@@ -106,11 +157,25 @@ def path_latency_ms(settings):
     return value
 
 
+def stemdeck_workspace(settings):
+    """The i3 workspace StemDeck lives on, as written: a name or a bare number."""
+    value = settings.get("deck-host", "stemdeck_workspace").strip()
+    if not value or '"' in value or "\n" in value:
+        raise RoleError(f"[deck-host] stemdeck_workspace = {value!r}: a workspace name "
+                        "('2:STEMDECK') or a number ('1'), without quotes.")
+    return value
+
+
+def i3_workspace_ref(workspace):
+    """How an assign names it: a bare number as it is, a name quoted."""
+    return workspace if workspace.isdigit() else f'"{workspace}"'
+
+
 def instance_unit(letter):
     return f"stemdeck@{letter}.service"
 
 
-def deck_drop_in(latency_ms):
+def deck_drop_in(latency_ms, workspace=STEMDECK_WORKSPACE):
     return (WRITTEN_BY
             + "[Unit]\n"
             f"Wants={BASE_UNIT}\n"
@@ -121,7 +186,7 @@ def deck_drop_in(latency_ms):
             "[Service]\n"
             f"Environment=STEMDECK_LINK_MAP={LINK_MAP}\n"
             f"Environment=STEMDECK_PATH_LATENCY_MS={latency_ms}\n"
-            f"Environment=STEMDECK_PANEL_WORKSPACE={STEMDECK_WORKSPACE}\n")
+            f"Environment=STEMDECK_PANEL_WORKSPACE={workspace}\n")
 
 
 def audio_port_drop_in(port):
@@ -130,10 +195,19 @@ def audio_port_drop_in(port):
             f"Environment=STEMDECK_AUDIO_PORT={port}\n")
 
 
-def panel_drop_in():
+def two_deck_off_drop_in():
+    return (WRITTEN_BY
+            + "# The package enables the two-deck player globally; a deck host plays its\n"
+            "# deck as stemdeck@. No Conflicts=: a conflict inside one transaction drops a\n"
+            "# start job before any condition runs.\n"
+            "[Service]\n"
+            f"{TWO_DECK_OFF}\n")
+
+
+def panel_drop_in(workspace=MOTION_WORKSPACE):
     return (WRITTEN_BY
             + "[Service]\n"
-            f"Environment=A3_MOTION_PANEL_WORKSPACE={MOTION_WORKSPACE}\n")
+            f"Environment=A3_MOTION_PANEL_WORKSPACE={workspace}\n")
 
 
 # -- PTP ------------------------------------------------------------------------
@@ -151,8 +225,49 @@ def ptp4l_keys(text):
     return dict(entry for line in text.splitlines() if (entry := _ptp4l_entry(line)))
 
 
-def client_ptp4l_config(stock):
-    """linuxptp's stock config with CLIENT_KEYS set, every other line as it was."""
+def rx_filter_names(bitmap):
+    return {name for bit, name in enumerate(RX_FILTER_NAMES) if bitmap >> bit & 1}
+
+
+def port_rx_filters(port):
+    """The receive timestamp filters the port's driver offers (ethtool -T, without
+    ethtool: Raspberry Pi OS has none), or None when the port cannot be asked."""
+    request = array.array("B", TS_INFO.pack(ETHTOOL_GET_TS_INFO, *[0] * 10))
+    ifreq = struct.pack("16sP", port.encode(), request.buffer_info()[0])
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+            fcntl.ioctl(sock, SIOCETHTOOL, ifreq)
+    except OSError:
+        return None
+    return rx_filter_names(TS_INFO.unpack(request.tobytes())[7])
+
+
+def hwts_filter_for(rx_filters):
+    """"full" for a port that stamps all frames but offers no PTP event filter (a
+    Raspberry Pi 5's macb: with ptp4l's default it stamps no PTP frame at all),
+    else None: ptp4l's default stays."""
+    if rx_filters is None or "all" not in rx_filters or rx_filters & PTP_EVENT_FILTERS:
+        return None
+    return "full"
+
+
+def _with_hwts_filter(text, hwts_filter):
+    """The config with hwts_filter set: its own line if the stock file has one,
+    else a new line right under [global]."""
+    lines = text.splitlines(keepends=True)
+    for i, line in enumerate(lines):
+        entry = _ptp4l_entry(line)
+        if entry and entry[0] == "hwts_filter":
+            lines[i] = f"hwts_filter\t\t{hwts_filter}\n"
+            return "".join(lines)
+    at = next(i for i, line in enumerate(lines) if line.strip() == "[global]") + 1
+    lines.insert(at, f"hwts_filter\t\t{hwts_filter}\n")
+    return "".join(lines)
+
+
+def client_ptp4l_config(stock, hwts_filter=None):
+    """linuxptp's stock config with CLIENT_KEYS set (and hwts_filter, if given),
+    every other line as it was."""
     missing = set(CLIENT_KEYS) - set(ptp4l_keys(stock))
     if missing:
         raise RoleError(f"{STOCK_PTP4L} has no {', '.join(sorted(missing))}; "
@@ -164,6 +279,9 @@ def client_ptp4l_config(stock):
             key = entry[0]
             line = re.sub(r"(\S+)$", CLIENT_KEYS[key], line.rstrip("\n"), count=1) + "\n"
         lines.append(line)
+    body = "".join(lines)
+    if hwts_filter:
+        body = _with_hwts_filter(body, hwts_filter)
     header = ("# SPDX-FileCopyrightText: linuxptp authors (stock ptp4l.conf, copied)\n"
               "# SPDX-FileCopyrightText: 2026 Raphael Eismann "
               "(step_threshold, clientOnly, priority1)\n"
@@ -172,8 +290,20 @@ def client_ptp4l_config(stock):
               "# ptp4l as a client of the Core, written by the a3-system installer\n"
               "# (role deck-host) from this machine's stock ptp4l.conf. step_threshold\n"
               "# 0.001: after a Core reboot the client steps instead of slewing for days.\n"
-              "# Selected by ptp4l@.service.d/a3.conf; the stock file stays untouched.\n")
-    return header + "".join(lines)
+              "# Selected by ptp4l@.service.d/a3.conf; the stock file stays untouched.\n"
+              + ("# hwts_filter full: this port's driver stamps all frames or none, and\n"
+                 "# with ptp4l's default filter no PTP frame carries a timestamp.\n"
+                 if hwts_filter else ""))
+    return header + body
+
+
+def ptp_udev_rule():
+    return ("# Written by the a3-system installer (role deck-host).\n"
+            "# PipeWire's PTP0 driver (clock.interface) reads the port's hardware clock as the\n"
+            "# user; udev leaves /dev/ptp* root's own, and the driver then runs on\n"
+            "# CLOCK_MONOTONIC instead of the clock ptp4l keeps on the Core's. Read only:\n"
+            "# adjusting a PTP clock needs it open for writing.\n"
+            'SUBSYSTEM=="ptp", GROUP="audio", MODE="0640"\n')
 
 
 def ptp4l_drop_in():
@@ -185,11 +315,11 @@ def ptp4l_drop_in():
 
 # -- i3 -------------------------------------------------------------------------
 
-def i3_block():
+def i3_block(workspace=STEMDECK_WORKSPACE):
     return (f"{I3_BEGIN}\n"
             "# StemDeck's deck on this deck host, on its workspace; as a3-core's i3 config,\n"
             "# the main window tiles without a border and every other window (a dialog) floats.\n"
-            f'assign [class="StemDeck"] number "{STEMDECK_WORKSPACE}"\n'
+            f'assign [class="StemDeck"] number {i3_workspace_ref(workspace)}\n'
             'for_window [class="StemDeck" title="^StemDeck( [A-D])?$"] floating disable, border none\n'
             'for_window [class="StemDeck" title="^(?!StemDeck( [A-D])?$)"] floating enable\n'
             f"{I3_END}\n")
@@ -242,7 +372,7 @@ def _same_workspace(target, by_number, wanted):
     return target == wanted
 
 
-def rules_moving_deck_away(text, letter):
+def rules_moving_deck_away(text, letter, workspace=STEMDECK_WORKSPACE):
     """(rule, workspace) for every own rule that puts "StemDeck <letter>" on a
     workspace other than the one its panel follows."""
     variables, window = i3_variables(text), f"StemDeck {letter}"
@@ -252,7 +382,7 @@ def rules_moving_deck_away(text, letter):
         if title and not re.search(title.group(1), window):
             continue
         placed = _workspace_of(rule, variables)
-        if placed and not _same_workspace(*placed, STEMDECK_WORKSPACE):
+        if placed and not _same_workspace(*placed, workspace):
             found.append((rule.strip(), placed[0]))
     return found
 
@@ -263,13 +393,13 @@ def missing_workspace_names(text, names):
     return [name for name in names if not any(name in line for line in lines)]
 
 
-def neutralised_i3_rules(text, letter):
+def neutralised_i3_rules(text, letter, workspace=STEMDECK_WORKSPACE):
     """(the config with the conflicting old StemDeck rules commented out, those
     rules). Conflicting: every for_window rule for the class (it would float or
     frame the deck against the block) and every rule putting this deck on a
     workspace its panel does not follow. An assign to the right workspace stays.
     The installer's block is left alone."""
-    away = {rule for rule, _ in rules_moving_deck_away(text, letter)}
+    away = {rule for rule, _ in rules_moving_deck_away(text, letter, workspace)}
     lines, touched, in_block = [], [], False
     for line in text.splitlines(keepends=True):
         stripped = line.strip()
@@ -288,18 +418,18 @@ def restored_i3_rules(text):
                    for line in text.splitlines(keepends=True))
 
 
-def with_i3_block(text, force=False):
+def with_i3_block(text, force=False, workspace=STEMDECK_WORKSPACE):
     """The config with the block, or None when it has its own StemDeck rule
     (unless forced: the conflicting ones are out of the way then)."""
     if has_own_stemdeck_rule(text) and not force:
         return None
     if I3_BEGIN + "\n" in text:
         begin = text.index(I3_BEGIN + "\n")
-        return text[:begin] + i3_block() + without_i3_block(text)[begin:]
+        return text[:begin] + i3_block(workspace) + without_i3_block(text)[begin:]
     if text and not text.endswith("\n"):
         text += "\n"
     # No blank line before it: leaving takes out the block and gives the file back as it was.
-    return text + i3_block()
+    return text + i3_block(workspace)
 
 
 def _write_home_file(ctx, path, text):
@@ -314,7 +444,7 @@ class DeckHost(Role):
     name = "deck-host"
     label = "StemDeck deck on a machine without the Core (AES67 to the Core)"
     submodules = stemdeck.StemDeck.submodules
-    platforms = ("debian",)
+    platforms = stemdeck.StemDeck.platforms
     # ptp4l@ is linuxptp's unit.
     packages = stemdeck.StemDeck.packages + ("linuxptp",)
     needs_screen = True
@@ -332,18 +462,25 @@ class DeckHost(Role):
         s.set("deck-host", "audio_port", ask.text(
             "Socket on the audio network, for PTP (empty: no PTP)",
             s.get("deck-host", "audio_port")))
+        s.set("deck-host", "stemdeck_workspace", ask.text(
+            "On which i3 workspace does StemDeck live? (a name such as 2:STEMDECK, "
+            "or a number such as 1)", s.get("deck-host", "stemdeck_workspace")))
 
     def install(self, ctx):
         _refuse_beside(ctx.settings.roles())
         letter, latency = deck_letter(ctx.settings), path_latency_ms(ctx.settings)
+        workspace = stemdeck_workspace(ctx.settings)
         stemdeck.install_package(ctx)
         self._set_aside_leftovers(ctx)
         self._leave_old_letter(ctx, letter)
-        write_drop_in(ctx, instance_unit(letter), DROP_IN, deck_drop_in(latency))
+        write_drop_in(ctx, instance_unit(letter), DROP_IN,
+                      deck_drop_in(latency, workspace))
+        self._two_deck_player_off(ctx)
         self._audio_port_drop_ins(ctx)
         self._server_rate(ctx)
         self._panel(ctx)
-        self._i3_rule(ctx, letter)
+        self._forget_motion_exclusion(ctx)
+        self._i3_rule(ctx, letter, workspace)
         self._ptp_client(ctx)
         self._pipewire_jack_path(ctx)
         self._enable_instance(ctx, letter)
@@ -404,6 +541,27 @@ class DeckHost(Role):
         link.unlink(missing_ok=True)
         link.symlink_to(SHIPPED_RATE)
 
+    def _two_deck_player_off(self, ctx):
+        write_drop_in(ctx, TWO_DECK_UNIT, DROP_IN, two_deck_off_drop_in())
+        for hand in _hand_two_deck_off(ctx):
+            ctx.runner.log(f"# {hand} does what {DROP_IN} does here; it can be removed "
+                           "(left where it is).")
+        systemctl_user(ctx, "daemon-reload")
+        systemctl_user(ctx, "stop", TWO_DECK_UNIT, check=False)
+
+    def _forget_motion_exclusion(self, ctx):
+        """An earlier run with the "Motion here too" option: take its drop-in away."""
+        if ctx.state.get("deck-host", "motion_here"):
+            self._motion_back(ctx)
+
+    def _motion_back(self, ctx):
+        """Undo _motion_never_beside: the drop-in goes, Motion is enabled at boot again."""
+        ctx.runner.log(f"# {MOTION_UNIT} enabled at boot again (an earlier deck-host run "
+                       "kept it from running beside StemDeck).")
+        remove_files(ctx, [_motion_conflict_path(ctx)])
+        systemctl_user(ctx, "enable", MOTION_UNIT, check=False)
+        ctx.state.remove("deck-host", "motion_here", dry_run=ctx.runner.dry_run)
+
     def _panel(self, ctx):
         if "motion" in ctx.settings.roles():
             write_drop_in(ctx, MOTION_UNIT, PANEL_DROP_IN, panel_drop_in())
@@ -412,7 +570,7 @@ class DeckHost(Role):
         if stale.is_file():
             remove_files(ctx, [stale])
 
-    def _i3_rule(self, ctx, letter):
+    def _i3_rule(self, ctx, letter, workspace):
         run, path = ctx.runner, ctx.home / I3_CONFIG
         if not path.is_file():
             # i3 then reads /etc/i3/config; a file of one rule would replace it.
@@ -420,12 +578,12 @@ class DeckHost(Role):
                     "config places no deck.")
             return
         original = path.read_text()
-        self._check_workspace_names(ctx, path, original)
-        text, touched = neutralised_i3_rules(original, letter)
+        self._check_workspace_names(ctx, path, original, workspace)
+        text, touched = neutralised_i3_rules(original, letter, workspace)
         for rule in touched:
             run.log(f"{path}: old StemDeck rule commented out (given back when the role "
                     f"leaves): {rule}")
-        wanted = with_i3_block(text, force=bool(touched))
+        wanted = with_i3_block(text, force=bool(touched), workspace=workspace)
         if wanted is None:
             run.log(f"{path} places StemDeck itself; left as it is:\n"
                     + "".join(f"#   {rule}\n" for rule in own_stemdeck_rules(text)))
@@ -433,8 +591,10 @@ class DeckHost(Role):
         if wanted != original:
             _write_home_file(ctx, path, wanted)
 
-    def _check_workspace_names(self, ctx, path, text):
-        names = [STEMDECK_WORKSPACE] + ([MOTION_WORKSPACE] if "motion" in ctx.settings.roles() else [])
+    def _check_workspace_names(self, ctx, path, text, workspace):
+        names = [workspace]
+        if "motion" in ctx.settings.roles():
+            names.append(MOTION_WORKSPACE)
         for name in missing_workspace_names(text, names):
             ctx.runner.log(f"WARNING: {path} names no workspace {name!r}: the panel follows "
                            "workspaces by that name and never moves to one named otherwise.")
@@ -442,9 +602,14 @@ class DeckHost(Role):
     def _pipewire_jack_path(self, ctx):
         if core_package_installed():
             return
-        run = ctx.runner
-        run.run(["install", "-D", "-m", "644", "/dev/stdin", JACK_LD_CONF], root=True,
-                input=JACK_LD_TEXT)
+        run, multiarch = ctx.runner, debs.host_multiarch()
+        conf, text = jack_ld_conf(multiarch), jack_ld_text(multiarch)
+        old = _own_old_jack_conf(multiarch)
+        if old:
+            run.run(["rm", "-f", old], root=True)
+        elif conf.is_file() and conf.read_text() == text:
+            return
+        run.run(["install", "-D", "-m", "644", "/dev/stdin", conf], root=True, input=text)
         run.run(["ldconfig"], root=True)
 
     def _ptp_client(self, ctx):
@@ -459,9 +624,15 @@ class DeckHost(Role):
                         "the PTP client config is skipped.")
                 return
             raise RoleError(f"{STOCK_PTP4L} is missing: is linuxptp installed?")
-        for target, text in ((PTP4L_CONF, client_ptp4l_config(STOCK_PTP4L.read_text())),
-                             (PTP4L_DROP_IN, ptp4l_drop_in())):
+        hwts_filter = hwts_filter_for(port_rx_filters(port))
+        if hwts_filter:
+            run.log(f"# {port} stamps all frames or none: ptp4l gets hwts_filter {hwts_filter}.")
+        config = client_ptp4l_config(STOCK_PTP4L.read_text(), hwts_filter)
+        for target, text in ((PTP4L_CONF, config), (PTP4L_DROP_IN, ptp4l_drop_in()),
+                             (PTP_UDEV_RULE, ptp_udev_rule())):
             run.run(["install", "-D", "-m", "644", "/dev/stdin", target], root=True, input=text)
+        run.run(["udevadm", "control", "--reload-rules"], root=True)
+        run.run(UDEV_TRIGGER_PTP, root=True)
         run.run(["systemctl", "daemon-reload"], root=True)
         # Enabled, not started, as the Core's postinst does: it comes up with the next boot.
         run.run(["systemctl", "enable", f"ptp4l@{port}.service"], root=True)
@@ -489,15 +660,22 @@ class DeckHost(Role):
     def leaving_files(self, ctx):
         return [*(path for letter in _letters(ctx) for path in _letter_files(ctx, letter)),
                 _panel_path(ctx),
+                ctx.user_units / f"{TWO_DECK_UNIT}.d" / DROP_IN,
+                *([_motion_conflict_path(ctx)] if _motion_excluded(ctx) else []),
                 *(_audio_port_path(ctx, unit) for unit in (BASE_UNIT, SENDER_TEMPLATE)),
                 _rate_link(ctx)]
 
     def leaving_lines(self, ctx):
         return super().leaving_lines(ctx) + [
+            *([f"  Motion is enabled at boot again ({MOTION_UNIT}, not started now): an "
+               "earlier run kept it from running beside StemDeck."]
+              if _motion_excluded(ctx) else []),
             "  System files, deleted (as root):",
-            *(f"    {path}" for path in (PTP4L_CONF, PTP4L_DROP_IN)),
+            *(f"    {path}" for path in (PTP4L_CONF, PTP4L_DROP_IN, PTP_UDEV_RULE)),
             f"  The deck-host block in ~/{I3_CONFIG}, removed; StemDeck rules it commented out come back.",
-            f"  {JACK_LD_CONF}, deleted (as root) unless the a3-core package is installed.",
+            f"  {jack_ld_conf(debs.host_multiarch())} (and the file of this name without "
+            "00-, if the installer wrote it), deleted (as root) unless the a3-core "
+            "package is installed.",
             "  a3-core's AES67 files moved aside, put back where they were:",
             *(f"    {path}" for path in _leftovers(ctx)),
             "    (put back only: a3-aes67.service is not re-enabled and there is no",
@@ -507,18 +685,25 @@ class DeckHost(Role):
     def uninstall(self, ctx):
         super().uninstall(ctx)
         run = ctx.runner
+        if _motion_excluded(ctx):
+            self._motion_back(ctx)
         # The port enabled at install, too: the setting may have been emptied since.
         ports = {_audio_port(ctx), ctx.state.get("deck-host", "audio_port")} - {""}
         for port in sorted(ports):
             run.run(["systemctl", "disable", f"ptp4l@{port}.service"], root=True, check=False)
         ctx.state.remove("deck-host", "audio_port", dry_run=run.dry_run)
         ctx.state.remove("deck-host", "letter", dry_run=run.dry_run)
-        for path in (PTP4L_CONF, PTP4L_DROP_IN):
+        for path in (PTP4L_CONF, PTP4L_DROP_IN, PTP_UDEV_RULE):
             run.run(["rm", "-f", path], root=True)
         run.run(["rmdir", "--ignore-fail-on-non-empty", PTP4L_DROP_IN.parent], root=True)
+        run.run(["udevadm", "control", "--reload-rules"], root=True)
+        run.run(UDEV_TRIGGER_PTP, root=True)
         run.run(["systemctl", "daemon-reload"], root=True)
         if not core_package_installed():
-            run.run(["rm", "-f", JACK_LD_CONF], root=True)
+            multiarch = debs.host_multiarch()
+            run.run(["rm", "-f", jack_ld_conf(multiarch)], root=True)
+            if old := _own_old_jack_conf(multiarch):
+                run.run(["rm", "-f", old], root=True)
             run.run(["ldconfig"], root=True)
         path = ctx.home / I3_CONFIG
         if path.is_file():
@@ -562,6 +747,32 @@ def _audio_port(ctx):
 
 def _wants_link(ctx, letter):
     return ctx.user_units / "default.target.wants" / instance_unit(letter)
+
+
+def _motion_conflict_path(ctx):
+    return ctx.user_units / f"{MOTION_UNIT}.d" / MOTION_CONFLICT_DROP_IN
+
+
+def _motion_excluded(ctx):
+    """Whether an earlier run kept Motion from running beside StemDeck."""
+    return bool(ctx.state.get("deck-host", "motion_here"))
+
+
+def _own_old_jack_conf(multiarch):
+    """The pre-00- file, if this role wrote it (a3-core's file of that name is its own)."""
+    old = old_jack_ld_conf(multiarch)
+    if old.is_file() and JACK_LD_OWN_MARK in old.read_text():
+        return old
+    return None
+
+
+def _hand_two_deck_off(ctx):
+    """Drop-ins on the two-deck player, not the role's, that switch it off the same way."""
+    folder = ctx.user_units / f"{TWO_DECK_UNIT}.d"
+    if not folder.is_dir():
+        return []
+    return [path for path in sorted(folder.glob("*.conf"))
+            if path.name != DROP_IN and TWO_DECK_OFF in path.read_text().splitlines()]
 
 
 def _panel_path(ctx):

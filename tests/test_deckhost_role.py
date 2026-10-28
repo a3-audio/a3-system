@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from test_installer import PIN, RecordingRunner, context  # noqa: E402
 from installer.roles import ALL, BY_NAME, needed_submodules  # noqa: E402
 from installer.roles.base import RoleError  # noqa: E402
-from installer.settings import ROLES  # noqa: E402
+from installer.settings import DEFAULTS, ROLES  # noqa: E402
 
 WORKSPACES = 'set $ws1 "1:MOTION"\nset $ws2 "2:STEMDECK"\n'
 
@@ -55,15 +55,18 @@ class InputRunner(RecordingRunner):
         return 0
 
 
-def deckhost_seams(stock, core_package=False):
+def deckhost_seams(stock, core_package=False, multiarch="x86_64-linux-gnu", rx_filters=None):
     from installer.roles import apppackage, deckhost, stemdeck
     stack = ExitStack()
+    stack.enter_context(mock.patch.object(deckhost.debs, "host_multiarch", lambda: multiarch))
     stack.enter_context(mock.patch.object(stemdeck, "ensure_juce", lambda _ctx: Path("/juce")))
     stack.enter_context(mock.patch.object(stemdeck, "pinned_commit", lambda _ctx: PIN))
     stack.enter_context(mock.patch.object(apppackage.debs, "version_of", lambda *_: "03.0+7"))
     stack.enter_context(mock.patch.object(deckhost, "STOCK_PTP4L", stock))
     stack.enter_context(mock.patch.object(deckhost, "core_package_installed",
                                           lambda: core_package))
+    # Never this machine's own port: the filters are the test's.
+    stack.enter_context(mock.patch.object(deckhost, "port_rx_filters", lambda _port: rx_filters))
     return stack
 
 
@@ -85,10 +88,12 @@ class DeckHostCase(unittest.TestCase):
         return ctx, log
 
     core_package = False
+    multiarch = "x86_64-linux-gnu"
+    rx_filters = None
 
     def install(self, ctx):
         from installer.roles import deckhost
-        with deckhost_seams(self.stock, self.core_package):
+        with deckhost_seams(self.stock, self.core_package, self.multiarch, self.rx_filters):
             deckhost.DeckHost().install(ctx)
 
     def drop_in(self, ctx, letter="B"):
@@ -107,6 +112,12 @@ class TheRoleIsOffered(unittest.TestCase):
         self.assertEqual(names.index("deck-host"), names.index("stemdeck") + 1)
         self.assertEqual(names.index("motion"), names.index("deck-host") + 1)
         self.assertIn("deck-host", ROLES)
+
+    def test_it_installs_on_raspberry_pi_os(self):
+        """A Pi 5 plays a deck as a3nuc2 does (a3motionV02, 2026-10-28); the
+        stemdeck package it builds comes the StemDeck role's way."""
+        self.assertTrue(BY_NAME["deck-host"].supported("raspios"))
+        self.assertTrue(BY_NAME["stemdeck"].supported("raspios"))
 
     def test_it_builds_from_stemdeck_only(self):
         self.assertEqual(needed_submodules(["deck-host"]), ["stemdeck"])
@@ -144,8 +155,8 @@ class TheDeckInstance(DeckHostCase):
         self.assertIn(f"--rev {PIN}", build)
         self.assertTrue(any("apt-get install" in c and "stemdeck_03.0+7" in c for c in commands))
         self.assertIn("sudo apt-mark hold stemdeck", commands)
-        # The two-deck unit is not this role's: it would fight the instance.
-        self.assertFalse(any("stemdeck.service" in c and "stemdeck@" not in c
+        # The two-deck unit is not this role's to run: it is only stopped (see TheTwoDeckPlayerIsOff).
+        self.assertFalse(any("stemdeck.service" in c and "stemdeck@" not in c and " stop " not in c
                              for c in commands if c.startswith("systemctl")), commands)
 
     def test_letter_and_latency_from_settings(self):
@@ -509,7 +520,8 @@ class TheI3Rule(DeckHostCase):
 
 
 class ThePipeWireJackPath(DeckHostCase):
-    CONF = "/etc/ld.so.conf.d/pipewire-jack-x86_64-linux-gnu.conf"
+    CONF = "/etc/ld.so.conf.d/00-pipewire-jack-x86_64-linux-gnu.conf"
+    OLD = "/etc/ld.so.conf.d/pipewire-jack-x86_64-linux-gnu.conf"
 
     def test_it_writes_the_path_as_root_and_runs_ldconfig(self):
         ctx, log = self.ctx()
@@ -520,6 +532,79 @@ class ThePipeWireJackPath(DeckHostCase):
         commands = log.commands()
         self.assertIn(f"sudo install -D -m 644 /dev/stdin {self.CONF}", commands)
         self.assertGreater(len(commands), commands.index("sudo ldconfig"))
+
+    def test_on_a_raspberry_pi_it_names_the_arm64_directory(self):
+        """Raspberry Pi OS on a Pi 5: aarch64-linux-gnu, as pipewire-jack ships it there."""
+        self.multiarch = "aarch64-linux-gnu"
+        conf = "/etc/ld.so.conf.d/00-pipewire-jack-aarch64-linux-gnu.conf"
+        ctx, log = self.ctx()
+        self.install(ctx)
+        self.assertIn("/usr/lib/aarch64-linux-gnu/pipewire-0.3/jack/\n", ctx.runner.inputs[conf])
+        self.assertNotIn(self.CONF, ctx.runner.inputs)
+
+    def test_leaving_on_a_raspberry_pi_removes_the_arm64_file(self):
+        from installer.roles import deckhost
+        ctx, log = self.ctx()
+        with deckhost_seams(self.stock, False, "aarch64-linux-gnu"):
+            deckhost.DeckHost().uninstall(ctx)
+        self.assertIn("sudo rm -f /etc/ld.so.conf.d/00-pipewire-jack-aarch64-linux-gnu.conf",
+                      log.commands())
+
+    def jack_dir(self):
+        from installer.roles import deckhost
+        etc = self.tmp / "ld.so.conf.d"
+        etc.mkdir(exist_ok=True)
+        patcher = mock.patch.object(deckhost, "JACK_LD_DIR", etc)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        return etc
+
+    def test_it_sorts_before_the_multiarch_file(self):
+        """ld.so.conf.d is read in name order: aarch64-linux-gnu.conf comes before
+        pipewire-jack-aarch64..., so jackd's libjack won and jack_wait hung."""
+        for arch in ("x86_64-linux-gnu", "aarch64-linux-gnu"):
+            self.assertLess(f"00-pipewire-jack-{arch}.conf", f"{arch}.conf")
+
+    def test_an_old_named_file_of_its_own_is_replaced(self):
+        etc = self.jack_dir()
+        old = etc / "pipewire-jack-x86_64-linux-gnu.conf"
+        old.write_text("# Written by the a3-system installer (role deck-host); a3-core ships the same file.\n"
+                       "/usr/lib/x86_64-linux-gnu/pipewire-0.3/jack/\n")
+        ctx, log = self.ctx()
+        self.install(ctx)
+        commands = log.commands()
+        self.assertIn(f"sudo rm -f {old}", commands)
+        self.assertIn(f"sudo install -D -m 644 /dev/stdin {etc}/00-pipewire-jack-x86_64-linux-gnu.conf",
+                      commands)
+        self.assertLess(commands.index(f"sudo rm -f {old}"), commands.index("sudo ldconfig"))
+
+    def test_an_old_named_file_it_did_not_write_stays(self):
+        etc = self.jack_dir()
+        old = etc / "pipewire-jack-x86_64-linux-gnu.conf"
+        old.write_text("/usr/lib/x86_64-linux-gnu/pipewire-0.3/jack/\n")
+        ctx, log = self.ctx()
+        self.install(ctx)
+        self.assertNotIn(f"sudo rm -f {old}", log.commands())
+
+    def test_the_file_already_there_with_the_same_text_is_left_alone(self):
+        from installer.roles import deckhost
+        etc = self.jack_dir()
+        (etc / "00-pipewire-jack-x86_64-linux-gnu.conf").write_text(
+            deckhost.jack_ld_text("x86_64-linux-gnu"))
+        ctx, log = self.ctx()
+        self.install(ctx)
+        self.assertFalse(any("00-pipewire-jack" in c for c in log.commands()), log.commands())
+        self.assertNotIn("sudo ldconfig", log.commands())
+
+    def test_leaving_also_removes_an_old_named_file_of_its_own(self):
+        from installer.roles import deckhost
+        etc = self.jack_dir()
+        old = etc / "pipewire-jack-x86_64-linux-gnu.conf"
+        old.write_text("# Written by the a3-system installer (role deck-host)\n")
+        ctx, log = self.ctx()
+        with deckhost_seams(self.stock, False):
+            deckhost.DeckHost().uninstall(ctx)
+        self.assertIn(f"sudo rm -f {old}", log.commands())
 
     def test_a3_cores_package_owns_the_file_when_it_is_installed(self):
         self.core_package = True
@@ -598,6 +683,107 @@ class ThePtpClient(DeckHostCase):
         self.assertFalse(any("ptp4l" in c for c in log.commands()), log.commands())
 
 
+# What ETHTOOL_GET_TS_INFO reports as rx_filters: a Raspberry Pi 5's RP1 (macb, measured
+# 2026-10-28) offers none and all; an igb port offers the PTPv2 event filters as well.
+PI5_MACB_RX_FILTERS = 0b11
+IGB_RX_FILTERS = (1 << 0) | (1 << 1) | (1 << 6) | (1 << 9) | (1 << 12)
+
+
+class ThePtpTimestampFilter(DeckHostCase):
+    """macb stamps no PTP frame with ptp4l's default filter (ptpv2-event): every SYNC
+    arrives "without timestamp". It offers only `all`, which hwts_filter full asks for."""
+
+    CONF = "/etc/linuxptp/a3-ptp4l.conf"
+
+    def install_with(self, rx_filters):
+        ctx, log = self.ctx()
+        self.rx_filters = rx_filters
+        self.install(ctx)
+        return ctx, log
+
+    def test_the_bitmap_is_read_as_filter_names(self):
+        from installer.roles.deckhost import rx_filter_names
+        self.assertEqual({"none", "all"}, rx_filter_names(PI5_MACB_RX_FILTERS))
+        self.assertEqual({"none", "all", "ptpv2-l4-event", "ptpv2-l2-event", "ptpv2-event"},
+                         rx_filter_names(IGB_RX_FILTERS))
+
+    def test_a_port_that_offers_only_all_gets_the_full_filter(self):
+        from installer.roles.deckhost import hwts_filter_for
+        self.assertEqual("full", hwts_filter_for({"none", "all"}))
+
+    def test_a_port_with_ptp_event_filters_keeps_the_stock_one(self):
+        from installer.roles.deckhost import hwts_filter_for
+        self.assertIsNone(hwts_filter_for({"none", "all", "ptpv2-event"}))
+        self.assertIsNone(hwts_filter_for({"none", "ptpv2-l4-event"}))
+
+    def test_an_unreadable_port_keeps_the_stock_one(self):
+        from installer.roles.deckhost import hwts_filter_for
+        self.assertIsNone(hwts_filter_for(None))
+
+    def test_the_config_carries_the_filter_in_global(self):
+        from installer.roles.deckhost import client_ptp4l_config, ptp4l_keys
+        text = client_ptp4l_config(STOCK_PTP4L, hwts_filter="full")
+        self.assertEqual("full", ptp4l_keys(text)["hwts_filter"])
+        lines = text.splitlines()
+        self.assertEqual("[global]", lines[lines.index("hwts_filter\t\tfull") - 1])
+
+    def test_a_stock_filter_line_is_set_not_doubled(self):
+        from installer.roles.deckhost import client_ptp4l_config
+        text = client_ptp4l_config(STOCK_PTP4L + "hwts_filter\t\tnormal\n", hwts_filter="full")
+        self.assertEqual(1, sum(l.startswith("hwts_filter") for l in text.splitlines()))
+        self.assertIn("hwts_filter\t\tfull", text.splitlines())
+
+    def test_without_a_filter_the_config_has_none(self):
+        from installer.roles.deckhost import client_ptp4l_config, ptp4l_keys
+        self.assertNotIn("hwts_filter", ptp4l_keys(client_ptp4l_config(STOCK_PTP4L)))
+
+    def test_install_on_a_pi_5_writes_the_full_filter_and_says_why(self):
+        ctx, log = self.install_with({"none", "all"})
+        self.assertIn("hwts_filter\t\tfull", ctx.runner.inputs[self.CONF].splitlines())
+        self.assertTrue(any("hwts_filter full" in line for line in log), log)
+
+    def test_install_on_an_igb_port_writes_no_filter(self):
+        ctx, _ = self.install_with({"none", "all", "ptpv2-event"})
+        self.assertNotIn("hwts_filter", ctx.runner.inputs[self.CONF])
+
+
+class ThePhcIsReadable(DeckHostCase):
+    """PipeWire's PTP0 driver (clock.interface) opens /dev/ptpN read-only as the user;
+    udev makes it root's 0600, the open fails, and the driver runs on CLOCK_MONOTONIC."""
+
+    RULE = "/etc/udev/rules.d/60-a3-ptp.rules"
+
+    def test_the_rule_gives_the_audio_group_read_only(self):
+        from installer.roles.deckhost import ptp_udev_rule
+        rules = [l for l in ptp_udev_rule().splitlines() if l and not l.startswith("#")]
+        self.assertEqual(['SUBSYSTEM=="ptp", GROUP="audio", MODE="0640"'], rules)
+
+    def test_install_writes_it_as_root_and_applies_it_now(self):
+        ctx, log = self.ctx()
+        self.install(ctx)
+        commands = log.commands()
+        self.assertIn(f"sudo install -D -m 644 /dev/stdin {self.RULE}", commands)
+        self.assertIn("sudo udevadm control --reload-rules", commands)
+        self.assertIn("sudo udevadm trigger --action=change --subsystem-match=ptp", commands)
+
+    def test_without_an_audio_port_there_is_no_rule(self):
+        ctx, log = self.ctx({("deck-host", "audio_port"): ""})
+        self.install(ctx)
+        self.assertFalse(any("udev" in c for c in log.commands()), log.commands())
+
+    def test_leaving_removes_it(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx()
+        self.install(ctx)
+        ctx.runner = InputRunner(log=ctx.runner.log)
+        ctx.runner.log.clear()
+        deckhost.DeckHost().uninstall(ctx)
+        commands = ctx.runner.log.commands()
+        self.assertIn(f"sudo rm -f {self.RULE}", commands)
+        self.assertIn("sudo udevadm trigger --action=change --subsystem-match=ptp", commands)
+        self.assertIn(self.RULE, "\n".join(deckhost.DeckHost().leaving_lines(ctx)))
+
+
 class DryRun(DeckHostCase):
     def test_dry_run_writes_nothing(self):
         ctx, _ = self.ctx({("roles", "motion"): "yes"}, dry_run=True)
@@ -634,8 +820,10 @@ class Leaving(DeckHostCase):
             str(ctx.user_units / "stemdeck-aes67.service.d" / "deck-host.conf"),
             str(ctx.user_units / "a3-aes67-deck@.service.d" / "deck-host.conf"),
             str(ctx.home / ".config/pipewire/pipewire.conf.d/10-stemdeck-rate.conf"),
+            str(ctx.user_units / "stemdeck.service.d" / "deck-host.conf"),
             "/etc/linuxptp/a3-ptp4l.conf",
-            "/etc/ld.so.conf.d/pipewire-jack-x86_64-linux-gnu.conf",
+            "/etc/ld.so.conf.d/00-pipewire-jack-x86_64-linux-gnu.conf",
+            "/etc/udev/rules.d/60-a3-ptp.rules",
             "/etc/systemd/system/ptp4l@.service.d/a3.conf"]), sorted(removed))
         self.assertIn("sudo rm -f /etc/linuxptp/a3-ptp4l.conf", commands)
         self.assertIn("systemctl --user disable --now stemdeck@B.service", commands)
@@ -747,6 +935,188 @@ class AChangedLetter(DeckHostCase):
         self.assertIn("systemctl --user disable --now stemdeck@B.service", commands)
         self.assertIn("systemctl --user disable --now stemdeck@C.service", commands)
         self.assertEqual("", ctx.state.get("deck-host", "letter"))
+
+
+class AskedStrings:
+    """A prompter that answers text questions by the question's first words and yes/no by a table."""
+    interactive = True
+
+    def __init__(self, texts=None, yesnos=None):
+        self.texts, self.yesnos, self.asked = texts or {}, yesnos or {}, []
+
+    def text(self, question, default):
+        self.asked.append(question)
+        return next((a for q, a in self.texts.items() if question.startswith(q)), default)
+
+    def yesno(self, question, default):
+        self.asked.append(question)
+        return next((a for q, a in self.yesnos.items() if question.startswith(q)), default)
+
+
+class TheWorkspaceQuestion(DeckHostCase):
+    PI = {("deck-host", "stemdeck_workspace"): "1"}
+
+    def test_the_default_is_the_workspace_of_a3nuc2(self):
+        from installer.settings import Settings
+        s = Settings(self.tmp / "none.conf")
+        self.assertEqual("2:STEMDECK", s.get("deck-host", "stemdeck_workspace"))
+        self.assertNotIn("motion_here", DEFAULTS["deck-host"])
+
+    def test_it_is_asked_with_the_current_value_as_default(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx()
+        ctx.prompter = AskedStrings(texts={"On which i3 workspace": "1"})
+        deckhost.DeckHost().configure(ctx)
+        self.assertEqual("1", ctx.settings.get("deck-host", "stemdeck_workspace"))
+        self.assertTrue(any(q.startswith("On which i3 workspace") for q in ctx.prompter.asked))
+
+    def test_a_bare_number_feeds_the_drop_in_the_assign_and_motion(self):
+        ctx, _ = self.ctx({**self.PI, ("roles", "motion"): "yes"})
+        i3 = self.i3_config(ctx, "set $mod Mod4\n")
+        self.install(ctx)
+        self.assertIn("Environment=STEMDECK_PANEL_WORKSPACE=1",
+                      self.drop_in(ctx).read_text().splitlines())
+        self.assertIn('assign [class="StemDeck"] number 1', i3.read_text().splitlines())
+        panel = ctx.user_units / "a3-motion.service.d" / "panel-follows.conf"
+        self.assertIn("Environment=A3_MOTION_PANEL_WORKSPACE=1:MOTION", panel.read_text().splitlines())
+
+    def test_a_named_workspace_keeps_the_quoted_assign(self):
+        ctx, _ = self.ctx({("deck-host", "stemdeck_workspace"): "3:DECK"})
+        i3 = self.i3_config(ctx, "set $mod Mod4\n")
+        self.install(ctx)
+        self.assertIn('assign [class="StemDeck"] number "3:DECK"', i3.read_text().splitlines())
+
+    def test_nothing_or_a_quote_is_refused(self):
+        for value in ("", '1"', "a\nb"):
+            with self.subTest(value=value):
+                ctx, _ = self.ctx({("deck-host", "stemdeck_workspace"): value})
+                with self.assertRaises(RoleError):
+                    self.install(ctx)
+
+    def test_an_assign_to_the_chosen_number_is_no_conflict(self):
+        ctx, _ = self.ctx(self.PI)
+        i3 = self.i3_config(ctx, 'assign [class="StemDeck"] number 1\n')
+        self.install(ctx)
+        self.assertEqual('assign [class="StemDeck"] number 1\n', i3.read_text())
+
+
+class NoMotionOption(DeckHostCase):
+    """The "Motion runs here too, never together" option is gone (2026-10-28): the
+    maintainer starts and stops the services by hand."""
+    RECORDED = {("roles", "motion"): "yes"}
+
+    def motion_drop_in(self, ctx):
+        return ctx.user_units / "a3-motion.service.d" / "deck-host.conf"
+
+    def test_it_is_not_asked(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx()
+        ctx.prompter = AskedStrings()
+        deckhost.DeckHost().configure(ctx)
+        self.assertFalse(any("Motion" in q for q in ctx.prompter.asked), ctx.prompter.asked)
+
+    def test_nothing_of_it_is_written_or_run(self):
+        ctx, log = self.ctx({**self.RECORDED, ("deck-host", "motion_here"): "yes"})
+        self.install(ctx)
+        self.assertNotIn("Conflicts", self.drop_in(ctx).read_text())
+        self.assertFalse(self.motion_drop_in(ctx).exists())
+        self.assertFalse(any("a3-motion.service" in c and "systemctl" in c for c in log.commands()),
+                         log.commands())
+
+    def test_the_motion_role_has_no_special_case(self):
+        from installer.roles import motion
+        self.assertFalse(hasattr(motion, "runs_beside_stemdeck"))
+
+    def test_an_earlier_run_that_wrote_the_conflict_is_cleaned_up_on_install(self):
+        ctx, log = self.ctx(self.RECORDED)
+        ctx.state.set("deck-host", "motion_here", "yes")
+        drop_in = self.motion_drop_in(ctx)
+        drop_in.parent.mkdir(parents=True)
+        drop_in.write_text("[Unit]\nConflicts=stemdeck@B.service\n")
+        self.install(ctx)
+        self.assertIn(f"rm -f {drop_in}", log.commands())
+        self.assertIn("systemctl --user enable a3-motion.service", log.commands())
+        self.assertEqual("", ctx.state.get("deck-host", "motion_here"))
+
+    def test_and_on_leaving(self):
+        from installer.roles import deckhost
+        ctx, log = self.ctx(self.RECORDED)
+        ctx.state.set("deck-host", "motion_here", "yes")
+        role = deckhost.DeckHost()
+        self.assertIn(self.motion_drop_in(ctx), role.leaving_files(ctx))
+        with deckhost_seams(self.stock, False):
+            role.uninstall(ctx)
+        self.assertIn("systemctl --user enable a3-motion.service", log.commands())
+        self.assertFalse(any("a3-motion" in c and ("--now" in c or "restart" in c)
+                             for c in log.commands()), log.commands())
+
+    def test_without_a_record_leaving_does_not_touch_motion(self):
+        from installer.roles import deckhost
+        ctx, log = self.ctx(self.RECORDED)
+        with deckhost_seams(self.stock, False):
+            deckhost.DeckHost().uninstall(ctx)
+        self.assertFalse(any("a3-motion.service" in c and "systemctl" in c for c in log.commands()),
+                         log.commands())
+
+
+class TheTwoDeckPlayerIsOff(DeckHostCase):
+    """The stemdeck package enables stemdeck.service (two decks) globally; on a deck
+    host it would run beside stemdeck@B. As a3-core does on a Core: ExecCondition,
+    no Conflicts=."""
+
+    def off(self, ctx):
+        return ctx.user_units / "stemdeck.service.d" / "deck-host.conf"
+
+    def test_the_drop_in_switches_it_off_and_it_is_stopped(self):
+        ctx, log = self.ctx()
+        self.install(ctx)
+        lines = self.off(ctx).read_text().splitlines()
+        self.assertIn("[Service]", lines)
+        self.assertIn("ExecCondition=/bin/false", lines)
+        self.assertFalse(any(l.startswith("Conflicts") for l in lines))
+        commands = log.commands()
+        self.assertIn("systemctl --user stop stemdeck.service", commands)
+        stop = commands.index("systemctl --user stop stemdeck.service")
+        self.assertIn("systemctl --user daemon-reload", commands[:stop])
+
+    def test_it_never_makes_a_link_at_the_unit(self):
+        ctx, _ = self.ctx()
+        self.install(ctx)
+        self.assertFalse((ctx.user_units / "stemdeck.service").exists())
+        self.assertFalse((ctx.user_units / "stemdeck.service").is_symlink())
+
+    def test_leaving_removes_it(self):
+        from installer.roles import deckhost
+        ctx, log = self.ctx()
+        self.install(ctx)
+        role = deckhost.DeckHost()
+        self.assertIn(self.off(ctx), role.leaving_files(ctx))
+        with deckhost_seams(self.stock, False):
+            role.uninstall(ctx)
+        self.assertIn(f"rm -f {self.off(ctx)}", log.commands())
+
+    def test_a_hand_drop_in_that_does_the_same_is_noticed_and_never_removed(self):
+        from installer.roles import deckhost
+        ctx, log = self.ctx()
+        hand = ctx.user_units / "stemdeck.service.d" / "no-two-deck.conf"
+        hand.parent.mkdir(parents=True)
+        hand.write_text("[Service]\nExecCondition=/bin/false\n")
+        self.install(ctx)
+        self.assertTrue(any("no-two-deck.conf" in l and "can be removed" in l for l in log),
+                        list(log))
+        role = deckhost.DeckHost()
+        self.assertNotIn(hand, role.leaving_files(ctx))
+        with deckhost_seams(self.stock, False):
+            role.uninstall(ctx)
+        self.assertFalse(any(f"rm -f {hand}" in c for c in log.commands()))
+
+    def test_an_unrelated_hand_drop_in_is_not_mentioned(self):
+        ctx, log = self.ctx()
+        hand = ctx.user_units / "stemdeck.service.d" / "nice.conf"
+        hand.parent.mkdir(parents=True)
+        hand.write_text("[Service]\nNice=0\n")
+        self.install(ctx)
+        self.assertFalse(any("nice.conf" in l for l in log), list(log))
 
 
 if __name__ == "__main__":

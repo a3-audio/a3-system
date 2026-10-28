@@ -11,8 +11,10 @@ live path.
    <cache>/<package>/build and lays the package out in a fresh stage folder.
 3. DEBIAN/ from packaging/DEBIAN, the version stamped (newest v* tag + commits,
    as a3-core's tools/package_version.py), the libraries from dpkg-shlibdeps.
-4. dpkg-deb into <out>/<package>_<version>_amd64.deb, written under a temporary
-   name and renamed, so a half-written package is never there.
+4. dpkg-deb into <out>/<package>_<version>_<arch>.deb, written under a temporary
+   name and renamed, so a half-written package is never there. <arch> is the
+   building machine's (amd64 on the NUCs, arm64 on a Raspberry Pi 5) and is
+   stamped into the control, whatever packaging/DEBIAN/control says.
 
 Nothing is written into the repository, its build folders, or /usr: the
 service never runs what a build is writing. Without --rev the working copy's
@@ -123,7 +125,7 @@ def package_name(control_text):
     raise BuildError("packaging/DEBIAN/control names no Package")
 
 
-def stamp_control(text, version, shlibs):
+def stamp_control(text, version, shlibs, architecture):
     if not shlibs:
         raise ValueError("no shared-library dependencies to stamp")
     if SHLIBS_TOKEN not in text:
@@ -132,6 +134,8 @@ def stamp_control(text, version, shlibs):
     for line in text.splitlines(keepends=True):
         if line.startswith("Version:"):
             line = f"Version: {version}\n"
+        elif line.startswith("Architecture:"):
+            line = f"Architecture: {architecture}\n"
         elif line.startswith("Depends:"):
             line = line.replace(SHLIBS_TOKEN, shlibs)
         lines.append(line)
@@ -195,8 +199,43 @@ def sync_tree(fresh, kept):
                 _remove(path)
 
 
-def deb_path(out, package, version):
-    return Path(out) / f"{package}_{version}_amd64.deb"
+def deb_path(out, package, version, architecture):
+    return Path(out) / f"{package}_{version}_{architecture}.deb"
+
+
+def _first_answer(*commands):
+    """The output of the first of `commands` that runs, stripped; None when none does."""
+    for command in commands:
+        try:
+            done = subprocess.run(command, capture_output=True, text=True)
+        except FileNotFoundError:
+            continue
+        if done.returncode == 0 and done.stdout.strip():
+            return done.stdout.strip()
+    return None
+
+
+def host_architecture():
+    """The Debian architecture of this machine (amd64, arm64): the package's
+    binaries are built here, for it."""
+    found = _first_answer(["dpkg", "--print-architecture"])
+    if not found:
+        raise BuildError("dpkg --print-architecture named no architecture")
+    return found
+
+
+def host_multiarch():
+    """This machine's multiarch triplet (x86_64-linux-gnu, aarch64-linux-gnu).
+    dpkg-architecture is dpkg-dev's; gcc knows it as well."""
+    found = _first_answer(["dpkg-architecture", "-qDEB_HOST_MULTIARCH"],
+                          ["gcc", "-print-multiarch"])
+    if not found:
+        raise BuildError("neither dpkg-architecture nor gcc named the multiarch triplet")
+    return found
+
+
+def multiarch_lib():
+    return f"/usr/lib/{host_multiarch()}"
 
 
 GITLINK_MODE = "160000"
@@ -310,12 +349,10 @@ def elf_files(root):
 
 # dpkg-shlibdeps searches -l before the ld.so cache. A machine with PipeWire's
 # ld.so.conf.d/pipewire-jack-*.conf (the Core, a deck host) resolves libjack.so.0
-# to PipeWire's copy, which has no shlibs, and the build fails; this directory
-# holds the packaged one. -l rather than LD_LIBRARY_PATH: it touches only this
-# one command and leaves a caller's own LD_LIBRARY_PATH as it is.
-MULTIARCH_LIB = "/usr/lib/x86_64-linux-gnu"
-
-
+# to PipeWire's copy, which has no shlibs, and the build fails; the multiarch
+# directory (multiarch_lib) holds the packaged one. -l rather than
+# LD_LIBRARY_PATH: it touches only this one command and leaves a caller's own
+# LD_LIBRARY_PATH as it is.
 def shlibs_depends(stage):
     """The Depends dpkg-shlibdeps finds for the package's binaries. It wants a
     debian/control to read; a stub in a scratch folder is enough with -O."""
@@ -326,7 +363,8 @@ def shlibs_depends(stage):
         (Path(scratch) / "debian").mkdir()
         (Path(scratch) / "debian/control").write_text(
             "Source: a3-shlibs\n\nPackage: a3-shlibs\nArchitecture: any\n")
-        out = subprocess.run(["dpkg-shlibdeps", "-O", f"-l{MULTIARCH_LIB}", *[f"-e{b}" for b in binaries]],
+        out = subprocess.run(["dpkg-shlibdeps", "-O", f"-l{multiarch_lib()}",
+                              *[f"-e{b}" for b in binaries]],
                              cwd=scratch, check=True, capture_output=True, text=True).stdout
     for line in out.splitlines():
         if line.startswith("shlibs:Depends="):
@@ -396,8 +434,10 @@ def build(repo, rev=None, out=Path.home() / "a3-debs", cache=Path.home() / ".cac
                        check=True, stdout=sys.stderr)
         install_debian(src, stage)
         control = stage / "DEBIAN" / "control"
-        control.write_text(stamp_control(control.read_text(), version, shlibs_depends(stage)))
-        final = pack(stage, deb_path(out, name, version))
+        architecture = host_architecture()
+        control.write_text(stamp_control(control.read_text(), version, shlibs_depends(stage),
+                                         architecture))
+        final = pack(stage, deb_path(out, name, version, architecture))
     finally:
         _remove(stage)
     log(f"package: {final}")

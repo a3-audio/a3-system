@@ -413,27 +413,70 @@ class TheI3Rule(DeckHostCase):
         self.install(ctx)
         self.assertIn(rule, "\n".join(log))
 
-    def test_an_own_rule_moving_this_deck_off_its_workspace_is_warned_about(self):
-        """a3-core's leftover config sends "StemDeck B" to workspace 6; the panel
-        then never follows to the deck."""
-        ctx, log = self.ctx()
-        self.i3_config(ctx, WORKSPACES + 'set $ws6 "6:STEMDECK B"\n'
-                       'assign [class="StemDeck"] number $ws2\n'
-                       'for_window [class="StemDeck" title="^StemDeck B$"] '
-                       'move container to workspace number $ws6\n')
-        self.install(ctx)
-        warnings = [line for line in "\n".join(log).splitlines() if "WARNING" in line]
-        self.assertTrue(any("6:STEMDECK B" in line and "2:STEMDECK" in line for line in warnings),
-                        "\n".join(log))
+    OLD_RULES = ('for_window [class="StemDeck" title="^StemDeck$"] border none\n'
+                 'for_window [class="StemDeck" title="^(?!StemDeck$)"] floating enable\n')
 
-    def test_a_rule_for_another_deck_is_no_warning(self):
-        ctx, log = self.ctx({("deck-host", "letter"): "C"})
-        self.i3_config(ctx, WORKSPACES + 'set $ws6 "6:STEMDECK B"\n'
-                       'assign [class="StemDeck"] number $ws2\n'
-                       'for_window [class="StemDeck" title="^StemDeck B$"] '
-                       'move container to workspace number $ws6\n')
+    def test_old_for_window_rules_are_commented_out_and_the_block_written(self):
+        """a3nuc2: the old rules float "StemDeck B"; the role used to skip its block."""
+        ctx, log = self.ctx()
+        path = self.i3_config(ctx, WORKSPACES + self.OLD_RULES)
         self.install(ctx)
-        self.assertNotIn("WARNING", "\n".join(log))
+        lines = path.read_text().splitlines()
+        for old in self.OLD_RULES.splitlines():
+            self.assertNotIn(old, lines)
+            self.assertTrue(any(line.startswith("#") and line.endswith(old) for line in lines), old)
+            self.assertIn(old, "\n".join(log))
+        self.assertIn('for_window [class="StemDeck" title="^StemDeck( [A-D])?$"] '
+                      'floating disable, border none', lines)
+
+    def test_a_rule_moving_this_deck_off_its_workspace_is_commented_out(self):
+        ctx, log = self.ctx()
+        move = ('for_window [class="StemDeck" title="^StemDeck B$"] '
+                'move container to workspace number $ws6')
+        path = self.i3_config(ctx, WORKSPACES + 'set $ws6 "6:STEMDECK B"\n' + move + "\n")
+        self.install(ctx)
+        self.assertNotIn(move, path.read_text().splitlines())
+        self.assertIn(move, "\n".join(log))
+
+    def test_an_assign_to_another_workspace_is_commented_out(self):
+        ctx, _ = self.ctx()
+        away = 'assign [class="StemDeck"] number $ws1'
+        path = self.i3_config(ctx, WORKSPACES + away + "\n")
+        self.install(ctx)
+        self.assertNotIn(away, path.read_text().splitlines())
+        self.assertIn('assign [class="StemDeck"] number "2:STEMDECK"', path.read_text().splitlines())
+
+    def test_an_assign_that_does_not_conflict_stays(self):
+        ctx, _ = self.ctx()
+        keep = 'assign [class="StemDeck"] number $ws2'
+        path = self.i3_config(ctx, WORKSPACES + keep + "\n" + self.OLD_RULES)
+        self.install(ctx)
+        self.assertIn(keep, path.read_text().splitlines())
+
+    def test_a_second_install_changes_nothing(self):
+        ctx, _ = self.ctx()
+        path = self.i3_config(ctx, WORKSPACES + self.OLD_RULES)
+        self.install(ctx)
+        once = path.read_text()
+        self.install(ctx)
+        self.assertEqual(once, path.read_text())
+
+    def test_leaving_gives_the_old_rules_back(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx()
+        text = WORKSPACES + self.OLD_RULES
+        path = self.i3_config(ctx, text)
+        self.install(ctx)
+        deckhost.DeckHost().uninstall(ctx)
+        self.assertEqual(text, path.read_text())
+
+    def test_dry_run_leaves_the_config_alone(self):
+        ctx, log = self.ctx(dry_run=True)
+        text = WORKSPACES + self.OLD_RULES
+        path = self.i3_config(ctx, text)
+        self.install(ctx)
+        self.assertEqual(text, path.read_text())
+        self.assertIn('border none', "\n".join(log))
 
     def test_workspaces_without_the_names_are_warned_about(self):
         """Motion and StemDeck follow "1:MOTION" and "2:STEMDECK"; plain "1".."10"
@@ -463,6 +506,51 @@ class TheI3Rule(DeckHostCase):
         ctx, _ = self.ctx()
         self.install(ctx)
         self.assertFalse((ctx.home / ".config" / "i3" / "config").exists())
+
+
+class ThePipeWireJackPath(DeckHostCase):
+    CONF = "/etc/ld.so.conf.d/pipewire-jack-x86_64-linux-gnu.conf"
+
+    def test_it_writes_the_path_as_root_and_runs_ldconfig(self):
+        ctx, log = self.ctx()
+        self.install(ctx)
+        text = ctx.runner.inputs[self.CONF]
+        self.assertIn("/usr/lib/x86_64-linux-gnu/pipewire-0.3/jack/\n", text)
+        self.assertTrue(text.startswith("#"))
+        commands = log.commands()
+        self.assertIn(f"sudo install -D -m 644 /dev/stdin {self.CONF}", commands)
+        self.assertGreater(len(commands), commands.index("sudo ldconfig"))
+
+    def test_a3_cores_package_owns_the_file_when_it_is_installed(self):
+        self.core_package = True
+        ctx, log = self.ctx()
+        self.install(ctx)
+        self.assertNotIn(self.CONF, ctx.runner.inputs)
+        self.assertNotIn("sudo ldconfig", log.commands())
+
+    def test_leaving_removes_it_and_runs_ldconfig(self):
+        from installer.roles import deckhost
+        ctx, log = self.ctx()
+        self.install(ctx)
+        log.clear()
+        with deckhost_seams(self.stock, False):
+            deckhost.DeckHost().uninstall(ctx)
+        commands = log.commands()
+        self.assertIn(f"sudo rm -f {self.CONF}", commands)
+        self.assertGreater(commands.index("sudo ldconfig"), commands.index(f"sudo rm -f {self.CONF}"))
+
+    def test_leaving_keeps_a3_cores_file(self):
+        from installer.roles import deckhost
+        self.core_package = True
+        ctx, log = self.ctx()
+        with deckhost_seams(self.stock, True):
+            deckhost.DeckHost().uninstall(ctx)
+        self.assertNotIn(f"sudo rm -f {self.CONF}", log.commands())
+
+    def test_the_dialog_names_it(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx()
+        self.assertIn(self.CONF, "\n".join(deckhost.DeckHost().leaving_lines(ctx)))
 
 
 class ThePtpClient(DeckHostCase):
@@ -534,7 +622,8 @@ class Leaving(DeckHostCase):
         ctx.runner = InputRunner(log=ctx.runner.log)
         ctx.runner.log.clear()
         role = deckhost.DeckHost()
-        role.uninstall(ctx)
+        with deckhost_seams(self.stock, False):
+            role.uninstall(ctx)
         commands = ctx.runner.log.commands()
 
         removed = [c.split()[-1] for c in commands if " rm -f " in f" {c}"]
@@ -546,6 +635,7 @@ class Leaving(DeckHostCase):
             str(ctx.user_units / "a3-aes67-deck@.service.d" / "deck-host.conf"),
             str(ctx.home / ".config/pipewire/pipewire.conf.d/10-stemdeck-rate.conf"),
             "/etc/linuxptp/a3-ptp4l.conf",
+            "/etc/ld.so.conf.d/pipewire-jack-x86_64-linux-gnu.conf",
             "/etc/systemd/system/ptp4l@.service.d/a3.conf"]), sorted(removed))
         self.assertIn("sudo rm -f /etc/linuxptp/a3-ptp4l.conf", commands)
         self.assertIn("systemctl --user disable --now stemdeck@B.service", commands)

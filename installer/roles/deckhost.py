@@ -65,9 +65,19 @@ PTP4L_CONF = Path("/etc/linuxptp/a3-ptp4l.conf")
 PTP4L_DROP_IN = Path("/etc/systemd/system/ptp4l@.service.d/a3.conf")
 CLIENT_KEYS = {"clientOnly": "1", "priority1": "128", "step_threshold": "0.001"}
 
+# PipeWire's libjack before jackd's, as a3-core's package ships it: without it jack_wait and
+# StemDeck load jackd's libjack and wait for a jack server that PipeWire does not run as one.
+JACK_LD_CONF = Path("/etc/ld.so.conf.d/pipewire-jack-x86_64-linux-gnu.conf")
+JACK_LD_TEXT = ("# PipeWire's libjack before jackd's: every JACK program on this deck host --\n"
+                "# StemDeck, jack_wait, one started by hand -- talks to PipeWire.\n"
+                "# Written by the a3-system installer (role deck-host); a3-core ships the same file.\n"
+                "/usr/lib/x86_64-linux-gnu/pipewire-0.3/jack/\n")
+
 I3_CONFIG = Path(".config/i3/config")
 I3_BEGIN = "# >>> a3-system deck-host >>>"
 I3_END = "# <<< a3-system deck-host <<<"
+# Marks a line the role commented out, so leaving can give it back.
+I3_DISABLED = "# [a3-system deck-host disabled] "
 I3_STEMDECK = re.compile(r'class="StemDeck"')
 I3_SET = re.compile(r'^\s*set\s+(\$\S+)\s+(.*?)\s*$')
 I3_TITLE = re.compile(r'title="([^"]*)"')
@@ -253,9 +263,35 @@ def missing_workspace_names(text, names):
     return [name for name in names if not any(name in line for line in lines)]
 
 
-def with_i3_block(text):
-    """The config with the block, or None when it has its own StemDeck rule."""
-    if has_own_stemdeck_rule(text):
+def neutralised_i3_rules(text, letter):
+    """(the config with the conflicting old StemDeck rules commented out, those
+    rules). Conflicting: every for_window rule for the class (it would float or
+    frame the deck against the block) and every rule putting this deck on a
+    workspace its panel does not follow. An assign to the right workspace stays.
+    The installer's block is left alone."""
+    away = {rule for rule, _ in rules_moving_deck_away(text, letter)}
+    lines, touched, in_block = [], [], False
+    for line in text.splitlines(keepends=True):
+        stripped = line.strip()
+        in_block = (in_block or stripped == I3_BEGIN) and stripped != I3_END
+        if (not in_block and stripped != I3_END and I3_STEMDECK.search(line)
+                and not stripped.startswith("#")
+                and (stripped.startswith("for_window") or stripped in away)):
+            touched.append(stripped)
+            line = I3_DISABLED + line.lstrip()
+        lines.append(line)
+    return "".join(lines), touched
+
+
+def restored_i3_rules(text):
+    return "".join(line[len(I3_DISABLED):] if line.startswith(I3_DISABLED) else line
+                   for line in text.splitlines(keepends=True))
+
+
+def with_i3_block(text, force=False):
+    """The config with the block, or None when it has its own StemDeck rule
+    (unless forced: the conflicting ones are out of the way then)."""
+    if has_own_stemdeck_rule(text) and not force:
         return None
     if I3_BEGIN + "\n" in text:
         begin = text.index(I3_BEGIN + "\n")
@@ -309,6 +345,7 @@ class DeckHost(Role):
         self._panel(ctx)
         self._i3_rule(ctx, letter)
         self._ptp_client(ctx)
+        self._pipewire_jack_path(ctx)
         self._enable_instance(ctx, letter)
 
     def _leave_old_letter(self, ctx, letter):
@@ -382,18 +419,18 @@ class DeckHost(Role):
             run.log(f"{path} is missing: no StemDeck rule written; i3's own "
                     "config places no deck.")
             return
-        text = path.read_text()
-        self._check_workspace_names(ctx, path, text)
-        wanted = with_i3_block(text)
+        original = path.read_text()
+        self._check_workspace_names(ctx, path, original)
+        text, touched = neutralised_i3_rules(original, letter)
+        for rule in touched:
+            run.log(f"{path}: old StemDeck rule commented out (given back when the role "
+                    f"leaves): {rule}")
+        wanted = with_i3_block(text, force=bool(touched))
         if wanted is None:
             run.log(f"{path} places StemDeck itself; left as it is:\n"
                     + "".join(f"#   {rule}\n" for rule in own_stemdeck_rules(text)))
-            for rule, workspace in rules_moving_deck_away(text, letter):
-                run.log(f"WARNING: {path}: {rule!r} puts StemDeck {letter} on workspace "
-                        f"{workspace!r}, but its panel follows {STEMDECK_WORKSPACE}: the panel "
-                        "never reaches the deck. Change or remove that rule.")
             return
-        if wanted != text:
+        if wanted != original:
             _write_home_file(ctx, path, wanted)
 
     def _check_workspace_names(self, ctx, path, text):
@@ -401,6 +438,14 @@ class DeckHost(Role):
         for name in missing_workspace_names(text, names):
             ctx.runner.log(f"WARNING: {path} names no workspace {name!r}: the panel follows "
                            "workspaces by that name and never moves to one named otherwise.")
+
+    def _pipewire_jack_path(self, ctx):
+        if core_package_installed():
+            return
+        run = ctx.runner
+        run.run(["install", "-D", "-m", "644", "/dev/stdin", JACK_LD_CONF], root=True,
+                input=JACK_LD_TEXT)
+        run.run(["ldconfig"], root=True)
 
     def _ptp_client(self, ctx):
         run, port = ctx.runner, _audio_port(ctx)
@@ -451,7 +496,8 @@ class DeckHost(Role):
         return super().leaving_lines(ctx) + [
             "  System files, deleted (as root):",
             *(f"    {path}" for path in (PTP4L_CONF, PTP4L_DROP_IN)),
-            f"  The deck-host block in ~/{I3_CONFIG}, removed.",
+            f"  The deck-host block in ~/{I3_CONFIG}, removed; StemDeck rules it commented out come back.",
+            f"  {JACK_LD_CONF}, deleted (as root) unless the a3-core package is installed.",
             "  a3-core's AES67 files moved aside, put back where they were:",
             *(f"    {path}" for path in _leftovers(ctx)),
             "    (put back only: a3-aes67.service is not re-enabled and there is no",
@@ -471,11 +517,15 @@ class DeckHost(Role):
             run.run(["rm", "-f", path], root=True)
         run.run(["rmdir", "--ignore-fail-on-non-empty", PTP4L_DROP_IN.parent], root=True)
         run.run(["systemctl", "daemon-reload"], root=True)
+        if not core_package_installed():
+            run.run(["rm", "-f", JACK_LD_CONF], root=True)
+            run.run(["ldconfig"], root=True)
         path = ctx.home / I3_CONFIG
         if path.is_file():
             text = path.read_text()
-            if without_i3_block(text) != text:
-                _write_home_file(ctx, path, without_i3_block(text))
+            restored = restored_i3_rules(without_i3_block(text))
+            if restored != text:
+                _write_home_file(ctx, path, restored)
         self._put_leftovers_back(ctx)
 
 

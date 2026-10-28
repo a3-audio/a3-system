@@ -25,9 +25,14 @@ stemdeck: the two-deck player and a deck instance fight over JACK names and
 the panel.
 
 a3-core's leftovers of an AES67 base on a machine that never had the package
-(a3-aes67.service, pipewire-aes67.conf and its .conf.d) are disabled and moved
-aside, never deleted, because two PTP drivers must not run (plan ruling P27).
-Leaving puts them back.
+(a3-aes67.service, its copy in a3-core's deployment tree, pipewire-aes67.conf
+and its .conf.d) are disabled and moved aside, never deleted, because two PTP
+drivers must not run (plan ruling P27). Leaving puts them back.
+
+The graph's rate and smallest block are the user's PipeWire server's: the
+role links StemDeck's 10-stemdeck-rate.conf into ~/.config/pipewire/
+pipewire.conf.d/ (ruling P32), because only the role knows the machine is a
+deck host.
 """
 
 import re
@@ -45,9 +50,13 @@ BASE_UNIT = "stemdeck-aes67.service"
 SENDER_TEMPLATE = "a3-aes67-deck@.service"
 LEFTOVER_UNIT = "a3-aes67.service"
 LEFTOVER_PIPEWIRE = ("pipewire-aes67.conf", "pipewire-aes67.conf.d")
+# a3-core's deployment copy of the unit, which stemdeck-aes67-deck's base-wanted checks too.
+LEFTOVER_DEPLOYED_UNIT = Path(".local/share/a3-core/config/systemd/user") / LEFTOVER_UNIT
 ASIDE = ".a3-system-aside"
 INSTANCE_TEMPLATE = Path("/usr/lib/systemd/user/stemdeck@.service")
 DROP_IN = "deck-host.conf"
+SHIPPED_RATE = Path("/usr/share/stemdeck/10-stemdeck-rate.conf")
+RATE_LINK = Path(".config/pipewire/pipewire.conf.d") / SHIPPED_RATE.name
 PANEL_DROP_IN = "panel-follows.conf"
 WRITTEN_BY = "# Written by the a3-system installer (role deck-host); removed when it leaves.\n"
 
@@ -60,6 +69,11 @@ I3_CONFIG = Path(".config/i3/config")
 I3_BEGIN = "# >>> a3-system deck-host >>>"
 I3_END = "# <<< a3-system deck-host <<<"
 I3_STEMDECK = re.compile(r'class="StemDeck"')
+I3_SET = re.compile(r'^\s*set\s+(\$\S+)\s+(.*?)\s*$')
+I3_TITLE = re.compile(r'title="([^"]*)"')
+# StemDeck's longest path latency (LaunchOptions.cpp): beyond it the instance exits 2 and stays down.
+LONGEST_PATH_LATENCY_MS = 200.0
+PATH_LATENCY = re.compile(r"\d+(\.\d+)?")
 
 
 # -- settings -------------------------------------------------------------------
@@ -73,11 +87,13 @@ def deck_letter(settings):
 
 
 def path_latency_ms(settings):
+    """The setting as written, once StemDeck would take it: 0..200 ms, decimals allowed."""
     value = settings.get("deck-host", "path_latency_ms").strip()
-    if not value.isdigit():
-        raise RoleError(f"[deck-host] path_latency_ms = {value!r}: a whole number "
-                        "of milliseconds, 0 or more.")
-    return int(value)
+    if not PATH_LATENCY.fullmatch(value) or float(value) > LONGEST_PATH_LATENCY_MS:
+        raise RoleError(f"[deck-host] path_latency_ms = {value!r}: milliseconds from 0 "
+                        f"to {LONGEST_PATH_LATENCY_MS:g}, decimals allowed (StemDeck refuses "
+                        "anything else and deck B stays down).")
+    return value
 
 
 def instance_unit(letter):
@@ -161,8 +177,11 @@ def ptp4l_drop_in():
 
 def i3_block():
     return (f"{I3_BEGIN}\n"
-            "# StemDeck's deck on this deck host, on its workspace.\n"
+            "# StemDeck's deck on this deck host, on its workspace; as a3-core's i3 config,\n"
+            "# the main window tiles without a border and every other window (a dialog) floats.\n"
             f'assign [class="StemDeck"] number "{STEMDECK_WORKSPACE}"\n'
+            'for_window [class="StemDeck" title="^StemDeck( [A-D])?$"] floating disable, border none\n'
+            'for_window [class="StemDeck" title="^(?!StemDeck( [A-D])?$)"] floating enable\n'
             f"{I3_END}\n")
 
 
@@ -174,10 +193,64 @@ def without_i3_block(text):
     return text[:begin] + text[end + len(I3_END) + 1:]
 
 
+def own_stemdeck_rules(text):
+    """The config's own StemDeck lines, outside the installer's block."""
+    return [line for line in without_i3_block(text).splitlines()
+            if I3_STEMDECK.search(line) and not line.strip().startswith("#")]
+
+
 def has_own_stemdeck_rule(text):
     """Whether the config places StemDeck itself, outside the installer's block."""
-    return any(I3_STEMDECK.search(line) for line in without_i3_block(text).splitlines()
-               if not line.strip().startswith("#"))
+    return bool(own_stemdeck_rules(text))
+
+
+def i3_variables(text):
+    variables = {}
+    for line in text.splitlines():
+        if match := I3_SET.match(line):
+            variables[match.group(1)] = match.group(2).strip('"')
+    return variables
+
+
+def _workspace_of(rule, variables):
+    """(workspace, by number) a rule puts its windows on, or None for a rule that places nothing."""
+    if rule.lstrip().startswith("assign"):
+        target = rule.split("]", 1)[1]
+    elif "to workspace" in rule:
+        target = rule.split("to workspace", 1)[1]
+    else:
+        return None
+    words = target.replace("\u2192", " ").split()
+    by_number = bool(words) and words[0] == "number"
+    name = " ".join(words[1:] if by_number else words).strip('"')
+    return variables.get(name, name).strip('"'), by_number
+
+
+def _same_workspace(target, by_number, wanted):
+    if by_number:
+        return target.split(":", 1)[0] == wanted.split(":", 1)[0]
+    return target == wanted
+
+
+def rules_moving_deck_away(text, letter):
+    """(rule, workspace) for every own rule that puts "StemDeck <letter>" on a
+    workspace other than the one its panel follows."""
+    variables, window = i3_variables(text), f"StemDeck {letter}"
+    found = []
+    for rule in own_stemdeck_rules(text):
+        title = I3_TITLE.search(rule)
+        if title and not re.search(title.group(1), window):
+            continue
+        placed = _workspace_of(rule, variables)
+        if placed and not _same_workspace(*placed, STEMDECK_WORKSPACE):
+            found.append((rule.strip(), placed[0]))
+    return found
+
+
+def missing_workspace_names(text, names):
+    """The names no line of the config carries: i3 then names its workspaces otherwise."""
+    lines = [line for line in text.splitlines() if not line.strip().startswith("#")]
+    return [name for name in names if not any(name in line for line in lines)]
 
 
 def with_i3_block(text):
@@ -229,12 +302,23 @@ class DeckHost(Role):
         letter, latency = deck_letter(ctx.settings), path_latency_ms(ctx.settings)
         stemdeck.install_package(ctx)
         self._set_aside_leftovers(ctx)
+        self._leave_old_letter(ctx, letter)
         write_drop_in(ctx, instance_unit(letter), DROP_IN, deck_drop_in(latency))
         self._audio_port_drop_ins(ctx)
+        self._server_rate(ctx)
         self._panel(ctx)
-        self._i3_rule(ctx)
+        self._i3_rule(ctx, letter)
         self._ptp_client(ctx)
         self._enable_instance(ctx, letter)
+
+    def _leave_old_letter(self, ctx, letter):
+        old = ctx.state.get("deck-host", "letter")
+        if old and old != letter:
+            ctx.runner.log(f"# [deck-host] letter {old} -> {letter}: deck {old}'s instance goes.")
+            for unit in _letter_units(old):
+                systemctl_user(ctx, "disable", "--now", unit, check=False)
+            remove_files(ctx, _letter_files(ctx, old))
+        ctx.state.set("deck-host", "letter", letter, dry_run=ctx.runner.dry_run)
 
     def _audio_port_drop_ins(self, ctx):
         port = _audio_port(ctx)
@@ -255,7 +339,11 @@ class DeckHost(Role):
         systemctl_user(ctx, "disable", "--now", LEFTOVER_UNIT, check=False)
         for path in leftovers:
             aside = _aside(path)
-            if not path.exists() or aside.exists():
+            if not path.exists():
+                continue
+            if aside.exists():
+                run.log(f"# {path} left where it is: {aside} is there already "
+                        "(a3-core wrote it again?); compare the two by hand.")
                 continue
             run.log(f"# {path} -> {aside}")
             if not run.dry_run:
@@ -270,6 +358,15 @@ class DeckHost(Role):
             if not ctx.runner.dry_run:
                 aside.rename(path)
 
+    def _server_rate(self, ctx):
+        link = _rate_link(ctx)
+        ctx.runner.log(f"# {link} -> {SHIPPED_RATE}")
+        if ctx.runner.dry_run:
+            return
+        link.parent.mkdir(parents=True, exist_ok=True)
+        link.unlink(missing_ok=True)
+        link.symlink_to(SHIPPED_RATE)
+
     def _panel(self, ctx):
         if "motion" in ctx.settings.roles():
             write_drop_in(ctx, MOTION_UNIT, PANEL_DROP_IN, panel_drop_in())
@@ -278,20 +375,32 @@ class DeckHost(Role):
         if stale.is_file():
             remove_files(ctx, [stale])
 
-    def _i3_rule(self, ctx):
-        path = ctx.home / I3_CONFIG
+    def _i3_rule(self, ctx, letter):
+        run, path = ctx.runner, ctx.home / I3_CONFIG
         if not path.is_file():
             # i3 then reads /etc/i3/config; a file of one rule would replace it.
-            ctx.runner.log(f"{path} is missing: no StemDeck rule written; i3's own "
-                           "config places no deck.")
+            run.log(f"{path} is missing: no StemDeck rule written; i3's own "
+                    "config places no deck.")
             return
         text = path.read_text()
+        self._check_workspace_names(ctx, path, text)
         wanted = with_i3_block(text)
         if wanted is None:
-            ctx.runner.log(f"{path} places StemDeck itself; left as it is.")
+            run.log(f"{path} places StemDeck itself; left as it is:\n"
+                    + "".join(f"#   {rule}\n" for rule in own_stemdeck_rules(text)))
+            for rule, workspace in rules_moving_deck_away(text, letter):
+                run.log(f"WARNING: {path}: {rule!r} puts StemDeck {letter} on workspace "
+                        f"{workspace!r}, but its panel follows {STEMDECK_WORKSPACE}: the panel "
+                        "never reaches the deck. Change or remove that rule.")
             return
         if wanted != text:
             _write_home_file(ctx, path, wanted)
+
+    def _check_workspace_names(self, ctx, path, text):
+        names = [STEMDECK_WORKSPACE] + ([MOTION_WORKSPACE] if "motion" in ctx.settings.roles() else [])
+        for name in missing_workspace_names(text, names):
+            ctx.runner.log(f"WARNING: {path} names no workspace {name!r}: the panel follows "
+                           "workspaces by that name and never moves to one named otherwise.")
 
     def _ptp_client(self, ctx):
         run, port = ctx.runner, _audio_port(ctx)
@@ -330,15 +439,13 @@ class DeckHost(Role):
              "library, sessions, recordings and stems")
 
     def leaving_units(self, ctx):
-        letter = deck_letter(ctx.settings)
-        return [instance_unit(letter), f"a3-aes67-deck@{letter}.service", BASE_UNIT]
+        return [unit for letter in _letters(ctx) for unit in _letter_units(letter)] + [BASE_UNIT]
 
     def leaving_files(self, ctx):
-        letter = deck_letter(ctx.settings)
-        return [ctx.user_units / f"{instance_unit(letter)}.d" / DROP_IN,
-                _wants_link(ctx, letter),
+        return [*(path for letter in _letters(ctx) for path in _letter_files(ctx, letter)),
                 _panel_path(ctx),
-                *(_audio_port_path(ctx, unit) for unit in (BASE_UNIT, SENDER_TEMPLATE))]
+                *(_audio_port_path(ctx, unit) for unit in (BASE_UNIT, SENDER_TEMPLATE)),
+                _rate_link(ctx)]
 
     def leaving_lines(self, ctx):
         return super().leaving_lines(ctx) + [
@@ -346,7 +453,10 @@ class DeckHost(Role):
             *(f"    {path}" for path in (PTP4L_CONF, PTP4L_DROP_IN)),
             f"  The deck-host block in ~/{I3_CONFIG}, removed.",
             "  a3-core's AES67 files moved aside, put back where they were:",
-            *(f"    {path}" for path in _leftovers(ctx))]
+            *(f"    {path}" for path in _leftovers(ctx)),
+            "    (put back only: a3-aes67.service is not re-enabled and there is no",
+            "    systemctl --user daemon-reload for it; do both by hand if this",
+            "    machine runs a3-core's AES67 again)"]
 
     def uninstall(self, ctx):
         super().uninstall(ctx)
@@ -356,6 +466,7 @@ class DeckHost(Role):
         for port in sorted(ports):
             run.run(["systemctl", "disable", f"ptp4l@{port}.service"], root=True, check=False)
         ctx.state.remove("deck-host", "audio_port", dry_run=run.dry_run)
+        ctx.state.remove("deck-host", "letter", dry_run=run.dry_run)
         for path in (PTP4L_CONF, PTP4L_DROP_IN):
             run.run(["rm", "-f", path], root=True)
         run.run(["rmdir", "--ignore-fail-on-non-empty", PTP4L_DROP_IN.parent], root=True)
@@ -375,6 +486,24 @@ def _refuse_beside(roles):
     if "stemdeck" in roles:
         raise RoleError("deck-host and the role stemdeck exclude each other: the two-deck "
                         "player and a deck instance would fight over JACK names and the panel.")
+
+
+def _letters(ctx):
+    """The configured letter and the one installed last, if it differs."""
+    recorded = ctx.state.get("deck-host", "letter")
+    return list(dict.fromkeys([deck_letter(ctx.settings)] + ([recorded] if recorded else [])))
+
+
+def _letter_units(letter):
+    return [instance_unit(letter), f"a3-aes67-deck@{letter}.service"]
+
+
+def _letter_files(ctx, letter):
+    return [ctx.user_units / f"{instance_unit(letter)}.d" / DROP_IN, _wants_link(ctx, letter)]
+
+
+def _rate_link(ctx):
+    return ctx.home / RATE_LINK
 
 
 def _audio_port(ctx):
@@ -413,6 +542,7 @@ def _drop_stale(ctx, path):
 
 def _leftovers(ctx):
     return [ctx.user_units / LEFTOVER_UNIT,
+            ctx.home / LEFTOVER_DEPLOYED_UNIT,
             *(ctx.home / ".config" / "pipewire" / name for name in LEFTOVER_PIPEWIRE)]
 
 

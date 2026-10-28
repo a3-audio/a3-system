@@ -21,6 +21,8 @@ from installer.roles import ALL, BY_NAME, needed_submodules  # noqa: E402
 from installer.roles.base import RoleError  # noqa: E402
 from installer.settings import ROLES  # noqa: E402
 
+WORKSPACES = 'set $ws1 "1:MOTION"\nset $ws2 "2:STEMDECK"\n'
+
 STOCK_PTP4L = """\
 # linuxptp's stock file
 [global]
@@ -167,10 +169,30 @@ class TheDeckInstance(DeckHostCase):
         with self.assertRaises(RoleError):
             self.install(ctx)
 
-    def test_a_latency_that_is_no_whole_number_is_refused(self):
-        ctx, _ = self.ctx({("deck-host", "path_latency_ms"): "-3"})
-        with self.assertRaises(RoleError):
-            self.install(ctx)
+    def test_a_latency_that_is_no_number_is_refused(self):
+        for value in ("-3", "abc", "1e1", "nan", "17.5.1", ""):
+            with self.subTest(value=value):
+                ctx, _ = self.ctx({("deck-host", "path_latency_ms"): value})
+                with self.assertRaises(RoleError):
+                    self.install(ctx)
+
+    def test_a_latency_takes_decimals_up_to_what_stemdeck_accepts(self):
+        """StemDeck takes 0..200 ms with decimals and exits 2 on anything else,
+        which keeps deck B down; the role refuses what StemDeck would."""
+        from installer.roles.deckhost import path_latency_ms
+        for value, written in (("17.5", "17.5"), ("200", "200"), ("200.0", "200.0"), ("0", "0")):
+            with self.subTest(value=value):
+                ctx, _ = self.ctx({("deck-host", "path_latency_ms"): value})
+                self.assertEqual(written, path_latency_ms(ctx.settings))
+        for value in ("200.1", "250", "1800"):
+            with self.subTest(value=value):
+                ctx, _ = self.ctx({("deck-host", "path_latency_ms"): value})
+                with self.assertRaises(RoleError):
+                    path_latency_ms(ctx.settings)
+        ctx, _ = self.ctx({("deck-host", "path_latency_ms"): "17.5"})
+        self.install(ctx)
+        self.assertIn("Environment=STEMDECK_PATH_LATENCY_MS=17.5",
+                      self.drop_in(ctx).read_text().splitlines())
 
 
 class ThePanel(DeckHostCase):
@@ -265,6 +287,29 @@ class TheA3CoreLeftovers(DeckHostCase):
         self.assertLess(commands.index("systemctl --user disable --now a3-aes67.service"),
                         commands.index("systemctl --user restart stemdeck@B.service"))
 
+    def test_a3_cores_deployment_copy_of_the_unit_is_moved_aside_too(self):
+        """stemdeck-aes67-deck's base-wanted checks this path as well: left there,
+        the base stays off and deck B is silent."""
+        ctx, _ = self.ctx()
+        copy = ctx.home / ".local/share/a3-core/config/systemd/user/a3-aes67.service"
+        copy.parent.mkdir(parents=True)
+        copy.write_text("[Unit]\n")
+        self.install(ctx)
+        self.assertFalse(copy.exists())
+        self.assertTrue(copy.with_name(copy.name + self.ASIDE).is_file())
+        from installer.roles import deckhost
+        deckhost.DeckHost().uninstall(ctx)
+        self.assertTrue(copy.is_file())
+
+    def test_both_there_is_said_not_skipped_silently(self):
+        ctx, log = self.ctx()
+        unit, _, _ = self.leftovers(ctx)
+        unit.with_name(unit.name + self.ASIDE).write_text("older\n")
+        self.install(ctx)
+        self.assertTrue(unit.exists())
+        self.assertTrue(any(str(unit) in line and "already" in line
+                            for line in "\n".join(log).splitlines()), "\n".join(log))
+
     def test_a_second_run_changes_nothing(self):
         ctx, _ = self.ctx()
         unit, conf, _ = self.leftovers(ctx)
@@ -313,6 +358,8 @@ class TheA3CoreLeftovers(DeckHostCase):
         lines = "\n".join(deckhost.DeckHost().leaving_lines(ctx))
         self.assertIn("pipewire-aes67.conf", lines)
         self.assertIn("put back", lines)
+        self.assertIn("not re-enabled", lines)
+        self.assertIn("daemon-reload", lines)
 
 
 class TheRefusals(DeckHostCase):
@@ -346,6 +393,63 @@ class TheI3Rule(DeckHostCase):
         once = path.read_text()
         self.install(ctx)
         self.assertEqual(once, path.read_text())
+
+    def test_the_block_floats_dialogs_and_frames_no_main_window(self):
+        """As a3-core's i3 config: the deck's main window tiles without a border,
+        every other StemDeck window (a dialog) floats over it."""
+        ctx, _ = self.ctx()
+        path = self.i3_config(ctx, WORKSPACES)
+        self.install(ctx)
+        lines = path.read_text().splitlines()
+        self.assertIn('for_window [class="StemDeck" title="^StemDeck( [A-D])?$"] '
+                      'floating disable, border none', lines)
+        self.assertIn('for_window [class="StemDeck" title="^(?!StemDeck( [A-D])?$)"] '
+                      'floating enable', lines)
+
+    def test_an_own_rule_is_named_in_the_log(self):
+        ctx, log = self.ctx()
+        rule = 'assign [class="StemDeck"] number $ws2'
+        self.i3_config(ctx, WORKSPACES + rule + "\n")
+        self.install(ctx)
+        self.assertIn(rule, "\n".join(log))
+
+    def test_an_own_rule_moving_this_deck_off_its_workspace_is_warned_about(self):
+        """a3-core's leftover config sends "StemDeck B" to workspace 6; the panel
+        then never follows to the deck."""
+        ctx, log = self.ctx()
+        self.i3_config(ctx, WORKSPACES + 'set $ws6 "6:STEMDECK B"\n'
+                       'assign [class="StemDeck"] number $ws2\n'
+                       'for_window [class="StemDeck" title="^StemDeck B$"] '
+                       'move container to workspace number $ws6\n')
+        self.install(ctx)
+        warnings = [line for line in "\n".join(log).splitlines() if "WARNING" in line]
+        self.assertTrue(any("6:STEMDECK B" in line and "2:STEMDECK" in line for line in warnings),
+                        "\n".join(log))
+
+    def test_a_rule_for_another_deck_is_no_warning(self):
+        ctx, log = self.ctx({("deck-host", "letter"): "C"})
+        self.i3_config(ctx, WORKSPACES + 'set $ws6 "6:STEMDECK B"\n'
+                       'assign [class="StemDeck"] number $ws2\n'
+                       'for_window [class="StemDeck" title="^StemDeck B$"] '
+                       'move container to workspace number $ws6\n')
+        self.install(ctx)
+        self.assertNotIn("WARNING", "\n".join(log))
+
+    def test_workspaces_without_the_names_are_warned_about(self):
+        """Motion and StemDeck follow "1:MOTION" and "2:STEMDECK"; plain "1".."10"
+        workspaces never match, and Motion silently never takes the panel."""
+        ctx, log = self.ctx({("roles", "motion"): "yes"})
+        self.i3_config(ctx, 'set $ws1 "1"\nset $ws2 "2"\n')
+        self.install(ctx)
+        warnings = "\n".join(line for line in "\n".join(log).splitlines() if "WARNING" in line)
+        self.assertIn("1:MOTION", warnings)
+        self.assertIn("2:STEMDECK", warnings)
+
+    def test_named_workspaces_are_no_warning(self):
+        ctx, log = self.ctx({("roles", "motion"): "yes"})
+        self.i3_config(ctx, WORKSPACES)
+        self.install(ctx)
+        self.assertNotIn("WARNING", "\n".join(log))
 
     def test_a_config_with_its_own_stemdeck_rule_stays(self):
         ctx, _ = self.ctx()
@@ -440,6 +544,7 @@ class Leaving(DeckHostCase):
             str(ctx.user_units / "a3-motion.service.d" / "panel-follows.conf"),
             str(ctx.user_units / "stemdeck-aes67.service.d" / "deck-host.conf"),
             str(ctx.user_units / "a3-aes67-deck@.service.d" / "deck-host.conf"),
+            str(ctx.home / ".config/pipewire/pipewire.conf.d/10-stemdeck-rate.conf"),
             "/etc/linuxptp/a3-ptp4l.conf",
             "/etc/systemd/system/ptp4l@.service.d/a3.conf"]), sorted(removed))
         self.assertIn("sudo rm -f /etc/linuxptp/a3-ptp4l.conf", commands)
@@ -490,6 +595,68 @@ class Discovery(unittest.TestCase):
                                stemdeck_installed=lambda: True,
                                motion_installed=lambda: True, desk_installed=lambda: False)
         self.assertEqual(["deck-host", "motion"], found)
+
+
+class TheServerRate(DeckHostCase):
+    """P32: the user's PipeWire server runs the deck host's graph; the rate and
+    smallest block come from the file StemDeck ships."""
+
+    def link(self, ctx):
+        return ctx.home / ".config/pipewire/pipewire.conf.d/10-stemdeck-rate.conf"
+
+    def test_the_shipped_drop_in_is_linked_into_the_users_pipewire(self):
+        ctx, _ = self.ctx()
+        self.install(ctx)
+        self.assertTrue(self.link(ctx).is_symlink())
+        self.assertEqual(Path("/usr/share/stemdeck/10-stemdeck-rate.conf"),
+                         Path(self.link(ctx).readlink()))
+
+    def test_leaving_removes_it(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx()
+        self.install(ctx)
+        ctx.runner.log.clear()
+        deckhost.DeckHost().uninstall(ctx)
+        self.assertIn(f"rm -f {self.link(ctx)}", ctx.runner.log.commands())
+
+
+class AChangedLetter(DeckHostCase):
+    """[deck-host] letter changed between two installs: the old instance must
+    not stay enabled beside the new one."""
+
+    def test_the_old_instance_is_disabled_and_its_files_removed(self):
+        ctx, _ = self.ctx()
+        self.install(ctx)
+        ctx.settings.set("deck-host", "letter", "C")
+        ctx.runner.log.clear()
+        self.install(ctx)
+        commands = ctx.runner.log.commands()
+        self.assertIn("systemctl --user disable --now stemdeck@B.service", commands)
+        self.assertIn("systemctl --user disable --now a3-aes67-deck@B.service", commands)
+        self.assertIn(f"rm -f {self.drop_in(ctx, 'B')}", commands)
+        self.assertIn(f"rm -f {ctx.user_units / 'default.target.wants' / 'stemdeck@B.service'}",
+                      commands)
+        self.assertEqual("C", ctx.state.get("deck-host", "letter"))
+
+    def test_the_same_letter_disables_nothing(self):
+        ctx, _ = self.ctx()
+        self.install(ctx)
+        ctx.runner.log.clear()
+        self.install(ctx)
+        self.assertFalse(any("disable" in c and "stemdeck@" in c
+                             for c in ctx.runner.log.commands()))
+
+    def test_leaving_takes_the_recorded_letter_too(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx()
+        self.install(ctx)
+        ctx.settings.set("deck-host", "letter", "C")
+        ctx.runner.log.clear()
+        deckhost.DeckHost().uninstall(ctx)
+        commands = ctx.runner.log.commands()
+        self.assertIn("systemctl --user disable --now stemdeck@B.service", commands)
+        self.assertIn("systemctl --user disable --now stemdeck@C.service", commands)
+        self.assertEqual("", ctx.state.get("deck-host", "letter"))
 
 
 if __name__ == "__main__":

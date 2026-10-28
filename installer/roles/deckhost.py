@@ -10,8 +10,9 @@ only pulls them in and tells them the host's audio socket (STEMDECK_AUDIO_PORT,
 because the truth on this machine is the Core's copy). Then one deck instance, stemdeck@<letter>, enabled by a link in
 default.target.wants -- the template has no [Install] section -- with a
 drop-in naming the AES67 link map, the path latency and the panel's
-workspace. With Motion on the machine, Motion gets the panel's workspace as
-well, so the two hand the panel over by workspace instead of fighting for it.
+workspace. With Motion on the machine, Motion gets its own workspace for the panel; the
+two hand the panel over by workspace instead of fighting for it. Which of the two
+runs is the maintainer's to start and stop by hand.
 
 PTP: the deck's AES67 stream needs the Core's clock. ptp4l runs as a client
 on the audio socket with the Core's config made a client's: linuxptp's stock
@@ -26,7 +27,9 @@ port's clock as the user and falls back to CLOCK_MONOTONIC when it cannot.
 
 Not beside the Core (deck A is local there) and not beside the role
 stemdeck: the two-deck player and a deck instance fight over JACK names and
-the panel.
+the panel. The package enables the two-deck player globally; a user drop-in
+on stemdeck.service (ExecCondition=/bin/false, as on a Core) keeps it from
+starting.
 
 a3-core's leftovers of an AES67 base on a machine that never had the package
 (a3-aes67.service, its copy in a3-core's deployment tree, pipewire-aes67.conf
@@ -67,7 +70,10 @@ DROP_IN = "deck-host.conf"
 SHIPPED_RATE = Path("/usr/share/stemdeck/10-stemdeck-rate.conf")
 RATE_LINK = Path(".config/pipewire/pipewire.conf.d") / SHIPPED_RATE.name
 PANEL_DROP_IN = "panel-follows.conf"
+# Written by an earlier run that had the "Motion here too" option; only cleaned up now.
 MOTION_CONFLICT_DROP_IN = "deck-host.conf"
+TWO_DECK_UNIT = stemdeck.UNIT
+TWO_DECK_OFF = "ExecCondition=/bin/false"
 WRITTEN_BY = "# Written by the a3-system installer (role deck-host); removed when it leaves.\n"
 
 STOCK_PTP4L = Path("/etc/linuxptp/ptp4l.conf")
@@ -94,9 +100,22 @@ TS_INFO = struct.Struct("IIiI3II3I")
 # PipeWire's libjack before jackd's, as a3-core's package ships it: without it jack_wait and
 # StemDeck load jackd's libjack and wait for a jack server that PipeWire does not run as one.
 # Named by the machine's multiarch triplet, as pipewire-jack's own example file is: a3nuc2
-# is x86_64-linux-gnu, a Raspberry Pi 5 aarch64-linux-gnu.
+# is x86_64-linux-gnu, a Raspberry Pi 5 aarch64-linux-gnu. ld.so.conf.d is read in name
+# order and the first libjack wins, so the name starts with 00-: on aarch64
+# aarch64-linux-gnu.conf sorts before pipewire-jack-aarch64-linux-gnu.conf and jackd's
+# libjack won. (a3-core's own file keeps pipewire-jack-x86_64-linux-gnu.conf: x86_64
+# sorts after "pipewire" there.)
+JACK_LD_DIR = Path("/etc/ld.so.conf.d")
+JACK_LD_OWN_MARK = "role deck-host"
+
+
 def jack_ld_conf(multiarch):
-    return Path(f"/etc/ld.so.conf.d/pipewire-jack-{multiarch}.conf")
+    return JACK_LD_DIR / f"00-pipewire-jack-{multiarch}.conf"
+
+
+def old_jack_ld_conf(multiarch):
+    """The name this role wrote before it sorted first."""
+    return JACK_LD_DIR / f"pipewire-jack-{multiarch}.conf"
 
 
 def jack_ld_text(multiarch):
@@ -152,24 +171,13 @@ def i3_workspace_ref(workspace):
     return workspace if workspace.isdigit() else f'"{workspace}"'
 
 
-def motion_here(settings):
-    return settings.flag("deck-host", "motion_here")
-
-
-def motion_workspace(settings):
-    """Where Motion's panel goes: with StemDeck's workspace when the two share the screen."""
-    return stemdeck_workspace(settings) if motion_here(settings) else MOTION_WORKSPACE
-
-
 def instance_unit(letter):
     return f"stemdeck@{letter}.service"
 
 
-def deck_drop_in(latency_ms, workspace=STEMDECK_WORKSPACE, beside_motion=False):
+def deck_drop_in(latency_ms, workspace=STEMDECK_WORKSPACE):
     return (WRITTEN_BY
             + "[Unit]\n"
-            + (f"Conflicts={MOTION_UNIT}\n" if beside_motion else "")
-            +
             f"Wants={BASE_UNIT}\n"
             f"After={BASE_UNIT}\n"
             "Wants=a3-aes67-deck@%i.service\n"
@@ -187,16 +195,19 @@ def audio_port_drop_in(port):
             f"Environment=STEMDECK_AUDIO_PORT={port}\n")
 
 
+def two_deck_off_drop_in():
+    return (WRITTEN_BY
+            + "# The package enables the two-deck player globally; a deck host plays its\n"
+            "# deck as stemdeck@. No Conflicts=: a conflict inside one transaction drops a\n"
+            "# start job before any condition runs.\n"
+            "[Service]\n"
+            f"{TWO_DECK_OFF}\n")
+
+
 def panel_drop_in(workspace=MOTION_WORKSPACE):
     return (WRITTEN_BY
             + "[Service]\n"
             f"Environment=A3_MOTION_PANEL_WORKSPACE={workspace}\n")
-
-
-def motion_conflict_drop_in(letter):
-    return (WRITTEN_BY
-            + "[Unit]\n"
-            f"Conflicts={instance_unit(letter)}\n")
 
 
 # -- PTP ------------------------------------------------------------------------
@@ -454,10 +465,6 @@ class DeckHost(Role):
         s.set("deck-host", "stemdeck_workspace", ask.text(
             "On which i3 workspace does StemDeck live? (a name such as 2:STEMDECK, "
             "or a number such as 1)", s.get("deck-host", "stemdeck_workspace")))
-        s.set_flag("deck-host", "motion_here", ask.yesno(
-            "Does Motion run on this machine too, never at the same time as StemDeck?\n"
-            "(Each stops the other; StemDeck starts at boot.)",
-            s.flag("deck-host", "motion_here")))
 
     def install(self, ctx):
         _refuse_beside(ctx.settings.roles())
@@ -467,11 +474,12 @@ class DeckHost(Role):
         self._set_aside_leftovers(ctx)
         self._leave_old_letter(ctx, letter)
         write_drop_in(ctx, instance_unit(letter), DROP_IN,
-                      deck_drop_in(latency, workspace, motion_here(ctx.settings)))
+                      deck_drop_in(latency, workspace))
+        self._two_deck_player_off(ctx)
         self._audio_port_drop_ins(ctx)
         self._server_rate(ctx)
         self._panel(ctx)
-        self._motion_never_beside(ctx, letter)
+        self._forget_motion_exclusion(ctx)
         self._i3_rule(ctx, letter, workspace)
         self._ptp_client(ctx)
         self._pipewire_jack_path(ctx)
@@ -533,32 +541,30 @@ class DeckHost(Role):
         link.unlink(missing_ok=True)
         link.symlink_to(SHIPPED_RATE)
 
-    def _motion_never_beside(self, ctx, letter):
-        """StemDeck and Motion share one screen: each Conflicts= the other, and
-        only StemDeck is enabled at boot. Motion is not stopped now."""
-        run, path = ctx.runner, _motion_conflict_path(ctx)
-        if not motion_here(ctx.settings):
-            if ctx.state.get("deck-host", "motion_here"):
-                self._motion_back(ctx)
-            return
-        write_drop_in(ctx, MOTION_UNIT, MOTION_CONFLICT_DROP_IN, motion_conflict_drop_in(letter))
-        run.log(f"# Motion and StemDeck never run together: {MOTION_UNIT} is disabled at boot "
-                "(left running if it is now); starting one stops the other.")
-        systemctl_user(ctx, "disable", MOTION_UNIT, check=False)
-        ctx.state.set("deck-host", "motion_here", "yes", dry_run=run.dry_run)
+    def _two_deck_player_off(self, ctx):
+        write_drop_in(ctx, TWO_DECK_UNIT, DROP_IN, two_deck_off_drop_in())
+        for hand in _hand_two_deck_off(ctx):
+            ctx.runner.log(f"# {hand} does what {DROP_IN} does here; it can be removed "
+                           "(left where it is).")
+        systemctl_user(ctx, "daemon-reload")
+        systemctl_user(ctx, "stop", TWO_DECK_UNIT, check=False)
+
+    def _forget_motion_exclusion(self, ctx):
+        """An earlier run with the "Motion here too" option: take its drop-in away."""
+        if ctx.state.get("deck-host", "motion_here"):
+            self._motion_back(ctx)
 
     def _motion_back(self, ctx):
         """Undo _motion_never_beside: the drop-in goes, Motion is enabled at boot again."""
-        ctx.runner.log(f"# {MOTION_UNIT} enabled at boot again (deck-host: Motion no longer "
-                       "excluded by StemDeck).")
+        ctx.runner.log(f"# {MOTION_UNIT} enabled at boot again (an earlier deck-host run "
+                       "kept it from running beside StemDeck).")
         remove_files(ctx, [_motion_conflict_path(ctx)])
         systemctl_user(ctx, "enable", MOTION_UNIT, check=False)
         ctx.state.remove("deck-host", "motion_here", dry_run=ctx.runner.dry_run)
 
     def _panel(self, ctx):
-        if "motion" in ctx.settings.roles() or motion_here(ctx.settings):
-            write_drop_in(ctx, MOTION_UNIT, PANEL_DROP_IN,
-                          panel_drop_in(motion_workspace(ctx.settings)))
+        if "motion" in ctx.settings.roles():
+            write_drop_in(ctx, MOTION_UNIT, PANEL_DROP_IN, panel_drop_in())
             return
         stale = _panel_path(ctx)
         if stale.is_file():
@@ -588,7 +594,7 @@ class DeckHost(Role):
     def _check_workspace_names(self, ctx, path, text, workspace):
         names = [workspace]
         if "motion" in ctx.settings.roles():
-            names.append(motion_workspace(ctx.settings))
+            names.append(MOTION_WORKSPACE)
         for name in missing_workspace_names(text, names):
             ctx.runner.log(f"WARNING: {path} names no workspace {name!r}: the panel follows "
                            "workspaces by that name and never moves to one named otherwise.")
@@ -597,8 +603,13 @@ class DeckHost(Role):
         if core_package_installed():
             return
         run, multiarch = ctx.runner, debs.host_multiarch()
-        run.run(["install", "-D", "-m", "644", "/dev/stdin", jack_ld_conf(multiarch)], root=True,
-                input=jack_ld_text(multiarch))
+        conf, text = jack_ld_conf(multiarch), jack_ld_text(multiarch)
+        old = _own_old_jack_conf(multiarch)
+        if old:
+            run.run(["rm", "-f", old], root=True)
+        elif conf.is_file() and conf.read_text() == text:
+            return
+        run.run(["install", "-D", "-m", "644", "/dev/stdin", conf], root=True, input=text)
         run.run(["ldconfig"], root=True)
 
     def _ptp_client(self, ctx):
@@ -649,18 +660,21 @@ class DeckHost(Role):
     def leaving_files(self, ctx):
         return [*(path for letter in _letters(ctx) for path in _letter_files(ctx, letter)),
                 _panel_path(ctx),
+                ctx.user_units / f"{TWO_DECK_UNIT}.d" / DROP_IN,
                 *([_motion_conflict_path(ctx)] if _motion_excluded(ctx) else []),
                 *(_audio_port_path(ctx, unit) for unit in (BASE_UNIT, SENDER_TEMPLATE)),
                 _rate_link(ctx)]
 
     def leaving_lines(self, ctx):
         return super().leaving_lines(ctx) + [
-            *([f"  Motion is enabled at boot again ({MOTION_UNIT}, not started now)."]
+            *([f"  Motion is enabled at boot again ({MOTION_UNIT}, not started now): an "
+               "earlier run kept it from running beside StemDeck."]
               if _motion_excluded(ctx) else []),
             "  System files, deleted (as root):",
             *(f"    {path}" for path in (PTP4L_CONF, PTP4L_DROP_IN, PTP_UDEV_RULE)),
             f"  The deck-host block in ~/{I3_CONFIG}, removed; StemDeck rules it commented out come back.",
-            f"  {jack_ld_conf(debs.host_multiarch())}, deleted (as root) unless the a3-core "
+            f"  {jack_ld_conf(debs.host_multiarch())} (and the file of this name without "
+            "00-, if the installer wrote it), deleted (as root) unless the a3-core "
             "package is installed.",
             "  a3-core's AES67 files moved aside, put back where they were:",
             *(f"    {path}" for path in _leftovers(ctx)),
@@ -686,7 +700,10 @@ class DeckHost(Role):
         run.run(UDEV_TRIGGER_PTP, root=True)
         run.run(["systemctl", "daemon-reload"], root=True)
         if not core_package_installed():
-            run.run(["rm", "-f", jack_ld_conf(debs.host_multiarch())], root=True)
+            multiarch = debs.host_multiarch()
+            run.run(["rm", "-f", jack_ld_conf(multiarch)], root=True)
+            if old := _own_old_jack_conf(multiarch):
+                run.run(["rm", "-f", old], root=True)
             run.run(["ldconfig"], root=True)
         path = ctx.home / I3_CONFIG
         if path.is_file():
@@ -737,8 +754,25 @@ def _motion_conflict_path(ctx):
 
 
 def _motion_excluded(ctx):
-    """Whether Motion is, or was at the last install, kept from running beside StemDeck."""
-    return motion_here(ctx.settings) or bool(ctx.state.get("deck-host", "motion_here"))
+    """Whether an earlier run kept Motion from running beside StemDeck."""
+    return bool(ctx.state.get("deck-host", "motion_here"))
+
+
+def _own_old_jack_conf(multiarch):
+    """The pre-00- file, if this role wrote it (a3-core's file of that name is its own)."""
+    old = old_jack_ld_conf(multiarch)
+    if old.is_file() and JACK_LD_OWN_MARK in old.read_text():
+        return old
+    return None
+
+
+def _hand_two_deck_off(ctx):
+    """Drop-ins on the two-deck player, not the role's, that switch it off the same way."""
+    folder = ctx.user_units / f"{TWO_DECK_UNIT}.d"
+    if not folder.is_dir():
+        return []
+    return [path for path in sorted(folder.glob("*.conf"))
+            if path.name != DROP_IN and TWO_DECK_OFF in path.read_text().splitlines()]
 
 
 def _panel_path(ctx):

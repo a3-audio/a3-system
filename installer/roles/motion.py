@@ -80,12 +80,6 @@ def serial_candidates(usb_ids, by_id=None, sys_tty=None):
                   if usb_id(link.resolve().name, sys_tty) in usb_ids)
 
 
-def runs_beside_stemdeck(ctx):
-    """The deck-host role shares the screen with Motion, one at a time: StemDeck
-    is the one started at boot, so Motion is neither enabled nor restarted here."""
-    return "deck-host" in ctx.settings.roles() and ctx.settings.flag("deck-host", "motion_here")
-
-
 class Motion(Role):
     name = "motion"
     label = "Motion UI with the PCB on this machine (incl. firmware)"
@@ -116,12 +110,7 @@ class Motion(Role):
         apppackage.install(ctx, APP, deb)
         self._dialout(ctx)
         self._firmware(ctx)
-        if runs_beside_stemdeck(ctx):
-            ctx.runner.log(f"# {UNIT} not enabled or restarted: it never runs beside StemDeck "
-                           "(role deck-host).")
-            systemctl_user(ctx, "daemon-reload")
-        else:
-            enable_and_restart(ctx, UNIT)
+        enable_and_restart(ctx, UNIT)
         apppackage.check_packaged_unit_wins(ctx, APP)
 
     stays = ("the build cache ~/.cache/a3-build/a3-motion-ui and the packages in ~/a3-debs",

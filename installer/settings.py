@@ -55,9 +55,6 @@ DEFAULTS = {
         "audio_port": "",
         # StemDeck's i3 workspace: a name ("2:STEMDECK") or a bare number ("1").
         "stemdeck_workspace": "2:STEMDECK",
-        # Motion runs on this machine too, never at the same time as StemDeck
-        # (one screen): each Conflicts= the other, StemDeck starts at boot.
-        "motion_here": "no",
     },
     "motion": {
         # Flash the panel's firmware when its source changed since the last

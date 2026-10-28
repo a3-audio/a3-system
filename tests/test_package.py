@@ -410,6 +410,20 @@ class Libraries(unittest.TestCase):
         shutil.copy("/usr/bin/true", stage / "usr/bin/app")
         self.assertIn("libc6", package.shlibs_depends(stage))
 
+    def test_the_multiarch_directory_is_searched_before_pipewires_libjack(self):
+        """With /etc/ld.so.conf.d/pipewire-jack-*.conf in place, libjack.so.0
+        resolves to PipeWire's copy, which has no shlibs; -l goes first."""
+        stage = tmpdir(self)
+        (stage / "usr/bin").mkdir(parents=True)
+        shutil.copy("/usr/bin/true", stage / "usr/bin/app")
+        done = subprocess.CompletedProcess([], 0, stdout="shlibs:Depends=libc6\n")
+        with mock.patch.object(package.subprocess, "run", return_value=done) as run:
+            package.shlibs_depends(stage)
+        args = run.call_args.args[0]
+        self.assertIn("-l/usr/lib/x86_64-linux-gnu", args)
+        self.assertLess(args.index("-l/usr/lib/x86_64-linux-gnu"),
+                        next(i for i, a in enumerate(args) if a.startswith("-e")))
+
     def test_a_tree_without_a_binary_is_an_error(self):
         with self.assertRaises(package.BuildError):
             package.shlibs_depends(tmpdir(self))

@@ -10,7 +10,7 @@ from pathlib import Path
 
 DEFAULT_PATH = Path.home() / ".config" / "a3" / "install.conf"
 
-ROLES = ("core", "stemdeck", "motion", "desk", "mixer")
+ROLES = ("core", "stemdeck", "deck-host", "motion", "desk", "mixer")
 
 DEFAULTS = {
     "system": {
@@ -43,6 +43,16 @@ DEFAULTS = {
         # StemDeck's stem library (Artist/Album/sets), an absolute path.
         # Empty until asked: the default is then the folder StemDeck uses.
         "library": "",
+    },
+    "deck-host": {
+        # The deck this machine plays (stemdeck@<letter>); A is the Core's.
+        "letter": "B",
+        # The AES67 path to the Core, in ms, for the deck's beat sync;
+        # measured end to end on the rig (plan ruling R7).
+        "path_latency_ms": "0",
+        # The socket on the audio network, where ptp4l runs as a PTP client;
+        # empty is no PTP. Asked: only the Core's postinst knows its own.
+        "audio_port": "",
     },
     "motion": {
         # Flash the panel's firmware when its source changed since the last

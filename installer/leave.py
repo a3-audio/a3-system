@@ -40,13 +40,18 @@ def discover_roles(user_units, core_installed=None, stemdeck_installed=None,
         motion_installed = lambda: package_installed("a3-motion-ui")  # noqa: E731
     if desk_installed is None:
         desk_installed = lambda: package_installed("a3-desk")  # noqa: E731
+    # The deck host has the stemdeck package too, but plays no two-deck StemDeck.
+    deck_host = any(user_units.glob("stemdeck@*.service.d/deck-host.conf"))
     found = {
         "core": core_installed(),
-        "stemdeck": (user_units / "stemdeck.service").exists() or stemdeck_installed(),
+        "deck-host": deck_host,
+        "stemdeck": (user_units / "stemdeck.service").exists()
+        or (stemdeck_installed() and not deck_host),
         "motion": (user_units / "a3-motion.service").exists() or motion_installed(),
         "desk": desk_installed(),
     }
-    return [name for name in ("core", "stemdeck", "motion", "desk") if found[name]]
+    return [name for name in ("core", "stemdeck", "deck-host", "motion", "desk")
+            if found[name]]
 
 
 def installed_now(ctx, discover=discover_roles):

@@ -308,6 +308,14 @@ def elf_files(root):
     return found
 
 
+# dpkg-shlibdeps searches -l before the ld.so cache. A machine with PipeWire's
+# ld.so.conf.d/pipewire-jack-*.conf (the Core, a deck host) resolves libjack.so.0
+# to PipeWire's copy, which has no shlibs, and the build fails; this directory
+# holds the packaged one. -l rather than LD_LIBRARY_PATH: it touches only this
+# one command and leaves a caller's own LD_LIBRARY_PATH as it is.
+MULTIARCH_LIB = "/usr/lib/x86_64-linux-gnu"
+
+
 def shlibs_depends(stage):
     """The Depends dpkg-shlibdeps finds for the package's binaries. It wants a
     debian/control to read; a stub in a scratch folder is enough with -O."""
@@ -318,7 +326,7 @@ def shlibs_depends(stage):
         (Path(scratch) / "debian").mkdir()
         (Path(scratch) / "debian/control").write_text(
             "Source: a3-shlibs\n\nPackage: a3-shlibs\nArchitecture: any\n")
-        out = subprocess.run(["dpkg-shlibdeps", "-O", *[f"-e{b}" for b in binaries]],
+        out = subprocess.run(["dpkg-shlibdeps", "-O", f"-l{MULTIARCH_LIB}", *[f"-e{b}" for b in binaries]],
                              cwd=scratch, check=True, capture_output=True, text=True).stdout
     for line in out.splitlines():
         if line.startswith("shlibs:Depends="):

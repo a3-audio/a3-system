@@ -121,10 +121,7 @@ class StemDeck(Role):
         s.set("stemdeck", "library", absolute_folder(ctx, answer))
 
     def install(self, ctx):
-        juce = ensure_juce(ctx)
-        apppackage.refuse_shadowing_leftovers(ctx, APP)
-        deb = apppackage.build(ctx, APP, ctx.repo / SOURCE, pinned_commit(ctx), juce)
-        apppackage.install(ctx, APP, deb)
+        install_package(ctx)
 
         units = ctx.repo / SOURCE / ".config" / "systemd" / "user"
         if "core" not in ctx.settings.roles():
@@ -188,6 +185,15 @@ class StemDeck(Role):
         if not package_is_installed(ctx):
             return
         apppackage.remove(ctx, APP)
+
+
+def install_package(ctx):
+    """The stemdeck package of the pinned commit, built, installed and held:
+    what this role and deck-host both start from."""
+    juce = ensure_juce(ctx)
+    apppackage.refuse_shadowing_leftovers(ctx, APP)
+    deb = apppackage.build(ctx, APP, ctx.repo / SOURCE, pinned_commit(ctx), juce)
+    apppackage.install(ctx, APP, deb)
 
 
 def _remove_patchbay_unit(ctx):

@@ -18,7 +18,11 @@ on the audio socket with the Core's config made a client's: linuxptp's stock
 file with step_threshold 0.001 (as the Core's), clientOnly 1, priority1 128.
 It is derived from this machine's stock file -- the rule a3-core's own copy
 follows -- so the installer carries no copy of it, and a deck host needs no
-a3-core checkout. The stock /etc/linuxptp/ptp4l.conf is only read.
+a3-core checkout. The stock /etc/linuxptp/ptp4l.conf is only read. A port
+whose driver offers no PTP receive filter, only "all" (a Raspberry Pi 5's
+macb), gets hwts_filter full, or ptp4l sees no timestamp on any frame. A udev
+rule lets the audio group read /dev/ptp*: PipeWire's PTP0 driver opens the
+port's clock as the user and falls back to CLOCK_MONOTONIC when it cannot.
 
 Not beside the Core (deck A is local there) and not beside the role
 stemdeck: the two-deck player and a deck instance fight over JACK names and
@@ -35,7 +39,11 @@ pipewire.conf.d/ (ruling P32), because only the role knows the machine is a
 deck host.
 """
 
+import array
+import fcntl
 import re
+import socket
+import struct
 from pathlib import Path
 
 from .. import package as debs
@@ -66,6 +74,22 @@ STOCK_PTP4L = Path("/etc/linuxptp/ptp4l.conf")
 PTP4L_CONF = Path("/etc/linuxptp/a3-ptp4l.conf")
 PTP4L_DROP_IN = Path("/etc/systemd/system/ptp4l@.service.d/a3.conf")
 CLIENT_KEYS = {"clientOnly": "1", "priority1": "128", "step_threshold": "0.001"}
+PTP_UDEV_RULE = Path("/etc/udev/rules.d/60-a3-ptp.rules")
+UDEV_TRIGGER_PTP = ["udevadm", "trigger", "--action=change", "--subsystem-match=ptp"]
+
+# linux/net_tstamp.h, enum hwtstamp_rx_filters, by bit; named as ethtool -T names them.
+RX_FILTER_NAMES = ("none", "all", "some", "ptpv1-l4-event", "ptpv1-l4-sync",
+                   "ptpv1-l4-delay-req", "ptpv2-l4-event", "ptpv2-l4-sync",
+                   "ptpv2-l4-delay-req", "ptpv2-l2-event", "ptpv2-l2-sync",
+                   "ptpv2-l2-delay-req", "ptpv2-event", "ptpv2-sync", "ptpv2-delay-req",
+                   "ntp-all")
+# What ptp4l's hwts_filter normal asks for, in the order it tries them.
+PTP_EVENT_FILTERS = {"ptpv2-event", "ptpv2-l4-event", "ptpv2-l2-event"}
+SIOCETHTOOL = 0x8946
+ETHTOOL_GET_TS_INFO = 0x41
+# struct ethtool_ts_info: cmd, so_timestamping, phc_index, tx_types, tx_reserved[3],
+# rx_filters, rx_reserved[3].
+TS_INFO = struct.Struct("IIiI3II3I")
 
 # PipeWire's libjack before jackd's, as a3-core's package ships it: without it jack_wait and
 # StemDeck load jackd's libjack and wait for a jack server that PipeWire does not run as one.
@@ -190,8 +214,49 @@ def ptp4l_keys(text):
     return dict(entry for line in text.splitlines() if (entry := _ptp4l_entry(line)))
 
 
-def client_ptp4l_config(stock):
-    """linuxptp's stock config with CLIENT_KEYS set, every other line as it was."""
+def rx_filter_names(bitmap):
+    return {name for bit, name in enumerate(RX_FILTER_NAMES) if bitmap >> bit & 1}
+
+
+def port_rx_filters(port):
+    """The receive timestamp filters the port's driver offers (ethtool -T, without
+    ethtool: Raspberry Pi OS has none), or None when the port cannot be asked."""
+    request = array.array("B", TS_INFO.pack(ETHTOOL_GET_TS_INFO, *[0] * 10))
+    ifreq = struct.pack("16sP", port.encode(), request.buffer_info()[0])
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+            fcntl.ioctl(sock, SIOCETHTOOL, ifreq)
+    except OSError:
+        return None
+    return rx_filter_names(TS_INFO.unpack(request.tobytes())[7])
+
+
+def hwts_filter_for(rx_filters):
+    """"full" for a port that stamps all frames but offers no PTP event filter (a
+    Raspberry Pi 5's macb: with ptp4l's default it stamps no PTP frame at all),
+    else None: ptp4l's default stays."""
+    if rx_filters is None or "all" not in rx_filters or rx_filters & PTP_EVENT_FILTERS:
+        return None
+    return "full"
+
+
+def _with_hwts_filter(text, hwts_filter):
+    """The config with hwts_filter set: its own line if the stock file has one,
+    else a new line right under [global]."""
+    lines = text.splitlines(keepends=True)
+    for i, line in enumerate(lines):
+        entry = _ptp4l_entry(line)
+        if entry and entry[0] == "hwts_filter":
+            lines[i] = f"hwts_filter\t\t{hwts_filter}\n"
+            return "".join(lines)
+    at = next(i for i, line in enumerate(lines) if line.strip() == "[global]") + 1
+    lines.insert(at, f"hwts_filter\t\t{hwts_filter}\n")
+    return "".join(lines)
+
+
+def client_ptp4l_config(stock, hwts_filter=None):
+    """linuxptp's stock config with CLIENT_KEYS set (and hwts_filter, if given),
+    every other line as it was."""
     missing = set(CLIENT_KEYS) - set(ptp4l_keys(stock))
     if missing:
         raise RoleError(f"{STOCK_PTP4L} has no {', '.join(sorted(missing))}; "
@@ -203,6 +268,9 @@ def client_ptp4l_config(stock):
             key = entry[0]
             line = re.sub(r"(\S+)$", CLIENT_KEYS[key], line.rstrip("\n"), count=1) + "\n"
         lines.append(line)
+    body = "".join(lines)
+    if hwts_filter:
+        body = _with_hwts_filter(body, hwts_filter)
     header = ("# SPDX-FileCopyrightText: linuxptp authors (stock ptp4l.conf, copied)\n"
               "# SPDX-FileCopyrightText: 2026 Raphael Eismann "
               "(step_threshold, clientOnly, priority1)\n"
@@ -211,8 +279,20 @@ def client_ptp4l_config(stock):
               "# ptp4l as a client of the Core, written by the a3-system installer\n"
               "# (role deck-host) from this machine's stock ptp4l.conf. step_threshold\n"
               "# 0.001: after a Core reboot the client steps instead of slewing for days.\n"
-              "# Selected by ptp4l@.service.d/a3.conf; the stock file stays untouched.\n")
-    return header + "".join(lines)
+              "# Selected by ptp4l@.service.d/a3.conf; the stock file stays untouched.\n"
+              + ("# hwts_filter full: this port's driver stamps all frames or none, and\n"
+                 "# with ptp4l's default filter no PTP frame carries a timestamp.\n"
+                 if hwts_filter else ""))
+    return header + body
+
+
+def ptp_udev_rule():
+    return ("# Written by the a3-system installer (role deck-host).\n"
+            "# PipeWire's PTP0 driver (clock.interface) reads the port's hardware clock as the\n"
+            "# user; udev leaves /dev/ptp* root's own, and the driver then runs on\n"
+            "# CLOCK_MONOTONIC instead of the clock ptp4l keeps on the Core's. Read only:\n"
+            "# adjusting a PTP clock needs it open for writing.\n"
+            'SUBSYSTEM=="ptp", GROUP="audio", MODE="0640"\n')
 
 
 def ptp4l_drop_in():
@@ -533,9 +613,15 @@ class DeckHost(Role):
                         "the PTP client config is skipped.")
                 return
             raise RoleError(f"{STOCK_PTP4L} is missing: is linuxptp installed?")
-        for target, text in ((PTP4L_CONF, client_ptp4l_config(STOCK_PTP4L.read_text())),
-                             (PTP4L_DROP_IN, ptp4l_drop_in())):
+        hwts_filter = hwts_filter_for(port_rx_filters(port))
+        if hwts_filter:
+            run.log(f"# {port} stamps all frames or none: ptp4l gets hwts_filter {hwts_filter}.")
+        config = client_ptp4l_config(STOCK_PTP4L.read_text(), hwts_filter)
+        for target, text in ((PTP4L_CONF, config), (PTP4L_DROP_IN, ptp4l_drop_in()),
+                             (PTP_UDEV_RULE, ptp_udev_rule())):
             run.run(["install", "-D", "-m", "644", "/dev/stdin", target], root=True, input=text)
+        run.run(["udevadm", "control", "--reload-rules"], root=True)
+        run.run(UDEV_TRIGGER_PTP, root=True)
         run.run(["systemctl", "daemon-reload"], root=True)
         # Enabled, not started, as the Core's postinst does: it comes up with the next boot.
         run.run(["systemctl", "enable", f"ptp4l@{port}.service"], root=True)
@@ -572,7 +658,7 @@ class DeckHost(Role):
             *([f"  Motion is enabled at boot again ({MOTION_UNIT}, not started now)."]
               if _motion_excluded(ctx) else []),
             "  System files, deleted (as root):",
-            *(f"    {path}" for path in (PTP4L_CONF, PTP4L_DROP_IN)),
+            *(f"    {path}" for path in (PTP4L_CONF, PTP4L_DROP_IN, PTP_UDEV_RULE)),
             f"  The deck-host block in ~/{I3_CONFIG}, removed; StemDeck rules it commented out come back.",
             f"  {jack_ld_conf(debs.host_multiarch())}, deleted (as root) unless the a3-core "
             "package is installed.",
@@ -593,9 +679,11 @@ class DeckHost(Role):
             run.run(["systemctl", "disable", f"ptp4l@{port}.service"], root=True, check=False)
         ctx.state.remove("deck-host", "audio_port", dry_run=run.dry_run)
         ctx.state.remove("deck-host", "letter", dry_run=run.dry_run)
-        for path in (PTP4L_CONF, PTP4L_DROP_IN):
+        for path in (PTP4L_CONF, PTP4L_DROP_IN, PTP_UDEV_RULE):
             run.run(["rm", "-f", path], root=True)
         run.run(["rmdir", "--ignore-fail-on-non-empty", PTP4L_DROP_IN.parent], root=True)
+        run.run(["udevadm", "control", "--reload-rules"], root=True)
+        run.run(UDEV_TRIGGER_PTP, root=True)
         run.run(["systemctl", "daemon-reload"], root=True)
         if not core_package_installed():
             run.run(["rm", "-f", jack_ld_conf(debs.host_multiarch())], root=True)

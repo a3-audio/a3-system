@@ -55,7 +55,7 @@ class InputRunner(RecordingRunner):
         return 0
 
 
-def deckhost_seams(stock, core_package=False, multiarch="x86_64-linux-gnu"):
+def deckhost_seams(stock, core_package=False, multiarch="x86_64-linux-gnu", rx_filters=None):
     from installer.roles import apppackage, deckhost, stemdeck
     stack = ExitStack()
     stack.enter_context(mock.patch.object(deckhost.debs, "host_multiarch", lambda: multiarch))
@@ -65,6 +65,8 @@ def deckhost_seams(stock, core_package=False, multiarch="x86_64-linux-gnu"):
     stack.enter_context(mock.patch.object(deckhost, "STOCK_PTP4L", stock))
     stack.enter_context(mock.patch.object(deckhost, "core_package_installed",
                                           lambda: core_package))
+    # Never this machine's own port: the filters are the test's.
+    stack.enter_context(mock.patch.object(deckhost, "port_rx_filters", lambda _port: rx_filters))
     return stack
 
 
@@ -87,10 +89,11 @@ class DeckHostCase(unittest.TestCase):
 
     core_package = False
     multiarch = "x86_64-linux-gnu"
+    rx_filters = None
 
     def install(self, ctx):
         from installer.roles import deckhost
-        with deckhost_seams(self.stock, self.core_package, self.multiarch):
+        with deckhost_seams(self.stock, self.core_package, self.multiarch, self.rx_filters):
             deckhost.DeckHost().install(ctx)
 
     def drop_in(self, ctx, letter="B"):
@@ -623,6 +626,107 @@ class ThePtpClient(DeckHostCase):
         self.assertFalse(any("ptp4l" in c for c in log.commands()), log.commands())
 
 
+# What ETHTOOL_GET_TS_INFO reports as rx_filters: a Raspberry Pi 5's RP1 (macb, measured
+# 2026-10-28) offers none and all; an igb port offers the PTPv2 event filters as well.
+PI5_MACB_RX_FILTERS = 0b11
+IGB_RX_FILTERS = (1 << 0) | (1 << 1) | (1 << 6) | (1 << 9) | (1 << 12)
+
+
+class ThePtpTimestampFilter(DeckHostCase):
+    """macb stamps no PTP frame with ptp4l's default filter (ptpv2-event): every SYNC
+    arrives "without timestamp". It offers only `all`, which hwts_filter full asks for."""
+
+    CONF = "/etc/linuxptp/a3-ptp4l.conf"
+
+    def install_with(self, rx_filters):
+        ctx, log = self.ctx()
+        self.rx_filters = rx_filters
+        self.install(ctx)
+        return ctx, log
+
+    def test_the_bitmap_is_read_as_filter_names(self):
+        from installer.roles.deckhost import rx_filter_names
+        self.assertEqual({"none", "all"}, rx_filter_names(PI5_MACB_RX_FILTERS))
+        self.assertEqual({"none", "all", "ptpv2-l4-event", "ptpv2-l2-event", "ptpv2-event"},
+                         rx_filter_names(IGB_RX_FILTERS))
+
+    def test_a_port_that_offers_only_all_gets_the_full_filter(self):
+        from installer.roles.deckhost import hwts_filter_for
+        self.assertEqual("full", hwts_filter_for({"none", "all"}))
+
+    def test_a_port_with_ptp_event_filters_keeps_the_stock_one(self):
+        from installer.roles.deckhost import hwts_filter_for
+        self.assertIsNone(hwts_filter_for({"none", "all", "ptpv2-event"}))
+        self.assertIsNone(hwts_filter_for({"none", "ptpv2-l4-event"}))
+
+    def test_an_unreadable_port_keeps_the_stock_one(self):
+        from installer.roles.deckhost import hwts_filter_for
+        self.assertIsNone(hwts_filter_for(None))
+
+    def test_the_config_carries_the_filter_in_global(self):
+        from installer.roles.deckhost import client_ptp4l_config, ptp4l_keys
+        text = client_ptp4l_config(STOCK_PTP4L, hwts_filter="full")
+        self.assertEqual("full", ptp4l_keys(text)["hwts_filter"])
+        lines = text.splitlines()
+        self.assertEqual("[global]", lines[lines.index("hwts_filter\t\tfull") - 1])
+
+    def test_a_stock_filter_line_is_set_not_doubled(self):
+        from installer.roles.deckhost import client_ptp4l_config
+        text = client_ptp4l_config(STOCK_PTP4L + "hwts_filter\t\tnormal\n", hwts_filter="full")
+        self.assertEqual(1, sum(l.startswith("hwts_filter") for l in text.splitlines()))
+        self.assertIn("hwts_filter\t\tfull", text.splitlines())
+
+    def test_without_a_filter_the_config_has_none(self):
+        from installer.roles.deckhost import client_ptp4l_config, ptp4l_keys
+        self.assertNotIn("hwts_filter", ptp4l_keys(client_ptp4l_config(STOCK_PTP4L)))
+
+    def test_install_on_a_pi_5_writes_the_full_filter_and_says_why(self):
+        ctx, log = self.install_with({"none", "all"})
+        self.assertIn("hwts_filter\t\tfull", ctx.runner.inputs[self.CONF].splitlines())
+        self.assertTrue(any("hwts_filter full" in line for line in log), log)
+
+    def test_install_on_an_igb_port_writes_no_filter(self):
+        ctx, _ = self.install_with({"none", "all", "ptpv2-event"})
+        self.assertNotIn("hwts_filter", ctx.runner.inputs[self.CONF])
+
+
+class ThePhcIsReadable(DeckHostCase):
+    """PipeWire's PTP0 driver (clock.interface) opens /dev/ptpN read-only as the user;
+    udev makes it root's 0600, the open fails, and the driver runs on CLOCK_MONOTONIC."""
+
+    RULE = "/etc/udev/rules.d/60-a3-ptp.rules"
+
+    def test_the_rule_gives_the_audio_group_read_only(self):
+        from installer.roles.deckhost import ptp_udev_rule
+        rules = [l for l in ptp_udev_rule().splitlines() if l and not l.startswith("#")]
+        self.assertEqual(['SUBSYSTEM=="ptp", GROUP="audio", MODE="0640"'], rules)
+
+    def test_install_writes_it_as_root_and_applies_it_now(self):
+        ctx, log = self.ctx()
+        self.install(ctx)
+        commands = log.commands()
+        self.assertIn(f"sudo install -D -m 644 /dev/stdin {self.RULE}", commands)
+        self.assertIn("sudo udevadm control --reload-rules", commands)
+        self.assertIn("sudo udevadm trigger --action=change --subsystem-match=ptp", commands)
+
+    def test_without_an_audio_port_there_is_no_rule(self):
+        ctx, log = self.ctx({("deck-host", "audio_port"): ""})
+        self.install(ctx)
+        self.assertFalse(any("udev" in c for c in log.commands()), log.commands())
+
+    def test_leaving_removes_it(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx()
+        self.install(ctx)
+        ctx.runner = InputRunner(log=ctx.runner.log)
+        ctx.runner.log.clear()
+        deckhost.DeckHost().uninstall(ctx)
+        commands = ctx.runner.log.commands()
+        self.assertIn(f"sudo rm -f {self.RULE}", commands)
+        self.assertIn("sudo udevadm trigger --action=change --subsystem-match=ptp", commands)
+        self.assertIn(self.RULE, "\n".join(deckhost.DeckHost().leaving_lines(ctx)))
+
+
 class DryRun(DeckHostCase):
     def test_dry_run_writes_nothing(self):
         ctx, _ = self.ctx({("roles", "motion"): "yes"}, dry_run=True)
@@ -661,6 +765,7 @@ class Leaving(DeckHostCase):
             str(ctx.home / ".config/pipewire/pipewire.conf.d/10-stemdeck-rate.conf"),
             "/etc/linuxptp/a3-ptp4l.conf",
             "/etc/ld.so.conf.d/pipewire-jack-x86_64-linux-gnu.conf",
+            "/etc/udev/rules.d/60-a3-ptp.rules",
             "/etc/systemd/system/ptp4l@.service.d/a3.conf"]), sorted(removed))
         self.assertIn("sudo rm -f /etc/linuxptp/a3-ptp4l.conf", commands)
         self.assertIn("systemctl --user disable --now stemdeck@B.service", commands)

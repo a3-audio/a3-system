@@ -93,7 +93,8 @@ class StemDeck(Role):
     name = "stemdeck"
     label = "StemDeck (stem player)"
     submodules = (SOURCE,)
-    platforms = ("debian",)
+    # Raspberry Pi OS: a Pi 5 builds and plays a deck (a3motionV02, 2026-10-28).
+    platforms = ("debian", "raspios")
     packages = SCREEN_PACKAGES + JUCE_PACKAGES + (
         "libflac-dev", "libvorbis-dev", "libogg-dev", "libjack-jackd2-dev",
         # key lock: Rubber Band's time stretcher

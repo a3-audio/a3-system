@@ -59,12 +59,17 @@ def os_release(path="/etc/os-release"):
     return values
 
 
+# The platforms whose packages come from apt: Raspberry Pi OS is Debian too.
+APT_PLATFORMS = ("debian", "raspios")
+
+
 def platform_name():
     """debian, raspios, macos, windows, or other.
 
     Raspberry Pi OS calls itself debian in ID; it is told apart by the
-    machine. Only debian is installed onto today; the others are named so a
-    role can say plainly that it does not support them yet.
+    machine. debian takes every role, raspios the ones whose platforms name
+    it; the others are named so a role can say plainly that it does not
+    support them yet.
     """
     system = platform.system()
     if system == "Darwin":

@@ -427,8 +427,13 @@ class Roles(unittest.TestCase):
 
     def test_nothing_is_supported_off_debian_yet(self):
         for role in ALL:
-            for other in ("windows", "macos", "raspios"):
+            for other in ("windows", "macos"):
                 self.assertFalse(role.supported(other), (role.name, other))
+
+    def test_on_raspberry_pi_os_only_stemdeck_and_the_deck_host(self):
+        """Raspberry Pi OS is Debian on arm64; what has been built there is StemDeck."""
+        supported = [role.name for role in ALL if role.supported("raspios")]
+        self.assertEqual(["stemdeck", "deck-host"], supported)
 
 
 # What each product needs to build on Debian, moved here from a3-core's
@@ -548,6 +553,11 @@ class PackagesBeforeTheRoles(unittest.TestCase):
     def test_apt_only_on_debian(self):
         commands, _ = self.install([FakeRole("a", ("x",))], platform="other")
         self.assertEqual(["install a"], commands)
+
+    def test_apt_on_raspberry_pi_os_too(self):
+        commands, _ = self.install([FakeRole("a", ("x",))], platform="raspios")
+        self.assertEqual(["env DEBIAN_FRONTEND=noninteractive apt-get install -y x",
+                          "install a"], commands)
 
 
 class TheScreenStepRunsOnceBetweenPackagesAndRoles(unittest.TestCase):

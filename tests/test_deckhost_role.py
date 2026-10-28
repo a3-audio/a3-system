@@ -55,9 +55,10 @@ class InputRunner(RecordingRunner):
         return 0
 
 
-def deckhost_seams(stock, core_package=False):
+def deckhost_seams(stock, core_package=False, multiarch="x86_64-linux-gnu"):
     from installer.roles import apppackage, deckhost, stemdeck
     stack = ExitStack()
+    stack.enter_context(mock.patch.object(deckhost.debs, "host_multiarch", lambda: multiarch))
     stack.enter_context(mock.patch.object(stemdeck, "ensure_juce", lambda _ctx: Path("/juce")))
     stack.enter_context(mock.patch.object(stemdeck, "pinned_commit", lambda _ctx: PIN))
     stack.enter_context(mock.patch.object(apppackage.debs, "version_of", lambda *_: "03.0+7"))
@@ -85,10 +86,11 @@ class DeckHostCase(unittest.TestCase):
         return ctx, log
 
     core_package = False
+    multiarch = "x86_64-linux-gnu"
 
     def install(self, ctx):
         from installer.roles import deckhost
-        with deckhost_seams(self.stock, self.core_package):
+        with deckhost_seams(self.stock, self.core_package, self.multiarch):
             deckhost.DeckHost().install(ctx)
 
     def drop_in(self, ctx, letter="B"):
@@ -107,6 +109,12 @@ class TheRoleIsOffered(unittest.TestCase):
         self.assertEqual(names.index("deck-host"), names.index("stemdeck") + 1)
         self.assertEqual(names.index("motion"), names.index("deck-host") + 1)
         self.assertIn("deck-host", ROLES)
+
+    def test_it_installs_on_raspberry_pi_os(self):
+        """A Pi 5 plays a deck as a3nuc2 does (a3motionV02, 2026-10-28); the
+        stemdeck package it builds comes the StemDeck role's way."""
+        self.assertTrue(BY_NAME["deck-host"].supported("raspios"))
+        self.assertTrue(BY_NAME["stemdeck"].supported("raspios"))
 
     def test_it_builds_from_stemdeck_only(self):
         self.assertEqual(needed_submodules(["deck-host"]), ["stemdeck"])
@@ -520,6 +528,23 @@ class ThePipeWireJackPath(DeckHostCase):
         commands = log.commands()
         self.assertIn(f"sudo install -D -m 644 /dev/stdin {self.CONF}", commands)
         self.assertGreater(len(commands), commands.index("sudo ldconfig"))
+
+    def test_on_a_raspberry_pi_it_names_the_arm64_directory(self):
+        """Raspberry Pi OS on a Pi 5: aarch64-linux-gnu, as pipewire-jack ships it there."""
+        self.multiarch = "aarch64-linux-gnu"
+        conf = "/etc/ld.so.conf.d/pipewire-jack-aarch64-linux-gnu.conf"
+        ctx, log = self.ctx()
+        self.install(ctx)
+        self.assertIn("/usr/lib/aarch64-linux-gnu/pipewire-0.3/jack/\n", ctx.runner.inputs[conf])
+        self.assertNotIn(self.CONF, ctx.runner.inputs)
+
+    def test_leaving_on_a_raspberry_pi_removes_the_arm64_file(self):
+        from installer.roles import deckhost
+        ctx, log = self.ctx()
+        with deckhost_seams(self.stock, False, "aarch64-linux-gnu"):
+            deckhost.DeckHost().uninstall(ctx)
+        self.assertIn("sudo rm -f /etc/ld.so.conf.d/pipewire-jack-aarch64-linux-gnu.conf",
+                      log.commands())
 
     def test_a3_cores_package_owns_the_file_when_it_is_installed(self):
         self.core_package = True

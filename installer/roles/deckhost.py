@@ -38,6 +38,7 @@ deck host.
 import re
 from pathlib import Path
 
+from .. import package as debs
 from . import stemdeck
 from .base import Role, RoleError, remove_files, systemctl_user, write_drop_in
 from .motion import UNIT as MOTION_UNIT
@@ -67,11 +68,17 @@ CLIENT_KEYS = {"clientOnly": "1", "priority1": "128", "step_threshold": "0.001"}
 
 # PipeWire's libjack before jackd's, as a3-core's package ships it: without it jack_wait and
 # StemDeck load jackd's libjack and wait for a jack server that PipeWire does not run as one.
-JACK_LD_CONF = Path("/etc/ld.so.conf.d/pipewire-jack-x86_64-linux-gnu.conf")
-JACK_LD_TEXT = ("# PipeWire's libjack before jackd's: every JACK program on this deck host --\n"
-                "# StemDeck, jack_wait, one started by hand -- talks to PipeWire.\n"
-                "# Written by the a3-system installer (role deck-host); a3-core ships the same file.\n"
-                "/usr/lib/x86_64-linux-gnu/pipewire-0.3/jack/\n")
+# Named by the machine's multiarch triplet, as pipewire-jack's own example file is: a3nuc2
+# is x86_64-linux-gnu, a Raspberry Pi 5 aarch64-linux-gnu.
+def jack_ld_conf(multiarch):
+    return Path(f"/etc/ld.so.conf.d/pipewire-jack-{multiarch}.conf")
+
+
+def jack_ld_text(multiarch):
+    return ("# PipeWire's libjack before jackd's: every JACK program on this deck host --\n"
+            "# StemDeck, jack_wait, one started by hand -- talks to PipeWire.\n"
+            "# Written by the a3-system installer (role deck-host); a3-core ships the same file.\n"
+            f"/usr/lib/{multiarch}/pipewire-0.3/jack/\n")
 
 I3_CONFIG = Path(".config/i3/config")
 I3_BEGIN = "# >>> a3-system deck-host >>>"
@@ -314,7 +321,7 @@ class DeckHost(Role):
     name = "deck-host"
     label = "StemDeck deck on a machine without the Core (AES67 to the Core)"
     submodules = stemdeck.StemDeck.submodules
-    platforms = ("debian",)
+    platforms = stemdeck.StemDeck.platforms
     # ptp4l@ is linuxptp's unit.
     packages = stemdeck.StemDeck.packages + ("linuxptp",)
     needs_screen = True
@@ -442,9 +449,9 @@ class DeckHost(Role):
     def _pipewire_jack_path(self, ctx):
         if core_package_installed():
             return
-        run = ctx.runner
-        run.run(["install", "-D", "-m", "644", "/dev/stdin", JACK_LD_CONF], root=True,
-                input=JACK_LD_TEXT)
+        run, multiarch = ctx.runner, debs.host_multiarch()
+        run.run(["install", "-D", "-m", "644", "/dev/stdin", jack_ld_conf(multiarch)], root=True,
+                input=jack_ld_text(multiarch))
         run.run(["ldconfig"], root=True)
 
     def _ptp_client(self, ctx):
@@ -497,7 +504,8 @@ class DeckHost(Role):
             "  System files, deleted (as root):",
             *(f"    {path}" for path in (PTP4L_CONF, PTP4L_DROP_IN)),
             f"  The deck-host block in ~/{I3_CONFIG}, removed; StemDeck rules it commented out come back.",
-            f"  {JACK_LD_CONF}, deleted (as root) unless the a3-core package is installed.",
+            f"  {jack_ld_conf(debs.host_multiarch())}, deleted (as root) unless the a3-core "
+            "package is installed.",
             "  a3-core's AES67 files moved aside, put back where they were:",
             *(f"    {path}" for path in _leftovers(ctx)),
             "    (put back only: a3-aes67.service is not re-enabled and there is no",
@@ -518,7 +526,7 @@ class DeckHost(Role):
         run.run(["rmdir", "--ignore-fail-on-non-empty", PTP4L_DROP_IN.parent], root=True)
         run.run(["systemctl", "daemon-reload"], root=True)
         if not core_package_installed():
-            run.run(["rm", "-f", JACK_LD_CONF], root=True)
+            run.run(["rm", "-f", jack_ld_conf(debs.host_multiarch())], root=True)
             run.run(["ldconfig"], root=True)
         path = ctx.home / I3_CONFIG
         if path.is_file():

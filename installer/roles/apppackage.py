@@ -64,7 +64,8 @@ def build(ctx, app, source, commit, juce):
     ctx.runner.run(["python3", ctx.repo / "installer" / "package.py", source,
                     "--rev", commit, "--out", out, "--cache", cache,
                     "--jobs", BUILD_JOBS, "--juce", juce])
-    return debs.deb_path(out, app.package, debs.version_of(source, commit))
+    return debs.deb_path(out, app.package, debs.version_of(source, commit),
+                         debs.host_architecture())
 
 
 def _aside(path):

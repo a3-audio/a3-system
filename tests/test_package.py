@@ -124,7 +124,7 @@ class Control(unittest.TestCase):
         self.assertEqual("lib-a3.x+y", package.package_name("Package: lib-a3.x+y\n"))
 
     def test_version_and_libraries_are_stamped_and_the_rest_kept(self):
-        stamped = package.stamp_control(CONTROL, "03.0+7", "libc6 (>= 2.43), libjack-jackd2-0")
+        stamped = package.stamp_control(CONTROL, "03.0+7", "libc6 (>= 2.43), libjack-jackd2-0", "amd64")
         self.assertIn("Version: 03.0+7\n", stamped)
         self.assertIn("Depends: libc6 (>= 2.43), libjack-jackd2-0, xdotool, onboard\n", stamped)
         self.assertNotIn("${shlibs:Depends}", stamped)
@@ -132,17 +132,23 @@ class Control(unittest.TestCase):
 
     def test_a_control_without_the_token_is_an_error(self):
         with self.assertRaises(package.BuildError):
-            package.stamp_control(CONTROL.replace("${shlibs:Depends}, ", ""), "03.0+7", "libc6")
+            package.stamp_control(CONTROL.replace("${shlibs:Depends}, ", ""), "03.0+7", "libc6", "amd64")
 
     def test_a_token_on_a_folded_line_is_an_error_not_shipped(self):
         folded = CONTROL.replace("Depends: ${shlibs:Depends}, xdotool",
                                  "Depends: xdotool,\n ${shlibs:Depends}")
         with self.assertRaises(package.BuildError):
-            package.stamp_control(folded, "03.0+7", "libc6")
+            package.stamp_control(folded, "03.0+7", "libc6", "amd64")
 
     def test_no_libraries_is_an_error(self):
         with self.assertRaises(ValueError):
-            package.stamp_control(CONTROL, "03.0+7", "")
+            package.stamp_control(CONTROL, "03.0+7", "", "amd64")
+
+    def test_the_architecture_is_the_build_machines(self):
+        """The control says amd64; a package built on a Pi holds arm64 code."""
+        stamped = package.stamp_control(CONTROL, "03.0+7", "libc6", "arm64")
+        self.assertIn("Architecture: arm64\n", stamped)
+        self.assertNotIn("amd64", stamped)
 
 
 class SyncTree(unittest.TestCase):
@@ -196,7 +202,40 @@ class SyncTree(unittest.TestCase):
 class DebPath(unittest.TestCase):
     def test_debian_naming(self):
         self.assertEqual(Path("/d/stemdeck_03.0+7_amd64.deb"),
-                         package.deb_path(Path("/d"), "stemdeck", "03.0+7"))
+                         package.deb_path(Path("/d"), "stemdeck", "03.0+7", "amd64"))
+
+    def test_the_architecture_is_named(self):
+        self.assertEqual(Path("/d/stemdeck_03.0+7_arm64.deb"),
+                         package.deb_path(Path("/d"), "stemdeck", "03.0+7", "arm64"))
+
+
+class TheBuildMachine(unittest.TestCase):
+    """Architecture and multiarch directory come from dpkg on the machine that
+    builds: a Raspberry Pi 5 is arm64 / aarch64-linux-gnu."""
+
+    def answers(self, table):
+        def run(args, **_kwargs):
+            key = tuple(args)
+            if key not in table:
+                raise FileNotFoundError(args[0])
+            return subprocess.CompletedProcess(args, 0, stdout=table[key])
+        return mock.patch.object(package.subprocess, "run", side_effect=run)
+
+    def test_the_architecture_is_dpkgs(self):
+        with self.answers({("dpkg", "--print-architecture"): "arm64\n"}):
+            self.assertEqual("arm64", package.host_architecture())
+
+    def test_the_multiarch_triplet_is_dpkg_architectures(self):
+        with self.answers({("dpkg-architecture", "-qDEB_HOST_MULTIARCH"): "aarch64-linux-gnu\n"}):
+            self.assertEqual("aarch64-linux-gnu", package.host_multiarch())
+
+    def test_without_dpkg_dev_the_triplet_is_gccs(self):
+        with self.answers({("gcc", "-print-multiarch"): "aarch64-linux-gnu\n"}):
+            self.assertEqual("aarch64-linux-gnu", package.host_multiarch())
+
+    def test_the_multiarch_library_directory(self):
+        with mock.patch.object(package, "host_multiarch", return_value="aarch64-linux-gnu"):
+            self.assertEqual("/usr/lib/aarch64-linux-gnu", package.multiarch_lib())
 
 
 HAVE_DPKG = shutil.which("dpkg-deb") and shutil.which("dpkg-shlibdeps")
@@ -417,11 +456,12 @@ class Libraries(unittest.TestCase):
         (stage / "usr/bin").mkdir(parents=True)
         shutil.copy("/usr/bin/true", stage / "usr/bin/app")
         done = subprocess.CompletedProcess([], 0, stdout="shlibs:Depends=libc6\n")
-        with mock.patch.object(package.subprocess, "run", return_value=done) as run:
+        with mock.patch.object(package, "host_multiarch", return_value="aarch64-linux-gnu"), \
+                mock.patch.object(package.subprocess, "run", return_value=done) as run:
             package.shlibs_depends(stage)
         args = run.call_args.args[0]
-        self.assertIn("-l/usr/lib/x86_64-linux-gnu", args)
-        self.assertLess(args.index("-l/usr/lib/x86_64-linux-gnu"),
+        self.assertIn("-l/usr/lib/aarch64-linux-gnu", args)
+        self.assertLess(args.index("-l/usr/lib/aarch64-linux-gnu"),
                         next(i for i, a in enumerate(args) if a.startswith("-e")))
 
     def test_a_tree_without_a_binary_is_an_error(self):

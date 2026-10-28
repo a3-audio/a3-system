@@ -25,7 +25,7 @@ from .roles.base import Context, RoleError, record_installed
 from .roles.core import check_core, read_ssh_key
 from .roles.screen import set_up_screen
 from .settings import DEFAULT_PATH, Settings
-from .system import CommandFailed, Runner, platform_name
+from .system import APT_PLATFORMS, CommandFailed, Runner, platform_name
 
 REPO = Path(__file__).resolve().parents[1]
 
@@ -106,7 +106,7 @@ def install_packages(ctx, names):
     """What the roles build against, in one apt call before any of them:
     each role names its own, none relies on another's package."""
     packages = needed_packages(names)
-    if not packages or ctx.platform != "debian":
+    if not packages or ctx.platform not in APT_PLATFORMS:
         return
     ctx.runner.log("\n=== Packages for the roles ===")
     ctx.runner.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",

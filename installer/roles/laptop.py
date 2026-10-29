@@ -74,6 +74,9 @@ ENGINE_JSON_LEFT = ("engine.json was changed by hand: the laptop's output links 
 ENGINE_JSON_FOREIGN = ("engine.json exists and was not written by this installer: the "
                        "laptop's output links are left as they are")
 PHONES_IGNORED = "phones need an output device; ignored"
+# A dry run installs nothing, so on a fresh laptop there is no truth and no
+# shipped engine.json to make the wiring and the units' deck letters from.
+DRY_RUN_WITHOUT_PACKAGES = "the wiring is written after the packages are installed"
 DEFAULT_MAIN = DEFAULTS[SECTION]["output_main"]
 
 
@@ -428,10 +431,18 @@ class Laptop(Role):
             # An update: the installed truth's range refuses before any change too.
             deck_count(ctx.settings, read_truth(ctx))
         self._install_apps(ctx)
-        letters = deck_letters(deck_count(ctx.settings, read_truth(ctx)))
-        self._wire(ctx, letters)
-        self._units(ctx, letters)
+        if ctx.runner.dry_run and not self._packages_here():
+            ctx.runner.log(DRY_RUN_WITHOUT_PACKAGES)
+        else:
+            letters = deck_letters(deck_count(ctx.settings, read_truth(ctx)))
+            self._wire(ctx, letters)
+            self._units(ctx, letters)
         ctx.runner.run(a3_root_command(ctx, "join-audio"), root=True)
+
+    @staticmethod
+    def _packages_here():
+        """Whether what the wiring reads from the packages is installed."""
+        return TRUTH.exists() and ENGINE_CONFIG.exists()
 
     def _install_apps(self, ctx):
         """All five in one a3-root call, which also holds them."""

@@ -302,6 +302,18 @@ class TheInstall(LaptopCase):
             self.install(ctx)
         self.assertIn("5", str(caught.exception))
 
+    def test_a_dry_run_on_a_fresh_laptop_says_the_wiring_comes_after_the_packages(self):
+        ctx, log = self.ctx()
+        ctx.runner.dry_run = True
+        laptop.TRUTH.unlink()
+        with mock.patch.object(laptop, "ENGINE_CONFIG", Path(ctx.home) / "absent.json"):
+            laptop.Laptop().install(ctx)   # the real _wire and _units: no RoleError
+        self.assertIn("the wiring is written after the packages are installed", log)
+        commands = log.commands()
+        self.assertIn(f"root: {A3_ROOT} install {FIVE_APPS}", commands)
+        self.assertEqual(f"root: {A3_ROOT} join-audio", commands[-1])
+        self.assertFalse((Path(ctx.home) / laptop.LAPTOP_TRUTH).exists())
+
     def test_a_missing_truth_after_the_install_is_a_role_error(self):
         ctx, _ = self.ctx()
         laptop.TRUTH.unlink()

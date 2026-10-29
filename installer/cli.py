@@ -273,6 +273,33 @@ def refused_roles(ctx, names):
     return {"core": why}
 
 
+def refused_together(names):
+    """Why the named roles cannot share a machine, or None: a role that
+    excludes every other (the laptop is a whole rig by itself)."""
+    for name in names:
+        others = [other for other in names if other != name]
+        if BY_NAME[name].excludes_other_roles and others:
+            return (f"The role {name} excludes every other role on its machine, here "
+                    f"{', '.join(others)}: choose {name} alone or without it.")
+    return None
+
+
+NO_CHECKOUT_VERSION = "the archive's packages"
+
+
+def choose_checkout(ctx, args, roles):
+    """The version, its checkout and catch-up; none of it for roles that need
+    no checkout (their apps come from the archive, they read no submodule)."""
+    if roles and all(BY_NAME[name].runs_without_checkout for name in roles):
+        return NO_CHECKOUT_VERSION
+    version = choose_version(ctx, args)
+    if version != release.current(ctx.runner, REPO):
+        release.check_out(ctx.runner, REPO, version)
+    release.catch_up(ctx.runner, REPO, version)
+    ctx.settings.set("system", "version", version)
+    return version
+
+
 def refuse_place(names, dry_run):
     """Whether this user and checkout may not install `names`; says why."""
     problems = place_problems(REPO, getpass.getuser(), names)
@@ -318,22 +345,18 @@ def main(argv=None):
     if ssh_key:
         ctx.answers["ssh_key"] = ssh_key
 
-    # The stored roles: a rig is refused before anything changes. A first
-    # run has none yet and is checked again once its roles are chosen.
-    stored = settings.roles()
-    if stored and refuse_place(stored, args.dry_run):
-        return 2
-
     try:
-        version = choose_version(ctx, args)
-        if version != release.current(runner, REPO):
-            release.check_out(runner, REPO, version)
-        release.catch_up(runner, REPO, version)
-        settings.set("system", "version", version)
-
+        # The roles before the version: who may run this, from where, and
+        # whether the checkout moves at all, all depend on them, and nothing
+        # may change before a refusal.
         roles = choose_roles(ctx)
+        together = refused_together(roles)
+        if together:
+            print(together, file=sys.stderr)
+            return 2
         if refuse_place(roles, args.dry_run):
             return 2
+        version = choose_checkout(ctx, args, roles)
         unsupported = [r for r in roles if not BY_NAME[r].supported(ctx.platform)]
         if unsupported:
             raise RoleError(f"Not yet possible on {ctx.platform}: "

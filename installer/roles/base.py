@@ -137,6 +137,9 @@ class Role:
     # A role that needs no checkout of this repository at all: its apps
     # come from the archive and it reads no submodule.
     runs_without_checkout = False
+    # A role that is a whole machine by itself: cli refuses it beside any
+    # other role before anything changes.
+    excludes_other_roles = False
 
     def supported(self, platform):
         return platform in self.platforms
@@ -209,7 +212,7 @@ SCREEN_PACKAGES = ("xinit", "i3", "x11-xserver-utils")
 TWO_DECK_OFF = "ExecCondition=/bin/false"
 
 
-def two_deck_off_drop_in(written_by=""):
+def two_deck_off_drop_in(written_by):
     """The drop-in that keeps the two-deck player down where the decks play as
     stemdeck@ instances (deck-host, laptop). `written_by` is the role's mark,
     by which it knows the file as its own when it leaves."""

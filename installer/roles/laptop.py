@@ -17,7 +17,8 @@ The output is a PipeWire sink, asked from pw-dump; empty is PipeWire's
 default sink, which WirePlumber also falls back to when a chosen USB card is
 unplugged (R4).
 
-It excludes every other role: they are this machine's parts already.
+It excludes every other role (cli.refused_together): they are this
+machine's parts already.
 """
 
 import json
@@ -69,7 +70,8 @@ def wanted_decks(settings):
     value = settings.get(SECTION, "decks").strip()
     if not value:
         return None
-    if not value.isdigit() or int(value) < 1:
+    # ASCII decimals only: isdigit takes "²", which int() refuses.
+    if not (value.isascii() and value.isdecimal()) or int(value) < 1:
         raise RoleError(f"[laptop] decks = {value!r}: a whole number from 1, "
                         "or empty for as many as the system knows.")
     return int(value)
@@ -140,6 +142,7 @@ class Laptop(Role):
     needs_screen = False
     any_user_anywhere = True
     runs_without_checkout = True
+    excludes_other_roles = True
 
     def configure(self, ctx):
         s, ask = ctx.settings, ctx.prompter
@@ -156,7 +159,6 @@ class Laptop(Role):
                 s.get(SECTION, "output_main")))
 
     def install(self, ctx):
-        _refuse_beside(ctx.settings.roles())
         if ctx.from_source:
             raise RoleError("The laptop role is packages only: its apps come from the "
                             "archive. Run the installer without --from-source.")
@@ -173,7 +175,7 @@ class Laptop(Role):
             if app.unit:
                 apppackage.refuse_shadowing_leftovers(ctx, app)
         names = [apppackage.obtain(ctx, app, None, None, None) for app in APP_PACKAGES]
-        ctx.runner.run(a3_root_command(ctx, "install", *names), root=True)
+        apppackage.install_together(ctx, APP_PACKAGES, names)
 
     def _wire(self, ctx, letters):
         """The local links between the decks, the engine and the output
@@ -182,9 +184,3 @@ class Laptop(Role):
     def _units(self, ctx, letters):
         """The deck instances and the Core's units for one machine (Task 15)."""
 
-
-def _refuse_beside(roles):
-    others = [name for name in roles if name != Laptop.name]
-    if others:
-        raise RoleError(f"laptop and {', '.join(others)} exclude each other: the laptop "
-                        "role is a whole rig on one machine and brings those parts itself.")

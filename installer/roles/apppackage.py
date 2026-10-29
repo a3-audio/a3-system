@@ -165,17 +165,26 @@ def _put_back(ctx, app, done):
 
 
 def install(ctx, app, *what):
-    done = []
+    install_together(ctx, (app,), what)
+
+
+def install_together(ctx, apps, whats):
+    """`apps` in one apt call of `whats` (from obtain()): the units that
+    would shadow theirs set aside before, put back if apt does not finish."""
+    done = {app: [] for app in apps}
     try:
-        if app.unit:   # an app without a unit (the desk) has nothing to set aside
-            _set_aside(ctx, app, done)
-        apt_install(ctx, app, *what)
+        for app in apps:
+            if app.unit:   # an app without a unit (the desk) has nothing to set aside
+                _set_aside(ctx, app, done[app])
+        apt_install(ctx, apps[0], *whats)
     except BaseException:
         # BaseException: a Ctrl-C at the sudo prompt must not leave the
         # machine with its unit disabled, renamed and no package either.
-        _put_back(ctx, app, done)
+        for app in reversed(apps):
+            _put_back(ctx, app, done[app])
         raise
-    hold(ctx, app)
+    for app in apps:
+        hold(ctx, app)
 
 
 def apt_install(ctx, app, *what):

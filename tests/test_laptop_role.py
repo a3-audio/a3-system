@@ -4,12 +4,14 @@
 StemDeck decks, the desk, Motion UI, the beat-analyzer), from packages only,
 for any user anywhere. This file covers its settings, refusals and packages."""
 
+import io
 import json
 import shutil
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from contextlib import ExitStack, redirect_stderr, redirect_stdout
 from unittest import mock
 
 REPO = Path(__file__).resolve().parents[1]
@@ -23,6 +25,7 @@ from installer.roles import ALL, BY_NAME, base, deckhost, needed_packages, needs
 from installer.roles import laptop  # noqa: E402
 from installer.roles.base import Context, RoleError  # noqa: E402
 from installer.settings import DEFAULTS, ROLES, Settings  # noqa: E402
+from installer.system import CommandFailed, Runner  # noqa: E402
 
 A3_ROOT = str(archive.A3_ROOT)
 FIVE_APPS = "a3-core-app stemdeck a3-desk a3-motion-ui beat-analyzer"
@@ -148,7 +151,7 @@ class TheDecks(unittest.TestCase):
         self.assertIn("4", str(caught.exception))
 
     def test_no_number_or_none_at_all_is_refused(self):
-        for value in ("zwei", "0", "-1", "2.5"):
+        for value in ("zwei", "0", "-1", "2.5", "\u00b2", "\u0663"):
             with self.subTest(value):
                 s = Settings("/nonexistent/install.conf")
                 s.set("laptop", "decks", value)
@@ -207,11 +210,13 @@ class TheRefusals(LaptopCase):
     def test_laptop_excludes_every_other_role(self):
         for other in ("core", "stemdeck", "deck-host", "motion", "desk", "mixer"):
             with self.subTest(other):
-                ctx, log = self.ctx({("roles", other): "yes"})
-                with self.assertRaises(RoleError) as caught:
-                    laptop.Laptop().install(ctx)
-                self.assertIn(other, str(caught.exception))
-                self.assertEqual([], log.commands())
+                why = cli.refused_together([other, "laptop"])
+                self.assertIn(other, why)
+                self.assertIn("laptop", why)
+
+    def test_the_rig_roles_go_together_as_before(self):
+        self.assertIsNone(cli.refused_together(["core", "stemdeck", "motion", "desk"]))
+        self.assertIsNone(cli.refused_together(["laptop"]))
 
     def test_from_source_is_refused_before_any_change(self):
         ctx, log = self.ctx(from_source=True)
@@ -320,7 +325,129 @@ class TheOutputDevice(LaptopCase):
 class TheTwoDeckDropIn(unittest.TestCase):
     def test_it_lives_in_base_and_deck_host_uses_it(self):
         self.assertIs(base.two_deck_off_drop_in, deckhost.two_deck_off_drop_in)
-        self.assertIn("ExecCondition=/bin/false", base.two_deck_off_drop_in())
+        text = base.two_deck_off_drop_in("# mark\n")
+        self.assertTrue(text.startswith("# mark\n"))
+        self.assertIn("ExecCondition=/bin/false", text)
+
+    def test_the_mark_is_required(self):
+        with self.assertRaises(TypeError):
+            base.two_deck_off_drop_in()
+
+
+class FailingInstallRunner(RootRecordingRunner):
+    """a3-root install fails; everything else is only logged."""
+
+    def run(self, args, cwd=None, env=None, root=False, check=True, input=None):
+        super().run(args, cwd=cwd, env=env, root=root, check=check, input=input)
+        if [str(a) for a in args][:2] == [A3_ROOT, "install"]:
+            raise CommandFailed("a3-root install failed")
+        return 0
+
+
+class TheHandUnits(LaptopCase):
+    def hand_unit(self, ctx):
+        hand = ctx.user_units / "stemdeck.service"
+        hand.write_text("[Service]\nExecStart=/opt/stemdeck\n")
+        return hand
+
+    def test_a_hand_unit_of_one_of_the_five_is_set_aside_before_the_one_install(self):
+        ctx, log = self.ctx()
+        hand = self.hand_unit(ctx)
+        with mock.patch.object(laptop.Laptop, "_wire"), mock.patch.object(laptop.Laptop, "_units"):
+            laptop.Laptop().install(ctx)
+        commands = log.commands()
+        aside = f"mv -n {hand} {hand}.before-package"
+        self.assertIn(aside, commands)
+        self.assertLess(commands.index(aside),
+                        commands.index(f"root: {A3_ROOT} install {FIVE_APPS}"))
+
+    def test_it_is_put_back_when_the_install_fails(self):
+        ctx, log = self.ctx()
+        ctx.runner = FailingInstallRunner(PW_DUMP, log=log)
+        hand = self.hand_unit(ctx)
+        with self.assertRaises(CommandFailed):
+            laptop.Laptop().install(ctx)
+        commands = log.commands()
+        back = f"mv -n {hand}.before-package {hand}"
+        self.assertIn(back, commands)
+        self.assertGreater(commands.index(back),
+                           commands.index(f"root: {A3_ROOT} install {FIVE_APPS}"))
+        self.assertIn("systemctl --user enable stemdeck.service", commands)
+
+
+class AnsweringPrompter(Prompter):
+    interactive = True
+
+    def __init__(self, roles):
+        self.roles = roles
+
+    def checklist(self, question, options, chosen):
+        return list(self.roles)
+
+    def yesno(self, question, default):
+        return False   # "Install like this?" no: the run stops before any install
+
+
+class Main(unittest.TestCase):
+    """cli.main with a runner that records every command and runs none."""
+
+    def main(self, argv, roles=(), prompter=None, user="aaa", place_ok=True):
+        home = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, home)
+        conf = home / "install.conf"
+        conf.write_text("[roles]\n" + "".join(f"{r} = yes\n" for r in roles)
+                        + "[system]\narchive = public\n")
+        ran = []
+
+        class Untouchable(Runner):
+            def run(self, args, **_kwargs):
+                ran.append([str(a) for a in args])
+                return 0
+
+            def output(self, args, cwd=None):
+                ran.append([str(a) for a in args])
+                return ""
+
+        with ExitStack() as stack:
+            for patch in (mock.patch.object(cli, "Runner", Untouchable),
+                          mock.patch.object(cli, "DEFAULT_PATH", conf),
+                          mock.patch.object(cli, "make_prompter",
+                                            lambda interactive: prompter or Prompter()),
+                          mock.patch.object(cli.getpass, "getuser", lambda: user),
+                          mock.patch.object(Path, "home", lambda: home)):
+                stack.enter_context(patch)
+            if place_ok:
+                stack.enter_context(mock.patch.object(cli, "where_problems", lambda *_: []))
+            stderr = io.StringIO()
+            stack.enter_context(redirect_stderr(stderr))
+            stack.enter_context(redirect_stdout(io.StringIO()))
+            code = cli.main(argv)
+        return code, stderr.getvalue(), ran
+
+    def test_laptop_beside_another_role_is_refused_before_any_command(self):
+        code, said, ran = self.main(["--update"], roles=("core", "laptop"))
+        self.assertEqual(2, code)
+        self.assertIn("core", said)
+        self.assertIn("laptop", said)
+        self.assertEqual([], ran)
+
+    def test_a_wrong_user_s_first_run_touches_no_git(self):
+        code, said, ran = self.main([], prompter=AnsweringPrompter(["core"]), user="root",
+                                    place_ok=False)
+        self.assertEqual(2, code)
+        self.assertIn("cannot run like this", said)
+        self.assertEqual([], [c for c in ran if c[:1] == ["git"]])
+
+    def test_the_laptop_role_skips_the_version_checkout(self):
+        def must_not_run(*_args, **_kwargs):
+            raise AssertionError("the version step ran for a role without a checkout")
+        with mock.patch.object(cli, "choose_version", must_not_run), \
+                mock.patch.object(cli.release, "check_out", must_not_run), \
+                mock.patch.object(cli.release, "catch_up", must_not_run):
+            code, said, ran = self.main([], prompter=AnsweringPrompter(["laptop"]),
+                                        user="somebody", place_ok=False)
+        self.assertEqual(1, code, said)   # cancelled at "Install like this?"
+        self.assertEqual([], [c for c in ran if c[:1] == ["git"]])
 
 
 if __name__ == "__main__":

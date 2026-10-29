@@ -283,6 +283,25 @@ class TheInstall(LaptopCase):
         self.assertIn("5", str(caught.exception))
         self.assertNotIn(f"root: {A3_ROOT} join-audio", log.commands())
 
+    def test_more_decks_than_a_truth_already_here_knows_are_refused_before_the_apps(self):
+        ctx, log = self.ctx({("laptop", "decks"): "5"}, highest_deck=4)
+        with self.assertRaises(RoleError) as caught:
+            self.install(ctx)
+        self.assertIn("5", str(caught.exception))
+        self.assertEqual([], log.commands())
+
+    def test_without_a_truth_yet_the_apps_install_before_the_count_is_checked(self):
+        ctx, log = self.ctx({("laptop", "decks"): "5"}, highest_deck=4)
+        truth = laptop.TRUTH.read_text()
+        laptop.TRUTH.unlink()
+
+        def install_together(_ctx, _apps, _names):
+            laptop.TRUTH.write_text(truth)   # as the a3-core-app package does
+        with mock.patch.object(laptop.apppackage, "install_together", install_together), \
+                self.assertRaises(RoleError) as caught:
+            self.install(ctx)
+        self.assertIn("5", str(caught.exception))
+
     def test_a_missing_truth_after_the_install_is_a_role_error(self):
         ctx, _ = self.ctx()
         laptop.TRUTH.unlink()

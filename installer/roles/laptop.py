@@ -424,6 +424,9 @@ class Laptop(Role):
             raise RoleError("The laptop role is packages only: its apps come from the "
                             "archive. Run the installer without --from-source.")
         wanted_decks(ctx.settings)   # a malformed count is refused before any change
+        if TRUTH.exists():
+            # An update: the installed truth's range refuses before any change too.
+            deck_count(ctx.settings, read_truth(ctx))
         self._install_apps(ctx)
         letters = deck_letters(deck_count(ctx.settings, read_truth(ctx)))
         self._wire(ctx, letters)

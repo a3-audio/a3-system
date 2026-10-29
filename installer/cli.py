@@ -23,7 +23,7 @@ import sys
 from pathlib import Path
 
 from . import archive, release
-from .leave import discover_roles, leave_roles
+from .leave import deselected, discover_roles, installed_now, leave_roles
 from .prompt import make_prompter
 from .roles import ALL, BY_NAME, needed_packages, needed_submodules, needs_screen
 from .roles.base import STATE_FILE, Context, RoleError, State, record_installed
@@ -57,6 +57,15 @@ def parse(argv):
     parser.add_argument("--flash-firmware", action="store_true")
     parser.add_argument("--ssh-key", type=Path, metavar="FILE")
     return parser.parse_args(argv)
+
+
+def place_problems(repo, user, names):
+    """where_problems, unless every named role runs as any user anywhere
+    (the laptop: packages only, units with %h). No roles yet: the check holds."""
+    roles = [BY_NAME[name] for name in names]
+    if roles and all(role.any_user_anywhere for role in roles):
+        return []
+    return where_problems(repo, user)
 
 
 def where_problems(repo, user):
@@ -264,6 +273,62 @@ def refused_roles(ctx, names):
     return {"core": why}
 
 
+def refused_together(names):
+    """Why the named roles cannot share a machine, or None: a role that
+    excludes every other (the laptop is a whole rig by itself)."""
+    for name in names:
+        others = [other for other in names if other != name]
+        if BY_NAME[name].excludes_other_roles and others:
+            return (f"The role {name} excludes every other role on its machine, here "
+                    f"{', '.join(others)}: choose {name} alone or without it.")
+    return None
+
+
+def refused_from_source(names, from_source):
+    """Why --from-source cannot install the named roles, or None: a role
+    whose apps come from the archive only. Asked before the old roles leave."""
+    if not from_source:
+        return None
+    packages_only = [name for name in names if BY_NAME[name].packages_only]
+    if not packages_only:
+        return None
+    return (f"The role {', '.join(packages_only)} is packages only: its apps come from "
+            "the archive. Run the installer without --from-source.")
+
+
+NO_CHECKOUT_VERSION = "the archive's packages"
+
+
+def choose_checkout(ctx, args, roles):
+    """The version, its checkout and catch-up; none of it for roles that need
+    no checkout (their apps come from the archive, they read no submodule)."""
+    if roles and all(BY_NAME[name].runs_without_checkout for name in roles):
+        return NO_CHECKOUT_VERSION
+    version = choose_version(ctx, args)
+    if version != release.current(ctx.runner, REPO):
+        release.check_out(ctx.runner, REPO, version)
+    release.catch_up(ctx.runner, REPO, version)
+    ctx.settings.set("system", "version", version)
+    return version
+
+
+def touched_roles(ctx, chosen):
+    """The chosen roles and those that leave this run: the place check and
+    the checkout hold for both (leaving the laptop needs neither)."""
+    installed, _found = installed_now(ctx, discover_roles)
+    return list(chosen) + deselected(installed, chosen)
+
+
+def refuse_place(names, dry_run):
+    """Whether this user and checkout may not install `names`; says why."""
+    problems = place_problems(REPO, getpass.getuser(), names)
+    if not problems or dry_run:
+        return False
+    print("The installer cannot run like this:\n  " + "\n  ".join(problems)
+          + "\nWith --dry-run you can still look at what it would do.", file=sys.stderr)
+    return True
+
+
 def summary_text(version, names, refused):
     installing = [n for n in names if n not in refused]
     text = (f"Version: {version}\nRoles: "
@@ -299,20 +364,20 @@ def main(argv=None):
     if ssh_key:
         ctx.answers["ssh_key"] = ssh_key
 
-    problems = where_problems(REPO, getpass.getuser())
-    if problems and not args.dry_run:
-        print("The installer cannot run like this:\n  " + "\n  ".join(problems)
-              + "\nWith --dry-run you can still look at what it would do.", file=sys.stderr)
-        return 2
-
     try:
-        version = choose_version(ctx, args)
-        if version != release.current(runner, REPO):
-            release.check_out(runner, REPO, version)
-        release.catch_up(runner, REPO, version)
-        settings.set("system", "version", version)
-
+        # The roles before the version: who may run this, from where, and
+        # whether the checkout moves at all, all depend on them, and nothing
+        # may change before a refusal.
         roles = choose_roles(ctx)
+        refused_now = (refused_together(roles)
+                    or refused_from_source(roles, ctx.from_source))
+        if refused_now:
+            print(refused_now, file=sys.stderr)
+            return 2
+        touched = touched_roles(ctx, roles)
+        if refuse_place(touched, args.dry_run):
+            return 2
+        version = choose_checkout(ctx, args, touched)
         unsupported = [r for r in roles if not BY_NAME[r].supported(ctx.platform)]
         if unsupported:
             raise RoleError(f"Not yet possible on {ctx.platform}: "

@@ -72,16 +72,22 @@ def pinned_commit(repo, path, run):
     return rev
 
 
-def package_command(repo, path, rev, out, cache, juce, jobs):
+def package_command(repo, path, rev, out, cache, juce, jobs, recipe):
     return ["python3", "-I", str(repo / "installer" / "package.py"), str(repo / path),
             "--rev", rev, "--out", str(out), "--cache", str(cache),
-            "--juce", str(juce), "--jobs", str(jobs)]
+            "--juce", str(juce), "--jobs", str(jobs),
+            "--recipe", recipe]
+
+
+def build_targets(line):
+    """(path, recipe) for every package of the line: one repo can yield several."""
+    return [(build["path"], recipe) for build in line["builds"] for recipe in build["recipes"]]
 
 
 def build_commands(line, repo, out, cache, juce, jobs, run=run):
-    return [package_command(repo, build["path"], pinned_commit(repo, build["path"], run),
-                            out, cache, juce, jobs)
-            for build in line["builds"]]
+    return [package_command(repo, path, pinned_commit(repo, path, run),
+                            out, cache, juce, jobs, recipe)
+            for path, recipe in build_targets(line)]
 
 
 def check_architecture(deb, arch, run):
@@ -92,12 +98,12 @@ def check_architecture(deb, arch, run):
 
 def build_line(line, commands, run):
     debs = []
-    for build, command in zip(line["builds"], commands):
+    for (path, recipe), command in zip(build_targets(line), commands):
         try:
             deb = run(command).strip().splitlines()[-1]
             check_architecture(deb, line["arch"], run)
         except (BuildLineError, IndexError) as error:
-            raise BuildLineError(f"{build['path']} failed: {error or 'no .deb printed'}")
+            raise BuildLineError(f"{path} ({recipe}) failed: {error or 'no .deb printed'}")
         debs.append(deb)
     return debs
 

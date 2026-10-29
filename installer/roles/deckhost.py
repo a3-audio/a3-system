@@ -59,7 +59,9 @@ from pathlib import Path
 
 from .. import package as debs
 from . import stemdeck
-from .base import Role, RoleError, remove_files, systemctl_user, write_drop_in
+from .base import (SHIPPED_RATE, TWO_DECK_OFF, Role, RoleError, link_server_rate, rate_link,
+                   remove_files, systemctl_user, two_deck_off_drop_in, write_drop_in,
+                   write_home_file)
 from .motion import UNIT as MOTION_UNIT
 
 LETTERS = "ABCD"
@@ -81,13 +83,10 @@ _QUANTUM_SETTING = re.compile(
     r"\s*=\s*\[?\s*(\d+)")
 INSTANCE_TEMPLATE = Path("/usr/lib/systemd/user/stemdeck@.service")
 DROP_IN = "deck-host.conf"
-SHIPPED_RATE = Path("/usr/share/stemdeck/10-stemdeck-rate.conf")
-RATE_LINK = Path(".config/pipewire/pipewire.conf.d") / SHIPPED_RATE.name
 PANEL_DROP_IN = "panel-follows.conf"
 # Written by an earlier run that had the "Motion here too" option; only cleaned up now.
 MOTION_CONFLICT_DROP_IN = "deck-host.conf"
 TWO_DECK_UNIT = stemdeck.UNIT
-TWO_DECK_OFF = "ExecCondition=/bin/false"
 WRITTEN_BY = "# Written by the a3-system installer (role deck-host); removed when it leaves.\n"
 
 STOCK_PTP4L = Path("/etc/linuxptp/ptp4l.conf")
@@ -207,15 +206,6 @@ def audio_port_drop_in(port):
     return (WRITTEN_BY
             + "[Service]\n"
             f"Environment=STEMDECK_AUDIO_PORT={port}\n")
-
-
-def two_deck_off_drop_in():
-    return (WRITTEN_BY
-            + "# The package enables the two-deck player globally; a deck host plays its\n"
-            "# deck as stemdeck@. No Conflicts=: a conflict inside one transaction drops a\n"
-            "# start job before any condition runs.\n"
-            "[Service]\n"
-            f"{TWO_DECK_OFF}\n")
 
 
 def panel_drop_in(workspace=MOTION_WORKSPACE):
@@ -446,12 +436,6 @@ def with_i3_block(text, force=False, workspace=STEMDECK_WORKSPACE):
     return text + i3_block(workspace)
 
 
-def _write_home_file(ctx, path, text):
-    ctx.runner.log(f"# {path}:\n" + "".join(f"#   {line}\n" for line in text.splitlines()))
-    if not ctx.runner.dry_run:
-        path.write_text(text)
-
-
 # -- the role -------------------------------------------------------------------
 
 class DeckHost(Role):
@@ -492,7 +476,7 @@ class DeckHost(Role):
                       deck_drop_in(latency, workspace))
         self._two_deck_player_off(ctx)
         self._audio_port_drop_ins(ctx)
-        self._server_rate(ctx)
+        link_server_rate(ctx)
         self._panel(ctx)
         self._forget_motion_exclusion(ctx)
         self._i3_rule(ctx, letter, workspace)
@@ -561,17 +545,8 @@ class DeckHost(Role):
             if not ctx.runner.dry_run:
                 aside.rename(path)
 
-    def _server_rate(self, ctx):
-        link = _rate_link(ctx)
-        ctx.runner.log(f"# {link} -> {SHIPPED_RATE}")
-        if ctx.runner.dry_run:
-            return
-        link.parent.mkdir(parents=True, exist_ok=True)
-        link.unlink(missing_ok=True)
-        link.symlink_to(SHIPPED_RATE)
-
     def _two_deck_player_off(self, ctx):
-        write_drop_in(ctx, TWO_DECK_UNIT, DROP_IN, two_deck_off_drop_in())
+        write_drop_in(ctx, TWO_DECK_UNIT, DROP_IN, two_deck_off_drop_in(WRITTEN_BY))
         for hand in _hand_two_deck_off(ctx):
             ctx.runner.log(f"# {hand} does what {DROP_IN} does here; it can be removed "
                            "(left where it is).")
@@ -618,7 +593,7 @@ class DeckHost(Role):
                     + "".join(f"#   {rule}\n" for rule in own_stemdeck_rules(text)))
             return
         if wanted != original:
-            _write_home_file(ctx, path, wanted)
+            write_home_file(ctx, path, wanted)
 
     def _check_workspace_names(self, ctx, path, text, workspace):
         names = [workspace]
@@ -692,7 +667,7 @@ class DeckHost(Role):
                 ctx.user_units / f"{TWO_DECK_UNIT}.d" / DROP_IN,
                 *([_motion_conflict_path(ctx)] if _motion_excluded(ctx) else []),
                 *(_audio_port_path(ctx, unit) for unit in (BASE_UNIT, SENDER_TEMPLATE)),
-                _rate_link(ctx)]
+                rate_link(ctx)]
 
     def leaving_files(self, ctx):
         return [path for path in self._candidate_files(ctx) if _written_by_us(path)]
@@ -750,7 +725,7 @@ class DeckHost(Role):
             text = path.read_text()
             restored = restored_i3_rules(without_i3_block(text))
             if restored != text:
-                _write_home_file(ctx, path, restored)
+                write_home_file(ctx, path, restored)
         self._put_leftovers_back(ctx)
         self._irq_service_back(ctx)
 
@@ -784,10 +759,6 @@ def _letter_units(letter):
 
 def _letter_files(ctx, letter):
     return [ctx.user_units / f"{instance_unit(letter)}.d" / DROP_IN, _wants_link(ctx, letter)]
-
-
-def _rate_link(ctx):
-    return ctx.home / RATE_LINK
 
 
 def _audio_port(ctx):

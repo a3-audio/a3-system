@@ -144,6 +144,32 @@ class Control(unittest.TestCase):
         with self.assertRaises(ValueError):
             package.stamp_control(CONTROL, "03.0+7", "", "amd64")
 
+    def test_the_version_token_names_the_stamped_version(self):
+        text = ("Package: a3-core\nVersion: 0\nArchitecture: all\n"
+                "Depends: a3-core-app (= ${a3:Version}), jackd\nDescription: x\n y\n")
+        stamped = package.stamp_control(text, "03.0+7", None, "amd64")
+        self.assertIn("Depends: a3-core-app (= 03.0+7), jackd\n", stamped)
+        self.assertIn("Version: 03.0+7\n", stamped)
+        self.assertNotIn("${a3:Version}", stamped)
+
+    def test_the_version_token_is_replaced_everywhere(self):
+        text = "Package: x\nVersion: 0\nDepends: a (= ${a3:Version})\nRecommends: b (= ${a3:Version})\n"
+        self.assertEqual(2, package.stamp_control(text, "1+2", None, "all").count("(= 1+2)"))
+
+    def test_a_package_without_binaries_needs_no_shlibs(self):
+        text = "Package: x\nVersion: 0\nArchitecture: all\nDepends: jackd\n"
+        stamped = package.stamp_control(text, "1+2", None, "amd64")
+        self.assertIn("Depends: jackd\n", stamped)
+
+    def test_binaries_without_the_shlibs_token_are_still_refused(self):
+        text = "Package: x\nVersion: 0\nDepends: jackd\n"
+        with self.assertRaises(package.BuildError):
+            package.stamp_control(text, "1+2", "libc6", "amd64")
+
+    def test_the_token_without_binaries_is_an_error_not_shipped(self):
+        with self.assertRaises(package.BuildError):
+            package.stamp_control(CONTROL, "1+2", None, "amd64")
+
     def test_the_architecture_is_the_build_machines(self):
         """The control says amd64; a package built on a Pi holds arm64 code."""
         stamped = package.stamp_control(CONTROL, "03.0+7", "libc6", "arm64")
@@ -577,6 +603,54 @@ class Build(unittest.TestCase):
             self.assertIn(path, seen)
 
 
+class BuildARecipe(unittest.TestCase):
+    """Real tiny repos: a recipe whose stage script lays out one text file."""
+    STAGE = ("#!/bin/sh\nset -e\n"
+             "[ \"$1\" = files ] || exit 0\n"
+             "mkdir -p \"$4/usr/share/tiny\"\necho hi > \"$4/usr/share/tiny/hi\"\n")
+
+    def repo_with(self, recipes):
+        repo = tmpdir(self) / "repo"
+        repo.mkdir()
+        run_git(repo, "init", "-q")
+        for folder, (package_name, depends) in recipes.items():
+            debian = repo / folder / "DEBIAN"
+            debian.mkdir(parents=True)
+            (debian / "control").write_text(
+                f"Package: {package_name}\nVersion: 0\nArchitecture: all\n"
+                f"Depends: {depends}\nDescription: t\n t\n")
+            for script in ("postinst", "prerm", "postrm"):
+                (debian / script).write_text("#!/bin/sh\nexit 0\n")
+            stage = repo / folder / "stage"
+            stage.write_text(self.STAGE)
+            stage.chmod(0o755)
+        run_git(repo, "add", ".")
+        run_git(repo, "commit", "-q", "-m", "x")
+        run_git(repo, "tag", "-a", "v03.0", "-m", "v03.0")
+        return repo
+
+    def test_a_second_recipe_builds_its_own_package(self):
+        repo = self.repo_with({"packaging": ("tiny", "${shlibs:Depends}"),
+                               "packaging/app": ("tiny-app", "jackd, tiny (= ${a3:Version})")})
+        root = tmpdir(self)
+        deb = package.build(repo, out=root / "debs", cache=root / "cache",
+                            recipe=Path("packaging/app"), log=lambda _m: None)
+        self.assertEqual("tiny-app_03.0+0_" + package.host_architecture() + ".deb", deb.name)
+        self.assertTrue((root / "cache/tiny-app/src").is_dir())
+        self.assertFalse((root / "cache/tiny").exists())
+        fields = subprocess.run(["dpkg-deb", "-f", str(deb)], check=True,
+                                capture_output=True, text=True).stdout
+        self.assertIn("Depends: jackd, tiny (= 03.0+0)\n", fields)
+
+    def test_a_recipe_outside_the_archived_tree_is_refused(self):
+        repo = self.repo_with({"packaging": ("tiny", "${shlibs:Depends}")})
+        root = tmpdir(self)
+        for recipe in ("/etc", "../x", "packaging/../../x"):
+            with self.subTest(recipe=recipe), self.assertRaises(package.BuildError):
+                package.build(repo, out=root / "debs", cache=root / "cache",
+                              recipe=Path(recipe), log=lambda _m: None)
+
+
 class Main(unittest.TestCase):
     def test_it_lowers_its_priority_and_prints_the_package(self):
         with mock.patch.object(package, "build", return_value=Path("/d/x_1_amd64.deb")) as build, \
@@ -586,6 +660,14 @@ class Main(unittest.TestCase):
         setpriority.assert_called_once_with(os.PRIO_PROCESS, 0, package.NICENESS)
         self.assertEqual("/d/x_1_amd64.deb", out.getvalue().splitlines()[-1])
         self.assertEqual("abc", build.call_args.kwargs["rev"])
+        self.assertEqual(Path("packaging"), build.call_args.kwargs["recipe"])
+
+    def test_a_recipe_folder_is_passed_on(self):
+        with mock.patch.object(package, "build", return_value=Path("/d/x.deb")) as build, \
+             mock.patch.object(package.os, "setpriority"), \
+             mock.patch("sys.stdout", new_callable=io.StringIO):
+            package.main(["/r", "--recipe", "packaging/app"])
+        self.assertEqual(Path("packaging/app"), build.call_args.kwargs["recipe"])
 
     def test_a_refusal_is_exit_1_with_the_reason(self):
         with mock.patch.object(package, "build", side_effect=package.BuildError("dirty")), \

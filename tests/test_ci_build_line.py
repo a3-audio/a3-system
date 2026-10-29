@@ -63,13 +63,22 @@ class Commands(unittest.TestCase):
         self.assertEqual(built[0], [
             "python3", "-I", "/umbrella/installer/package.py", "/umbrella/a3-core",
             "--rev", SHA["a3-core"], "--out", "/out", "--cache", "/cache",
-            "--juce", "/juce", "--jobs", "2"])
+            "--juce", "/juce", "--jobs", "2", "--recipe", "packaging"])
         self.assertEqual([c[5] for c in built], [SHA["a3-core"], SHA["stemdeck"], SHA["a3-mixer"]])
 
     def test_a_nested_submodule_is_built_at_its_parents_pin(self):
         built = commands(line(paths=("a3-motion/ui",)))
         self.assertEqual(built[0][3], "/umbrella/a3-motion/ui")
         self.assertEqual(built[0][5], SHA["ui-in-motion"])
+
+    def test_a_repo_with_two_recipes_yields_two_debs(self):
+        two = {"arch": "amd64", "builds": [
+            {"path": "a3-core", "recipes": ["packaging/app", "packaging"]}]}
+        built = commands(two)
+        self.assertEqual(len(built), 2)
+        self.assertEqual([c[-1] for c in built], ["packaging/app", "packaging"])
+        self.assertEqual({c[3] for c in built}, {"/umbrella/a3-core"})
+        self.assertEqual({c[5] for c in built}, {SHA["a3-core"]})
 
     def test_a_path_that_is_no_submodule_is_refused(self):
         with self.assertRaisesRegex(build_line.BuildLineError, "nowhere"):
@@ -105,15 +114,43 @@ class Main(unittest.TestCase):
         code, out, _ = self.run_main(["trixie", "--repo", str(UMBRELLA)],
                                      self.fake_builder("arm64"))
         self.assertEqual(code, 0)
-        self.assertEqual(out.splitlines()[0], "/out/stemdeck_1.0_amd64.deb")
-        self.assertEqual(len(out.splitlines()), 4)
+        self.assertEqual(out.splitlines()[1], "/out/stemdeck_1.0_amd64.deb")
+        self.assertEqual(len(out.splitlines()), 5)
+
+    def test_every_deb_of_a_two_recipe_repo_is_architecture_checked(self):
+        code, out, err = self.run_main(["forky", "--repo", str(UMBRELLA)],
+                                       self.fake_builder("amd64"))
+        self.assertEqual(code, 0, err)
+        self.assertEqual(len(out.splitlines()), 6)
+
+    def test_the_second_recipe_failing_names_the_repo_and_recipe(self):
+        git = FakeGit()
+
+        def run(command):
+            if command[0] == "python3" and command[-1] == "packaging" and "a3-core" in command[3]:
+                raise build_line.BuildLineError("boom")
+            if command[0] == "python3":
+                return f"/out/{Path(command[3]).name}_{command[-1].replace('/', '-')}.deb\n"
+            if command[0] == "dpkg-deb":
+                return "amd64\n"
+            return git(command)
+        code, _, err = self.run_main(["forky", "--repo", str(UMBRELLA)], run)
+        self.assertEqual(code, 1)
+        self.assertIn("a3-core (packaging)", err)
+
+    def test_trixie_builds_the_program_package_only(self):
+        lines = build_line.load_lines()
+        core = [b for b in lines["trixie"]["builds"] if b["path"] == "a3-core"]
+        self.assertEqual(core, [{"path": "a3-core", "recipes": ["packaging/app"]}])
+        forky = [b for b in lines["forky"]["builds"] if b["path"] == "a3-core"]
+        self.assertEqual(forky, [{"path": "a3-core", "recipes": ["packaging/app", "packaging"]}])
 
     def test_a_deb_whose_architecture_differs_from_the_line_stops_the_build(self):
         code, out, err = self.run_main(["forky", "--repo", str(UMBRELLA)],
                                        self.fake_builder("arm64"))
         self.assertEqual(code, 1)
         self.assertEqual(out, "")
-        self.assertIn("a3-core", err)
+        self.assertIn("a3-core (packaging/app)", err)
         self.assertIn("arm64", err)
 
 

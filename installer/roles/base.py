@@ -130,6 +130,19 @@ class Role:
     # A role that draws on the machine's screen. When any chosen role does,
     # the installer logs the user in on tty1 and starts X with i3 there.
     needs_screen = False
+    # A role whose units name no user and no checkout path (%h, packages
+    # only): cli.place_problems lets it run as any user from any checkout.
+    # The rig roles' units expect aaa and /home/aaa/a3-system.
+    any_user_anywhere = False
+    # A role that needs no checkout of this repository at all: its apps
+    # come from the archive and it reads no submodule.
+    runs_without_checkout = False
+    # A role that is a whole machine by itself: cli refuses it beside any
+    # other role before anything changes.
+    excludes_other_roles = False
+    # A role whose apps come from the archive only: cli refuses it with
+    # --from-source before anything changes.
+    packages_only = False
 
     def supported(self, platform):
         return platform in self.platforms
@@ -172,7 +185,7 @@ class Role:
                              ("Files, deleted", self.leaving_files(ctx)),
                              ("Not written by the installer, left alone",
                               self.leaving_kept(ctx)),
-                             ("Package, removed (not purged)",
+                             (PACKAGES_REMOVED,
                               self.leaving_packages(ctx)),
                              ("Stays", self.stays)):
             if items:
@@ -191,13 +204,63 @@ class Role:
             systemctl_user(ctx, "daemon-reload")
 
 
+# The dialog's title over the packages a role removes when it leaves.
+PACKAGES_REMOVED = "Package, removed (not purged)"
+
+
 # What a screen role needs on any machine: X started by startx from the tty1
 # login, i3 on it, and xrandr/xset, which the i3 config and
 # a3-wait-for-the-screen call. Not a display manager (installer/roles/screen.py).
 SCREEN_PACKAGES = ("xinit", "i3", "x11-xserver-utils")
 
 
+# -- files in the home -----------------------------------------------------------
+
+# StemDeck's server rate, which every machine with decks links into its own
+# PipeWire config (deck-host, laptop).
+SHIPPED_RATE = Path("/usr/share/stemdeck/10-stemdeck-rate.conf")
+RATE_LINK = Path(".config/pipewire/pipewire.conf.d") / SHIPPED_RATE.name
+
+
+def write_home_file(ctx, path, text):
+    """`text` into `path` (folders made), and every line of it in the log."""
+    ctx.runner.log(f"# {path}:\n" + "".join(f"#   {line}\n" for line in text.splitlines()))
+    if ctx.runner.dry_run:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text)
+
+
+def rate_link(ctx):
+    return ctx.home / RATE_LINK
+
+
+def link_server_rate(ctx):
+    link = rate_link(ctx)
+    ctx.runner.log(f"# {link} -> {SHIPPED_RATE}")
+    if ctx.runner.dry_run:
+        return
+    link.parent.mkdir(parents=True, exist_ok=True)
+    link.unlink(missing_ok=True)
+    link.symlink_to(SHIPPED_RATE)
+
+
 # -- systemd user units -------------------------------------------------------
+
+TWO_DECK_OFF = "ExecCondition=/bin/false"
+
+
+def two_deck_off_drop_in(written_by):
+    """The drop-in that keeps the two-deck player down where the decks play as
+    stemdeck@ instances (deck-host, laptop). `written_by` is the role's mark,
+    by which it knows the file as its own when it leaves."""
+    return (written_by
+            + "# The package enables the two-deck player globally; the decks play here\n"
+            "# as stemdeck@. No Conflicts=: a conflict inside one transaction drops a\n"
+            "# start job before any condition runs.\n"
+            "[Service]\n"
+            f"{TWO_DECK_OFF}\n")
+
 
 def install_user_unit(ctx, source, name=None):
     """The unit file from a component's repository, into ~/.config/systemd/user."""

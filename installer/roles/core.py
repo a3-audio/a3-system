@@ -17,9 +17,11 @@ a3-main, after JACK, off CPU 0); the package does not enable its unit,
 a3-main wants it. Before the package, a3-core's a3-user-install.service
 built it in ~/a3-system/beat-analyzer and its unit ran that build.
 
-a3-core is one package now: the C++ program, its window and the deployment
-(units, i3, PipeWire, the postinst), built from the one a3-core submodule by
-installer/package.py. It Conflicts with and Replaces the a3-engine package
+a3-core is two packages built from the one a3-core submodule by
+installer/package.py: a3-core-app, the C++ program with its window
+(packaging/app), and a3-core, the deployment (units, i3, PipeWire, the
+postinst; packaging), which depends on the app. They are installed, held and
+removed together. It Conflicts with and Replaces the a3-engine package
 of before, which is unheld here if a machine still has it. The beat-analyzer
 is the beat-clock only; the meters come from the program.
 """
@@ -58,8 +60,12 @@ ANALYZER_BUILD_PACKAGES = ("cmake", "g++", "pkg-config", "patch", "curl",
                            "libjack-jackd2-dev", "libsamplerate0-dev")
 
 CORE_SOURCE = "a3-core"
-# The unit whose shadowing is checked: the program's, a3-core's own.
-CORE = apppackage.AppPackage("a3-core", "a3-engine.service")
+# a3-core is two packages: the program (a3-core-app, from packaging/app) and
+# the Core machine's deployment (a3-core, from packaging; depends on the app
+# at the same version). The unit whose shadowing is checked is the program's.
+APP_RECIPE = "packaging/app"
+CORE_APP = apppackage.AppPackage("a3-core-app", "a3-engine.service", recipe=APP_RECIPE)
+CORE = apppackage.AppPackage("a3-core", "")
 # What a3-core's packaging/stage builds with: JUCE's build packages and the
 # JACK development files.
 CORE_BUILD_PACKAGES = tuple(dict.fromkeys(
@@ -287,9 +293,10 @@ class Core(Role):
         # Up front, before anything is built: what would stop either package.
         source, core_source = ctx.repo / ANALYZER_SOURCE, ctx.repo / CORE_SOURCE
         commit, core_pin = buildable_pins(ctx) if ctx.from_source else (None, None)
-        apppackage.refuse_shadowing_leftovers(ctx, CORE)
+        apppackage.refuse_shadowing_leftovers(ctx, CORE_APP)
         apppackage.refuse_shadowing_leftovers(ctx, ANALYZER)
         juce = ensure_juce(ctx) if ctx.from_source else None
+        app_what = apppackage.obtain(ctx, CORE_APP, core_source, core_pin, juce)
         what = apppackage.obtain(ctx, CORE, core_source, core_pin, juce)
         # The package of before: a3-core Conflicts with and Replaces it, but a
         # held package is not replaced unless it is unheld first.
@@ -298,7 +305,8 @@ class Core(Role):
         run.run(["debconf-set-selections"], root=True,
                 input=preseed_lines(ctx.settings, ctx.answers.get("replace"),
                                   ctx.answers.get("ssh_key")))
-        apppackage.apt_install(ctx, CORE, what)
+        apppackage.apt_install(ctx, CORE, app_what, what)
+        apppackage.hold(ctx, CORE_APP)
         apppackage.hold(ctx, CORE)
         # The postinst clears the marker, but apt runs no postinst when the
         # deb is the installed version: the marker then stayed, and the next
@@ -308,8 +316,8 @@ class Core(Role):
         # The program's unit is a3-main's to start (as the analyzer's), so it
         # is not enabled here; a running one moves over.
         systemctl_user(ctx, "daemon-reload")
-        systemctl_user(ctx, "try-restart", CORE.unit)
-        apppackage.check_packaged_unit_wins(ctx, CORE)
+        systemctl_user(ctx, "try-restart", CORE_APP.unit)
+        apppackage.check_packaged_unit_wins(ctx, CORE_APP)
         self._analyzer(ctx, source, commit)
 
     def _analyzer(self, ctx, source, commit):
@@ -327,10 +335,10 @@ class Core(Role):
              "~/.ssh/authorized_keys (backed up and put back on removal)")
 
     def leaving_units(self, ctx):
-        return list(CORE_UNITS) + [ANALYZER_UNIT, CORE.unit]
+        return list(CORE_UNITS) + [ANALYZER_UNIT, CORE_APP.unit]
 
     def leaving_packages(self, ctx):
-        return [CORE.package, ANALYZER.package]
+        return [CORE.package, CORE_APP.package, ANALYZER.package]
 
     def leaving_lines(self, ctx):
         return super().leaving_lines(ctx) + [
@@ -348,7 +356,7 @@ class Core(Role):
         if keep_keys:
             run.run(["cp", "-p", keys, kept])
         try:
-            apppackage.remove(ctx, CORE)
+            apppackage.remove(ctx, CORE, CORE_APP)
         finally:
             if keep_keys:
                 run.run(["mv", "-f", kept, keys])
@@ -360,10 +368,11 @@ def buildable_pins(ctx):
     """(the beat-analyzer's pinned commit, a3-core's) for a build from source;
     refused when either pin predates its package."""
     commit, core_pin = analyzer_commit(ctx), core_commit(ctx)
-    if not has_packaging(ctx, ctx.repo / CORE_SOURCE, core_pin):
-        raise RoleError(f"a3-core at {core_pin[:10]} has no packaging/stage: the "
-                        "umbrella's a3-core pin is older than its package; "
-                        "raise the a3-core pin first.")
+    for recipe in (apppackage.DEFAULT_RECIPE, APP_RECIPE):
+        if not has_packaging(ctx, ctx.repo / CORE_SOURCE, core_pin, recipe):
+            raise RoleError(f"a3-core at {core_pin[:10]} has no {recipe}/stage: the "
+                            "umbrella's a3-core pin is older than its packages; "
+                            "raise the a3-core pin first.")
     if not has_packaging(ctx, ctx.repo / ANALYZER_SOURCE, commit):
         raise RoleError(f"{ANALYZER_SOURCE} at {commit[:10]} has no packaging/stage: the "
                         f"umbrella's {ANALYZER_SOURCE} pin is older than its package; "

@@ -10,6 +10,8 @@ roles, when any chosen role needs a screen; the same steps on every run.
 import shutil
 from pathlib import Path
 
+from .base import write_home_file
+
 AUTOLOGIN_UNIT = "getty@tty1.service"
 AUTOLOGIN_DROP_IN = Path("/etc/systemd/system") / f"{AUTOLOGIN_UNIT}.d" / "a3-autologin.conf"
 
@@ -71,18 +73,12 @@ def with_autologin_block(text):
     return text + ("\n" if text else "") + autologin_block()
 
 
-def _write_home_file(ctx, path, text):
-    ctx.runner.log(f"# {path}:\n" + "".join(f"#   {line}\n" for line in text.splitlines()))
-    if not ctx.runner.dry_run:
-        path.write_text(text)
-
-
 def ensure_bash_profile(ctx):
     path = ctx.home / ".bash_profile"
     current = path.read_text() if path.exists() else None
     wanted = with_autologin_block(current)
     if wanted != current:
-        _write_home_file(ctx, path, wanted)
+        write_home_file(ctx, path, wanted)
 
 
 def ensure_xinitrc(ctx):
@@ -92,7 +88,7 @@ def ensure_xinitrc(ctx):
                        "It must start i3 and pass DISPLAY/XAUTHORITY to systemd --user, "
                        "or the Core's windows will not find X.")
         return
-    _write_home_file(ctx, path, XINITRC_TEXT)
+    write_home_file(ctx, path, XINITRC_TEXT)
 
 
 def write_autologin_drop_in(ctx):

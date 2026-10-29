@@ -32,6 +32,7 @@ PACKAGED_UNITS = Path("/usr/lib/systemd/user")
 # before the package, a3nuc2's build.conf).
 SHADOWING_KEYS = ("ExecStart", "ExecStartPre", "WorkingDirectory")
 DISABLED = "disabled"
+DEFAULT_RECIPE = "packaging"
 
 
 @dataclass(frozen=True)
@@ -40,6 +41,8 @@ class AppPackage:
     unit: str
     # Drop-ins another package ships for this unit: they add, they are kept.
     kept_drop_ins: tuple = ()
+    # The recipe folder in the app's repository its .deb is built from.
+    recipe: str = DEFAULT_RECIPE
 
     @property
     def packaged_unit(self):
@@ -52,11 +55,11 @@ def pinned_commit(ctx, submodule):
     return ctx.runner.output(["git", "-C", ctx.repo, "rev-parse", f"HEAD:{submodule}"]).strip()
 
 
-def has_packaging(ctx, source, commit):
+def has_packaging(ctx, source, commit, recipe=DEFAULT_RECIPE):
     """Whether `commit` of the repository at `source` carries the recipe
     installer/package.py builds from."""
     return bool(ctx.runner.output(["git", "-C", source, "ls-tree", "--name-only", commit,
-                                   "packaging/stage"]).strip())
+                                   f"{recipe}/stage"]).strip())
 
 
 def build(ctx, app, source, commit, juce):
@@ -64,9 +67,10 @@ def build(ctx, app, source, commit, juce):
     CLI of installer/package.py (which lowers itself to nice 19); its path."""
     out = ctx.home / "a3-debs"
     cache = ctx.home / ".cache" / "a3-build"
+    recipe = [] if app.recipe == DEFAULT_RECIPE else ["--recipe", app.recipe]
     ctx.runner.run(["python3", ctx.repo / "installer" / "package.py", source,
                     "--rev", commit, "--out", out, "--cache", cache,
-                    "--jobs", BUILD_JOBS, "--juce", juce])
+                    "--jobs", BUILD_JOBS, "--juce", juce, *recipe])
     return debs.deb_path(out, app.package, debs.version_of(source, commit),
                          debs.host_architecture())
 
@@ -160,27 +164,38 @@ def _put_back(ctx, app, done):
         systemctl_user(ctx, "enable", app.unit, check=False)
 
 
-def install(ctx, app, what):
-    done = []
+def install(ctx, app, *what):
+    install_together(ctx, (app,), what)
+
+
+def install_together(ctx, apps, whats):
+    """`apps` in one apt call of `whats` (from obtain()): the units that
+    would shadow theirs set aside before, put back if apt does not finish."""
+    done = {app: [] for app in apps}
     try:
-        if app.unit:   # an app without a unit (the desk) has nothing to set aside
-            _set_aside(ctx, app, done)
-        apt_install(ctx, app, what)
+        for app in apps:
+            if app.unit:   # an app without a unit (the desk) has nothing to set aside
+                _set_aside(ctx, app, done[app])
+        apt_install(ctx, apps[0], *whats)
     except BaseException:
         # BaseException: a Ctrl-C at the sudo prompt must not leave the
         # machine with its unit disabled, renamed and no package either.
-        _put_back(ctx, app, done)
+        for app in reversed(apps):
+            _put_back(ctx, app, done[app])
         raise
-    hold(ctx, app)
+    for app in apps:
+        hold(ctx, app)
 
 
-def apt_install(ctx, app, what):
-    """`what` from obtain(): a .deb path from source, else the package name."""
+def apt_install(ctx, app, *what):
+    """`what` from obtain(): .deb paths from source, else package names; all
+    in one apt call, so apt sees the packages that depend on each other
+    together."""
     if not ctx.from_source:
-        ctx.runner.run(a3_root_command(ctx, "install", what), root=True)
+        ctx.runner.run(a3_root_command(ctx, "install", *what), root=True)
         return
     ctx.runner.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",
-                    "--allow-downgrades", "--allow-change-held-packages", what], root=True)
+                    "--allow-downgrades", "--allow-change-held-packages", *what], root=True)
 
 
 def hold(ctx, app):
@@ -208,10 +223,13 @@ def check_packaged_unit_wins(ctx, app):
                         "or where; move them aside and run the installer again.")
 
 
-def remove(ctx, app):
+def remove(ctx, app, *more):
+    """`app` and any `more` apps, in the order given, in one call."""
+    packages = [a.package for a in (app, *more)]
     if not ctx.from_source:
-        ctx.runner.run(a3_root_command(ctx, "remove", app.package), root=True)
+        ctx.runner.run(a3_root_command(ctx, "remove", *packages), root=True)
         return
-    ctx.runner.run(["apt-mark", "unhold", app.package], root=True)
+    for package in packages:
+        ctx.runner.run(["apt-mark", "unhold", package], root=True)
     ctx.runner.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "remove", "-y",
-                    app.package], root=True)
+                    *packages], root=True)

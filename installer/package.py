@@ -4,13 +4,19 @@ live path.
 
     python3 installer/package.py <repo> [--rev REV] [--out DIR] [--cache DIR]
                                         [--jobs N] [--juce DIR] [--test]
+                                        [--recipe DIR]
 
 1. `git archive` of the commit, synced into <cache>/<package>/src -- only files
    whose content changed are rewritten (see sync_tree).
-2. The app's own recipe, packaging/stage in that tree, builds in
+2. The app's own recipe, <recipe>/stage in that tree (--recipe, default
+   packaging; a repo may hold several, one per package), builds in
    <cache>/<package>/build and lays the package out in a fresh stage folder.
-3. DEBIAN/ from packaging/DEBIAN, the version stamped (newest v* tag + commits,
-   as a3-core's tools/package_version.py), the libraries from dpkg-shlibdeps.
+   <package> is the name in the recipe's DEBIAN/control.
+3. DEBIAN/ from <recipe>/DEBIAN, the version stamped (newest v* tag + commits,
+   as a3-core's tools/package_version.py; also for a ${a3:Version} token in the
+   control, so one package can depend on its sibling's exact version), the
+   libraries from dpkg-shlibdeps. A stage without any ELF file needs no
+   ${shlibs:Depends} in its control.
 4. dpkg-deb into <out>/<package>_<version>_<arch>.deb, written under a temporary
    name and renamed, so a half-written package is never there. <arch> is the
    building machine's (amd64 on the NUCs, arm64 on a Raspberry Pi 5) and is
@@ -40,9 +46,10 @@ from pathlib import Path
 DESCRIBE = re.compile(r"^v(\d[0-9A-Za-z.]*)-(\d+)-g[0-9a-f]+$")
 DEFAULT_JOBS = 2
 NICENESS = 19
-STAGE_SCRIPT = Path("packaging/stage")
-DEBIAN_DIR = Path("packaging/DEBIAN")
+DEFAULT_RECIPE = Path("packaging")
+DEBIAN_DIR = DEFAULT_RECIPE / "DEBIAN"
 SHLIBS_TOKEN = "${shlibs:Depends}"
+VERSION_TOKEN = "${a3:Version}"
 NEVER_WRITTEN = Path("/usr")
 
 
@@ -113,6 +120,13 @@ def refuse_inside(repo, *paths):
 PACKAGE_NAME = re.compile(r"^[a-z0-9][a-z0-9+.-]+$")
 
 
+def refuse_foreign_recipe(recipe):
+    """The recipe is a folder of the archived tree, nothing else."""
+    recipe = Path(recipe)
+    if recipe.is_absolute() or ".." in recipe.parts:
+        raise BuildError(f"recipe {recipe} must be a folder inside the repository")
+
+
 def package_name(control_text):
     """The name from the commit's control; it becomes a folder in the build
     cache, so only a Debian package name is taken, never a path."""
@@ -120,29 +134,32 @@ def package_name(control_text):
         if line.startswith("Package:"):
             name = line.split(":", 1)[1].strip()
             if not PACKAGE_NAME.match(name):
-                raise BuildError(f"packaging/DEBIAN/control names {name!r}, not a Debian package name")
+                raise BuildError(f"the recipe's DEBIAN/control names {name!r}, not a Debian package name")
             return name
-    raise BuildError("packaging/DEBIAN/control names no Package")
+    raise BuildError("the recipe's DEBIAN/control names no Package")
 
 
 def stamp_control(text, version, shlibs, architecture):
-    if not shlibs:
+    """`shlibs` is None for a package without binaries: its control then has
+    no ${shlibs:Depends}. With binaries the token is required."""
+    if shlibs is not None and not shlibs:
         raise ValueError("no shared-library dependencies to stamp")
-    if SHLIBS_TOKEN not in text:
+    if shlibs is not None and SHLIBS_TOKEN not in text:
         raise BuildError(f"packaging control has no {SHLIBS_TOKEN}: the libraries would be missing")
+    text = text.replace(VERSION_TOKEN, version)
     lines = []
     for line in text.splitlines(keepends=True):
         if line.startswith("Version:"):
             line = f"Version: {version}\n"
         elif line.startswith("Architecture:"):
             line = f"Architecture: {architecture}\n"
-        elif line.startswith("Depends:"):
+        elif line.startswith("Depends:") and shlibs is not None:
             line = line.replace(SHLIBS_TOKEN, shlibs)
         lines.append(line)
     stamped = "".join(lines)
     if SHLIBS_TOKEN in stamped:
-        raise BuildError(f"{SHLIBS_TOKEN} is left outside the Depends: line (folded?): "
-                         "it would ship unexpanded")
+        raise BuildError(f"{SHLIBS_TOKEN} is left unexpanded (folded line, or a stage "
+                         "without binaries): it would ship as it is")
     return stamped
 
 
@@ -375,13 +392,13 @@ def shlibs_depends(stage):
 DEBIAN_FILES = {"control": 0o644, "postinst": 0o755, "prerm": 0o755, "postrm": 0o755}
 
 
-def install_debian(src, stage):
-    """packaging/DEBIAN into the stage, modes kept: the app's `packaging/stage`
+def install_debian(src, stage, recipe=DEFAULT_RECIPE):
+    """<recipe>/DEBIAN into the stage, modes kept: the recipe's `stage`
     lays out the payload only, never DEBIAN/."""
-    source = Path(src) / DEBIAN_DIR
+    source = Path(src) / recipe / "DEBIAN"
     missing = [name for name in DEBIAN_FILES if not (source / name).is_file()]
     if missing:
-        raise BuildError(f"{DEBIAN_DIR} lacks {', '.join(missing)}")
+        raise BuildError(f"{recipe / 'DEBIAN'} lacks {', '.join(missing)}")
     target = Path(stage) / "DEBIAN"
     shutil.copytree(source, target)
     target.chmod(0o755)
@@ -407,7 +424,9 @@ def _log(message):
 
 
 def build(repo, rev=None, out=Path.home() / "a3-debs", cache=Path.home() / ".cache/a3-build",
-          jobs=DEFAULT_JOBS, juce=Path.home() / "local/juce", test=False, log=_log):
+          jobs=DEFAULT_JOBS, juce=Path.home() / "local/juce", test=False, log=_log,
+          recipe=DEFAULT_RECIPE):
+    refuse_foreign_recipe(recipe)
     repo = Path(repo).resolve()
     if rev is not None:
         refuse_option_like(rev)
@@ -415,7 +434,7 @@ def build(repo, rev=None, out=Path.home() / "a3-debs", cache=Path.home() / ".cac
     refuse_dirty(repo, rev)
     commit = git(repo, "rev-parse", "--verify", f"{rev or 'HEAD'}^{{commit}}").strip()
     version = version_of(repo, commit)
-    name = package_name(git(repo, "show", f"{commit}:{DEBIAN_DIR}/control"))
+    name = package_name(git(repo, "show", f"{commit}:{recipe / 'DEBIAN'}/control"))
     work = Path(cache) / name
     src, build_dir, fresh = work / "src", work / "build", work / "src.fresh"
     refuse_inside(repo, work, src, build_dir, fresh)
@@ -424,7 +443,7 @@ def build(repo, rev=None, out=Path.home() / "a3-debs", cache=Path.home() / ".cac
     archive(repo, commit, fresh)
     sync_tree(fresh, src)
     _remove(fresh)
-    stage_script = str(src / STAGE_SCRIPT)
+    stage_script = str(src / recipe / "stage")
     subprocess.run([stage_script, "build", str(src), str(build_dir), str(juce), str(jobs),
                     *(["--test"] if test else [])], check=True, stdout=sys.stderr)
     stage = Path(tempfile.mkdtemp(prefix="stage-", dir=work))
@@ -432,11 +451,11 @@ def build(repo, rev=None, out=Path.home() / "a3-debs", cache=Path.home() / ".cac
         refuse_inside(repo, stage)
         subprocess.run([stage_script, "files", str(src), str(build_dir), str(stage)],
                        check=True, stdout=sys.stderr)
-        install_debian(src, stage)
+        install_debian(src, stage, recipe)
         control = stage / "DEBIAN" / "control"
         architecture = host_architecture()
-        control.write_text(stamp_control(control.read_text(), version, shlibs_depends(stage),
-                                         architecture))
+        shlibs = shlibs_depends(stage) if elf_files(stage) else None
+        control.write_text(stamp_control(control.read_text(), version, shlibs, architecture))
         final = pack(stage, deb_path(out, name, version, architecture))
     finally:
         _remove(stage)
@@ -457,12 +476,14 @@ def main(argv=None):
     parser.add_argument("--jobs", type=int, default=DEFAULT_JOBS)
     parser.add_argument("--juce", type=Path, default=Path.home() / "local/juce")
     parser.add_argument("--test", action="store_true", help="run the app's tests before packing")
+    parser.add_argument("--recipe", type=Path, default=DEFAULT_RECIPE,
+                        help="the package's recipe folder in the repository (default: packaging)")
     args = parser.parse_args(argv)
     os.umask(0o022)
     lower_priority()
     try:
         deb = build(args.repo, rev=args.rev, out=args.out, cache=args.cache,
-                    jobs=args.jobs, juce=args.juce, test=args.test)
+                    jobs=args.jobs, juce=args.juce, test=args.test, recipe=args.recipe)
     except (BuildError, ValueError, subprocess.CalledProcessError) as error:
         print(f"package: {error}", file=sys.stderr)
         return 1

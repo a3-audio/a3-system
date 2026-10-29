@@ -36,6 +36,13 @@ a3-core's leftovers of an AES67 base on a machine that never had the package
 and its .conf.d) are disabled and moved aside, never deleted, because two PTP
 drivers must not run (plan ruling P27). Leaving puts them back.
 
+Two more leftovers of an earlier a3-core, handled only when the a3-core package
+is not installed: a ~/.config/pipewire/jack.conf.d file that sets node.latency
+or a quantum other than the graph's (a3nuc2: 256/44100 in a 128 graph forced
+StemDeck to 256 and gave 4000+ xruns) is moved aside like the AES67 files, and
+the system service set_irq_prio.service, which puts the touchscreen/panel USB
+IRQ at FIFO 95, is disabled; leaving enables it again if this role disabled it.
+
 The graph's rate and smallest block are the user's PipeWire server's: the
 role links StemDeck's 10-stemdeck-rate.conf into ~/.config/pipewire/
 pipewire.conf.d/ (ruling P32), because only the role knows the machine is a
@@ -47,6 +54,7 @@ import fcntl
 import re
 import socket
 import struct
+import subprocess
 from pathlib import Path
 
 from .. import package as debs
@@ -65,6 +73,12 @@ LEFTOVER_PIPEWIRE = ("pipewire-aes67.conf", "pipewire-aes67.conf.d")
 # a3-core's deployment copy of the unit, which stemdeck-aes67-deck's base-wanted checks too.
 LEFTOVER_DEPLOYED_UNIT = Path(".local/share/a3-core/config/systemd/user") / LEFTOVER_UNIT
 ASIDE = ".a3-system-aside"
+JACK_CONF_D = Path(".config/pipewire/jack.conf.d")
+IRQ_UNIT = "set_irq_prio.service"
+GRAPH_QUANTUM = 128
+_QUANTUM_SETTING = re.compile(
+    r"(?:^|[\s{,])(?:node\.latency|node\.quantum|default\.clock\.(?:min-|max-)?quantum)"
+    r"\s*=\s*\[?\s*(\d+)")
 INSTANCE_TEMPLATE = Path("/usr/lib/systemd/user/stemdeck@.service")
 DROP_IN = "deck-host.conf"
 SHIPPED_RATE = Path("/usr/share/stemdeck/10-stemdeck-rate.conf")
@@ -506,12 +520,12 @@ class DeckHost(Role):
         if core_package_installed():
             return
         run = ctx.runner
-        leftovers = _leftovers(ctx)
-        if not any(path.exists() for path in leftovers):
-            return
-        # Stopped before the move: a running unit would keep PTP0.
-        systemctl_user(ctx, "disable", "--now", LEFTOVER_UNIT, check=False)
-        for path in leftovers:
+        self._irq_service_off(ctx)
+        aes67 = _aes67_leftovers(ctx)
+        if any(path.exists() for path in aes67):
+            # Stopped before the move: a running unit would keep PTP0.
+            systemctl_user(ctx, "disable", "--now", LEFTOVER_UNIT, check=False)
+        for path in [*aes67, *_jack_conf_leftovers(ctx)]:
             aside = _aside(path)
             if not path.exists():
                 continue
@@ -523,8 +537,22 @@ class DeckHost(Role):
             if not run.dry_run:
                 path.rename(aside)
 
+    def _irq_service_off(self, ctx):
+        if not system_unit_enabled(IRQ_UNIT):
+            return
+        ctx.runner.log(f"# {IRQ_UNIT} (from an a3-core package that is gone) is disabled: "
+                       "it puts the USB IRQ of the touchscreen and panel at FIFO 95.")
+        ctx.runner.run(["systemctl", "disable", IRQ_UNIT], root=True)
+        ctx.state.set("deck-host", "irq_service_disabled", "yes", dry_run=ctx.runner.dry_run)
+
+    def _irq_service_back(self, ctx):
+        if not ctx.state.get("deck-host", "irq_service_disabled"):
+            return
+        ctx.runner.run(["systemctl", "enable", IRQ_UNIT], root=True)
+        ctx.state.remove("deck-host", "irq_service_disabled", dry_run=ctx.runner.dry_run)
+
     def _put_leftovers_back(self, ctx):
-        for path in _leftovers(ctx):
+        for path in [*_aes67_leftovers(ctx), *_asides_of_jack_confs(ctx)]:
             aside = _aside(path)
             if not aside.exists() or path.exists():
                 continue
@@ -650,20 +678,27 @@ class DeckHost(Role):
     # -- leaving
 
     stays = ("the stemdeck package (the StemDeck role removes it when it leaves)",
-             "a3-core's AES67 files moved aside, which are put back (see below)",
+             "a3-core's AES67 files and jack.conf.d files moved aside, which are put back (see below)",
              "the stock /etc/linuxptp/ptp4l.conf",
              "library, sessions, recordings and stems")
 
     def leaving_units(self, ctx):
         return [unit for letter in _letters(ctx) for unit in _letter_units(letter)] + [BASE_UNIT]
 
-    def leaving_files(self, ctx):
+    def _candidate_files(self, ctx):
         return [*(path for letter in _letters(ctx) for path in _letter_files(ctx, letter)),
                 _panel_path(ctx),
                 ctx.user_units / f"{TWO_DECK_UNIT}.d" / DROP_IN,
                 *([_motion_conflict_path(ctx)] if _motion_excluded(ctx) else []),
                 *(_audio_port_path(ctx, unit) for unit in (BASE_UNIT, SENDER_TEMPLATE)),
                 _rate_link(ctx)]
+
+    def leaving_files(self, ctx):
+        return [path for path in self._candidate_files(ctx) if _written_by_us(path)]
+
+    def leaving_kept(self, ctx):
+        return [path for path in self._candidate_files(ctx) if not _written_by_us(path)
+                and path.exists()]
 
     def leaving_lines(self, ctx):
         return super().leaving_lines(ctx) + [
@@ -677,7 +712,10 @@ class DeckHost(Role):
             "00-, if the installer wrote it), deleted (as root) unless the a3-core "
             "package is installed.",
             "  a3-core's AES67 files moved aside, put back where they were:",
-            *(f"    {path}" for path in _leftovers(ctx)),
+            *(f"    {path}" for path in _aes67_leftovers(ctx)),
+            f"  Files in ~/{JACK_CONF_D} that set node.latency or a quantum other than the graph's "
+            f"({GRAPH_QUANTUM}), moved aside the same way (*{ASIDE}), put back where they were.",
+            f"  {IRQ_UNIT} (as root): enabled again if this role disabled it.",
             "    (put back only: a3-aes67.service is not re-enabled and there is no",
             "    systemctl --user daemon-reload for it; do both by hand if this",
             "    machine runs a3-core's AES67 again)"]
@@ -695,7 +733,8 @@ class DeckHost(Role):
         ctx.state.remove("deck-host", "letter", dry_run=run.dry_run)
         for path in (PTP4L_CONF, PTP4L_DROP_IN, PTP_UDEV_RULE):
             run.run(["rm", "-f", path], root=True)
-        run.run(["rmdir", "--ignore-fail-on-non-empty", PTP4L_DROP_IN.parent], root=True)
+        if PTP4L_DROP_IN.parent.is_dir():
+            run.run(["rmdir", "--ignore-fail-on-non-empty", PTP4L_DROP_IN.parent], root=True)
         run.run(["udevadm", "control", "--reload-rules"], root=True)
         run.run(UDEV_TRIGGER_PTP, root=True)
         run.run(["systemctl", "daemon-reload"], root=True)
@@ -712,6 +751,7 @@ class DeckHost(Role):
             if restored != text:
                 _write_home_file(ctx, path, restored)
         self._put_leftovers_back(ctx)
+        self._irq_service_back(ctx)
 
 
 def _refuse_beside(roles):
@@ -721,6 +761,14 @@ def _refuse_beside(roles):
     if "stemdeck" in roles:
         raise RoleError("deck-host and the role stemdeck exclude each other: the two-deck "
                         "player and a deck instance would fight over JACK names and the panel.")
+
+
+def _written_by_us(path):
+    """A link, or a file that carries the installer's mark; a file of the
+    role's name that someone else wrote is not ours to delete."""
+    if path.is_symlink() or not path.exists():
+        return True
+    return path.is_file() and WRITTEN_BY in path.read_text(errors="replace")
 
 
 def _letters(ctx):
@@ -801,7 +849,45 @@ def _drop_stale(ctx, path):
         pass  # drop-ins written by hand stay
 
 
-def _leftovers(ctx):
+def system_unit_enabled(unit):
+    done = subprocess.run(["systemctl", "is-enabled", unit], capture_output=True, text=True)
+    return done.returncode == 0 and done.stdout.strip() == "enabled"
+
+
+def graph_quantum():
+    """The smallest block the deck host's graph runs, from the file the role links."""
+    try:
+        text = SHIPPED_RATE.read_text()
+    except OSError:
+        return GRAPH_QUANTUM
+    found = re.search(r"default\.clock\.quantum\s*=\s*(\d+)", text)
+    return int(found.group(1)) if found else GRAPH_QUANTUM
+
+
+def sets_other_quantum(text, quantum):
+    """Whether a pipewire conf sets node.latency or a quantum other than `quantum`."""
+    return any((m := _QUANTUM_SETTING.search(line)) and int(m.group(1)) != quantum
+               for line in text.splitlines() if not line.lstrip().startswith(("#", ";")))
+
+
+def _jack_conf_leftovers(ctx):
+    folder = ctx.home / JACK_CONF_D
+    if not folder.is_dir():
+        return []
+    quantum = graph_quantum()
+    return [path for path in sorted(folder.glob("*.conf"))
+            if path.is_file() and sets_other_quantum(path.read_text(errors="replace"), quantum)]
+
+
+def _asides_of_jack_confs(ctx):
+    folder = ctx.home / JACK_CONF_D
+    if not folder.is_dir():
+        return []
+    return [path.with_name(path.name.removesuffix(ASIDE))
+            for path in sorted(folder.glob(f"*.conf{ASIDE}"))]
+
+
+def _aes67_leftovers(ctx):
     return [ctx.user_units / LEFTOVER_UNIT,
             ctx.home / LEFTOVER_DEPLOYED_UNIT,
             *(ctx.home / ".config" / "pipewire" / name for name in LEFTOVER_PIPEWIRE)]

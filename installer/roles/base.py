@@ -144,12 +144,19 @@ class Role:
         """The Debian packages removed (not purged)."""
         return []
 
+    def leaving_kept(self, ctx):
+        """Files of the role's name that the installer did not write: left
+        alone, and named in the dialog."""
+        return []
+
     def leaving_lines(self, ctx):
         """What goes and what stays, one item per line, for the dialog."""
         lines = []
         for title, items in (("Services, stopped and disabled",
                               self.leaving_units(ctx)),
                              ("Files, deleted", self.leaving_files(ctx)),
+                             ("Not written by the installer, left alone",
+                              self.leaving_kept(ctx)),
                              ("Package, removed (not purged)",
                               self.leaving_packages(ctx)),
                              ("Stays", self.stays)):
@@ -208,7 +215,8 @@ def remove_files(ctx, paths):
     for path in paths:
         ctx.runner.run(["rm", "-f", path])
     for folder in dict.fromkeys(Path(p).parent for p in paths):
-        if folder.name.endswith(".d"):
+        # A folder that is not there is fine; rmdir would end with 1 on it.
+        if folder.name.endswith(".d") and folder.is_dir():
             ctx.runner.run(["rmdir", "--ignore-fail-on-non-empty", folder])
 
 

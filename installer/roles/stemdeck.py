@@ -168,15 +168,16 @@ class StemDeck(Role):
              "library, sessions, recordings and stems")
 
     def leaving_units(self, ctx):
-        return [UNIT, PATCHBAY_UNIT]
+        # A hand unit is the service that runs; it is not ours to stop.
+        return [PATCHBAY_UNIT] if apppackage.hand_made_unit(ctx, APP) else [UNIT, PATCHBAY_UNIT]
 
     def leaving_files(self, ctx):
-        """The units the installer put into ~/.config; stemdeck.service is the package's."""
-        files = [ctx.user_units / unit for unit in self.leaving_units(ctx) if unit != UNIT]
-        hand = ctx.user_units / UNIT
-        if hand.is_file() and not hand.is_symlink():
-            files.append(hand)  # an install from before the package
-        return files
+        """The patchbay unit the installer put into ~/.config; stemdeck.service is the package's."""
+        return [ctx.user_units / PATCHBAY_UNIT]
+
+    def leaving_kept(self, ctx):
+        hand = apppackage.hand_made_unit(ctx, APP)
+        return [hand] if hand else []
 
     def leaving_packages(self, ctx):
         return [PACKAGE]

@@ -309,6 +309,19 @@ KEPT_ENVIRONMENT = {
     # Empty: the decks run windowed beside the session's other windows (Task 12).
     DECK_TEMPLATE: ("STEMDECK_WINDOW=",),
 }
+# The switch the laptop's rig runs under, in the user manager's environment
+# (systemctl --user set-environment A3_LAPTOP_RIG=on, by the Canvas or by
+# hand), which the units' Environment= reset does not touch.
+RIG_SWITCH = "A3_LAPTOP_RIG"
+# Units a package enables globally (systemctl --global enable), which no
+# user-level disable undoes: a3-motion-ui's postinst, so default.target pulls
+# Motion UI in at every login (R9). Their start is skipped unless the switch
+# is on; a skipped condition is no failure. stemdeck.service, enabled the same
+# way, stays off altogether (two_deck_off_drop_in).
+STARTED_BY_THE_SWITCH = ("a3-motion.service",)
+SWITCH_CONDITION = f'ExecCondition=/usr/bin/test "${{{RIG_SWITCH}}}" = on\n'
+SINK_GOES_LATER = (f"the {OWN_LOOPBACK} sink: it disappears at the next PipeWire restart "
+                   "or login")
 # [state] laptop letters: the deck instances the last install was for.
 LETTERS_STATE = "letters"
 
@@ -320,12 +333,14 @@ def unit_drop_in(unit):
     return (WRITTEN_BY
             + "# Environment= first: the unit's own display line goes, so the display the\n"
             "# session imported into the user manager (with its authority) is used.\n"
-            "# One try for the screen: a session's screen is there or it is not.\n"
+            "# One round of the screen's DPI check: a session's screen has its mode\n"
+            "# before its apps start. The wait for X itself is not bounded by it.\n"
             "# CPUAffinity= empty: the rig's core layout is not this machine's.\n"
             "[Service]\n"
             "Environment=\n"
             + "".join(f"Environment={line}\n" for line in environment)
-            + "CPUAffinity=\n")
+            + "CPUAffinity=\n"
+            + (SWITCH_CONDITION if unit in STARTED_BY_THE_SWITCH else ""))
 
 
 def deck_instance(letter):
@@ -346,7 +361,16 @@ def drop_in_paths(ctx):
 def _written_by_us(path):
     """A drop-in of the laptop's name that carries its mark; one written by
     hand is not ours to delete."""
-    return not path.exists() or WRITTEN_BY in path.read_text(errors="replace")
+    return not path.exists() or carries_the_mark(path)
+
+
+def carries_the_mark(path):
+    return path.is_file() and WRITTEN_BY in path.read_text(errors="replace")
+
+
+def deck_drop_in(user_units):
+    """The drop-in by which leave.discover_roles finds the laptop."""
+    return Path(user_units) / f"{DECK_TEMPLATE}.d" / UNIT_DROP_IN
 
 
 # -- the role ---------------------------------------------------------------------
@@ -445,6 +469,7 @@ class Laptop(Role):
 
     stays = ("~/.config/a3/engine/engine.json: it may carry the user's own links "
              "(the installer cannot tell after the packages are gone)",
+             SINK_GOES_LATER,
              "library, sessions, recordings, stems and Motion UI's data")
 
     def leaving_units(self, ctx):
@@ -464,6 +489,7 @@ class Laptop(Role):
     def uninstall(self, ctx):
         super().uninstall(ctx)
         ctx.state.remove(SECTION, LETTERS_STATE, dry_run=ctx.runner.dry_run)
+        ctx.runner.log(f"Note: {SINK_GOES_LATER}.")
         # Through the helper whatever this run's mode: the laptop's apps came
         # from the archive and a3-root holds them.
         ctx.runner.run(a3_root_command(ctx, "remove", *self.leaving_packages(ctx)), root=True)

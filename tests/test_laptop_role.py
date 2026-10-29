@@ -670,14 +670,16 @@ class TheSharedHomeHelpers(unittest.TestCase):
         self.assertEqual(Path("/usr/share/stemdeck/10-stemdeck-rate.conf"), base.SHIPPED_RATE)
 
 
-REAL_UNITS = (
-    Path("/home/aaa/a3-system/wt/a3-core/feat/core-app-package/packaging/a3-engine.service"),
-    Path("/home/aaa/a3-system/wt/a3-core/feat/core-app-package/packaging/a3-core.service"),
-    Path("/home/aaa/a3-system/wt/a3-core/feat/core-app-package/packaging/a3-core-window.service"),
-    Path("/home/aaa/a3-system/a3-motion/ui/platform_config/a3-motion.service"),
-    Path("/home/aaa/a3-system/wt/stemdeck/feat/deck-window-flag/.config/systemd/user/stemdeck@.service"),
-    Path("/home/aaa/a3-system/wt/stemdeck/feat/deck-window-flag/.config/systemd/user/stemdeck.service"),
-)
+# The unit files from the umbrella's own submodules: name -> where it lives.
+REAL_UNITS = {
+    "a3-engine.service": REPO / "a3-core/packaging",
+    "a3-core.service": REPO / "a3-core/packaging",
+    "a3-core-window.service": REPO / "a3-core/packaging",
+    "a3-motion.service": REPO / "a3-motion/ui/platform_config",
+    "stemdeck@.service": REPO / "stemdeck/.config/systemd/user",
+    "stemdeck.service": REPO / "stemdeck/.config/systemd/user",
+}
+SUBMODULES = (REPO / "a3-core", REPO / "a3-motion/ui", REPO / "stemdeck")
 LETTERS = ["A", "B", "C", "D"]
 
 
@@ -781,28 +783,58 @@ class Units(UnitsCase):
     def test_systemd_reads_the_drop_ins(self):
         if shutil.which("systemd-analyze") is None:
             self.skipTest("systemd-analyze is not installed")
-        real = [path for path in REAL_UNITS if path.is_file()]
-        if len(real) < len(REAL_UNITS):
-            self.skipTest("the unit files of a3-core, Motion UI and StemDeck are not checked out "
-                          "here: " + ", ".join(str(p) for p in REAL_UNITS if not p.is_file()))
+        empty = [str(path) for path in SUBMODULES if not path.is_dir() or not any(path.iterdir())]
+        if empty:
+            self.skipTest("submodules not checked out: " + ", ".join(empty))
+        real = {name: folder / name for name, folder in REAL_UNITS.items()
+                if (folder / name).is_file()}
+        if not real:
+            self.skipTest("none of the laptop's unit files is in this version's submodules")
         ctx, _ = self.ctx()
         self.units(ctx)
         tree = Path(ctx.home) / "unit-tree"
         shutil.copytree(ctx.user_units, tree)
-        for path in real:
-            shutil.copy(path, tree / path.name)
+        for name, path in real.items():
+            shutil.copy(path, tree / name)
         # Without the default path (no trailing colon) this machine's own units
         # stay out; the targets every service is ordered after are stubs.
         for target in ("basic.target", "default.target", "graphical.target"):
             (tree / target).write_text("[Unit]\nDescription=stub\n")
-        units = ["a3-engine.service", "a3-core.service", "a3-core-window.service",
-                 "a3-motion.service", "stemdeck@A.service", "stemdeck.service"]
+        units = [name.replace("@.", "@A.") for name in real]
         self.assertEqual([], syntax_problems(tree, units))
         # The negative control: a bad key in a drop-in is reported, so the
         # drop-ins are read and the filter does not hide everything.
-        bad = tree / "a3-engine.service.d" / "laptop.conf"
+        bad = tree / f"{next(iter(real))}.d" / "laptop.conf"
         bad.write_text(bad.read_text() + "NoSuchKey=1\n")
         self.assertTrue(any(str(bad) in line for line in syntax_problems(tree, units)))
+
+    def test_motion_starts_only_when_the_laptop_rig_is_switched_on(self):
+        # a3-motion-ui's postinst enables a3-motion.service globally
+        # (systemctl --global enable), which no user-level disable undoes: at
+        # every login default.target pulls it in. The condition skips that
+        # start unless the user manager carries the switch.
+        ctx, _ = self.ctx()
+        self.units(ctx)
+        self.assertEqual("A3_LAPTOP_RIG", laptop.RIG_SWITCH)
+        condition = 'ExecCondition=/usr/bin/test "${A3_LAPTOP_RIG}" = on'
+        self.assertIn(condition, service_lines(self.drop_in(ctx, "a3-motion.service")))
+        for unit in laptop.UNITS_WITH_TRUTH:
+            if unit == "a3-motion.service":
+                continue
+            with self.subTest(unit):
+                self.assertNotIn("ExecCondition", self.drop_in(ctx, unit))
+        # The switch lives in the manager, never in the unit: Environment= resets
+        # what a unit sets, not the manager's environment.
+        self.assertFalse(any(line.startswith("Environment=A3_LAPTOP_RIG")
+                             for path in ctx.user_units.glob("*.d/laptop.conf")
+                             for line in path.read_text().splitlines()))
+
+    def test_the_screen_comment_says_what_the_tries_bound(self):
+        ctx, _ = self.ctx()
+        self.units(ctx)
+        text = self.drop_in(ctx, "a3-core-window.service")
+        self.assertNotIn("there or it is not", text)
+        self.assertIn("DPI", text)
 
 
 def syntax_problems(tree, units):
@@ -815,6 +847,27 @@ def syntax_problems(tree, units):
                           env={**os.environ, "SYSTEMD_UNIT_PATH": str(tree)})
     lines = (done.stdout + done.stderr).splitlines()
     return [line for line in lines if line.strip() and "is not executable" not in line]
+
+
+class FoundWithoutARecord(UnitsCase):
+    def discover(self, ctx):
+        from installer.leave import discover_roles
+        return discover_roles(ctx.user_units, core_installed=lambda: False,
+                              stemdeck_installed=lambda: True,
+                              motion_installed=lambda: True,
+                              desk_installed=lambda: True)
+
+    def test_the_laptop_is_found_by_its_marked_deck_drop_in(self):
+        ctx, _ = self.ctx()
+        self.units(ctx)
+        self.assertEqual(["laptop"], self.discover(ctx))
+
+    def test_a_hand_drop_in_of_its_name_is_no_laptop(self):
+        ctx, _ = self.ctx()
+        hand = ctx.user_units / "stemdeck@.service.d" / "laptop.conf"
+        hand.parent.mkdir(parents=True)
+        hand.write_text("[Service]\nEnvironment=MINE=1\n")
+        self.assertEqual(["stemdeck", "motion", "desk"], self.discover(ctx))
 
 
 class Leaving(UnitsCase):
@@ -850,6 +903,26 @@ class Leaving(UnitsCase):
         self.assertIn("systemctl --user daemon-reload", commands)
         self.assertEqual(f"root: {A3_ROOT} remove {FIVE_APPS}", commands[-1])
         self.assertEqual("", ctx.state.get("laptop", "letters"))
+
+    def test_the_sink_going_later_is_named(self):
+        ctx, log = self.installed()
+        role = laptop.Laptop()
+        self.assertTrue(any("a3-laptop-out" in item and "PipeWire restart" in item
+                            for item in role.stays))
+        role.uninstall(ctx)
+        self.assertTrue(any("a3-laptop-out" in line and "PipeWire restart" in line
+                            for line in log if not line.startswith("$ ")))
+
+    def test_the_dialog_does_not_say_packages_stay_when_they_go(self):
+        from installer.leave import leaving_text
+        ctx, _ = self.installed()
+        text = leaving_text(ctx, ["laptop"])
+        self.assertNotIn("Packages installed for the roles stay", text)
+        self.assertIn("Packages not removed above stay", text)
+        for package in laptop.APPS:
+            self.assertIn(package, text)
+        # A role that removes no package keeps the sentence as it was.
+        self.assertIn("Packages installed for the roles stay", leaving_text(ctx, ["deck-host"]))
 
     def test_a_hand_drop_in_of_the_laptop_s_name_stays(self):
         ctx, _ = self.installed()

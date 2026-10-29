@@ -8,8 +8,9 @@ set up before that section existed has its roles found by what is there.
 
 import subprocess
 
-from .roles import ALL, BY_NAME, needs_screen
-from .roles.base import RoleError, forget_installed, record_installed, recorded_roles
+from .roles import ALL, BY_NAME, laptop, needs_screen
+from .roles.base import (PACKAGES_REMOVED, RoleError, forget_installed, record_installed,
+                         recorded_roles)
 from .roles.screen import AUTOLOGIN_DROP_IN
 from .system import CommandFailed
 
@@ -47,14 +48,17 @@ def discover_roles(user_units, core_installed=None, stemdeck_installed=None,
         desk_installed = lambda: package_installed("a3-desk")  # noqa: E731
     # The deck host has the stemdeck package too, but plays no two-deck StemDeck.
     deck_host = any(user_units.glob("stemdeck@*.service.d/deck-host.conf"))
+    # The laptop has the stemdeck, a3-motion-ui and a3-desk packages as its own.
+    on_laptop = laptop.carries_the_mark(laptop.deck_drop_in(user_units))
     found = {
         "core": core_installed(),
         "deck-host": deck_host,
-        "stemdeck": stemdeck_installed() and not deck_host,
-        "motion": motion_installed(),
-        "desk": desk_installed(),
+        "stemdeck": stemdeck_installed() and not deck_host and not on_laptop,
+        "motion": motion_installed() and not on_laptop,
+        "desk": desk_installed() and not on_laptop,
+        "laptop": on_laptop,
     }
-    return [name for name in ("core", "stemdeck", "deck-host", "motion", "desk")
+    return [name for name in ("core", "stemdeck", "deck-host", "motion", "desk", "laptop")
             if found[name]]
 
 
@@ -79,8 +83,10 @@ def leaving_text(ctx, names):
         lines.append(BY_NAME[name].label)
         lines.extend(BY_NAME[name].leaving_lines(ctx))
     lines.append("")
-    lines.append("Packages installed for the roles stay, "
-                 "as do groups and all data.")
+    removes_packages = any(PACKAGES_REMOVED in line for line in lines)
+    lines.append("Packages not removed above stay, as do groups and all data."
+                 if removes_packages else
+                 "Packages installed for the roles stay, as do groups and all data.")
     return "\n".join(lines)
 
 

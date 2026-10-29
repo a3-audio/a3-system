@@ -185,7 +185,7 @@ class Role:
                              ("Files, deleted", self.leaving_files(ctx)),
                              ("Not written by the installer, left alone",
                               self.leaving_kept(ctx)),
-                             ("Package, removed (not purged)",
+                             (PACKAGES_REMOVED,
                               self.leaving_packages(ctx)),
                              ("Stays", self.stays)):
             if items:
@@ -202,6 +202,10 @@ class Role:
         remove_files(ctx, files)
         if units or files:
             systemctl_user(ctx, "daemon-reload")
+
+
+# The dialog's title over the packages a role removes when it leaves.
+PACKAGES_REMOVED = "Package, removed (not purged)"
 
 
 # What a screen role needs on any machine: X started by startx from the tty1

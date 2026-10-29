@@ -4,7 +4,7 @@
     "runner": "ubuntu-latest",
     "image": "debian:testing",
     "builds": [
-      {"path": "a3-core", "recipes": ["packaging"]},
+      {"path": "a3-core", "recipes": ["packaging/app", "packaging"]},
       {"path": "stemdeck", "recipes": ["packaging"]},
       {"path": "a3-mixer", "recipes": ["packaging"]},
       {"path": "a3-motion/ui", "recipes": ["packaging"]},
@@ -16,6 +16,7 @@
     "runner": "ubuntu-24.04-arm",
     "image": "debian:trixie",
     "builds": [
+      {"path": "a3-core", "recipes": ["packaging/app"]},
       {"path": "stemdeck", "recipes": ["packaging"]},
       {"path": "a3-mixer", "recipes": ["packaging"]},
       {"path": "a3-motion/ui", "recipes": ["packaging"]},

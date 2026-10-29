@@ -136,10 +136,11 @@ class LinesJson(unittest.TestCase):
         self.assertEqual(self.paths("forky"),
             ["a3-core", "stemdeck", "a3-mixer", "a3-motion/ui", "beat-analyzer"])
         self.assertEqual(self.paths("trixie"),
-            ["stemdeck", "a3-mixer", "a3-motion/ui", "beat-analyzer"])
+            ["a3-core", "stemdeck", "a3-mixer", "a3-motion/ui", "beat-analyzer"])
         for line in self.lines.values():
             for build in line["builds"]:
-                self.assertEqual(build["recipes"], ["packaging"])
+                if build["path"] != "a3-core":
+                    self.assertEqual(build["recipes"], ["packaging"])
 
 
 class Signing(unittest.TestCase):

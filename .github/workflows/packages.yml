@@ -15,6 +15,16 @@ on:
 permissions:
   contents: read
 
+env:
+  # A debconf prompt (tzdata and the like) would stall a container job for hours.
+  DEBIAN_FRONTEND: noninteractive
+
+defaults:
+  run:
+    # Named explicitly, GitHub runs bash -eo pipefail: a failing script in
+    # front of a pipe fails the step (the default is bash -e only).
+    shell: bash
+
 jobs:
   matrix:
     runs-on: ubuntu-latest
@@ -39,6 +49,8 @@ jobs:
     container: ${{ matrix.image }}
     env:
       CCACHE_DIR: /github/home/.ccache
+      # Two lines' ccache plus two JUCE caches share GitHub's 10 GB.
+      CCACHE_MAXSIZE: 1500M
       # package.py's CMake builds pick these up from the environment.
       CMAKE_C_COMPILER_LAUNCHER: ccache
       CMAKE_CXX_COMPILER_LAUNCHER: ccache
@@ -64,7 +76,7 @@ jobs:
         run: git submodule foreach --recursive git fetch --tags --quiet
 
       - name: Build tools
-        run: python3 ci/build_line.py ${{ matrix.suite }} --build-depends | xargs apt-get install -y --no-install-recommends
+        run: python3 ci/build_line.py ${{ matrix.suite }} --build-depends | xargs -r apt-get install -y --no-install-recommends
 
       - name: Cache JUCE
         id: juce
@@ -100,6 +112,7 @@ jobs:
           if-no-files-found: error
 
   install-test:
+    # One failing build line skips both install tests; publish needs both anyway.
     needs: [matrix, build]
     strategy:
       fail-fast: false
@@ -190,7 +203,7 @@ jobs:
       # force_orphan: the archive keeps no history, or every run would add its
       # debs to gh-pages for good.
       - name: Publish to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public

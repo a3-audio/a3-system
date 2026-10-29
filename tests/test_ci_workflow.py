@@ -8,10 +8,15 @@ Run with:  python3 -m unittest discover -s tests
 """
 
 import re
+import sys
 import unittest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO))
+
+from installer.roles import base  # noqa: E402
+
 WORKFLOW = REPO / ".github" / "workflows" / "packages.yml"
 COMMITTED_KEY = REPO / "installer" / "keys" / "a3-audio-archive.asc"
 JOB_INDENT = "  "
@@ -104,6 +109,22 @@ class Jobs(unittest.TestCase):
         self.assertIn("contents: write", self.jobs["publish"])
 
 
+class Shell(unittest.TestCase):
+    def setUp(self):
+        self.text = workflow_text()
+        self.top = self.text.split("\njobs:", 1)[0]
+
+    def test_apt_never_waits_for_a_prompt(self):
+        self.assertRegex(self.top, r"(?m)^env:\n(?:\s+#.*\n)*  DEBIAN_FRONTEND: noninteractive$")
+
+    def test_a_failing_script_in_a_pipe_fails_the_step(self):
+        # GitHub runs `shell: bash` as bash -eo pipefail; its default is bash -e.
+        self.assertRegex(self.top, r"(?m)^defaults:\n  run:\n(?:\s+#.*\n)*    shell: bash$")
+
+    def test_an_empty_package_list_installs_nothing(self):
+        self.assertIn("| xargs -r apt-get install", self.text)
+
+
 class Build(unittest.TestCase):
     def setUp(self):
         self.build = job_blocks(workflow_text())["build"]
@@ -123,6 +144,16 @@ class Build(unittest.TestCase):
     def test_juce_is_cached_per_suite_and_arch(self):
         self.assertIn("key: juce-9.0.3-${{ matrix.suite }}-${{ matrix.arch }}-v1", self.build)
         self.assertIn("--branch 9.0.3", self.build)
+
+    def test_juce_is_the_installers_version(self):
+        version = base.JUCE_VERSION
+        self.assertIn(f"--branch {version} ", self.build)
+        self.assertIn(f"key: juce-{version}-", self.build)
+        self.assertEqual(set(re.findall(r"--branch (\S+)", self.build)), {version})
+        self.assertEqual(set(re.findall(r"key: juce-([^-]+)-", self.build)), {version})
+
+    def test_ccache_is_bounded(self):
+        self.assertIn("CCACHE_MAXSIZE: 1500M", self.build)
 
     def test_the_line_is_built_and_uploaded_by_suite(self):
         self.assertIn("python3 ci/build_line.py ${{ matrix.suite }} --out", self.build)
@@ -172,7 +203,7 @@ class Publish(unittest.TestCase):
         self.assertIn(".nojekyll", self.job)
 
     def test_the_archive_keeps_no_history(self):
-        self.assertIn("peaceiris/actions-gh-pages@v3", self.job)
+        self.assertIn("peaceiris/actions-gh-pages@v4", self.job)
         self.assertIn("force_orphan: true", self.job)
         self.assertIn("github_token: ${{ secrets.GITHUB_TOKEN }}", self.job)
 

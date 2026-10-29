@@ -30,6 +30,7 @@ from pathlib import Path
 from ..archive import a3_root_command
 from ..system import CommandFailed
 from . import apppackage, desk, motion, stemdeck
+from ..settings import DEFAULTS
 from .base import RATE_LINK, Role, RoleError, link_server_rate, write_home_file
 from .core import ANALYZER, CORE_APP
 
@@ -39,8 +40,11 @@ APPS = tuple(app.package for app in APP_PACKAGES)
 # The truth a3-core-app ships; the deck count's range is read from it.
 TRUTH = Path("/usr/share/a3/a3-osc.json")
 TRUTH_DECK_ADDRESS = "stemdeck.deck-hello"
-# The loopback the laptop's wiring plays into; never an output choice.
+# The loopback the laptop's wiring plays into; never an output choice. Its
+# node.name and node.description both: pipewire-jack names a JACK client
+# after node.description, and the engine links to "<this>:playback_FL".
 OWN_LOOPBACK = "a3-laptop-out"
+LOOPBACK_PLAYBACK_DESCRIPTION = f"{OWN_LOOPBACK} to the interface"
 DEFAULT_OUTPUT = ("", "default (the internal card)")
 SINK_CLASS = "Audio/Sink"
 NODE_TYPE = "PipeWire:Interface:Node"
@@ -62,6 +66,10 @@ ANALYZER_INPUT = "beat-analyzer:bpm_1"
 ENGINE_JSON_STATE = "engine_json"
 ENGINE_JSON_LEFT = ("engine.json was changed by hand: the laptop's output links "
                     "are left as they are")
+ENGINE_JSON_FOREIGN = ("engine.json exists and was not written by this installer: the "
+                       "laptop's output links are left as they are")
+PHONES_IGNORED = "phones need an output device; ignored"
+DEFAULT_MAIN = DEFAULTS[SECTION]["output_main"]
 
 
 # -- the decks ----------------------------------------------------------------
@@ -204,20 +212,26 @@ def loopback_conf(device, main, phones):
     default sink while the device is gone and returns to it when it is back:
     the fallback is PipeWire's job (R4). No device: the default sink."""
     capture = ["FL", "FR"] + (["RL", "RR"] if phones else [])
-    playback = []
+    playback = [f'node.description = "{LOOPBACK_PLAYBACK_DESCRIPTION}"']
     if device:
+        # Remixing stays on (no stream.dont-remix, P29): when the device is
+        # gone, the AUX channels are paired by index onto the fallback's
+        # FL/FR and the sound goes on. Channels other than 1,2 need the
+        # measurement in the laptop checklist.
         channels = list(main) + (list(phones) if phones else [])
         positions = [f"AUX{channel - 1}" for channel in channels]
         playback += [f'target.object = "{device}"',
                      f"audio.position = {_positions(positions)}"]
+    # dont-fallback = false is WirePlumber's default; written out because the
+    # fallback to the internal card is the point of this sink (R4).
     playback += ["node.dont-fallback = false", "node.passive = false"]
     return (WRITTEN_BY
             + "context.modules = [\n"
             "{   name = libpipewire-module-loopback\n"
             "    args = {\n"
-            '        node.description = "A3 laptop out"\n'
             "        capture.props = {\n"
             f'            node.name = "{OWN_LOOPBACK}"\n'
+            f'            node.description = "{OWN_LOOPBACK}"\n'
             f'            media.class = "{SINK_CLASS}"\n'
             f"            audio.position = {_positions(capture)}\n"
             "        }\n"
@@ -232,8 +246,11 @@ def loopback_conf(device, main, phones):
 
 def analyzer_env(truth):
     """The beat-analyzer's /beat to the Core on this machine."""
-    listener = next(entry for entry in truth["listeners"]
-                    if entry["name"] == CORE_OSC_LISTENER)
+    listener = next((entry for entry in truth.get("listeners", [])
+                     if entry.get("name") == CORE_OSC_LISTENER), None)
+    if listener is None:
+        raise RoleError(f"The truth {TRUTH} has no listener {CORE_OSC_LISTENER}: the "
+                        "beat-analyzer would not know the Core's port.")
     return WRITTEN_BY + f"OSC_HOST_core={LOCAL_HOST}:{listener['port']}\n"
 
 
@@ -262,6 +279,9 @@ def write_engine_config(ctx, text):
     path = ctx.home / ENGINE_JSON
     if path.exists():
         recorded = ctx.state.get(SECTION, ENGINE_JSON_STATE)
+        if not recorded:
+            ctx.runner.log(ENGINE_JSON_FOREIGN)
+            return
         if _sha256(path.read_text()) != recorded:
             ctx.runner.log(ENGINE_JSON_LEFT)
             return
@@ -326,10 +346,8 @@ class Laptop(Role):
         decks from [laptop] decks or the truth."""
         s = ctx.settings
         device = s.get(SECTION, "output_device").strip()
-        phones_value = s.get(SECTION, "output_phones").strip()
         # Parsed before any file: a bad channel is refused with nothing written.
-        main = output_channels(s.get(SECTION, "output_main")) if device else None
-        phones = output_channels(phones_value) if phones_value else None
+        main, phones = self._channels(ctx, device)
         truth = read_truth(ctx)
         engine = laptop_engine_config(read_shipped_engine(), wanted_decks(s), phones is not None)
         write_home_file(ctx, ctx.home / LAPTOP_TRUTH, _json_text(laptop_truth(truth)))
@@ -337,6 +355,19 @@ class Laptop(Role):
         write_home_file(ctx, ctx.home / LOOPBACK_CONF, loopback_conf(device, main, phones))
         write_home_file(ctx, ctx.home / ANALYZER_ENV, analyzer_env(truth))
         link_server_rate(ctx)
+
+    def _channels(self, ctx, device):
+        """(main, phones) on the device, or (None, None) without one: on the
+        default sink the phones would be remixed onto main."""
+        s = ctx.settings
+        phones_value = s.get(SECTION, "output_phones").strip()
+        if not device:
+            if phones_value:
+                ctx.runner.log(PHONES_IGNORED)
+            return None, None
+        main = output_channels(s.get(SECTION, "output_main").strip() or DEFAULT_MAIN)
+        phones = output_channels(phones_value) if phones_value else None
+        return main, phones
 
     def _units(self, ctx, letters):
         """The deck instances and the Core's units for one machine (Task 15)."""

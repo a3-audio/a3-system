@@ -477,6 +477,12 @@ def shipped_engine():
             "spatial": {"order": 3}}
 
 
+def conf_block(conf, name):
+    """The text of `name = { ... }` in a loopback conf (no nested braces)."""
+    start = conf.index(name + " = {")
+    return conf[start:conf.index("}", start)]
+
+
 class LocalWiring(LaptopCase):
     def test_the_truth_points_core_and_mixer_home(self):
         shipped = shipped_truth()
@@ -605,6 +611,53 @@ class LocalWiring(LaptopCase):
         ctx.settings.set("laptop", "decks", "2")
         self.wire(ctx)
         self.assertEqual(2, json.loads(engine.read_text())["engine"]["decks"])
+        self.assertEqual([], [line for line in log if "changed by hand" in line])
+
+    def test_the_sink_s_jack_name_is_the_one_the_engine_links(self):
+        # pipewire-jack names a client after node.description, not node.name.
+        conf = laptop.loopback_conf(USB, (1, 2), None)
+        capture, playback = conf_block(conf, "capture.props"), conf_block(conf, "playback.props")
+        self.assertIn(f'node.description = "{laptop.OWN_LOOPBACK}"', capture)
+        self.assertNotIn(f'node.description = "{laptop.OWN_LOOPBACK}"', playback)
+        self.assertIn("node.description", playback)
+        self.assertNotIn("node.description", conf[:conf.index("capture.props")])
+        links = laptop.laptop_engine_config(shipped_engine(), None, True)["io"]["jack"]
+        clients = {peer.split(":")[0] for peers in links.values() for peer in peers}
+        self.assertEqual({laptop.OWN_LOOPBACK, "beat-analyzer"}, clients)
+
+    def test_phones_without_a_device_are_ignored_with_one_line(self):
+        ctx, log = self.wiring_ctx({("laptop", "output_phones"): "3,4"})
+        self.wire(ctx)
+        home = Path(ctx.home)
+        conf = (home / laptop.LOOPBACK_CONF).read_text()
+        self.assertIn("audio.position = [ FL FR ]", conf)
+        engine = json.loads((home / laptop.ENGINE_JSON).read_text())
+        self.assertNotIn("phones_L", engine["io"]["jack"])
+        self.assertEqual(["phones need an output device; ignored"],
+                         [line for line in log if "phones" in line and "ignored" in line])
+
+    def test_a_stored_device_without_main_channels_plays_on_1_2(self):
+        ctx, _ = self.wiring_ctx({("laptop", "output_device"): USB,
+                                  ("laptop", "output_main"): ""})
+        self.wire(ctx)
+        conf = (Path(ctx.home) / laptop.LOOPBACK_CONF).read_text()
+        self.assertIn("audio.position = [ AUX0 AUX1 ]", conf)
+
+    def test_a_truth_without_the_core_s_listener_is_a_role_error(self):
+        truth = shipped_truth()
+        truth["listeners"] = [entry for entry in truth["listeners"] if entry["name"] != "core.osc"]
+        with self.assertRaises(RoleError) as caught:
+            laptop.analyzer_env(truth)
+        self.assertIn("core.osc", str(caught.exception))
+
+    def test_an_engine_json_not_written_by_the_installer_says_so(self):
+        ctx, log = self.wiring_ctx()
+        engine = Path(ctx.home) / laptop.ENGINE_JSON
+        engine.parent.mkdir(parents=True)
+        engine.write_text('{"by": "hand"}')
+        self.wire(ctx)
+        self.assertIn("engine.json exists and was not written by this installer: the laptop's "
+                      "output links are left as they are", list(log))
         self.assertEqual([], [line for line in log if "changed by hand" in line])
 
 

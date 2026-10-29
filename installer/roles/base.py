@@ -130,6 +130,13 @@ class Role:
     # A role that draws on the machine's screen. When any chosen role does,
     # the installer logs the user in on tty1 and starts X with i3 there.
     needs_screen = False
+    # A role whose units name no user and no checkout path (%h, packages
+    # only): cli.place_problems lets it run as any user from any checkout.
+    # The rig roles' units expect aaa and /home/aaa/a3-system.
+    any_user_anywhere = False
+    # A role that needs no checkout of this repository at all: its apps
+    # come from the archive and it reads no submodule.
+    runs_without_checkout = False
 
     def supported(self, platform):
         return platform in self.platforms
@@ -198,6 +205,21 @@ SCREEN_PACKAGES = ("xinit", "i3", "x11-xserver-utils")
 
 
 # -- systemd user units -------------------------------------------------------
+
+TWO_DECK_OFF = "ExecCondition=/bin/false"
+
+
+def two_deck_off_drop_in(written_by=""):
+    """The drop-in that keeps the two-deck player down where the decks play as
+    stemdeck@ instances (deck-host, laptop). `written_by` is the role's mark,
+    by which it knows the file as its own when it leaves."""
+    return (written_by
+            + "# The package enables the two-deck player globally; the decks play here\n"
+            "# as stemdeck@. No Conflicts=: a conflict inside one transaction drops a\n"
+            "# start job before any condition runs.\n"
+            "[Service]\n"
+            f"{TWO_DECK_OFF}\n")
+
 
 def install_user_unit(ctx, source, name=None):
     """The unit file from a component's repository, into ~/.config/systemd/user."""

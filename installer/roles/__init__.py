@@ -1,14 +1,16 @@
 from .core import Core
 from .deckhost import DeckHost
 from .desk import Desk
+from .laptop import Laptop
 from .mixer import Mixer
 from .motion import Motion
 from .stemdeck import StemDeck
 
 # The order they are installed in: the Core first, since StemDeck and Motion
 # UI on the same machine run against its JACK. deck-host before Motion: it
-# writes Motion's panel drop-in, which Motion's restart then reads.
-ALL = (Core(), StemDeck(), DeckHost(), Motion(), Desk(), Mixer())
+# writes Motion's panel drop-in, which Motion's restart then reads. The
+# laptop last: it excludes all the others.
+ALL = (Core(), StemDeck(), DeckHost(), Motion(), Desk(), Mixer(), Laptop())
 BY_NAME = {role.name: role for role in ALL}
 
 

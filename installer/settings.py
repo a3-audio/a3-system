@@ -10,7 +10,7 @@ from pathlib import Path
 
 DEFAULT_PATH = Path.home() / ".config" / "a3" / "install.conf"
 
-ROLES = ("core", "stemdeck", "deck-host", "motion", "desk", "mixer")
+ROLES = ("core", "stemdeck", "deck-host", "motion", "desk", "mixer", "laptop")
 
 # Saved only when the file had it or this run set it: a default written by
 # any run (--from-source included) would move an installed machine to the
@@ -71,6 +71,16 @@ DEFAULTS = {
         "flash_firmware": "ask",
         # A serial device, or "auto".
         "serial_port": "auto",
+    },
+    "laptop": {
+        # How many decks (A, B, ...); empty is as many as the truth knows.
+        "decks": "",
+        # A PipeWire sink's node.name; empty is PipeWire's default sink, which
+        # WirePlumber falls back to when a chosen USB card is unplugged.
+        "output_device": "",
+        # The device's channels for main and phones ("1,2"); phones empty is none.
+        "output_main": "1,2",
+        "output_phones": "",
     },
 }
 

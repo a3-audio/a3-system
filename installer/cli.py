@@ -59,6 +59,15 @@ def parse(argv):
     return parser.parse_args(argv)
 
 
+def place_problems(repo, user, names):
+    """where_problems, unless every named role runs as any user anywhere
+    (the laptop: packages only, units with %h). No roles yet: the check holds."""
+    roles = [BY_NAME[name] for name in names]
+    if roles and all(role.any_user_anywhere for role in roles):
+        return []
+    return where_problems(repo, user)
+
+
 def where_problems(repo, user):
     problems = []
     if user != EXPECTED_USER:
@@ -264,6 +273,16 @@ def refused_roles(ctx, names):
     return {"core": why}
 
 
+def refuse_place(names, dry_run):
+    """Whether this user and checkout may not install `names`; says why."""
+    problems = place_problems(REPO, getpass.getuser(), names)
+    if not problems or dry_run:
+        return False
+    print("The installer cannot run like this:\n  " + "\n  ".join(problems)
+          + "\nWith --dry-run you can still look at what it would do.", file=sys.stderr)
+    return True
+
+
 def summary_text(version, names, refused):
     installing = [n for n in names if n not in refused]
     text = (f"Version: {version}\nRoles: "
@@ -299,10 +318,10 @@ def main(argv=None):
     if ssh_key:
         ctx.answers["ssh_key"] = ssh_key
 
-    problems = where_problems(REPO, getpass.getuser())
-    if problems and not args.dry_run:
-        print("The installer cannot run like this:\n  " + "\n  ".join(problems)
-              + "\nWith --dry-run you can still look at what it would do.", file=sys.stderr)
+    # The stored roles: a rig is refused before anything changes. A first
+    # run has none yet and is checked again once its roles are chosen.
+    stored = settings.roles()
+    if stored and refuse_place(stored, args.dry_run):
         return 2
 
     try:
@@ -313,6 +332,8 @@ def main(argv=None):
         settings.set("system", "version", version)
 
         roles = choose_roles(ctx)
+        if refuse_place(roles, args.dry_run):
+            return 2
         unsupported = [r for r in roles if not BY_NAME[r].supported(ctx.platform)]
         if unsupported:
             raise RoleError(f"Not yet possible on {ctx.platform}: "

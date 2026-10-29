@@ -59,7 +59,8 @@ from pathlib import Path
 
 from .. import package as debs
 from . import stemdeck
-from .base import Role, RoleError, remove_files, systemctl_user, write_drop_in
+from .base import (TWO_DECK_OFF, Role, RoleError, remove_files, systemctl_user,
+                   two_deck_off_drop_in, write_drop_in)
 from .motion import UNIT as MOTION_UNIT
 
 LETTERS = "ABCD"
@@ -87,7 +88,6 @@ PANEL_DROP_IN = "panel-follows.conf"
 # Written by an earlier run that had the "Motion here too" option; only cleaned up now.
 MOTION_CONFLICT_DROP_IN = "deck-host.conf"
 TWO_DECK_UNIT = stemdeck.UNIT
-TWO_DECK_OFF = "ExecCondition=/bin/false"
 WRITTEN_BY = "# Written by the a3-system installer (role deck-host); removed when it leaves.\n"
 
 STOCK_PTP4L = Path("/etc/linuxptp/ptp4l.conf")
@@ -207,15 +207,6 @@ def audio_port_drop_in(port):
     return (WRITTEN_BY
             + "[Service]\n"
             f"Environment=STEMDECK_AUDIO_PORT={port}\n")
-
-
-def two_deck_off_drop_in():
-    return (WRITTEN_BY
-            + "# The package enables the two-deck player globally; a deck host plays its\n"
-            "# deck as stemdeck@. No Conflicts=: a conflict inside one transaction drops a\n"
-            "# start job before any condition runs.\n"
-            "[Service]\n"
-            f"{TWO_DECK_OFF}\n")
 
 
 def panel_drop_in(workspace=MOTION_WORKSPACE):
@@ -571,7 +562,7 @@ class DeckHost(Role):
         link.symlink_to(SHIPPED_RATE)
 
     def _two_deck_player_off(self, ctx):
-        write_drop_in(ctx, TWO_DECK_UNIT, DROP_IN, two_deck_off_drop_in())
+        write_drop_in(ctx, TWO_DECK_UNIT, DROP_IN, two_deck_off_drop_in(WRITTEN_BY))
         for hand in _hand_two_deck_off(ctx):
             ctx.runner.log(f"# {hand} does what {DROP_IN} does here; it can be removed "
                            "(left where it is).")

@@ -404,12 +404,20 @@ class AnsweringPrompter(Prompter):
 class Main(unittest.TestCase):
     """cli.main with a runner that records every command and runs none."""
 
-    def main(self, argv, roles=(), prompter=None, user="aaa", place_ok=True):
+    def main(self, argv, roles=(), prompter=None, user="aaa", place_ok=True,
+             conf_extra="", installed=(), repo=None):
+        """`installed`: the roles the state file records; `repo`: where the
+        installer runs from (default: this checkout)."""
         home = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, home)
         conf = home / "install.conf"
         conf.write_text("[roles]\n" + "".join(f"{r} = yes\n" for r in roles)
-                        + "[system]\narchive = public\n")
+                        + "[system]\narchive = public\n" + conf_extra)
+        if installed:
+            state = home / base.STATE_FILE
+            state.parent.mkdir(parents=True, exist_ok=True)
+            state.write_text("[installed]\n"
+                             + "".join(f"{r} = 2026-10-29\n" for r in installed))
         ran = []
 
         class Untouchable(Runner):
@@ -427,8 +435,12 @@ class Main(unittest.TestCase):
                           mock.patch.object(cli, "make_prompter",
                                             lambda interactive: prompter or Prompter()),
                           mock.patch.object(cli.getpass, "getuser", lambda: user),
+                          # Hermetic: no dpkg-query for a machine without a record.
+                          mock.patch.object(cli, "discover_roles", lambda _units: []),
                           mock.patch.object(Path, "home", lambda: home)):
                 stack.enter_context(patch)
+            if repo is not None:
+                stack.enter_context(mock.patch.object(cli, "REPO", repo))
             if place_ok:
                 stack.enter_context(mock.patch.object(cli, "where_problems", lambda *_: []))
             stderr = io.StringIO()
@@ -975,6 +987,34 @@ class Leaving(UnitsCase):
         ours = ctx.user_units / "stemdeck.service.d" / "laptop.conf"
         ours.write_text(base.two_deck_off_drop_in(laptop.WRITTEN_BY))
         self.assertFalse(deckhost._written_by_us(ours))
+
+
+class LeavingTheLaptop(Main):
+    """Leaving is the laptop's too: it runs as any user from anywhere, with
+    no checkout, also when nothing is chosen in its place."""
+
+    def test_leaving_the_laptop_elsewhere_needs_no_place_and_no_checkout(self):
+        def must_not_run(*_args, **_kwargs):
+            raise AssertionError("the version step ran for a leaving laptop")
+        with mock.patch.object(cli, "choose_version", must_not_run), \
+                mock.patch.object(cli.release, "check_out", must_not_run), \
+                mock.patch.object(cli.release, "catch_up", must_not_run):
+            code, said, ran = self.main(
+                ["--update"], conf_extra="[uninstall]\nallow = yes\n",
+                installed=("laptop",), user="ra", place_ok=False,
+                repo=Path("/home/ra/a3-system"))
+        self.assertNotIn("cannot run like this", said)
+        self.assertEqual(0, code, said)
+        self.assertEqual([], [c for c in ran if c[:1] == ["git"]])
+        self.assertIn([A3_ROOT, "remove", *FIVE_APPS.split()], ran)
+
+    def test_leaving_a_rig_role_keeps_the_place_check(self):
+        code, said, ran = self.main(["--update"], conf_extra="[uninstall]\nallow = yes\n",
+                                    installed=("core",), user="ra", place_ok=False,
+                                    repo=Path("/home/ra/a3-system"))
+        self.assertEqual(2, code)
+        self.assertIn("cannot run like this", said)
+        self.assertEqual([], ran)
 
 
 class FromSourceAtTheStart(Main):

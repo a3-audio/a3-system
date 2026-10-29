@@ -23,7 +23,7 @@ import sys
 from pathlib import Path
 
 from . import archive, release
-from .leave import discover_roles, leave_roles
+from .leave import deselected, discover_roles, installed_now, leave_roles
 from .prompt import make_prompter
 from .roles import ALL, BY_NAME, needed_packages, needed_submodules, needs_screen
 from .roles.base import STATE_FILE, Context, RoleError, State, record_installed
@@ -312,6 +312,13 @@ def choose_checkout(ctx, args, roles):
     return version
 
 
+def touched_roles(ctx, chosen):
+    """The chosen roles and those that leave this run: the place check and
+    the checkout hold for both (leaving the laptop needs neither)."""
+    installed, _found = installed_now(ctx, discover_roles)
+    return list(chosen) + deselected(installed, chosen)
+
+
 def refuse_place(names, dry_run):
     """Whether this user and checkout may not install `names`; says why."""
     problems = place_problems(REPO, getpass.getuser(), names)
@@ -367,9 +374,10 @@ def main(argv=None):
         if refused_now:
             print(refused_now, file=sys.stderr)
             return 2
-        if refuse_place(roles, args.dry_run):
+        touched = touched_roles(ctx, roles)
+        if refuse_place(touched, args.dry_run):
             return 2
-        version = choose_checkout(ctx, args, roles)
+        version = choose_checkout(ctx, args, touched)
         unsupported = [r for r in roles if not BY_NAME[r].supported(ctx.platform)]
         if unsupported:
             raise RoleError(f"Not yet possible on {ctx.platform}: "

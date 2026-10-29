@@ -3,6 +3,8 @@
 """The root helper: a fixed verb list, nothing else."""
 
 import base64
+import contextlib
+import io
 import importlib.machinery
 import importlib.util
 import os
@@ -179,6 +181,25 @@ class Source(HelperTest):
         self.assertFalse(paths["keyring"].exists())
         self.assertFalse(paths["sources"].exists())
         self.assertEqual(self.run_.commands, [])
+
+    def test_a_missing_checksum_writes_nothing(self):
+        text = armor(b"some key bytes")
+        paths = self.paths("\n".join(l for l in text.split("\n") if not l.startswith("=")))
+        out = io.StringIO()
+        with contextlib.redirect_stderr(out):
+            self.assertEqual(self.main("source", "trixie", **paths), 2)
+        self.assertIn("no armor checksum", out.getvalue())
+        self.assertFalse(paths["keyring"].exists())
+
+    def test_a_malformed_checksum_writes_nothing(self):
+        text = armor(b"some key bytes")
+        paths = self.paths("\n".join("=AAAAAAAA" if l.startswith("=") else l
+                                      for l in text.split("\n")))
+        out = io.StringIO()
+        with contextlib.redirect_stderr(out):
+            self.assertEqual(self.main("source", "trixie", **paths), 2)
+        self.assertIn("malformed armor checksum", out.getvalue())
+        self.assertFalse(paths["keyring"].exists())
 
     def test_an_unknown_suite_writes_nothing(self):
         paths = self.paths(armor(b"k"))

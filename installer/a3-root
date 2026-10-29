@@ -88,11 +88,16 @@ def armor_lines(armored):
 def dearmor(armored):
     """The binary key inside an ASCII-armored block, its CRC-24 checked."""
     body, checksum = armor_lines(armored)
+    if checksum is None:
+        raise Refused("The archive key has no armor checksum.")
     try:
         binary = base64.b64decode(body, validate=True)
-        expected = int.from_bytes(base64.b64decode(checksum or "", validate=True), "big")
+        checksum_bytes = base64.b64decode(checksum, validate=True)
     except (binascii.Error, ValueError):
         raise Refused("The archive key is not valid ASCII armor.")
+    if len(checksum_bytes) != 3:
+        raise Refused("The archive key has a malformed armor checksum.")
+    expected = int.from_bytes(checksum_bytes, "big")
     if not binary or crc24(binary) != expected:
         raise Refused("The archive key's checksum does not match.")
     return binary

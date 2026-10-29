@@ -68,11 +68,13 @@ def where_problems(repo, user):
     return problems
 
 
-def refusal(args, settings, state):
+def refusal(args, settings, state, platform=None, release_info=None):
     """Why this run cannot start, before it changes anything; or None.
     `state` is the installer's history here: a machine installed before
     keeps its archive until it is named (the rig is on lan, and a public
-    source apt cannot update from breaks its apt)."""
+    source apt cannot update from breaks its apt). With `platform` and
+    `release_info` a public archive for a codename it has no suite for is
+    refused here too, before the checkout moves."""
     chosen = settings.get("system", "archive")
     if chosen not in ARCHIVES:
         return (f"[system] archive = {chosen} in {settings.path}: allowed are "
@@ -86,6 +88,16 @@ def refusal(args, settings, state):
         return (f"--update {args.update}: the archive holds only the newest packages, "
                 "not a named version. To install a version, build it from source: "
                 f"install --from-source --update {args.update}")
+    return unsupported_codename(args, chosen, platform, release_info)
+
+
+def unsupported_codename(args, chosen, platform, release_info):
+    if args.from_source or chosen != "public" or platform not in APT_PLATFORMS:
+        return None
+    try:
+        archive.suite_for(release_info)
+    except archive.ArchiveError as error:
+        return str(error)
     return None
 
 
@@ -269,13 +281,18 @@ def main(argv=None):
         print(error, file=sys.stderr)
         return 2
     settings = Settings(args.config or DEFAULT_PATH)
-    refused_run = refusal(args, settings, State(Path.home() / STATE_FILE))
+    platform = platform_name()
+    refused_run = refusal(args, settings, State(Path.home() / STATE_FILE),
+                          platform, os_release(OS_RELEASE))
     if refused_run:
         print(refused_run, file=sys.stderr)
         return 2
+    if not args.from_source:
+        # The next run of this machine is an installed one, refused without it (P25).
+        settings.set("system", "archive", settings.get("system", "archive"))
     interactive = args.update is None and args.config is None
     runner = Runner(dry_run=args.dry_run)
-    ctx = Context(REPO, settings, runner, make_prompter(interactive), platform_name(),
+    ctx = Context(REPO, settings, runner, make_prompter(interactive), platform,
                   from_source=args.from_source)
     if args.flash_firmware:
         ctx.answers["flash_firmware"] = True

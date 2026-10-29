@@ -262,6 +262,33 @@ class TheArchiveSource(unittest.TestCase):
                              for c in self.install_roles(platform="macos").commands()))
 
 
+class AnUnsupportedCodenameIsRefusedBeforeAnyChange(unittest.TestCase):
+    UBUNTU = {"ID": "ubuntu", "VERSION_CODENAME": "noble"}
+
+    def refusal(self, archive_name="public", platform="debian", argv=("--update",)):
+        tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, tmp)
+        settings = Settings(tmp / "install.conf")
+        settings.set("system", "archive", archive_name)
+        return cli.refusal(cli.parse(list(argv)), settings, State(tmp / "install.state"),
+                           platform=platform, release_info=self.UBUNTU)
+
+    def test_public_archive_on_ubuntu_is_refused(self):
+        self.assertIn("VERSION_CODENAME=noble", self.refusal())
+
+    def test_lan_from_source_and_other_platforms_are_not_asked(self):
+        self.assertIsNone(self.refusal("lan"))
+        self.assertIsNone(self.refusal(argv=("--update", "--from-source")))
+        self.assertIsNone(self.refusal(platform="macos"))
+
+    def test_main_runs_nothing_on_ubuntu(self):
+        with mock.patch.object(cli, "os_release", lambda _path: self.UBUNTU), \
+                mock.patch.object(cli, "platform_name", lambda: "debian"):
+            code, said, ran = RefusedBeforeAnyChange.main(self, ["--update"])
+        self.assertEqual((2, []), (code, ran))
+        self.assertIn("VERSION_CODENAME=noble", said)
+
+
 class RefusedBeforeAnyChange(unittest.TestCase):
     def main(self, argv, settings_text="", home=None):
         tmp = Path(tempfile.mkdtemp())
@@ -367,6 +394,53 @@ class AnInstalledMachineChoosesItsArchive(unittest.TestCase):
         self.assertEqual(2, code)
         self.assertIn(UNSET, said)
         self.assertEqual([], ran)
+
+
+class AFreshMachineKeepsItsArchiveForTheNextRun(unittest.TestCase):
+    """The first packages-mode run records the archive it used; without it
+    the second run of that very machine was refused (installed, key unset)."""
+
+    def run_main(self, home, argv):
+        conf = home / ".config" / "a3" / "install.conf"
+        stderr = io.StringIO()
+        with mock.patch.object(Path, "home", lambda: home), \
+                mock.patch.object(cli, "DEFAULT_PATH", conf), \
+                mock.patch.object(cli, "Runner", RootRecordingRunner), \
+                mock.patch.object(cli, "where_problems", lambda *_: []), \
+                mock.patch.object(cli, "ensure_archive", lambda *_: None), \
+                mock.patch.object(cli.release, "fetch", lambda *_: None), \
+                mock.patch.object(cli.release, "tags", lambda *_: ["v03.1"]), \
+                mock.patch.object(cli.release, "current", lambda *_: "v03.1"), \
+                mock.patch.object(cli.release, "catch_up", lambda *_: None), \
+                mock.patch.object(cli.release, "update_submodules", lambda *_: None), \
+                redirect_stderr(stderr):
+            code = cli.main(argv)
+        return code, stderr.getvalue(), conf
+
+    def test_the_second_run_is_not_refused(self):
+        home = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, home)
+        code, said, conf = self.run_main(home, ["--update"])
+        self.assertEqual((0, ""), (code, said))
+        self.assertTrue(Settings(conf).in_file("system", "archive"))
+        State(home / cli.STATE_FILE).set("installed", "desk", "2026-10-29")
+        code, said, _ = self.run_main(home, ["--update"])
+        self.assertEqual((0, ""), (code, said))
+
+    def test_an_installed_machine_without_the_key_is_still_refused(self):
+        home = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, home)
+        State(home / cli.STATE_FILE).set("installed", "desk", "2026-10-29")
+        code, said, conf = self.run_main(home, ["--update"])
+        self.assertEqual(2, code)
+        self.assertIn("is not set", said)
+        self.assertFalse(conf.exists())
+
+    def test_from_source_records_nothing(self):
+        home = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, home)
+        _, _, conf = self.run_main(home, ["--update", "--from-source"])
+        self.assertFalse(Settings(conf).in_file("system", "archive"))
 
 
 class AnOlderVersionIsNamed(unittest.TestCase):

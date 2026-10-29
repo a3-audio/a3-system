@@ -62,6 +62,17 @@ address in a3-core's `a3-osc.json` (or whose Core network answers set it): a sec
 would announce itself in the same LAN; the other roles install either way. `install --dry-run` shows what it would do. For now it
 runs on Debian only, as the user `aaa`, from `/home/aaa/a3-system`.
 
+By default the apps (a3-core, StemDeck, the UIs, the desk) come as packages
+from the apt archive: no JUCE build, no submodule checkout beyond the
+configuration. Which archive is `[system] archive = public|lan` in
+`~/.config/a3/install.conf` (`public` is the GitHub archive and the default on a
+fresh machine; `lan` is the rig's own apt source). A machine that is already
+installed must name it once; without it the installer stops before any change,
+also for a `--config FILE` run whose FILE has no `archive`.
+`install --from-source` builds the apps from the pins as before, and is the only
+way to install a named version: `install --from-source --update VERSION` (packages
+mode refuses a version, the archive holds only the newest).
+
 `install --ssh-key ~/.ssh/id_ed25519.pub` lets that public key log in as `aaa`
 on a Core: the installer hands it to the `a3-core` package, which adds it to
 `~/.ssh/authorized_keys` once. The file must hold exactly one public key line;

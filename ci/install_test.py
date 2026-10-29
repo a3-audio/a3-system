@@ -49,11 +49,16 @@ def read_index(root, suite):
     return arch, list(dict.fromkeys(names))
 
 
+OUTPUT_TAIL_LINES = 40
+
+
 def explain(command, done):
-    """The lines of apt's output that say why, so the error names the package."""
-    text = done.stderr + done.stdout
-    reasons = [line.strip() for line in text.splitlines() if UNMET.search(line)]
-    return f"{' '.join(command)} failed:\n" + "\n".join(reasons or [text.strip()])
+    """Why a command failed: apt's unmet-dependency lines first, then the end
+    of the output, where a failing postinst says what it could not do."""
+    lines = (done.stderr + done.stdout).splitlines()
+    reasons = [line.strip() for line in lines if UNMET.search(line)]
+    tail = [line.rstrip() for line in lines[-OUTPUT_TAIL_LINES:]]
+    return "\n".join([f"{' '.join(command)} failed:", *reasons, *tail])
 
 
 def checked(runner, command, input=None):

@@ -101,6 +101,17 @@ class CleanRootInstall(unittest.TestCase):
         self.assertLess(runner.calls.index(["debconf-set-selections"]),
                         runner.calls.index(runner.starting("apt-get", "install")[0]))
 
+    def test_a_failing_postinst_output_reaches_the_error(self):
+        runner = FakeRunner(fail={("apt-get", "install"): (
+            "The following packages have unmet dependencies:\n"
+            " a3-core : Depends: libfoo1 but it is not installable\n"
+            "Setting up a3-core (1.0) ...\n"
+            "a3-core postinst: cannot write /home/aaa/.config: Permission denied\n"
+            "dpkg: error processing package a3-core (--configure):\n")})
+        with self.assertRaises(install_test.InstallTestError) as caught:
+            self.install(runner)
+        self.assertIn("cannot write /home/aaa/.config", str(caught.exception))
+
     def test_a_missing_dependency_is_named_in_the_error(self):
         runner = FakeRunner(fail={("apt-get", "install"): (
             "The following packages have unmet dependencies:\n"

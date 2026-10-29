@@ -332,6 +332,33 @@ class AnInstalledMachineChoosesItsArchive(unittest.TestCase):
     def test_from_source_needs_no_archive(self):
         self.assertIsNone(self.refusal(argv=("--update", "--from-source")))
 
+    def test_a_from_source_run_does_not_save_the_default_archive(self):
+        """--from-source passes the check and saves; the next packages-mode run
+        must still be refused, not take the saved default."""
+        tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, tmp)
+        conf = tmp / "install.conf"
+        conf.write_text("[roles]\nstemdeck = yes\n")
+        state = State(tmp / "install.state")
+        state.set("installed", "stemdeck", "2026-10-01")
+        first = Settings(conf)
+        self.assertIsNone(cli.refusal(cli.parse(["--update", "--from-source"]), first, state))
+        first.save()
+        self.assertEqual(UNSET, cli.refusal(cli.parse(["--update"]), Settings(conf), state))
+
+    def test_an_archive_in_the_file_or_set_in_the_run_is_saved(self):
+        tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, tmp)
+        kept, chosen = tmp / "kept.conf", tmp / "chosen.conf"
+        kept.write_text("[system]\narchive = lan\n")
+        Settings(kept).save()
+        self.assertEqual("lan", Settings(kept).get("system", "archive"))
+        self.assertTrue(Settings(kept).in_file("system", "archive"))
+        settings = Settings(chosen)
+        settings.set("system", "archive", "public")
+        settings.save()
+        self.assertTrue(Settings(chosen).in_file("system", "archive"))
+
     def test_the_run_stops_before_any_command(self):
         tmp = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, tmp)

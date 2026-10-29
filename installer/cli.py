@@ -6,10 +6,15 @@
                                  the newest tag when a tag is stored)
     install --config FILE        no questions: FILE's roles and settings
     install --dry-run            show every command, run none
+    install --from-source        build the apps from the pinned submodules
+                                 instead of taking the archive's packages
     install --flash-firmware     flash the Motion panel even if unchanged
     install --ssh-key FILE       the Core lets FILE's public key log in as aaa
 
-The stored answers are in ~/.config/a3/install.conf.
+The stored answers are in ~/.config/a3/install.conf. The apps come from the
+apt archive by default ([system] archive = public, or lan for the rig's own
+apt source set up by hand), which holds only the newest of each package: a
+named version (--update VERSION) needs --from-source.
 """
 
 import argparse
@@ -17,7 +22,7 @@ import getpass
 import sys
 from pathlib import Path
 
-from . import release
+from . import archive, release
 from .leave import discover_roles, leave_roles
 from .prompt import make_prompter
 from .roles import ALL, BY_NAME, needed_packages, needed_submodules, needs_screen
@@ -25,7 +30,7 @@ from .roles.base import Context, RoleError, record_installed
 from .roles.core import check_core, read_ssh_key
 from .roles.screen import set_up_screen
 from .settings import DEFAULT_PATH, Settings
-from .system import APT_PLATFORMS, CommandFailed, Runner, platform_name
+from .system import APT_PLATFORMS, CommandFailed, Runner, os_release, platform_name
 
 REPO = Path(__file__).resolve().parents[1]
 
@@ -33,6 +38,12 @@ REPO = Path(__file__).resolve().parents[1]
 # written relative, the installer runs from there and as aaa.
 EXPECTED_USER = "aaa"
 EXPECTED_REPO = Path("/home/aaa/a3-system")
+
+OS_RELEASE = Path("/etc/os-release")
+# [system] archive: the public archive, whose source the installer writes, or
+# the rig's LAN archive, whose source is set up by hand.
+ARCHIVES = ("public", "lan")
+LAN_SOURCE = "http://192.168.8.5/apt a3 main"
 
 
 def parse(argv):
@@ -42,6 +53,7 @@ def parse(argv):
     parser.add_argument("--update", nargs="?", const="", metavar="VERSION")
     parser.add_argument("--config", type=Path, metavar="FILE")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--from-source", action="store_true")
     parser.add_argument("--flash-firmware", action="store_true")
     parser.add_argument("--ssh-key", type=Path, metavar="FILE")
     return parser.parse_args(argv)
@@ -54,6 +66,19 @@ def where_problems(repo, user):
     if repo != EXPECTED_REPO:
         problems.append(f"located in {repo}, the units expect {EXPECTED_REPO}")
     return problems
+
+
+def refusal(args, settings):
+    """Why this run cannot start, before it changes anything; or None."""
+    chosen = settings.get("system", "archive")
+    if chosen not in ARCHIVES:
+        return (f"[system] archive = {chosen} in {settings.path}: allowed are "
+                "public (the public A3 archive) and lan (the rig's own apt source).")
+    if args.update and not args.from_source:
+        return (f"--update {args.update}: the archive holds only the newest packages, "
+                "not a named version. To install a version, build it from source: "
+                f"install --from-source --update {args.update}")
+    return None
 
 
 def update_version(requested, stored, tags, here):
@@ -102,11 +127,38 @@ def choose_roles(ctx):
     return picked
 
 
+def archive_source_in_place(suite):
+    """Whether the archive's source for `suite` and its key are both there."""
+    try:
+        return (archive.KEYRING.is_file()
+                and archive.SOURCES.read_text() == archive.sources_text(suite))
+    except OSError:
+        return False
+
+
+def ensure_archive(ctx):
+    """The public archive's apt source, written through a3-root when it is
+    missing or differs: once, before the roles, when the apps come from it."""
+    if ctx.from_source or ctx.platform not in APT_PLATFORMS:
+        return
+    if ctx.settings.get("system", "archive") == "lan":
+        ctx.runner.log(f"Archive: lan -- the apt source {LAN_SOURCE}, set up by hand, "
+                       "is used; nothing is written.")
+        return
+    try:
+        suite = archive.suite_for(os_release(OS_RELEASE))
+    except archive.ArchiveError as error:
+        raise RoleError(str(error))
+    if archive_source_in_place(suite):
+        return
+    ctx.runner.log("\n=== The A3 archive ===")
+    ctx.runner.run(archive.a3_root_command(ctx, "source", suite), root=True)
+
+
 def install_packages(ctx, names):
-    """What the roles build against, in one apt call before any of them:
-    each role names its own, none relies on another's package."""
-    # Until packages mode exists every install builds from source.
-    packages = needed_packages(names, from_source=True)
+    """What the roles need, in one apt call before any of them: each role
+    names its own, none relies on another's package."""
+    packages = needed_packages(names, from_source=ctx.from_source)
     if not packages or ctx.platform not in APT_PLATFORMS:
         return
     ctx.runner.log("\n=== Packages for the roles ===")
@@ -130,8 +182,10 @@ def install_screen(ctx, names):
 
 
 def install_roles(ctx, names):
-    """The packages, the screen, then each role in turn until one fails.
-    A screen that only warns does not stop the roles."""
+    """The archive, the packages, the screen, then each role in turn until
+    one fails. A screen that only warns does not stop the roles."""
+    if names:
+        ensure_archive(ctx)
     install_packages(ctx, names)
     results = []
     screen = install_screen(ctx, names)
@@ -193,9 +247,14 @@ def main(argv=None):
         print(error, file=sys.stderr)
         return 2
     settings = Settings(args.config or DEFAULT_PATH)
+    refused_run = refusal(args, settings)
+    if refused_run:
+        print(refused_run, file=sys.stderr)
+        return 2
     interactive = args.update is None and args.config is None
     runner = Runner(dry_run=args.dry_run)
-    ctx = Context(REPO, settings, runner, make_prompter(interactive), platform_name())
+    ctx = Context(REPO, settings, runner, make_prompter(interactive), platform_name(),
+                  from_source=args.from_source)
     if args.flash_firmware:
         ctx.answers["flash_firmware"] = True
     if ssh_key:
@@ -220,7 +279,7 @@ def main(argv=None):
             raise RoleError(f"Not yet possible on {ctx.platform}: "
                             + ", ".join(BY_NAME[r].label for r in unsupported))
         # Before the questions: the Core's read what this release ships.
-        release.update_submodules(runner, REPO, needed_submodules(roles))
+        release.update_submodules(runner, REPO, needed_submodules(roles, ctx.from_source))
         for name in roles:
             BY_NAME[name].configure(ctx)
 

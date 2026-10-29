@@ -26,6 +26,16 @@ def package_is_installed(ctx):
     return package_installed(PACKAGE)
 
 
+def buildable_pin(ctx, source):
+    """(the pinned commit, JUCE) for a build from source; refused when the
+    pin predates the desk's packaging."""
+    commit = pinned_commit(ctx)
+    if not has_packaging(ctx, source, commit):
+        raise RoleError(f"a3-mixer at {commit[:10]} has no packaging/stage: the a3-mixer pin "
+                        "is older than the desk; raise it first.")
+    return commit, ensure_juce(ctx)
+
+
 class Desk(Role):
     name = "desk"
     label = "A³ Desk (the A³ Mixer on a screen)"
@@ -38,13 +48,8 @@ class Desk(Role):
 
     def install(self, ctx):
         source = ctx.repo / SOURCE
-        commit = pinned_commit(ctx)
-        if not has_packaging(ctx, source, commit):
-            raise RoleError(f"a3-mixer at {commit[:10]} has no packaging/stage: the a3-mixer pin "
-                            "is older than the desk; raise it first.")
-        juce = ensure_juce(ctx)
-        deb = apppackage.build(ctx, APP, source, commit, juce)
-        apppackage.install(ctx, APP, deb)
+        commit, juce = buildable_pin(ctx, source) if ctx.from_source else (None, None)
+        apppackage.install(ctx, APP, apppackage.obtain(ctx, APP, source, commit, juce))
 
     def leaving_packages(self, ctx):
         return [PACKAGE]

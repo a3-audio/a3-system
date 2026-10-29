@@ -80,10 +80,22 @@ def serial_candidates(usb_ids, by_id=None, sys_tty=None):
                   if usb_id(link.resolve().name, sys_tty) in usb_ids)
 
 
+def buildable_pin(ctx, ui):
+    """(the pinned ui commit, JUCE) for a build from source; refused when the
+    pin predates the package."""
+    commit = pinned_commit(ctx)
+    if not has_packaging(ctx, ui, commit):
+        raise RoleError(f"a3-motion/ui at {commit[:10]} has no packaging/stage: a3-motion's "
+                        "ui pin is older than the package; raise it first.")
+    return commit, ensure_juce(ctx)
+
+
 class Motion(Role):
     name = "motion"
     label = "Motion UI with the PCB on this machine (incl. firmware)"
     submodules = ("a3-motion",)
+    # The panel firmware, flashed from a3-motion/firmware.
+    config_submodules = ("a3-motion",)
     platforms = ("debian",)
     # gsl for the motion engine, serial and gpiod for the V3 hardware interface.
     packages = SCREEN_PACKAGES
@@ -101,14 +113,9 @@ class Motion(Role):
 
     def install(self, ctx):
         ui = ctx.repo / UI
-        commit = pinned_commit(ctx)
-        if not has_packaging(ctx, ui, commit):
-            raise RoleError(f"a3-motion/ui at {commit[:10]} has no packaging/stage: a3-motion's "
-                            "ui pin is older than the package; raise it first.")
-        juce = ensure_juce(ctx)
+        commit, juce = buildable_pin(ctx, ui) if ctx.from_source else (None, None)
         apppackage.refuse_shadowing_leftovers(ctx, APP)
-        deb = apppackage.build(ctx, APP, ui, commit, juce)
-        apppackage.install(ctx, APP, deb)
+        apppackage.install(ctx, APP, apppackage.obtain(ctx, APP, ui, commit, juce))
         self._dialout(ctx)
         self._firmware(ctx)
         enable_and_restart(ctx, UNIT)

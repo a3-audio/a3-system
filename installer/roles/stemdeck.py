@@ -93,6 +93,8 @@ class StemDeck(Role):
     name = "stemdeck"
     label = "StemDeck (stem player)"
     submodules = (SOURCE,)
+    # The patchbay unit, installed when the Core is not on this machine.
+    config_submodules = (SOURCE,)
     # Raspberry Pi OS: a Pi 5 builds and plays a deck (a3motionV02, 2026-10-28).
     platforms = ("debian", "raspios")
     # without the Core, PATCHBAY_UNIT runs QjackCtl with StemDeck's patchbay
@@ -190,12 +192,13 @@ class StemDeck(Role):
 
 
 def install_package(ctx):
-    """The stemdeck package of the pinned commit, built, installed and held:
-    what this role and deck-host both start from."""
-    juce = ensure_juce(ctx)
+    """The stemdeck package -- the archive's, or built from the pinned commit --
+    installed and held: what this role and deck-host both start from."""
+    juce = ensure_juce(ctx) if ctx.from_source else None
     apppackage.refuse_shadowing_leftovers(ctx, APP)
-    deb = apppackage.build(ctx, APP, ctx.repo / SOURCE, pinned_commit(ctx), juce)
-    apppackage.install(ctx, APP, deb)
+    commit = pinned_commit(ctx) if ctx.from_source else None
+    what = apppackage.obtain(ctx, APP, ctx.repo / SOURCE, commit, juce)
+    apppackage.install(ctx, APP, what)
 
 
 def _remove_patchbay_unit(ctx):

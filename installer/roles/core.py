@@ -1,10 +1,10 @@
-"""A³ Core: the a3-core package, built from this release's a3-core.
+"""A³ Core: the a3-core package, from the archive or built from this
+release's a3-core.
 
-The package is built here, from the submodule, rather than taken from the
-apt repository: that repository holds one package, the newest, and a Core
-installed from it is on a3-core's main whatever tag the rest is on. Built
-from the submodule it is exactly the release's, also offline. It is then
-held, so `apt upgrade` does not move it off the release.
+By default it comes from the apt archive by name, through installer/a3-root,
+and is held. The archive holds one package, the newest. With --from-source
+it is built here from the submodule: exactly the release's, also offline,
+and held so `apt upgrade` does not move it off the release.
 
 Its debconf questions are asked here, with the rest, and handed over
 preseeded and marked seen, the network answers with the a3-core/preseeded
@@ -237,6 +237,8 @@ class Core(Role):
     name = "core"
     label = "A³ Core (sound server: the a3-core program, beat analyzer)"
     submodules = ("a3-core", "beat-analyzer")
+    # The truth, the shipped config and the postinst's functions (configure).
+    config_submodules = ("a3-core",)
     platforms = ("debian",)
     # The Core's windows run on X; a headless Core uses the dummy screen.
     packages = SCREEN_PACKAGES
@@ -283,19 +285,12 @@ class Core(Role):
     def install(self, ctx):
         run = ctx.runner
         # Up front, before anything is built: what would stop either package.
-        source, commit = ctx.repo / ANALYZER_SOURCE, analyzer_commit(ctx)
-        core_source, core_pin = ctx.repo / CORE_SOURCE, core_commit(ctx)
-        if not has_packaging(ctx, core_source, core_pin):
-            raise RoleError(f"a3-core at {core_pin[:10]} has no packaging/stage: the "
-                            "umbrella's a3-core pin is older than its package; "
-                            "raise the a3-core pin first.")
-        if not has_packaging(ctx, source, commit):
-            raise RoleError(f"{ANALYZER_SOURCE} at {commit[:10]} has no packaging/stage: the "
-                            f"umbrella's {ANALYZER_SOURCE} pin is older than its package; "
-                            "raise it first.")
+        source, core_source = ctx.repo / ANALYZER_SOURCE, ctx.repo / CORE_SOURCE
+        commit, core_pin = buildable_pins(ctx) if ctx.from_source else (None, None)
         apppackage.refuse_shadowing_leftovers(ctx, CORE)
         apppackage.refuse_shadowing_leftovers(ctx, ANALYZER)
-        deb = apppackage.build(ctx, CORE, core_source, core_pin, ensure_juce(ctx))
+        juce = ensure_juce(ctx) if ctx.from_source else None
+        what = apppackage.obtain(ctx, CORE, core_source, core_pin, juce)
         # The package of before: a3-core Conflicts with and Replaces it, but a
         # held package is not replaced unless it is unheld first.
         if leftover_engine_installed(ctx):
@@ -303,9 +298,8 @@ class Core(Role):
         run.run(["debconf-set-selections"], root=True,
                 input=preseed_lines(ctx.settings, ctx.answers.get("replace"),
                                   ctx.answers.get("ssh_key")))
-        run.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",
-                 "--allow-downgrades", "--allow-change-held-packages", deb], root=True)
-        run.run(["apt-mark", "hold", "a3-core"], root=True)
+        apppackage.apt_install(ctx, CORE, what)
+        apppackage.hold(ctx, CORE)
         # The postinst clears the marker, but apt runs no postinst when the
         # deb is the installed version: the marker then stayed, and the next
         # dpkg-reconfigure took these network answers unasked (a3-system#76).
@@ -322,8 +316,8 @@ class Core(Role):
         """After a3-core, whose postinst moves its old checkout unit aside and
         writes the drop-in and the OSC targets. Not enabled: a3-main wants
         it; a running one is restarted onto the package."""
-        deb = apppackage.build(ctx, ANALYZER, source, commit, juce_prefix(ctx))
-        apppackage.install(ctx, ANALYZER, deb)
+        what = apppackage.obtain(ctx, ANALYZER, source, commit, juce_prefix(ctx))
+        apppackage.install(ctx, ANALYZER, what)
         systemctl_user(ctx, "daemon-reload")
         systemctl_user(ctx, "try-restart", ANALYZER_UNIT)
         apppackage.check_packaged_unit_wins(ctx, ANALYZER)
@@ -354,14 +348,27 @@ class Core(Role):
         if keep_keys:
             run.run(["cp", "-p", keys, kept])
         try:
-            run.run(["apt-mark", "unhold", "a3-core"], root=True)
-            run.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "remove", "-y",
-                     "a3-core"], root=True)
+            apppackage.remove(ctx, CORE)
         finally:
             if keep_keys:
                 run.run(["mv", "-f", kept, keys])
         if analyzer_is_installed(ctx):
             apppackage.remove(ctx, ANALYZER)
+
+
+def buildable_pins(ctx):
+    """(the beat-analyzer's pinned commit, a3-core's) for a build from source;
+    refused when either pin predates its package."""
+    commit, core_pin = analyzer_commit(ctx), core_commit(ctx)
+    if not has_packaging(ctx, ctx.repo / CORE_SOURCE, core_pin):
+        raise RoleError(f"a3-core at {core_pin[:10]} has no packaging/stage: the "
+                        "umbrella's a3-core pin is older than its package; "
+                        "raise the a3-core pin first.")
+    if not has_packaging(ctx, ctx.repo / ANALYZER_SOURCE, commit):
+        raise RoleError(f"{ANALYZER_SOURCE} at {commit[:10]} has no packaging/stage: the "
+                        f"umbrella's {ANALYZER_SOURCE} pin is older than its package; "
+                        "raise it first.")
+    return commit, core_pin
 
 
 def analyzer_commit(ctx):

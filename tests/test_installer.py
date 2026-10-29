@@ -42,7 +42,10 @@ def context(tmp, settings=None):
         s.set(section, key, value)
     log = Log()
     runner = Runner(dry_run=True, log=log)
-    return Context(REPO, s, runner, Prompter(), "debian", home=tmp, user="aaa"), log
+    # The roles' tests here describe the build from source; packages mode
+    # has its own in test_packages_mode.py.
+    return Context(REPO, s, runner, Prompter(), "debian", home=tmp, user="aaa",
+                   from_source=True), log
 
 
 class CoreClearsItsMarker(unittest.TestCase):
@@ -271,18 +274,18 @@ class OnlyWhatTheRolesNeed(unittest.TestCase):
         runner = Runner(dry_run=True, log=log)
         if version:
             release.check_out(runner, REPO, version)
-        release.update_submodules(runner, REPO, needed_submodules(roles))
+        release.update_submodules(runner, REPO, needed_submodules(roles, from_source=True))
         commands = [c.split("  (in ")[0] for c in log.commands()]
         return [c for c in commands if "submodule" in c or "checkout" in c]
 
     def test_each_role_names_what_it_builds_from(self):
-        self.assertEqual(["a3-core", "beat-analyzer"], needed_submodules(["core"]))
-        self.assertEqual(["stemdeck"], needed_submodules(["stemdeck"]))
-        self.assertEqual(["a3-motion"], needed_submodules(["motion"]))
+        self.assertEqual(["a3-core", "beat-analyzer"], needed_submodules(["core"], from_source=True))
+        self.assertEqual(["stemdeck"], needed_submodules(["stemdeck"], from_source=True))
+        self.assertEqual(["a3-motion"], needed_submodules(["motion"], from_source=True))
 
     def test_in_install_order_and_once(self):
         self.assertEqual(["a3-core", "beat-analyzer", "stemdeck", "a3-motion"],
-                         needed_submodules(["motion", "stemdeck", "core", "core"]))
+                         needed_submodules(["motion", "stemdeck", "core", "core"], from_source=True))
 
     def test_only_those_are_initialised(self):
         commands = self.submodule_commands(["stemdeck", "motion"])
@@ -661,7 +664,8 @@ class AutologinWithoutADisplayManager(unittest.TestCase):
         log = Log()
         runner = Runner(dry_run=dry_run, log=log)
         s = Settings(Path(tmp) / "install.conf")
-        return Context(REPO, s, runner, Prompter(), "debian", home=tmp, user="aaa"), log
+        return Context(REPO, s, runner, Prompter(), "debian", home=tmp, user="aaa",
+                       from_source=True), log
 
     def test_bash_profile_written_into_the_home(self):
         with tempfile.TemporaryDirectory() as tmp:

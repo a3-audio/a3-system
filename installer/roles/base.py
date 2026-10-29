@@ -15,8 +15,12 @@ class RoleError(Exception):
 
 
 class Context:
-    def __init__(self, repo, settings, runner, prompter, platform, home=None, user=None):
+    def __init__(self, repo, settings, runner, prompter, platform, home=None, user=None,
+                 from_source=False):
         self.repo = Path(repo)
+        # False: the apps come by name from the apt archive (the default);
+        # True: built from the pinned submodules (install --from-source).
+        self.from_source = from_source
         # The user the installer runs as, the one whose units it installs and
         # who is logged in on tty1 (cli.where_problems requires aaa today).
         self.user = user or getpass.getuser()
@@ -106,8 +110,11 @@ class Role:
     label = ""
     platforms = ()
     # The submodules of this repository the role builds from. Only these are
-    # checked out on its machine.
+    # checked out on its machine, when it builds from source.
     submodules = ()
+    # The submodules the role reads files from even when its app comes from
+    # the archive: configuration, units, firmware.
+    config_submodules = ()
     # The Debian packages the role needs at run time when its app comes as a
     # package: the screen, tools its units call. Installed by the installer
     # before any role: a role does not count on another role's package for

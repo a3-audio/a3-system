@@ -16,6 +16,10 @@ DEFAULTS = {
     "system": {
         # A tag (v03.0) or a branch; empty is "whatever is checked out".
         "version": "",
+        # Where the apps come from without --from-source: public (the A3
+        # archive; the installer writes its apt source) or lan (the rig's
+        # http://192.168.8.5/apt, set up by hand; nothing is written).
+        "archive": "public",
     },
     "roles": {role: "no" for role in ROLES},
     "core": {

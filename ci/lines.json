@@ -1,0 +1,25 @@
+{
+  "forky": {
+    "arch": "amd64",
+    "runner": "ubuntu-latest",
+    "image": "debian:testing",
+    "builds": [
+      {"path": "a3-core", "recipes": ["packaging"]},
+      {"path": "stemdeck", "recipes": ["packaging"]},
+      {"path": "a3-mixer", "recipes": ["packaging"]},
+      {"path": "a3-motion/ui", "recipes": ["packaging"]},
+      {"path": "beat-analyzer", "recipes": ["packaging"]}
+    ]
+  },
+  "trixie": {
+    "arch": "arm64",
+    "runner": "ubuntu-24.04-arm",
+    "image": "debian:trixie",
+    "builds": [
+      {"path": "stemdeck", "recipes": ["packaging"]},
+      {"path": "a3-mixer", "recipes": ["packaging"]},
+      {"path": "a3-motion/ui", "recipes": ["packaging"]},
+      {"path": "beat-analyzer", "recipes": ["packaging"]}
+    ]
+  }
+}

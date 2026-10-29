@@ -10,6 +10,10 @@ import re
 from pathlib import Path
 
 
+# The installer's history on a machine, under the user's home.
+STATE_FILE = Path(".config") / "a3" / "install.state"
+
+
 class RoleError(Exception):
     """A role cannot be installed as asked; the message says why."""
 
@@ -29,7 +33,7 @@ class Context:
         self.prompter = prompter
         self.platform = platform
         self.home = Path(home) if home else Path.home()
-        self.state = State(self.home / ".config" / "a3" / "install.state")
+        self.state = State(self.home / STATE_FILE)
         # Answers that hold for this run only, e.g. which parts to replace.
         self.answers = {}
 

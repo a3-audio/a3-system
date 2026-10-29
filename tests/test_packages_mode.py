@@ -16,14 +16,14 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from test_installer import (PIN, FakeRole, Log, RecordingRunner,  # noqa: E402
-                            context as from_source_context)
+from test_installer import (PIN, FakeRole, Log, MovingFailingRunner,  # noqa: E402
+                            RecordingRunner, context as from_source_context)
 from installer import archive, cli  # noqa: E402
 from installer.prompt import Prompter  # noqa: E402
 from installer.roles import apppackage, core, desk, motion, needed_submodules, stemdeck  # noqa: E402
-from installer.roles.base import Context  # noqa: E402
+from installer.roles.base import Context, State  # noqa: E402
 from installer.settings import Settings  # noqa: E402
-from installer.system import Runner  # noqa: E402
+from installer.system import CommandFailed, Runner  # noqa: E402
 
 A3_ROOT = str(archive.A3_ROOT)
 
@@ -263,9 +263,10 @@ class TheArchiveSource(unittest.TestCase):
 
 
 class RefusedBeforeAnyChange(unittest.TestCase):
-    def main(self, argv, settings_text=""):
+    def main(self, argv, settings_text="", home=None):
         tmp = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, tmp)
+        home = home or tmp
         config = tmp / "install.conf"
         config.write_text(settings_text)
         ran = []
@@ -280,7 +281,8 @@ class RefusedBeforeAnyChange(unittest.TestCase):
                 return ""
 
         stderr = io.StringIO()
-        with mock.patch.object(cli, "Runner", Untouchable), redirect_stderr(stderr):
+        with mock.patch.object(cli, "Runner", Untouchable), redirect_stderr(stderr), \
+                mock.patch.object(Path, "home", lambda: home):
             code = cli.main([*argv, "--config", str(config)])
         return code, stderr.getvalue(), ran
 
@@ -297,6 +299,92 @@ class RefusedBeforeAnyChange(unittest.TestCase):
         self.assertIn("public", said)
         self.assertIn("lan", said)
         self.assertEqual([], ran)
+
+
+UNSET = ("`[system] archive` is not set: set it to public (the GitHub archive) or lan "
+         "(the forge on 192.168.8.5), or run with --from-source to build as before.")
+
+
+class AnInstalledMachineChoosesItsArchive(unittest.TestCase):
+    """A machine installed before (the rig, on its LAN archive) is not moved to
+    the public archive unasked: a source written there breaks its apt until
+    removed by hand when the archive is not published yet (P25)."""
+
+    def refusal(self, conf="", installed=True, argv=("--update",)):
+        tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, tmp)
+        (tmp / "install.conf").write_text(conf)
+        state = State(tmp / "install.state")
+        if installed:
+            state.set("installed", "stemdeck", "2026-10-01")
+        return cli.refusal(cli.parse(list(argv)), Settings(tmp / "install.conf"), state)
+
+    def test_an_installed_machine_without_the_key_is_refused(self):
+        self.assertEqual(UNSET, self.refusal())
+
+    def test_a_set_key_is_taken(self):
+        self.assertIsNone(self.refusal("[system]\narchive = lan\n"))
+        self.assertIsNone(self.refusal("[system]\narchive = public\n"))
+
+    def test_a_fresh_machine_takes_public(self):
+        self.assertIsNone(self.refusal(installed=False))
+
+    def test_from_source_needs_no_archive(self):
+        self.assertIsNone(self.refusal(argv=("--update", "--from-source")))
+
+    def test_the_run_stops_before_any_command(self):
+        tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, tmp)
+        State(tmp / ".config" / "a3" / "install.state").set("installed", "desk", "2026-10-01")
+        code, said, ran = RefusedBeforeAnyChange.main(self, ["--update"], home=tmp)
+        self.assertEqual(2, code)
+        self.assertIn(UNSET, said)
+        self.assertEqual([], ran)
+
+
+class AnOlderVersionIsNamed(unittest.TestCase):
+    def choose(self, stored, from_source=False):
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmp)
+        ctx, log = packages_context(tmp)
+        ctx.from_source = from_source
+        ctx.settings.set("system", "version", stored)
+        with mock.patch.object(cli.release, "fetch", lambda *_: None), \
+                mock.patch.object(cli.release, "tags", lambda *_: ["v03.1", "v03.0"]), \
+                mock.patch.object(cli.release, "current", lambda *_: "v03.1"):
+            version = cli.choose_version(ctx, cli.parse([]))
+        return version, [line for line in log if "--from-source" in line]
+
+    def test_a_version_other_than_the_newest_is_said(self):
+        version, said = self.choose("v03.0")
+        self.assertEqual("v03.0", version)
+        self.assertEqual(["Packages come from the archive's newest whatever version is "
+                          "checked out; use --from-source to build this version."], said)
+
+    def test_the_newest_is_not(self):
+        self.assertEqual([], self.choose("v03.1")[1])
+
+    def test_from_source_builds_the_version(self):
+        self.assertEqual([], self.choose("v03.0", from_source=True)[1])
+
+
+class APackagesInstallThatFailsPutsTheHandUnitBack(unittest.TestCase):
+    def test_a_failing_a3_root_install_puts_the_hand_unit_back(self):
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmp)
+        ctx, log = packages_context(tmp)
+        ctx.runner = MovingFailingRunner(f"{A3_ROOT} install", log=log)
+        hand = ctx.user_units / "stemdeck.service"
+        hand.write_text("[Service]\nExecStart=/hand\n")
+        with no_build_seams(), self.assertRaises(CommandFailed):
+            stemdeck.install_package(ctx)
+        commands = log.commands()
+        aside = f"{hand}.before-package"
+        self.assertIn(f"mv -n {hand} {aside}", commands)
+        self.assertIn(f"mv -n {aside} {hand}", commands)
+        self.assertEqual("systemctl --user enable stemdeck.service", commands[-1])
+        self.assertLess(commands.index(f"{A3_ROOT} install stemdeck"),
+                        commands.index(f"mv -n {aside} {hand}"))
 
 
 if __name__ == "__main__":

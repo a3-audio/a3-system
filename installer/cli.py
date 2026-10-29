@@ -26,7 +26,7 @@ from . import archive, release
 from .leave import discover_roles, leave_roles
 from .prompt import make_prompter
 from .roles import ALL, BY_NAME, needed_packages, needed_submodules, needs_screen
-from .roles.base import Context, RoleError, record_installed
+from .roles.base import STATE_FILE, Context, RoleError, State, record_installed
 from .roles.core import check_core, read_ssh_key
 from .roles.screen import set_up_screen
 from .settings import DEFAULT_PATH, Settings
@@ -68,12 +68,20 @@ def where_problems(repo, user):
     return problems
 
 
-def refusal(args, settings):
-    """Why this run cannot start, before it changes anything; or None."""
+def refusal(args, settings, state):
+    """Why this run cannot start, before it changes anything; or None.
+    `state` is the installer's history here: a machine installed before
+    keeps its archive until it is named (the rig is on lan, and a public
+    source apt cannot update from breaks its apt)."""
     chosen = settings.get("system", "archive")
     if chosen not in ARCHIVES:
         return (f"[system] archive = {chosen} in {settings.path}: allowed are "
                 "public (the public A3 archive) and lan (the rig's own apt source).")
+    if (not args.from_source and state.path.is_file()
+            and not settings.in_file("system", "archive")):
+        return ("`[system] archive` is not set: set it to public (the GitHub archive) "
+                "or lan (the forge on 192.168.8.5), or run with --from-source to build "
+                "as before.")
     if args.update and not args.from_source:
         return (f"--update {args.update}: the archive holds only the newest packages, "
                 "not a named version. To install a version, build it from source: "
@@ -92,7 +100,21 @@ def update_version(requested, stored, tags, here):
     return tags[0] if tags else here
 
 
+def name_a_version_not_in_the_archive(ctx, version, tags):
+    if ctx.from_source or not tags or version == tags[0]:
+        return
+    ctx.runner.log("Packages come from the archive's newest whatever version is "
+                   "checked out; use --from-source to build this version.")
+
+
 def choose_version(ctx, args):
+    version, tags = _chosen_version(ctx, args)
+    name_a_version_not_in_the_archive(ctx, version, tags)
+    return version
+
+
+def _chosen_version(ctx, args):
+    """(the version to run, the release tags, newest first)."""
     run, repo = ctx.runner, ctx.repo
     try:
         release.fetch(run, repo)
@@ -102,13 +124,13 @@ def choose_version(ctx, args):
     here = release.current(run, repo)
     if args.update is not None:
         return update_version(args.update, ctx.settings.get("system", "version"),
-                              tags, here)
+                              tags, here), tags
     stored = ctx.settings.get("system", "version") or here
     if not ctx.prompter.interactive:
-        return stored
+        return stored, tags
     options = [(here, f"{here} (as now)")] + [(t, t) for t in tags if t != here]
     return ctx.prompter.choose("Which version of the system?", options,
-                               stored if stored in dict(options) else here)
+                               stored if stored in dict(options) else here), tags
 
 
 def choose_roles(ctx):
@@ -247,7 +269,7 @@ def main(argv=None):
         print(error, file=sys.stderr)
         return 2
     settings = Settings(args.config or DEFAULT_PATH)
-    refused_run = refusal(args, settings)
+    refused_run = refusal(args, settings, State(Path.home() / STATE_FILE))
     if refused_run:
         print(refused_run, file=sys.stderr)
         return 2

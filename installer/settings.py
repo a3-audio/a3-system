@@ -75,8 +75,11 @@ class Settings:
         self.path = Path(path)
         self._parser = configparser.ConfigParser()
         self._parser.read_dict(DEFAULTS)
+        # What the file itself says, without the defaults.
+        self._written = configparser.ConfigParser()
         if self.path.exists():
             self._parser.read(self.path)
+            self._written.read(self.path)
 
     def get(self, section, key):
         return self._parser.get(section, key)
@@ -85,6 +88,10 @@ class Settings:
         if not self._parser.has_section(section):
             self._parser.add_section(section)
         self._parser.set(section, key, str(value))
+
+    def in_file(self, section, key):
+        """Whether the settings file sets `key` itself, rather than the default."""
+        return self._written.has_option(section, key)
 
     def flag(self, section, key):
         return self._parser.getboolean(section, key)

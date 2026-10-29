@@ -461,6 +461,7 @@ class DeckHost(Role):
     platforms = stemdeck.StemDeck.platforms
     # ptp4l@ is linuxptp's unit.
     packages = stemdeck.StemDeck.packages + ("linuxptp",)
+    build_packages = stemdeck.StemDeck.build_packages
     needs_screen = True
 
     def configure(self, ctx):

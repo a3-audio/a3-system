@@ -473,23 +473,55 @@ class RolesNameTheirPackages(unittest.TestCase):
         self.assertIn("libxi-dev", JUCE_PACKAGES)
         self.assertIn("libegl-dev", JUCE_PACKAGES)
 
+    def test_packages_mode_installs_no_compiler(self):
+        packages = needed_packages(["stemdeck"], False)
+        self.assertNotIn("cmake", packages)
+        self.assertEqual([], [p for p in packages if p.endswith("-dev")])
+        self.assertIn("i3", packages)
+
+    def test_packages_mode_installs_only_what_runs_for_every_role(self):
+        build_only = {"cmake", "g++", "build-essential", "git", "ccache", "patch", "curl", "pkg-config"}
+        for role in ALL:
+            with self.subTest(role.name):
+                packages = needed_packages([role.name], False)
+                self.assertEqual(set(), build_only & set(packages))
+                self.assertEqual([], [p for p in packages if p.endswith("-dev")])
+
+    def test_deck_host_keeps_ptp_and_qjackctl_at_run_time(self):
+        self.assertEqual(["i3", "linuxptp", "qjackctl", "x11-xserver-utils", "xinit"],
+                         needed_packages(["deck-host"], False))
+
+    def test_from_source_installs_both_as_before(self):
+        before = {
+            "core": ['build-essential', 'ccache', 'cmake', 'curl', 'g++', 'git', 'i3', 'libasound2-dev', 'libegl-dev', 'libfontconfig1-dev', 'libfreetype-dev', 'libglu1-mesa-dev', 'libjack-jackd2-dev', 'libsamplerate0-dev', 'libx11-dev', 'libxcomposite-dev', 'libxcursor-dev', 'libxext-dev', 'libxi-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxrender-dev', 'patch', 'pkg-config', 'x11-xserver-utils', 'xinit'],
+            "stemdeck": ['build-essential', 'ccache', 'cmake', 'git', 'i3', 'libasound2-dev', 'libegl-dev', 'libflac-dev', 'libfontconfig1-dev', 'libfreetype-dev', 'libglu1-mesa-dev', 'libjack-jackd2-dev', 'libogg-dev', 'librubberband-dev', 'libvorbis-dev', 'libx11-dev', 'libxcomposite-dev', 'libxcursor-dev', 'libxext-dev', 'libxi-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxrender-dev', 'pkg-config', 'qjackctl', 'x11-xserver-utils', 'xinit'],
+            "deck-host": ['build-essential', 'ccache', 'cmake', 'git', 'i3', 'libasound2-dev', 'libegl-dev', 'libflac-dev', 'libfontconfig1-dev', 'libfreetype-dev', 'libglu1-mesa-dev', 'libjack-jackd2-dev', 'libogg-dev', 'librubberband-dev', 'libvorbis-dev', 'libx11-dev', 'libxcomposite-dev', 'libxcursor-dev', 'libxext-dev', 'libxi-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxrender-dev', 'linuxptp', 'pkg-config', 'qjackctl', 'x11-xserver-utils', 'xinit'],
+            "motion": ['build-essential', 'ccache', 'cmake', 'git', 'i3', 'libasound2-dev', 'libegl-dev', 'libfontconfig1-dev', 'libfreetype-dev', 'libglu1-mesa-dev', 'libgpiod-dev', 'libgsl-dev', 'libserial-dev', 'libx11-dev', 'libxcomposite-dev', 'libxcursor-dev', 'libxext-dev', 'libxi-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxrender-dev', 'pkg-config', 'x11-xserver-utils', 'xinit'],
+            "desk": ['build-essential', 'ccache', 'cmake', 'git', 'i3', 'libasound2-dev', 'libegl-dev', 'libfontconfig1-dev', 'libfreetype-dev', 'libglu1-mesa-dev', 'libx11-dev', 'libxcomposite-dev', 'libxcursor-dev', 'libxext-dev', 'libxi-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxrender-dev', 'pkg-config', 'x11-xserver-utils', 'xinit'],
+            "mixer": [],
+            "mixer": [],
+        }
+        for role in ALL:
+            with self.subTest(role.name):
+                self.assertEqual(before[role.name], needed_packages([role.name], True))
+
     def test_stemdeck_covers_its_build(self):
-        self.assertEqual(set(), set(STEMDECK_NEEDS) - set(BY_NAME["stemdeck"].packages))
+        self.assertEqual(set(), set(STEMDECK_NEEDS) - set(BY_NAME["stemdeck"].packages + BY_NAME["stemdeck"].build_packages))
 
     def test_motion_covers_its_build(self):
-        self.assertEqual(set(), set(MOTION_NEEDS) - set(BY_NAME["motion"].packages))
+        self.assertEqual(set(), set(MOTION_NEEDS) - set(BY_NAME["motion"].packages + BY_NAME["motion"].build_packages))
 
     def test_core_installs_the_screen_and_the_engine_and_analyzer_builds_and_mixer_none(self):
         from installer.roles.base import SCREEN_PACKAGES
         from installer.roles.core import ANALYZER_BUILD_PACKAGES, CORE_BUILD_PACKAGES
         self.assertEqual(sorted(set(SCREEN_PACKAGES) | set(CORE_BUILD_PACKAGES)
                                 | set(ANALYZER_BUILD_PACKAGES)),
-                         sorted(BY_NAME["core"].packages))
-        self.assertEqual(len(set(BY_NAME["core"].packages)), len(BY_NAME["core"].packages))
+                         sorted(BY_NAME["core"].packages + BY_NAME["core"].build_packages))
+        self.assertEqual(len(set(BY_NAME["core"].build_packages)), len(BY_NAME["core"].build_packages))
         self.assertEqual((), BY_NAME["mixer"].packages)
 
     def test_stemdeck_alone_gets_nothing_of_motion(self):
-        packages = needed_packages(["stemdeck"])
+        packages = needed_packages(["stemdeck"], True)
         self.assertEqual(set(), set(STEMDECK_NEEDS) - set(packages))
         self.assertEqual(set(), {"libgsl-dev", "libgpiod-dev", "libserial-dev"} & set(packages))
 
@@ -497,10 +529,10 @@ class RolesNameTheirPackages(unittest.TestCase):
         from installer.roles.core import ANALYZER_BUILD_PACKAGES, CORE_BUILD_PACKAGES
         self.assertEqual(sorted(set(SCREEN_NEEDS) | set(CORE_BUILD_PACKAGES)
                                 | set(ANALYZER_BUILD_PACKAGES)),
-                         needed_packages(["core"]))
+                         needed_packages(["core"], True))
 
     def test_sorted_and_once(self):
-        packages = needed_packages(["stemdeck", "motion"])
+        packages = needed_packages(["stemdeck", "motion"], True)
         self.assertEqual(sorted(set(packages)), packages)
         self.assertEqual(set(STEMDECK_NEEDS) | set(MOTION_NEEDS) | set(SCREEN_NEEDS),
                          set(packages))
@@ -518,6 +550,7 @@ class RolesNameTheirPackages(unittest.TestCase):
 class FakeRole:
     def __init__(self, name, packages=(), needs_screen=False):
         self.name, self.label, self.packages = name, name, packages
+        self.build_packages = ()
         self.needs_screen = needs_screen
 
     def install(self, ctx):
@@ -2411,7 +2444,7 @@ class TheAnalyzerComesWithTheCoreAsAPackage(unittest.TestCase):
     def test_the_core_brings_what_the_analyzer_builds_with(self):
         for needed in ("cmake", "g++", "pkg-config", "curl",
                        "libjack-jackd2-dev", "libsamplerate0-dev"):
-            self.assertIn(needed, BY_NAME["core"].packages)
+            self.assertIn(needed, BY_NAME["core"].build_packages)
 
 
     def test_core_role_builds_one_package_from_the_a3_core_submodule(self):

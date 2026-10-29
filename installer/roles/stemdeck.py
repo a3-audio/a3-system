@@ -95,13 +95,13 @@ class StemDeck(Role):
     submodules = (SOURCE,)
     # Raspberry Pi OS: a Pi 5 builds and plays a deck (a3motionV02, 2026-10-28).
     platforms = ("debian", "raspios")
-    packages = SCREEN_PACKAGES + JUCE_PACKAGES + (
+    # without the Core, PATCHBAY_UNIT runs QjackCtl with StemDeck's patchbay
+    # (the runtime tools of stemdeck.service are the package's Depends)
+    packages = SCREEN_PACKAGES + ("qjackctl",)
+    build_packages = JUCE_PACKAGES + (
         "libflac-dev", "libvorbis-dev", "libogg-dev", "libjack-jackd2-dev",
         # key lock: Rubber Band's time stretcher
-        "librubberband-dev",
-        # without the Core, PATCHBAY_UNIT runs QjackCtl with StemDeck's patchbay
-        # (the runtime tools of stemdeck.service are the package's Depends)
-        "qjackctl")
+        "librubberband-dev")
     needs_screen = True
 
     def configure(self, ctx):

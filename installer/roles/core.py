@@ -239,8 +239,8 @@ class Core(Role):
     submodules = ("a3-core", "beat-analyzer")
     platforms = ("debian",)
     # The Core's windows run on X; a headless Core uses the dummy screen.
-    packages = SCREEN_PACKAGES + tuple(
-        p for p in CORE_BUILD_PACKAGES if p not in SCREEN_PACKAGES)
+    packages = SCREEN_PACKAGES
+    build_packages = tuple(p for p in CORE_BUILD_PACKAGES if p not in SCREEN_PACKAGES)
     needs_screen = True
 
     def configure(self, ctx):

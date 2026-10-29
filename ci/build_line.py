@@ -103,8 +103,7 @@ def build_line(line, commands, run):
 
 
 def role_build_packages(role):
-    # Today a role lists runtime and build packages together.
-    return role.packages
+    return role.packages + role.build_packages
 
 
 def build_depends(line):

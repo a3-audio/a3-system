@@ -31,7 +31,8 @@ class Desk(Role):
     label = "A³ Desk (the A³ Mixer on a screen)"
     submodules = (SOURCE,)
     platforms = ("debian",)
-    packages = SCREEN_PACKAGES + JUCE_PACKAGES
+    packages = SCREEN_PACKAGES
+    build_packages = JUCE_PACKAGES
     needs_screen = True
     stays = ("the build cache ~/.cache/a3-build/a3-desk and the packages in ~/a3-debs",)
 

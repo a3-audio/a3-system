@@ -108,10 +108,14 @@ class Role:
     # The submodules of this repository the role builds from. Only these are
     # checked out on its machine.
     submodules = ()
-    # The Debian packages the role builds against, installed by the installer
+    # The Debian packages the role needs at run time when its app comes as a
+    # package: the screen, tools its units call. Installed by the installer
     # before any role: a role does not count on another role's package for
     # them (a3nuc2, StemDeck without the Core, 2026-10-05).
     packages = ()
+    # The Debian packages only a build from source needs: compilers, cmake,
+    # -dev files. A packages-mode install leaves them out.
+    build_packages = ()
     # A role that draws on the machine's screen. When any chosen role does,
     # the installer logs the user in on tty1 and starts X with i3 there.
     needs_screen = False

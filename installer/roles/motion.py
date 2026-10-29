@@ -86,7 +86,8 @@ class Motion(Role):
     submodules = ("a3-motion",)
     platforms = ("debian",)
     # gsl for the motion engine, serial and gpiod for the V3 hardware interface.
-    packages = SCREEN_PACKAGES + JUCE_PACKAGES + (
+    packages = SCREEN_PACKAGES
+    build_packages = JUCE_PACKAGES + (
         "libgsl-dev", "libgpiod-dev", "libserial-dev")
     needs_screen = True
 

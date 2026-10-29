@@ -22,9 +22,14 @@ def needed_submodules(names):
     return paths
 
 
-def needed_packages(names):
-    """The Debian packages the named roles build against, sorted, once each."""
-    return sorted({p for role in ALL if role.name in names for p in role.packages})
+def needed_packages(names, from_source):
+    """The Debian packages the named roles need, sorted, once each: what runs,
+    plus what builds when the apps are built from source."""
+    roles = [role for role in ALL if role.name in names]
+    needed = {p for role in roles for p in role.packages}
+    if from_source:
+        needed |= {p for role in roles for p in role.build_packages}
+    return sorted(needed)
 
 
 def needs_screen(names):

@@ -39,3 +39,6 @@
 [submodule "stemdeck"]
 	path = stemdeck
 	url = https://github.com/rafjagger/stemdeck
+[submodule "stemseparator"]
+	path = stemseparator
+	url = https://github.com/rafjagger/stemseparator

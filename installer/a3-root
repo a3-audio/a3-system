@@ -4,8 +4,8 @@
 """The only thing the packages mode runs as root, with a fixed verb list.
 
     a3-root source <suite>      key + apt source for the public A3 archive
-    a3-root install <pkg>...    apt-get update, install, hold
-    a3-root remove <pkg>...     unhold, apt-get remove
+    a3-root install <pkg>...    apt-get update, install, hold (noninteractive)
+    a3-root remove <pkg>...     unhold, apt-get remove (noninteractive)
     a3-root join-audio          add the calling user to the group audio
 
 Package names must be A3 packages and nothing may look like an option: root
@@ -135,6 +135,28 @@ def run_all(run, env, commands):
     return 0
 
 
+def snapshot(path):
+    """(contents, mode) of `path`, or None when it is not there."""
+    try:
+        return path.read_bytes(), path.stat().st_mode & 0o7777
+    except FileNotFoundError:
+        return None
+
+
+def restore(path, before):
+    if before is None:
+        path.unlink(missing_ok=True)
+        return
+    write_atomically(path, *before)
+
+
+def noninteractive(env):
+    """The caller's environment with apt's questions off: the installer
+    preseeds every a3-core question before, and sudo's env_reset would drop
+    a DEBIAN_FRONTEND the caller set anyway."""
+    return {**env, "DEBIAN_FRONTEND": "noninteractive"}
+
+
 def do_source(args, run, env, key_file, keyring, sources):
     check_arguments(args)
     if len(args) != 1 or args[0] not in SUITES:
@@ -144,14 +166,23 @@ def do_source(args, run, env, key_file, keyring, sources):
     except OSError as error:
         raise Refused(f"Cannot read the archive key: {error}")
     binary = dearmor(armored)
+    # A source apt cannot update from breaks every later apt run on the
+    # machine, so a failed update leaves both files as they were.
+    before = {keyring: snapshot(keyring), sources: snapshot(sources)}
     write_atomically(keyring, binary, 0o644)
     write_atomically(sources, sources_text(args[0]).encode(), 0o644)
-    return run_all(run, env, [["apt-get", "update"]])
+    code = run_all(run, env, [["apt-get", "update"]])
+    if code != 0:
+        for path, previous in before.items():
+            restore(path, previous)
+        print("a3-root: apt-get update failed; the key and the source are as they were.",
+              file=sys.stderr)
+    return code
 
 
 def do_install(packages, run, env):
     check_packages(packages)
-    return run_all(run, env, [
+    return run_all(run, noninteractive(env), [
         ["apt-get", "update"],
         ["apt-get", "install", "-y", "--allow-change-held-packages", *packages],
         ["apt-mark", "hold", *packages],
@@ -160,7 +191,7 @@ def do_install(packages, run, env):
 
 def do_remove(packages, run, env):
     check_packages(packages)
-    return run_all(run, env, [
+    return run_all(run, noninteractive(env), [
         ["apt-mark", "unhold", *packages],
         ["apt-get", "remove", "-y", *packages],
     ])
@@ -186,8 +217,6 @@ def do_join_audio(args, run, env):
 
 def main(argv, run=subprocess.run, env=os.environ,
          key_file=KEY_FILE, keyring=KEYRING, sources=SOURCES):
-    # The environment goes through unchanged: a3-core asks debconf questions
-    # the installer preseeds, so DEBIAN_FRONTEND must not be forced.
     verb, args = (argv[0], argv[1:]) if argv else (None, [])
     try:
         if verb == "source":

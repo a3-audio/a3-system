@@ -118,16 +118,23 @@ class InstallAndRemove(HelperTest):
             ["apt-get", "remove", "-y", "a3-core"],
         ])
 
-    def test_the_environment_is_not_made_noninteractive(self):
-        seen = []
+    def test_apt_runs_noninteractive_with_the_rest_of_the_environment(self):
+        """Parity with the build path: the installer preseeds every a3-core
+        question first, and sudo's env_reset would drop the caller's anyway."""
+        for verb in ("install", "remove"):
+            with self.subTest(verb):
+                seen = []
 
-        def run(args, **kwargs):
-            seen.append(kwargs.get("env"))
-            return SimpleNamespace(returncode=0)
+                def run(args, **kwargs):
+                    seen.append(kwargs.get("env"))
+                    return SimpleNamespace(returncode=0)
 
-        self.helper.main(["install", "a3-core"], run=run, env={"DEBIAN_FRONTEND": "dialog"})
-        for env in seen:
-            self.assertNotEqual((env or {}).get("DEBIAN_FRONTEND"), "noninteractive")
+                self.helper.main([verb, "a3-core"], run=run,
+                                 env={"DEBIAN_FRONTEND": "dialog", "PATH": "/usr/bin"})
+                self.assertTrue(seen)
+                for env in seen:
+                    self.assertEqual("noninteractive", env["DEBIAN_FRONTEND"])
+                    self.assertEqual("/usr/bin", env["PATH"])
 
 
 class JoinAudio(HelperTest):
@@ -183,6 +190,24 @@ class Source(HelperTest):
         paths = self.paths(armor(b"k" * 10))
         self.main("source", "forky", **paths)
         self.assertEqual([p.name for p in paths["keyring"].parent.iterdir()], ["a3.gpg"])
+
+    def test_a_failing_update_puts_back_what_was_there(self):
+        paths = self.paths(armor(b"new key"))
+        paths["keyring"].parent.mkdir()
+        paths["keyring"].write_bytes(b"old key")
+        self.run_ = Recorder(codes=[100])
+        self.assertEqual(self.main("source", "forky", **paths), 100)
+        self.assertEqual(b"old key", paths["keyring"].read_bytes())
+        self.assertFalse(paths["sources"].exists())
+
+    def test_a_failing_update_restores_an_older_source(self):
+        paths = self.paths(armor(b"new key"))
+        paths["sources"].parent.mkdir()
+        paths["sources"].write_text(archive.sources_text("trixie"))
+        self.run_ = Recorder(codes=[100])
+        self.assertEqual(self.main("source", "forky", **paths), 100)
+        self.assertEqual(archive.sources_text("trixie"), paths["sources"].read_text())
+        self.assertFalse(paths["keyring"].exists())
 
     def test_the_committed_key_dearmors(self):
         committed = REPO / "installer" / "keys" / "a3-audio-archive.asc"

@@ -55,7 +55,8 @@ class InputRunner(RecordingRunner):
         return 0
 
 
-def deckhost_seams(stock, core_package=False, multiarch="x86_64-linux-gnu", rx_filters=None):
+def deckhost_seams(stock, core_package=False, multiarch="x86_64-linux-gnu", rx_filters=None,
+                   irq_service_enabled=False):
     from installer.roles import apppackage, deckhost, stemdeck
     stack = ExitStack()
     stack.enter_context(mock.patch.object(deckhost.debs, "host_multiarch", lambda: multiarch))
@@ -65,6 +66,8 @@ def deckhost_seams(stock, core_package=False, multiarch="x86_64-linux-gnu", rx_f
     stack.enter_context(mock.patch.object(deckhost, "STOCK_PTP4L", stock))
     stack.enter_context(mock.patch.object(deckhost, "core_package_installed",
                                           lambda: core_package))
+    stack.enter_context(mock.patch.object(deckhost, "system_unit_enabled",
+                                          lambda _unit: irq_service_enabled))
     # Never this machine's own port: the filters are the test's.
     stack.enter_context(mock.patch.object(deckhost, "port_rx_filters", lambda _port: rx_filters))
     return stack
@@ -90,10 +93,12 @@ class DeckHostCase(unittest.TestCase):
     core_package = False
     multiarch = "x86_64-linux-gnu"
     rx_filters = None
+    irq_service_enabled = False
 
     def install(self, ctx):
         from installer.roles import deckhost
-        with deckhost_seams(self.stock, self.core_package, self.multiarch, self.rx_filters):
+        with deckhost_seams(self.stock, self.core_package, self.multiarch, self.rx_filters,
+                            self.irq_service_enabled):
             deckhost.DeckHost().install(ctx)
 
     def drop_in(self, ctx, letter="B"):
@@ -371,6 +376,138 @@ class TheA3CoreLeftovers(DeckHostCase):
         self.assertIn("put back", lines)
         self.assertIn("not re-enabled", lines)
         self.assertIn("daemon-reload", lines)
+
+
+class TheJackConfLeftovers(DeckHostCase):
+    """a3nuc2 (2026-10-29): 10-a3.conf with node.latency = 256/44100 forced
+    StemDeck to quantum 256 in a 128 graph: 4000+ xruns."""
+    ASIDE = ".a3-system-aside"
+
+    def jack_conf(self, ctx, name, text):
+        path = ctx.home / ".config" / "pipewire" / "jack.conf.d" / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+        return path
+
+    def aside(self, path):
+        return path.with_name(path.name + self.ASIDE)
+
+    def test_a_node_latency_other_than_the_graphs_is_moved_aside_and_logged(self):
+        ctx, log = self.ctx()
+        conf = self.jack_conf(ctx, "10-a3.conf", "jack.properties = {\n"
+                              "    node.latency = 256/44100\n}\n")
+        self.install(ctx)
+        self.assertFalse(conf.exists())
+        self.assertIn("256/44100", self.aside(conf).read_text())
+        self.assertTrue(any(str(conf) in line for line in log), log)
+
+    def test_a_quantum_other_than_the_graphs_too(self):
+        ctx, _ = self.ctx()
+        conf = self.jack_conf(ctx, "20-q.conf", "jack.properties = { node.quantum = 512/44100 }\n")
+        self.install(ctx)
+        self.assertTrue(self.aside(conf).exists())
+
+    def test_the_graphs_own_latency_and_other_settings_stay(self):
+        ctx, _ = self.ctx()
+        same = self.jack_conf(ctx, "10-same.conf", "node.latency = 128/44100\n")
+        other = self.jack_conf(ctx, "30-other.conf", "jack.properties = { jack.short-name = true }\n")
+        commented = self.jack_conf(ctx, "40-note.conf", "# node.latency = 256/44100\n")
+        self.install(ctx)
+        self.assertTrue(same.exists() and other.exists() and commented.exists())
+
+    def test_nothing_is_moved_with_the_a3_core_package(self):
+        self.core_package = True
+        ctx, _ = self.ctx()
+        conf = self.jack_conf(ctx, "10-a3.conf", "node.latency = 256/44100\n")
+        self.install(ctx)
+        self.assertTrue(conf.exists())
+
+    def test_dry_run_moves_nothing(self):
+        ctx, _ = self.ctx(dry_run=True)
+        conf = self.jack_conf(ctx, "10-a3.conf", "node.latency = 256/44100\n")
+        self.install(ctx)
+        self.assertTrue(conf.exists())
+
+    def test_it_is_not_overwritten_when_the_aside_is_there(self):
+        ctx, log = self.ctx()
+        conf = self.jack_conf(ctx, "10-a3.conf", "node.latency = 256/44100\n")
+        self.aside(conf).write_text("older\n")
+        self.install(ctx)
+        self.assertTrue(conf.exists())
+        self.assertEqual("older\n", self.aside(conf).read_text())
+
+    def test_leaving_puts_it_back(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx()
+        conf = self.jack_conf(ctx, "10-a3.conf", "node.latency = 256/44100\n")
+        self.install(ctx)
+        deckhost.DeckHost().uninstall(ctx)
+        self.assertEqual("node.latency = 256/44100\n", conf.read_text())
+        self.assertFalse(self.aside(conf).exists())
+
+    def test_the_dialog_names_the_folder(self):
+        from installer.roles import deckhost
+        ctx, _ = self.ctx()
+        lines = "\n".join(deckhost.DeckHost().leaving_lines(ctx))
+        self.assertIn("jack.conf.d", lines)
+
+
+class TheIrqPriorityService(DeckHostCase):
+    """set_irq_prio.service, left by a removed a3-core package, put the
+    touchscreen/panel USB IRQ at FIFO 95."""
+
+    def test_an_enabled_service_is_disabled_as_root_and_logged(self):
+        self.irq_service_enabled = True
+        ctx, log = self.ctx()
+        self.install(ctx)
+        self.assertIn("sudo systemctl disable set_irq_prio.service", log.commands())
+        self.assertTrue(any("set_irq_prio.service" in line and not line.startswith("$")
+                            for line in log), log)
+
+    def test_a_service_that_is_not_enabled_is_left_alone(self):
+        ctx, log = self.ctx()
+        self.install(ctx)
+        self.assertFalse(any("set_irq_prio" in c for c in log.commands()))
+
+    def test_nothing_with_the_a3_core_package(self):
+        self.irq_service_enabled = True
+        self.core_package = True
+        ctx, log = self.ctx()
+        self.install(ctx)
+        self.assertFalse(any("set_irq_prio" in c for c in log.commands()))
+
+    def test_leaving_enables_it_again_only_if_the_role_disabled_it(self):
+        from installer.roles import deckhost
+        self.irq_service_enabled = True
+        ctx, log = self.ctx()
+        self.install(ctx)
+        log.clear()
+        deckhost.DeckHost().uninstall(ctx)
+        self.assertIn("sudo systemctl enable set_irq_prio.service", log.commands())
+
+    def test_leaving_without_having_disabled_it_enables_nothing(self):
+        from installer.roles import deckhost
+        ctx, log = self.ctx()
+        self.install(ctx)
+        log.clear()
+        deckhost.DeckHost().uninstall(ctx)
+        self.assertFalse(any("set_irq_prio" in c for c in log.commands()))
+
+    def test_dry_run_records_nothing(self):
+        self.irq_service_enabled = True
+        ctx, _ = self.ctx(dry_run=True)
+        self.install(ctx)
+        self.assertFalse(ctx.state.path.exists())
+
+
+class TheRoleOnlyDeletesWhatItWrote(DeckHostCase):
+    def test_a_drop_in_of_the_roles_name_that_it_did_not_write_stays(self):
+        from installer.roles import deckhost
+        ctx, log = self.ctx()
+        hand = ctx.user_units / "stemdeck.service.d" / "deck-host.conf"
+        hand.parent.mkdir(parents=True)
+        hand.write_text("[Service]\nNice=-5\n")
+        self.assertNotIn(hand, deckhost.DeckHost().leaving_files(ctx))
 
 
 class TheRefusals(DeckHostCase):

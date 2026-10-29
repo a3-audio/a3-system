@@ -1,0 +1,249 @@
+#!/usr/bin/python3 -I
+# SPDX-FileCopyrightText: 2026 Raphael Eismann
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""The only thing the packages mode runs as root, with a fixed verb list.
+
+    a3-root source <suite>      key + apt source for the public A3 archive
+    a3-root install <pkg>...    apt-get update, install, hold (noninteractive)
+    a3-root remove <pkg>...     unhold, apt-get remove (noninteractive)
+    a3-root join-audio          add the calling user to the group audio
+
+Package names must be A3 packages and nothing may look like an option: root
+should never be a way to run arbitrary apt. Exit codes: 0 done, 2 refused,
+otherwise the failing command's own.
+
+Stdlib only and no import from the rest of the repository: this file is
+copied alone. The archive values below repeat the ones in archive.py beside
+it on purpose; a test keeps the two equal.
+"""
+
+import base64
+import binascii
+import os
+import pwd
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+ARCHIVE_URL = "https://a3-audio.github.io/a3-system"
+KEYRING = Path("/usr/share/keyrings/a3-audio.gpg")
+SOURCES = Path("/etc/apt/sources.list.d/a3-audio.sources")
+SUITES = ("forky", "trixie")
+A3_PACKAGES = ("a3-core", "a3-core-app", "stemdeck", "a3-desk",
+               "a3-motion-ui", "beat-analyzer", "a3-canvas")
+KEY_FILE = Path(__file__).resolve().parent / "keys" / "a3-audio-archive.asc"
+
+REFUSED = 2
+
+
+class Refused(Exception):
+    pass
+
+
+def sources_text(suite):
+    return "\n".join([
+        "Types: deb",
+        f"URIs: {ARCHIVE_URL}",
+        f"Suites: {suite}",
+        "Components: main",
+        f"Signed-By: {KEYRING}",
+        "",
+    ])
+
+
+def crc24(data):
+    crc = 0xB704CE
+    for byte in data:
+        crc ^= byte << 16
+        for _ in range(8):
+            crc <<= 1
+            if crc & 0x1000000:
+                crc ^= 0x864CFB
+    return crc & 0xFFFFFF
+
+
+def armor_lines(armored):
+    """(base64 body, checksum text) between the BEGIN and END lines; the
+    header lines (up to the first blank line) are dropped."""
+    body, checksum = [], None
+    inside = header_over = False
+    for line in armored.splitlines():
+        line = line.strip()
+        if line.startswith("-----BEGIN"):
+            inside, header_over = True, False
+        elif line.startswith("-----END"):
+            break
+        elif not inside:
+            continue
+        elif not header_over:
+            header_over = line == ""
+        elif line.startswith("="):
+            checksum = line[1:]
+        elif line:
+            body.append(line)
+    return "".join(body), checksum
+
+
+def dearmor(armored):
+    """The binary key inside an ASCII-armored block, its CRC-24 checked."""
+    body, checksum = armor_lines(armored)
+    if checksum is None:
+        raise Refused("The archive key has no armor checksum.")
+    try:
+        binary = base64.b64decode(body, validate=True)
+        checksum_bytes = base64.b64decode(checksum, validate=True)
+    except (binascii.Error, ValueError):
+        raise Refused("The archive key is not valid ASCII armor.")
+    if len(checksum_bytes) != 3:
+        raise Refused("The archive key has a malformed armor checksum.")
+    expected = int.from_bytes(checksum_bytes, "big")
+    if not binary or crc24(binary) != expected:
+        raise Refused("The archive key's checksum does not match.")
+    return binary
+
+
+def write_atomically(path, data, mode):
+    """Temp file in the same folder, then rename: a half-written key never sits there."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    handle, temp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.")
+    try:
+        with os.fdopen(handle, "wb") as out:
+            out.write(data)
+        os.chmod(temp, mode)
+        os.replace(temp, path)
+    except BaseException:
+        Path(temp).unlink(missing_ok=True)
+        raise
+
+
+def check_arguments(args):
+    for arg in args:
+        if arg.startswith("-"):
+            raise Refused(f"{arg!r} looks like an option.")
+
+
+def check_packages(packages):
+    check_arguments(packages)
+    if not packages:
+        raise Refused("No packages named.")
+    for package in packages:
+        if package not in A3_PACKAGES:
+            raise Refused(f"{package!r} is not an A3 package.")
+
+
+def run_all(run, env, commands):
+    for command in commands:
+        code = run(command, env=env, check=False).returncode
+        if code != 0:
+            return code
+    return 0
+
+
+def snapshot(path):
+    """(contents, mode) of `path`, or None when it is not there."""
+    try:
+        return path.read_bytes(), path.stat().st_mode & 0o7777
+    except FileNotFoundError:
+        return None
+
+
+def restore(path, before):
+    if before is None:
+        path.unlink(missing_ok=True)
+        return
+    write_atomically(path, *before)
+
+
+def noninteractive(env):
+    """The caller's environment with apt's questions off: the installer
+    preseeds every a3-core question before, and sudo's env_reset would drop
+    a DEBIAN_FRONTEND the caller set anyway."""
+    return {**env, "DEBIAN_FRONTEND": "noninteractive"}
+
+
+def do_source(args, run, env, key_file, keyring, sources):
+    check_arguments(args)
+    if len(args) != 1 or args[0] not in SUITES:
+        raise Refused(f"source takes one suite: {' or '.join(SUITES)}.")
+    try:
+        armored = key_file.read_text()
+    except OSError as error:
+        raise Refused(f"Cannot read the archive key: {error}")
+    binary = dearmor(armored)
+    # A source apt cannot update from breaks every later apt run on the
+    # machine, so a failed update leaves both files as they were.
+    before = {keyring: snapshot(keyring), sources: snapshot(sources)}
+    try:
+        write_atomically(keyring, binary, 0o644)
+        write_atomically(sources, sources_text(args[0]).encode(), 0o644)
+    except OSError as error:
+        put_back(before, f"writing them failed ({error})")
+        return 1
+    code = run_all(run, env, [["apt-get", "update"]])
+    if code != 0:
+        put_back(before, "apt-get update failed")
+    return code
+
+
+def put_back(before, why):
+    for path, previous in before.items():
+        restore(path, previous)
+    print(f"a3-root: {why}; the key and the source are as they were.", file=sys.stderr)
+
+
+def do_install(packages, run, env):
+    check_packages(packages)
+    return run_all(run, noninteractive(env), [
+        ["apt-get", "update"],
+        ["apt-get", "install", "-y", "--allow-change-held-packages", *packages],
+        ["apt-mark", "hold", *packages],
+    ])
+
+
+def do_remove(packages, run, env):
+    check_packages(packages)
+    return run_all(run, noninteractive(env), [
+        ["apt-mark", "unhold", *packages],
+        ["apt-get", "remove", "-y", *packages],
+    ])
+
+
+def calling_user(env):
+    try:
+        uid = int(env.get("PKEXEC_UID") or env.get("SUDO_UID"))
+        name = pwd.getpwuid(uid).pw_name
+    except (TypeError, ValueError, KeyError):
+        raise Refused("no calling user")
+    if uid == 0:
+        raise Refused("no calling user")
+    return name
+
+
+def do_join_audio(args, run, env):
+    check_arguments(args)
+    if args:
+        raise Refused("join-audio takes no arguments.")
+    return run_all(run, env, [["usermod", "-aG", "audio", calling_user(env)]])
+
+
+def main(argv, run=subprocess.run, env=os.environ,
+         key_file=KEY_FILE, keyring=KEYRING, sources=SOURCES):
+    verb, args = (argv[0], argv[1:]) if argv else (None, [])
+    try:
+        if verb == "source":
+            return do_source(args, run, env, key_file, keyring, sources)
+        if verb == "install":
+            return do_install(args, run, env)
+        if verb == "remove":
+            return do_remove(args, run, env)
+        if verb == "join-audio":
+            return do_join_audio(args, run, env)
+        raise Refused("verbs: source, install, remove, join-audio.")
+    except Refused as why:
+        print(f"a3-root: {why}", file=sys.stderr)
+        return REFUSED
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

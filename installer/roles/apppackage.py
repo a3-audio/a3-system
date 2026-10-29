@@ -2,9 +2,11 @@
 these roles take the same way (extracted from roles/stemdeck.py at its second
 user, 2026-10-08).
 
-The .deb is built from the pinned commit by installer/package.py into
-~/.cache/a3-build and ~/a3-debs -- never in a checkout a unit starts from --
-then installed with apt and held. A unit file in ~/.config/systemd/user
+By default the package comes by name from the apt archive, through the root
+helper installer/a3-root, which also holds it. With --from-source the .deb
+is built from the pinned commit by installer/package.py into ~/.cache/a3-build
+and ~/a3-debs -- never in a checkout a unit starts from -- then installed
+with apt and held. A unit file in ~/.config/systemd/user
 shadows the packaged one, and so does a drop-in that sets what the unit
 starts or where: both are disabled and renamed, never deleted, right before
 apt, and put back if apt does not finish -- a Ctrl-C at the sudo prompt
@@ -18,6 +20,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .. import package as debs
+from ..archive import a3_root_command
 from .base import RoleError, systemctl_user
 
 BEFORE_PACKAGE = ".before-package"
@@ -66,6 +69,14 @@ def build(ctx, app, source, commit, juce):
                     "--jobs", BUILD_JOBS, "--juce", juce])
     return debs.deb_path(out, app.package, debs.version_of(source, commit),
                          debs.host_architecture())
+
+
+def obtain(ctx, app, source, commit, juce):
+    """What apt installs: from source the .deb built from `commit` (its path),
+    otherwise the package's name in the archive."""
+    if not ctx.from_source:
+        return app.package
+    return build(ctx, app, source, commit, juce)
 
 
 def _aside(path):
@@ -149,19 +160,33 @@ def _put_back(ctx, app, done):
         systemctl_user(ctx, "enable", app.unit, check=False)
 
 
-def install(ctx, app, deb):
+def install(ctx, app, what):
     done = []
     try:
         if app.unit:   # an app without a unit (the desk) has nothing to set aside
             _set_aside(ctx, app, done)
-        ctx.runner.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",
-                        "--allow-downgrades", "--allow-change-held-packages", deb], root=True)
+        apt_install(ctx, app, what)
     except BaseException:
         # BaseException: a Ctrl-C at the sudo prompt must not leave the
         # machine with its unit disabled, renamed and no package either.
         _put_back(ctx, app, done)
         raise
-    ctx.runner.run(["apt-mark", "hold", app.package], root=True)
+    hold(ctx, app)
+
+
+def apt_install(ctx, app, what):
+    """`what` from obtain(): a .deb path from source, else the package name."""
+    if not ctx.from_source:
+        ctx.runner.run(a3_root_command(ctx, "install", what), root=True)
+        return
+    ctx.runner.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "install", "-y",
+                    "--allow-downgrades", "--allow-change-held-packages", what], root=True)
+
+
+def hold(ctx, app):
+    """From source the installer holds the package; a3-root install holds it itself."""
+    if ctx.from_source:
+        ctx.runner.run(["apt-mark", "hold", app.package], root=True)
 
 
 def fragment_path(ctx, app):
@@ -184,6 +209,9 @@ def check_packaged_unit_wins(ctx, app):
 
 
 def remove(ctx, app):
+    if not ctx.from_source:
+        ctx.runner.run(a3_root_command(ctx, "remove", app.package), root=True)
+        return
     ctx.runner.run(["apt-mark", "unhold", app.package], root=True)
     ctx.runner.run(["env", "DEBIAN_FRONTEND=noninteractive", "apt-get", "remove", "-y",
                     app.package], root=True)

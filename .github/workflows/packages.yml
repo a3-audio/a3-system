@@ -1,0 +1,210 @@
+# SPDX-FileCopyrightText: 2026 Raphael Eismann
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Every package of the system, built from the umbrella's pins for each line in
+# ci/lines.json, install-tested in a clean container, and published as one
+# signed apt archive on a3-system's GitHub Pages.
+name: Packages
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+env:
+  # A debconf prompt (tzdata and the like) would stall a container job for hours.
+  DEBIAN_FRONTEND: noninteractive
+
+defaults:
+  run:
+    # Named explicitly, GitHub runs bash -eo pipefail: a failing script in
+    # front of a pipe fails the step (the default is bash -e only).
+    shell: bash
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.lines.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read the lines
+        id: lines
+        run: echo "matrix=$(python3 ci/matrix.py)" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: matrix
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.matrix.outputs.matrix) }}
+    runs-on: ${{ matrix.runner }}
+    # The line's own Debian: dpkg-shlibdeps writes Depends against the
+    # libraries of the system the package will be installed on.
+    container: ${{ matrix.image }}
+    env:
+      CCACHE_DIR: /github/home/.ccache
+      # Two lines' ccache plus two JUCE caches share GitHub's 10 GB.
+      CCACHE_MAXSIZE: 1500M
+      # package.py's CMake builds pick these up from the environment.
+      CMAKE_C_COMPILER_LAUNCHER: ccache
+      CMAKE_CXX_COMPILER_LAUNCHER: ccache
+    steps:
+      # The Debian images have neither git nor python3; checkout needs git for
+      # history and submodules.
+      - name: Checkout tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates python3
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # The whole history: package versions are read off the v* tags.
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Trust the workspace
+        run: git config --global --add safe.directory '*'
+
+      - name: Submodule tags
+        run: git submodule foreach --recursive git fetch --tags --quiet
+
+      - name: Build tools
+        run: python3 ci/build_line.py ${{ matrix.suite }} --build-depends | xargs -r apt-get install -y --no-install-recommends
+
+      - name: Cache JUCE
+        id: juce
+        uses: actions/cache@v4
+        with:
+          path: /opt/juce
+          key: juce-9.0.3-${{ matrix.suite }}-${{ matrix.arch }}-v1
+
+      - name: Build JUCE
+        if: steps.juce.outputs.cache-hit != 'true'
+        run: |
+          git clone --depth 1 --branch 9.0.3 https://github.com/juce-framework/JUCE.git "$RUNNER_TEMP/JUCE"
+          cmake -S "$RUNNER_TEMP/JUCE" -B "$RUNNER_TEMP/JUCE/build" -DCMAKE_INSTALL_PREFIX=/opt/juce -DCMAKE_BUILD_TYPE=Release
+          cmake --build "$RUNNER_TEMP/JUCE/build" --target install -j4
+
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: /github/home/.ccache
+          key: ccache-${{ matrix.suite }}-${{ matrix.arch }}-${{ github.sha }}
+          restore-keys: ccache-${{ matrix.suite }}-${{ matrix.arch }}-
+
+      # Into the workspace, not $RUNNER_TEMP: in a container job the actions'
+      # path inputs do not see $RUNNER_TEMP where the shell does.
+      - name: Build the line
+        run: python3 ci/build_line.py ${{ matrix.suite }} --out "$GITHUB_WORKSPACE/out/debs" --cache "$RUNNER_TEMP/work" --juce /opt/juce --jobs 4
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: debs-${{ matrix.suite }}
+          path: out/debs/*.deb
+          if-no-files-found: error
+
+  install-test:
+    # One failing build line skips both install tests; publish needs both anyway.
+    needs: [matrix, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.matrix.outputs.matrix) }}
+    runs-on: ${{ matrix.runner }}
+    container: ${{ matrix.image }}
+    steps:
+      - name: Checkout tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates python3 dpkg-dev
+
+      # The ci/ and installer/ scripts only; the packages come as an artifact.
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Download
+        uses: actions/download-artifact@v4
+        with:
+          name: debs-${{ matrix.suite }}
+          path: debs
+
+      - name: Index
+        run: python3 ci/archive.py index "$RUNNER_TEMP/archive" ${{ matrix.suite }} ${{ matrix.arch }} debs/*.deb
+
+      - name: Install every package
+        run: python3 ci/install_test.py "$RUNNER_TEMP/archive" ${{ matrix.suite }}
+
+  publish:
+    needs: install-test
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    container: debian:testing
+    permissions:
+      contents: write
+    # Two pushes in a row publish one after the other, never over each other.
+    concurrency:
+      group: packages-publish
+      cancel-in-progress: false
+    steps:
+      - name: Checkout tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates python3 dpkg-dev gnupg
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Download
+        uses: actions/download-artifact@v4
+        with:
+          pattern: debs-*
+          path: debs
+
+      - name: Index both lines
+        run: |
+          python3 ci/matrix.py --suites | while read -r suite arch; do
+            python3 ci/archive.py index public "$suite" "$arch" "debs/debs-$suite"/*.deb
+          done
+
+      - name: Import the signing key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: |
+          mkdir -m 700 "$RUNNER_TEMP/gnupg"
+          printf '%s\n' "$GPG_PRIVATE_KEY" | gpg --homedir "$RUNNER_TEMP/gnupg" --batch --import
+
+      # A key that differs from the committed one would sign an archive no
+      # installed machine trusts: stop before anything is signed.
+      - name: The key matches the committed one
+        run: python3 ci/archive.py key-matches installer/keys/a3-audio-archive.asc --gpg-home "$RUNNER_TEMP/gnupg"
+
+      - name: Sign both lines
+        run: |
+          for release in public/dists/*/Release; do
+            python3 ci/archive.py sign "$release" --gpg-home "$RUNNER_TEMP/gnupg"
+          done
+
+      - name: Public key and raw files
+        run: |
+          cp installer/keys/a3-audio-archive.asc public/KEY.gpg
+          touch public/.nojekyll
+
+      # force_orphan: the archive keeps no history, or every run would add its
+      # debs to gh-pages for good.
+      - name: Publish to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          force_orphan: true

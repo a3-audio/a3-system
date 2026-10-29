@@ -10,13 +10,21 @@ import re
 from pathlib import Path
 
 
+# The installer's history on a machine, under the user's home.
+STATE_FILE = Path(".config") / "a3" / "install.state"
+
+
 class RoleError(Exception):
     """A role cannot be installed as asked; the message says why."""
 
 
 class Context:
-    def __init__(self, repo, settings, runner, prompter, platform, home=None, user=None):
+    def __init__(self, repo, settings, runner, prompter, platform, home=None, user=None,
+                 from_source=False):
         self.repo = Path(repo)
+        # False: the apps come by name from the apt archive (the default);
+        # True: built from the pinned submodules (install --from-source).
+        self.from_source = from_source
         # The user the installer runs as, the one whose units it installs and
         # who is logged in on tty1 (cli.where_problems requires aaa today).
         self.user = user or getpass.getuser()
@@ -25,7 +33,7 @@ class Context:
         self.prompter = prompter
         self.platform = platform
         self.home = Path(home) if home else Path.home()
-        self.state = State(self.home / ".config" / "a3" / "install.state")
+        self.state = State(self.home / STATE_FILE)
         # Answers that hold for this run only, e.g. which parts to replace.
         self.answers = {}
 
@@ -106,12 +114,19 @@ class Role:
     label = ""
     platforms = ()
     # The submodules of this repository the role builds from. Only these are
-    # checked out on its machine.
+    # checked out on its machine, when it builds from source.
     submodules = ()
-    # The Debian packages the role builds against, installed by the installer
+    # The submodules the role reads files from even when its app comes from
+    # the archive: configuration, units, firmware.
+    config_submodules = ()
+    # The Debian packages the role needs at run time when its app comes as a
+    # package: the screen, tools its units call. Installed by the installer
     # before any role: a role does not count on another role's package for
     # them (a3nuc2, StemDeck without the Core, 2026-10-05).
     packages = ()
+    # The Debian packages only a build from source needs: compilers, cmake,
+    # -dev files. A packages-mode install leaves them out.
+    build_packages = ()
     # A role that draws on the machine's screen. When any chosen role does,
     # the installer logs the user in on tty1 and starts X with i3 there.
     needs_screen = False

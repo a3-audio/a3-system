@@ -12,19 +12,26 @@ ALL = (Core(), StemDeck(), DeckHost(), Motion(), Desk(), Mixer())
 BY_NAME = {role.name: role for role in ALL}
 
 
-def needed_submodules(names):
-    """The submodules the named roles build from, in install order, once each."""
+def needed_submodules(names, from_source):
+    """The submodules the named roles need, in install order, once each: what
+    they read configuration from, plus what builds when built from source."""
     paths = []
     for role in ALL:
         if role.name not in names:
             continue
-        paths.extend(p for p in role.submodules if p not in paths)
+        wanted = role.config_submodules + (role.submodules if from_source else ())
+        paths.extend(p for p in wanted if p not in paths)
     return paths
 
 
-def needed_packages(names):
-    """The Debian packages the named roles build against, sorted, once each."""
-    return sorted({p for role in ALL if role.name in names for p in role.packages})
+def needed_packages(names, from_source):
+    """The Debian packages the named roles need, sorted, once each: what runs,
+    plus what builds when the apps are built from source."""
+    roles = [role for role in ALL if role.name in names]
+    needed = {p for role in roles for p in role.packages}
+    if from_source:
+        needed |= {p for role in roles for p in role.build_packages}
+    return sorted(needed)
 
 
 def needs_screen(names):

@@ -12,10 +12,19 @@ DEFAULT_PATH = Path.home() / ".config" / "a3" / "install.conf"
 
 ROLES = ("core", "stemdeck", "deck-host", "motion", "desk", "mixer")
 
+# Saved only when the file had it or this run set it: a default written by
+# any run (--from-source included) would move an installed machine to the
+# public archive on the next one (cli.refusal, P25).
+SAVED_ONLY_WHEN_CHOSEN = (("system", "archive"),)
+
 DEFAULTS = {
     "system": {
         # A tag (v03.0) or a branch; empty is "whatever is checked out".
         "version": "",
+        # Where the apps come from without --from-source: public (the A3
+        # archive; the installer writes its apt source) or lan (the rig's
+        # http://192.168.8.5/apt, set up by hand; nothing is written).
+        "archive": "public",
     },
     "roles": {role: "no" for role in ROLES},
     "core": {
@@ -71,8 +80,12 @@ class Settings:
         self.path = Path(path)
         self._parser = configparser.ConfigParser()
         self._parser.read_dict(DEFAULTS)
+        # What the file itself says, without the defaults.
+        self._written = configparser.ConfigParser()
+        self._set_in_run = set()
         if self.path.exists():
             self._parser.read(self.path)
+            self._written.read(self.path)
 
     def get(self, section, key):
         return self._parser.get(section, key)
@@ -81,6 +94,11 @@ class Settings:
         if not self._parser.has_section(section):
             self._parser.add_section(section)
         self._parser.set(section, key, str(value))
+        self._set_in_run.add((section, key))
+
+    def in_file(self, section, key):
+        """Whether the settings file sets `key` itself, rather than the default."""
+        return self._written.has_option(section, key)
 
     def flag(self, section, key):
         return self._parser.getboolean(section, key)
@@ -101,4 +119,12 @@ class Settings:
                       "# [uninstall] allow = yes lets a role set to no here leave\n"
                       "# without questions (--config, --update): its units stop,\n"
                       "# the Core's package is removed; data and configs stay.\n\n")
-            self._parser.write(out)
+            self._to_save().write(out)
+
+    def _to_save(self):
+        saved = configparser.ConfigParser()
+        saved.read_dict(self._parser)
+        for section, key in SAVED_ONLY_WHEN_CHOSEN:
+            if not self.in_file(section, key) and (section, key) not in self._set_in_run:
+                saved.remove_option(section, key)
+        return saved

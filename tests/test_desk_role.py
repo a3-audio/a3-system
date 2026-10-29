@@ -30,7 +30,7 @@ def desk_seams(packaged=True):
 class TheDeskIsARole(unittest.TestCase):
     def test_it_is_offered_and_builds_from_a3_mixer(self):
         self.assertIn("desk", BY_NAME)
-        self.assertEqual(needed_submodules(["desk"]), ["a3-mixer"])
+        self.assertEqual(needed_submodules(["desk"], from_source=True), ["a3-mixer"])
         self.assertTrue(BY_NAME["desk"].needs_screen)
 
     def test_the_hardware_desks_role_stays_as_it_was(self):

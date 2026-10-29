@@ -502,6 +502,7 @@ class RolesNameTheirPackages(unittest.TestCase):
             "motion": ['build-essential', 'ccache', 'cmake', 'git', 'i3', 'libasound2-dev', 'libegl-dev', 'libfontconfig1-dev', 'libfreetype-dev', 'libglu1-mesa-dev', 'libgpiod-dev', 'libgsl-dev', 'libserial-dev', 'libx11-dev', 'libxcomposite-dev', 'libxcursor-dev', 'libxext-dev', 'libxi-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxrender-dev', 'pkg-config', 'x11-xserver-utils', 'xinit'],
             "desk": ['build-essential', 'ccache', 'cmake', 'git', 'i3', 'libasound2-dev', 'libegl-dev', 'libfontconfig1-dev', 'libfreetype-dev', 'libglu1-mesa-dev', 'libx11-dev', 'libxcomposite-dev', 'libxcursor-dev', 'libxext-dev', 'libxi-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxrender-dev', 'pkg-config', 'x11-xserver-utils', 'xinit'],
             "mixer": [],
+            "laptop": ["pipewire-bin", "xdotool"],
         }
         for role in ALL:
             with self.subTest(role.name):

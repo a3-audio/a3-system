@@ -98,7 +98,7 @@ class PackagesMode(unittest.TestCase):
     def test_packages_mode_installs_by_name_through_a3_root(self):
         for name, packages in (("stemdeck", ["stemdeck"]), ("desk", ["a3-desk"]),
                                ("motion", ["a3-motion-ui"]),
-                               ("core", ["a3-core", "beat-analyzer"])):
+                               ("core", ["a3-core-app a3-core", "beat-analyzer"])):
             with self.subTest(name):
                 commands = self.install(name)
                 installs = [c for c in commands if c.startswith(f"root: {A3_ROOT} install")]
@@ -109,7 +109,7 @@ class PackagesMode(unittest.TestCase):
     def test_the_core_preseed_still_runs_before_its_install(self):
         commands = self.install("core")
         preseed = commands.index("root: debconf-set-selections")
-        installed = commands.index(f"root: {A3_ROOT} install a3-core")
+        installed = commands.index(f"root: {A3_ROOT} install a3-core-app a3-core")
         self.assertLess(preseed, installed)
         # The marker is cleared after, as from source (a3-system#76).
         self.assertEqual(2, commands.count("root: debconf-set-selections"))
@@ -174,7 +174,7 @@ class PackagesModeLeaves(unittest.TestCase):
         with mock.patch.object(core, "analyzer_is_installed", lambda _ctx: True):
             core.Core().uninstall(ctx)
         commands = log.commands()
-        removed = commands.index(f"root: {A3_ROOT} remove a3-core")
+        removed = commands.index(f"root: {A3_ROOT} remove a3-core a3-core-app")
         self.assertIn(f"root: {A3_ROOT} remove beat-analyzer", commands)
         self.assertTrue(commands[removed - 1].startswith("cp -p "), commands)
         self.assertTrue(commands[removed + 1].startswith("mv -f "), commands)

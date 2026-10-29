@@ -1154,12 +1154,19 @@ class CoreLeaves(unittest.TestCase):
 
     def test_unheld_and_removed_never_purged(self):
         commands, _ = uninstall_commands("core")
-        remove = "env DEBIAN_FRONTEND=noninteractive apt-get remove -y a3-core"
+        remove = "env DEBIAN_FRONTEND=noninteractive apt-get remove -y a3-core a3-core-app"
         self.assertIn(remove, commands)
         self.assertLess(commands.index("apt-mark unhold a3-core"), commands.index(remove))
+        self.assertLess(commands.index("apt-mark unhold a3-core-app"), commands.index(remove))
         last_disable = max(i for i, c in enumerate(commands) if "disable --now" in c)
         self.assertLess(last_disable, commands.index(remove))
         self.assertFalse(any("purge" in c for c in commands), commands)
+
+    def test_leaving_core_removes_both(self):
+        commands, _ = uninstall_commands("core")
+        removes = [c for c in commands if "apt-get remove" in c and "a3-core" in c]
+        self.assertEqual(1, len(removes), commands)
+        self.assertTrue(removes[0].endswith("remove -y a3-core a3-core-app"), removes)
 
     def test_the_ssh_keys_the_package_ships_are_kept(self):
         """dpkg removes ~/.ssh/authorized_keys with the package; without it a
@@ -2361,7 +2368,8 @@ def core_seams(fragment=None, packaged=True, engine_left=False):
                                           lambda ctx: ctx.home / "local" / "juce"))
     stack.enter_context(mock.patch.object(
         core, "has_packaging",
-        lambda _ctx, source, _commit: packaged(source.name) if callable(packaged) else packaged))
+        lambda _ctx, source, _commit, _recipe=None:
+        packaged(source.name) if callable(packaged) else packaged))
     stack.enter_context(mock.patch.object(apppackage.debs, "version_of", lambda *_: "03.0+52"))
     stack.enter_context(mock.patch.object(
         apppackage, "fragment_path",
@@ -2461,6 +2469,40 @@ class TheAnalyzerComesWithTheCoreAsAPackage(unittest.TestCase):
                             and "--allow-change-held-packages" in c for c in commands))
         self.assertIn("apt-mark hold a3-core", commands)
 
+    def test_core_installs_app_and_deployment_in_one_apt_call(self):
+        commands, ctx = self.install()
+        builds = [c for c in commands if "installer/package.py" in c and str(ctx.repo / "a3-core") in c]
+        self.assertEqual(2, len(builds), builds)
+        app_build = next(c for c in builds if "--recipe packaging/app" in c)
+        deployment_build = next(c for c in builds if "--recipe" not in c)
+        app_deb = ctx.home / "a3-debs" / "a3-core-app_03.0+52_amd64.deb"
+        deployment_deb = ctx.home / "a3-debs" / "a3-core_03.0+52_amd64.deb"
+        apt = [c for c in commands if "apt-get install" in c and "a3-core" in c]
+        self.assertEqual(1, len(apt), apt)
+        self.assertTrue(apt[0].endswith(f"{app_deb} {deployment_deb}"), apt)
+        self.assertIn(f"--rev {CORE_PIN}", deployment_build)
+
+    def test_both_are_held(self):
+        commands, _ = self.install()
+        install = next(i for i, c in enumerate(commands)
+                       if "apt-get install" in c and "a3-core" in c)
+        for package in ("a3-core-app", "a3-core"):
+            self.assertGreater(commands.index(f"apt-mark hold {package}"), install)
+
+    def test_a_pin_without_the_app_recipe_is_refused_with_a_message(self):
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(__import__("shutil").rmtree, tmp)
+        ctx, log = context(tmp, {("roles", "core"): "yes"})
+        ctx.runner = MovingRunner(log=log)
+        ctx.user_units.mkdir(parents=True)
+        with core_seams(), mock.patch.object(
+                core, "has_packaging",
+                lambda _ctx, _source, _commit, recipe="packaging": recipe == "packaging"):
+            with self.assertRaises(RoleError) as caught:
+                core.Core().install(ctx)
+        self.assertIn("packaging/app", str(caught.exception))
+        self.assertIn("raise the a3-core pin", str(caught.exception))
+
     def test_no_command_builds_by_hand_or_names_a3_engine(self):
         commands, _ = self.install()
         self.assertFalse(any("dpkg-deb --build" in c for c in commands), commands)
@@ -2497,7 +2539,7 @@ class TheAnalyzerComesWithTheCoreAsAPackage(unittest.TestCase):
 
     def test_uninstall_removes_a3_core_then_the_analyzer_and_never_a3_engine(self):
         commands, _ = uninstall_commands("core")
-        core_rm = commands.index("env DEBIAN_FRONTEND=noninteractive apt-get remove -y a3-core")
+        core_rm = commands.index("env DEBIAN_FRONTEND=noninteractive apt-get remove -y a3-core a3-core-app")
         analyzer_rm = commands.index(
             "env DEBIAN_FRONTEND=noninteractive apt-get remove -y beat-analyzer")
         self.assertLess(core_rm, analyzer_rm)

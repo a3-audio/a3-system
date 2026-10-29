@@ -76,6 +76,16 @@ def hand_unit(ctx, app):
     return ctx.user_units / app.unit
 
 
+def hand_made_unit(ctx, app):
+    """The unit file in ~/.config that someone made by hand, or None. The
+    installer never wrote one for a packaged app, so leaving never touches it
+    (a3motionV02, 2026-10-29)."""
+    hand = hand_unit(ctx, app)
+    if hand.is_file() and not hand.is_symlink():
+        return hand
+    return None
+
+
 def shadowing_lines(text):
     found = []
     for line in text.splitlines():

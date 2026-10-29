@@ -119,15 +119,16 @@ class Motion(Role):
              "drop-ins made by hand", "the membership in dialout")
 
     def leaving_units(self, ctx):
-        return [UNIT]
+        # A hand unit is the service that runs; it is not ours to stop.
+        return [] if apppackage.hand_made_unit(ctx, APP) else [UNIT]
 
     def leaving_files(self, ctx):
         """The installer's drop-in of before the package; the unit is the package's."""
-        files = [ctx.user_units / f"{UNIT}.d" / OLD_DROP_IN]
-        hand = ctx.user_units / UNIT
-        if hand.is_file() and not hand.is_symlink():
-            files.append(hand)  # an install from before the package
-        return files
+        return [ctx.user_units / f"{UNIT}.d" / OLD_DROP_IN]
+
+    def leaving_kept(self, ctx):
+        hand = apppackage.hand_made_unit(ctx, APP)
+        return [hand] if hand else []
 
     def leaving_packages(self, ctx):
         return [PACKAGE]

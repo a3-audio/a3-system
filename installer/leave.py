@@ -31,7 +31,12 @@ def package_installed(package, status=dpkg_status):
 
 def discover_roles(user_units, core_installed=None, stemdeck_installed=None,
                    motion_installed=None, desk_installed=None):
-    """The roles on a machine without an [installed] record, in install order."""
+    """The roles on a machine without an [installed] record, in install order.
+
+    A role counts by its package (or, for the deck host, by the drop-in only
+    it writes). A unit file in ~/.config is no evidence: a hand-made
+    a3-motion.service was taken for the role and deleted (2026-10-29).
+    """
     if core_installed is None:
         core_installed = lambda: package_installed("a3-core")  # noqa: E731
     if stemdeck_installed is None:
@@ -45,9 +50,8 @@ def discover_roles(user_units, core_installed=None, stemdeck_installed=None,
     found = {
         "core": core_installed(),
         "deck-host": deck_host,
-        "stemdeck": (user_units / "stemdeck.service").exists()
-        or (stemdeck_installed() and not deck_host),
-        "motion": (user_units / "a3-motion.service").exists() or motion_installed(),
+        "stemdeck": stemdeck_installed() and not deck_host,
+        "motion": motion_installed(),
         "desk": desk_installed(),
     }
     return [name for name in ("core", "stemdeck", "deck-host", "motion", "desk")

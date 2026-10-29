@@ -966,13 +966,9 @@ class RolesFoundOnAMachineSetUpBefore(unittest.TestCase):
         from installer.leave import discover_roles
         with tempfile.TemporaryDirectory() as tmp:
             units = Path(tmp)
-            if stemdeck:
-                (units / "stemdeck.service").touch()
-            if motion:
-                (units / "a3-motion.service").touch()
             return discover_roles(units, core_installed=lambda: core,
-                                  stemdeck_installed=lambda: False,
-                                  motion_installed=lambda: False,
+                                  stemdeck_installed=lambda: stemdeck,
+                                  motion_installed=lambda: motion,
                                   desk_installed=lambda: desk)
 
     def test_every_combination(self):
@@ -982,6 +978,20 @@ class RolesFoundOnAMachineSetUpBefore(unittest.TestCase):
                 expected = [n for n, there in (("core", core), ("stemdeck", stemdeck),
                                                ("motion", motion), ("desk", desk)) if there]
                 self.assertEqual(expected, self.discover(core, stemdeck, motion, desk))
+
+    def test_a_hand_made_unit_is_no_role(self):
+        """a3motionV02 (2026-10-29): a hand unit counted as "motion installed"
+        and was deleted when motion was not chosen."""
+        from installer.leave import discover_roles
+        with tempfile.TemporaryDirectory() as tmp:
+            units = Path(tmp)
+            for unit in ("a3-motion.service", "stemdeck.service"):
+                (units / unit).write_text("[Service]\nExecStart=/usr/bin/by-hand\n")
+            found = discover_roles(units, core_installed=lambda: False,
+                                   stemdeck_installed=lambda: False,
+                                   motion_installed=lambda: False,
+                                   desk_installed=lambda: False)
+        self.assertEqual([], found)
 
     def test_the_desk_is_found_by_its_package(self):
         from installer.leave import discover_roles
@@ -1174,16 +1184,37 @@ class MotionLeaves(unittest.TestCase):
         self.assertIn("rm -f ~units/a3-motion.service.d/a3-system.conf", commands)
         self.assertFalse(any("display.conf" in c for c in commands), commands)
 
-    def test_a_hand_unit_is_listed_a_symlink_is_not(self):
+    def test_a_hand_unit_is_never_removed_nor_stopped(self):
+        """The installer did not write it: no rm, no disable --now, and the
+        dialog names it as staying."""
+        from installer.leave import leaving_text
+        for name, unit_name in (("motion", "a3-motion.service"), ("stemdeck", "stemdeck.service")):
+            with self.subTest(role=name), tempfile.TemporaryDirectory() as tmp:
+                ctx, _ = context(tmp, {})
+                ctx.user_units.mkdir(parents=True)
+                unit = ctx.user_units / unit_name
+                unit.write_text("[Service]\nExecStart=/usr/bin/by-hand\n")
+                self.assertNotIn(unit, BY_NAME[name].leaving_files(ctx))
+                self.assertNotIn(unit_name, BY_NAME[name].leaving_units(ctx))
+                text = leaving_text(ctx, [name])
+                self.assertIn(f"left alone", text)
+                self.assertIn(str(unit), text)
+        commands, _ = uninstall_commands("motion", home_files=(
+            ".config/systemd/user/a3-motion.service",), package_installed=False)
+        self.assertFalse(any(c.endswith(" ~units/a3-motion.service") or
+                             c.endswith(" a3-motion.service") for c in commands), commands)
+
+    def test_a_symlink_unit_is_not_named_either(self):
         with tempfile.TemporaryDirectory() as tmp:
             ctx, _ = context(tmp, {})
             ctx.user_units.mkdir(parents=True)
             unit = ctx.user_units / "a3-motion.service"
-            unit.write_text("[Service]\n")
-            self.assertIn(unit, BY_NAME["motion"].leaving_files(ctx))
-            unit.unlink()
             unit.symlink_to("/nonexistent/a3-motion.service")
-            self.assertNotIn(unit, BY_NAME["motion"].leaving_files(ctx))
+            self.assertEqual([], BY_NAME["motion"].leaving_kept(ctx))
+
+    def test_a_missing_dropin_folder_is_no_rmdir(self):
+        commands, _ = uninstall_commands("motion")
+        self.assertFalse(any("rmdir" in c for c in commands), commands)
 
     def test_without_the_package_apt_is_not_called(self):
         commands, _ = uninstall_commands("motion", package_installed=False)
@@ -1966,11 +1997,13 @@ class StemDeckLeavesThroughApt(unittest.TestCase):
         self.assertLess(unhold, remove)
         self.assertFalse(any("purge" in c for c in commands), commands)
 
-    def test_an_old_style_install_loses_its_unit_file_and_needs_no_apt(self):
+    def test_an_old_style_unit_file_stays_and_needs_no_apt(self):
+        """Nothing says the installer wrote it: it stays, and is not stopped."""
         commands, _ = uninstall_commands(
             "stemdeck", home_files=[".config/systemd/user/stemdeck.service"],
             package_installed=False)
-        self.assertIn("rm -f ~units/stemdeck.service", commands)
+        self.assertNotIn("rm -f ~units/stemdeck.service", commands)
+        self.assertNotIn("systemctl --user disable --now stemdeck.service", commands)
         self.assertFalse(any("apt" in c for c in commands), commands)
 
     def test_a_missing_unit_file_is_not_removed(self):

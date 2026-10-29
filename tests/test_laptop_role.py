@@ -933,7 +933,8 @@ class Leaving(UnitsCase):
         self.assertNotIn(home / laptop.ENGINE_JSON, role.leaving_files(ctx))
         self.assertTrue(any("engine.json" in item for item in role.stays))
         self.assertEqual(["a3-engine.service", "a3-core.service", "a3-core-window.service",
-                          "a3-motion.service", "stemdeck@A.service", "stemdeck@B.service",
+                          "a3-motion.service", "beat-analyzer.service",
+                          "stemdeck@A.service", "stemdeck@B.service",
                           "stemdeck@C.service", "stemdeck@D.service"], role.leaving_units(ctx))
         self.assertEqual(list(laptop.APPS), role.leaving_packages(ctx))
         del log[:]
@@ -948,6 +949,20 @@ class Leaving(UnitsCase):
         self.assertIn("systemctl --user daemon-reload", commands)
         self.assertEqual(f"root: {A3_ROOT} remove {FIVE_APPS}", commands[-1])
         self.assertEqual("", ctx.state.get("laptop", "letters"))
+
+    def test_leaving_stops_the_analyzer_and_the_desk(self):
+        ctx, log = self.installed()
+        del log[:]
+        with mock.patch.object(type(ctx.runner), "run", autospec=True,
+                               side_effect=type(ctx.runner).run) as run:
+            laptop.Laptop().uninstall(ctx)
+        commands = log.commands()
+        self.assertIn("systemctl --user disable --now beat-analyzer.service", commands)
+        # The desk runs as a transient unit (systemd-run), which may not exist.
+        self.assertIn("systemctl --user stop a3-desk.service", commands)
+        desk_stop = [call for call in run.call_args_list
+                     if call.args[1] == ["systemctl", "--user", "stop", "a3-desk.service"]]
+        self.assertEqual([False], [call.kwargs.get("check") for call in desk_stop])
 
     def test_the_sink_going_later_is_named(self):
         ctx, log = self.installed()

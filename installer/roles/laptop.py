@@ -337,6 +337,9 @@ STARTED_BY_THE_SWITCH = ("a3-motion.service",)
 SWITCH_CONDITION = f'ExecCondition=/usr/bin/test "${{{RIG_SWITCH}}}" = on\n'
 SINK_GOES_LATER = (f"the {OWN_LOOPBACK} sink: it disappears at the next PipeWire restart "
                    "or login")
+# The desk runs as a transient unit of this name (systemd-run), started by
+# the Canvas or by hand; it may not exist, and a transient unit is not disabled.
+DESK_UNIT = "a3-desk.service"
 # [state] laptop letters: the deck instances the last install was for.
 LETTERS_STATE = "letters"
 
@@ -489,6 +492,7 @@ class Laptop(Role):
 
     def leaving_units(self, ctx):
         return ([unit for unit in UNITS_WITH_TRUTH if unit != DECK_TEMPLATE]
+                + [ANALYZER.unit]
                 + [deck_instance(letter) for letter in recorded_letters(ctx)])
 
     def leaving_files(self, ctx):
@@ -502,6 +506,7 @@ class Laptop(Role):
         return list(APPS)
 
     def uninstall(self, ctx):
+        systemctl_user(ctx, "stop", DESK_UNIT, check=False)
         super().uninstall(ctx)
         ctx.state.remove(SECTION, LETTERS_STATE, dry_run=ctx.runner.dry_run)
         ctx.runner.log(f"Note: {SINK_GOES_LATER}.")

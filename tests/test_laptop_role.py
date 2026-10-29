@@ -617,5 +617,18 @@ class TheSharedHomeHelpers(unittest.TestCase):
         self.assertEqual(Path("/usr/share/stemdeck/10-stemdeck-rate.conf"), base.SHIPPED_RATE)
 
 
+class FromSourceAtTheStart(Main):
+    def test_laptop_with_from_source_is_refused_before_any_command(self):
+        code, said, ran = self.main(["--from-source", "--update"], roles=("laptop",))
+        self.assertEqual(2, code)
+        self.assertIn("--from-source", said)
+        self.assertEqual([], ran)
+
+    def test_the_refusal_names_only_packages_only_roles(self):
+        self.assertIsNone(cli.refused_from_source(["core", "desk"], True))
+        self.assertIsNone(cli.refused_from_source(["laptop"], False))
+        self.assertIn("laptop", cli.refused_from_source(["laptop"], True))
+
+
 if __name__ == "__main__":
     unittest.main()

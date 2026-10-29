@@ -140,6 +140,9 @@ class Role:
     # A role that is a whole machine by itself: cli refuses it beside any
     # other role before anything changes.
     excludes_other_roles = False
+    # A role whose apps come from the archive only: cli refuses it with
+    # --from-source before anything changes.
+    packages_only = False
 
     def supported(self, platform):
         return platform in self.platforms

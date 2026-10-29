@@ -284,6 +284,18 @@ def refused_together(names):
     return None
 
 
+def refused_from_source(names, from_source):
+    """Why --from-source cannot install the named roles, or None: a role
+    whose apps come from the archive only. Asked before the old roles leave."""
+    if not from_source:
+        return None
+    packages_only = [name for name in names if BY_NAME[name].packages_only]
+    if not packages_only:
+        return None
+    return (f"The role {', '.join(packages_only)} is packages only: its apps come from "
+            "the archive. Run the installer without --from-source.")
+
+
 NO_CHECKOUT_VERSION = "the archive's packages"
 
 
@@ -350,9 +362,10 @@ def main(argv=None):
         # whether the checkout moves at all, all depend on them, and nothing
         # may change before a refusal.
         roles = choose_roles(ctx)
-        together = refused_together(roles)
-        if together:
-            print(together, file=sys.stderr)
+        refused_now = (refused_together(roles)
+                    or refused_from_source(roles, ctx.from_source))
+        if refused_now:
+            print(refused_now, file=sys.stderr)
             return 2
         if refuse_place(roles, args.dry_run):
             return 2

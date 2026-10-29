@@ -285,6 +285,7 @@ class Laptop(Role):
     any_user_anywhere = True
     runs_without_checkout = True
     excludes_other_roles = True
+    packages_only = True
 
     def configure(self, ctx):
         s, ask = ctx.settings, ctx.prompter

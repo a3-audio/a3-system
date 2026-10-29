@@ -209,6 +209,31 @@ class Source(HelperTest):
         self.assertEqual(archive.sources_text("trixie"), paths["sources"].read_text())
         self.assertFalse(paths["keyring"].exists())
 
+    def failing_sources_write(self, paths):
+        written = self.helper.write_atomically
+
+        def write(path, data, mode):
+            if path == paths["sources"]:
+                raise OSError("disk full")
+            written(path, data, mode)
+        self.helper.write_atomically = write
+
+    def test_a_failing_sources_write_puts_the_key_back(self):
+        paths = self.paths(armor(b"new key"))
+        paths["keyring"].parent.mkdir()
+        paths["keyring"].write_bytes(b"old key")
+        self.failing_sources_write(paths)
+        self.assertEqual(self.main("source", "forky", **paths), 1)
+        self.assertEqual(b"old key", paths["keyring"].read_bytes())
+        self.assertEqual(self.run_.commands, [])
+
+    def test_a_failing_sources_write_removes_a_new_key(self):
+        paths = self.paths(armor(b"new key"))
+        self.failing_sources_write(paths)
+        self.assertEqual(self.main("source", "forky", **paths), 1)
+        self.assertFalse(paths["keyring"].exists())
+        self.assertFalse(paths["sources"].exists())
+
     def test_the_committed_key_dearmors(self):
         committed = REPO / "installer" / "keys" / "a3-audio-archive.asc"
         if not committed.exists():

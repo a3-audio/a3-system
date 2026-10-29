@@ -169,15 +169,22 @@ def do_source(args, run, env, key_file, keyring, sources):
     # A source apt cannot update from breaks every later apt run on the
     # machine, so a failed update leaves both files as they were.
     before = {keyring: snapshot(keyring), sources: snapshot(sources)}
-    write_atomically(keyring, binary, 0o644)
-    write_atomically(sources, sources_text(args[0]).encode(), 0o644)
+    try:
+        write_atomically(keyring, binary, 0o644)
+        write_atomically(sources, sources_text(args[0]).encode(), 0o644)
+    except OSError as error:
+        put_back(before, f"writing them failed ({error})")
+        return 1
     code = run_all(run, env, [["apt-get", "update"]])
     if code != 0:
-        for path, previous in before.items():
-            restore(path, previous)
-        print("a3-root: apt-get update failed; the key and the source are as they were.",
-              file=sys.stderr)
+        put_back(before, "apt-get update failed")
     return code
+
+
+def put_back(before, why):
+    for path, previous in before.items():
+        restore(path, previous)
+    print(f"a3-root: {why}; the key and the source are as they were.", file=sys.stderr)
 
 
 def do_install(packages, run, env):

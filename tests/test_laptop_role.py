@@ -450,5 +450,172 @@ class Main(unittest.TestCase):
         self.assertEqual([], [c for c in ran if c[:1] == ["git"]])
 
 
+# -- the local wiring (Task 14) -------------------------------------------------
+
+USB = "alsa_output.usb-Focusrite_Scarlett_2i2-00.pro-output-0"
+
+
+def shipped_truth():
+    """The parts of the shipped truth the wiring reads; not the real file."""
+    truth = truth_with_decks(4)
+    truth["hosts"] = {"core": "192.168.8.10", "mixer": "192.168.8.11",
+                      "local": "127.0.0.1", "any": "0.0.0.0"}
+    truth["listeners"] = [{"name": "core.vu-relay", "host": "local", "port": 9003},
+                          {"name": "core.osc", "host": "any", "port": 9000}]
+    return truth
+
+
+def shipped_engine():
+    return {"engine": {"channels": 4, "decks": 2, "analogInputs": 12},
+            "backend": {"type": "jack"},
+            "io": {"jack": {"analog_1": ["system:capture_1"],
+                            "main_sub": ["system:playback_1"],
+                            "booth_sub": ["system:playback_17"],
+                            "rec_L": ["beat-analyzer:bpm_1"],
+                            "phones_L": ["system:playback_9"],
+                            "deckA_1": ["StemDeck-A:bformat_1"]}},
+            "spatial": {"order": 3}}
+
+
+class LocalWiring(LaptopCase):
+    def test_the_truth_points_core_and_mixer_home(self):
+        shipped = shipped_truth()
+        truth = laptop.laptop_truth(shipped)
+        self.assertEqual("127.0.0.1", truth["hosts"]["core"])
+        self.assertEqual("127.0.0.1", truth["hosts"]["mixer"])
+        self.assertEqual(shipped["listeners"], truth["listeners"])
+        self.assertEqual(shipped["addresses"], truth["addresses"])
+        self.assertEqual("0.0.0.0", truth["hosts"]["any"])
+        self.assertEqual("192.168.8.10", shipped["hosts"]["core"], "the shipped dict stays")
+
+    def test_the_engine_counts_decks_from_the_truth_when_unset(self):
+        config = laptop.laptop_engine_config(shipped_engine(), None, False)
+        self.assertNotIn("decks", config["engine"])
+        self.assertEqual(4, config["engine"]["channels"])
+        self.assertEqual({"order": 3}, config["spatial"])
+        self.assertEqual(3, laptop.laptop_engine_config(shipped_engine(), 3, False)["engine"]["decks"])
+
+    def test_rec_is_the_laptops_main_and_feeds_the_analyzer(self):
+        config = laptop.laptop_engine_config(shipped_engine(), None, False)
+        self.assertEqual({"rec_L": ["a3-laptop-out:playback_FL", "beat-analyzer:bpm_1"],
+                          "rec_R": ["a3-laptop-out:playback_FR"]}, config["io"]["jack"])
+        with_phones = laptop.laptop_engine_config(shipped_engine(), None, True)
+        self.assertEqual(["a3-laptop-out:playback_RL"], with_phones["io"]["jack"]["phones_L"])
+        self.assertEqual(["a3-laptop-out:playback_RR"], with_phones["io"]["jack"]["phones_R"])
+        self.assertEqual(4, len(with_phones["io"]["jack"]))
+
+    def test_no_device_means_the_default_sink(self):
+        conf = laptop.loopback_conf("", (1, 2), None)
+        self.assertIn("libpipewire-module-loopback", conf)
+        self.assertNotIn("target.object", conf)
+        self.assertIn('node.name = "a3-laptop-out"', conf)
+        self.assertIn('media.class = "Audio/Sink"', conf)
+        self.assertIn("audio.position = [ FL FR ]", conf)
+        self.assertNotIn("AUX", conf)
+
+    def test_a_device_is_followed_and_may_fall_back(self):
+        conf = laptop.loopback_conf(USB, (3, 4), (5, 6))
+        capture, playback = conf.split("playback.props")
+        self.assertIn("audio.position = [ FL FR RL RR ]", capture)
+        self.assertIn(f'target.object = "{USB}"', playback)
+        self.assertIn("audio.position = [ AUX2 AUX3 AUX4 AUX5 ]", playback)
+        self.assertIn("node.dont-fallback = false", playback)
+        self.assertIn("node.passive = false", playback)
+        # It must find the card again when it comes back.
+        self.assertNotIn("dont-reconnect", conf)
+
+    def test_the_analyzer_sends_to_the_local_core(self):
+        self.assertIn("OSC_HOST_core=127.0.0.1:9000\n", laptop.analyzer_env(shipped_truth()))
+
+    def test_output_channels_are_two_numbers_from_one(self):
+        self.assertEqual((1, 2), laptop.output_channels("1,2"))
+        self.assertEqual((3, 4), laptop.output_channels(" 3 , 4 "))
+        for value in ("0,1", "1", "a,b", "1,2,3", ""):
+            with self.subTest(value):
+                with self.assertRaises(RoleError):
+                    laptop.output_channels(value)
+
+    # -- written into the home
+
+    def wiring_ctx(self, settings=None):
+        ctx, log = self.ctx(settings)
+        laptop.TRUTH.write_text(json.dumps(shipped_truth()))
+        engine = Path(ctx.home) / "shipped-engine.json"
+        engine.write_text(json.dumps(shipped_engine()))
+        for name, value in (("ENGINE_CONFIG", engine),
+                            ("SHIPPED_RATE", Path(ctx.home) / "10-stemdeck-rate.conf")):
+            patcher = mock.patch.object(base, name, value) if name == "SHIPPED_RATE" \
+                else mock.patch.object(laptop, name, value)
+            patcher.start()
+            self.addCleanup(patcher.stop)
+        return ctx, log
+
+    def wire(self, ctx):
+        laptop.Laptop()._wire(ctx, ["A", "B", "C", "D"])
+
+    def test_the_wiring_writes_its_files_into_the_home(self):
+        ctx, _ = self.wiring_ctx({("laptop", "output_device"): USB,
+                                  ("laptop", "output_main"): "1,2"})
+        self.wire(ctx)
+        home = Path(ctx.home)
+        truth = json.loads((home / ".config/a3/laptop/a3-osc.json").read_text())
+        self.assertEqual("127.0.0.1", truth["hosts"]["core"])
+        engine = json.loads((home / ".config/a3/engine/engine.json").read_text())
+        self.assertNotIn("decks", engine["engine"])
+        conf = (home / ".config/pipewire/pipewire.conf.d/60-a3-laptop-out.conf").read_text()
+        self.assertIn(USB, conf)
+        env = (home / ".config/beat-analyzer/conf.d/60-a3-laptop.env").read_text()
+        self.assertIn("OSC_HOST_core=127.0.0.1:9000", env)
+        rate = home / ".config/pipewire/pipewire.conf.d/10-stemdeck-rate.conf"
+        self.assertEqual(base.SHIPPED_RATE, Path(rate.readlink()))
+        self.assertFalse((home / ".config/a3/network.json").exists())
+        for path in laptop.wiring_files(home):
+            with self.subTest(path):
+                self.assertTrue(path.is_symlink() or path.is_file())
+
+    def test_bad_channels_are_refused_before_any_file(self):
+        ctx, _ = self.wiring_ctx({("laptop", "output_device"): USB,
+                                  ("laptop", "output_main"): "a,b"})
+        with self.assertRaises(RoleError):
+            self.wire(ctx)
+        self.assertFalse((Path(ctx.home) / ".config/a3/laptop").exists())
+
+    def test_a_hand_edited_engine_json_stays(self):
+        ctx, log = self.wiring_ctx()
+        self.wire(ctx)
+        engine = Path(ctx.home) / ".config/a3/engine/engine.json"
+        engine.write_text('{"by": "hand"}')
+        self.wire(ctx)
+        self.assertEqual('{"by": "hand"}', engine.read_text())
+        self.assertIn("engine.json was changed by hand: the laptop's output links are left "
+                      "as they are", list(log))
+
+    def test_an_engine_json_the_installer_did_not_write_stays(self):
+        ctx, log = self.wiring_ctx()
+        engine = Path(ctx.home) / ".config/a3/engine/engine.json"
+        engine.parent.mkdir(parents=True)
+        engine.write_text('{"by": "hand"}')
+        self.wire(ctx)
+        self.assertEqual('{"by": "hand"}', engine.read_text())
+
+    def test_an_unchanged_engine_json_is_rewritten_on_reinstall(self):
+        ctx, log = self.wiring_ctx()
+        self.wire(ctx)
+        engine = Path(ctx.home) / ".config/a3/engine/engine.json"
+        ctx.settings.set("laptop", "decks", "2")
+        self.wire(ctx)
+        self.assertEqual(2, json.loads(engine.read_text())["engine"]["decks"])
+        self.assertEqual([], [line for line in log if "changed by hand" in line])
+
+
+class TheSharedHomeHelpers(unittest.TestCase):
+    def test_deck_host_and_screen_use_base_s_writer_and_rate(self):
+        from installer.roles import screen
+        self.assertIs(base.write_home_file, deckhost.write_home_file)
+        self.assertIs(base.write_home_file, screen.write_home_file)
+        self.assertIs(base.link_server_rate, deckhost.link_server_rate)
+        self.assertEqual(Path("/usr/share/stemdeck/10-stemdeck-rate.conf"), base.SHIPPED_RATE)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -21,6 +21,8 @@ It excludes every other role (cli.refused_together): they are this
 machine's parts already.
 """
 
+import copy
+import hashlib
 import json
 import subprocess
 from pathlib import Path
@@ -28,7 +30,7 @@ from pathlib import Path
 from ..archive import a3_root_command
 from ..system import CommandFailed
 from . import apppackage, desk, motion, stemdeck
-from .base import Role, RoleError
+from .base import RATE_LINK, Role, RoleError, link_server_rate, write_home_file
 from .core import ANALYZER, CORE_APP
 
 SECTION = "laptop"
@@ -42,6 +44,24 @@ OWN_LOOPBACK = "a3-laptop-out"
 DEFAULT_OUTPUT = ("", "default (the internal card)")
 SINK_CLASS = "Audio/Sink"
 NODE_TYPE = "PipeWire:Interface:Node"
+# The engine config a3-core-app ships, which the laptop's is made from.
+ENGINE_CONFIG = Path("/usr/share/a3-engine/engine.json")
+
+# What the wiring writes, under the user's home. The one truth of the laptop
+# (R8): ~/.config/a3/network.json is the rig's and never written here.
+LAPTOP_TRUTH = Path(".config/a3/laptop/a3-osc.json")
+ENGINE_JSON = Path(".config/a3/engine/engine.json")
+LOOPBACK_CONF = Path(".config/pipewire/pipewire.conf.d/60-a3-laptop-out.conf")
+ANALYZER_ENV = Path(".config/beat-analyzer/conf.d/60-a3-laptop.env")
+WRITTEN_BY = "# Written by the a3-system installer (role laptop); rewritten on every run.\n"
+LOCAL_HOST = "127.0.0.1"
+CORE_OSC_LISTENER = "core.osc"
+ANALYZER_INPUT = "beat-analyzer:bpm_1"
+# [state] laptop engine_json: the sha256 of the engine.json the installer
+# wrote last; a file that differs from it is the user's (Review Focus 4).
+ENGINE_JSON_STATE = "engine_json"
+ENGINE_JSON_LEFT = ("engine.json was changed by hand: the laptop's output links "
+                    "are left as they are")
 
 
 # -- the decks ----------------------------------------------------------------
@@ -131,6 +151,128 @@ def pipewire_objects(ctx):
         return []
 
 
+# -- the local wiring ---------------------------------------------------------------
+
+def laptop_truth(shipped):
+    """The shipped truth with the Core and the mixer on this machine."""
+    truth = copy.deepcopy(shipped)
+    truth["hosts"]["core"] = LOCAL_HOST
+    truth["hosts"]["mixer"] = LOCAL_HOST
+    return truth
+
+
+def _loopback_port(position):
+    return f"{OWN_LOOPBACK}:playback_{position}"
+
+
+def laptop_engine_config(shipped, decks, phones):
+    """The shipped engine config with the laptop's links only: rec, the
+    binaural main (R3), to the loopback and the analyzer; phones to its rear
+    pair. No analog, no main or booth: a laptop has no rig behind it. The
+    decks link themselves (unnamed slots are local StemDecks)."""
+    config = copy.deepcopy(shipped)
+    if decks is None:
+        config["engine"].pop("decks", None)   # as many as the truth knows
+    else:
+        config["engine"]["decks"] = decks
+    links = {"rec_L": [_loopback_port("FL"), ANALYZER_INPUT],
+             "rec_R": [_loopback_port("FR")]}
+    if phones:
+        links["phones_L"] = [_loopback_port("RL")]
+        links["phones_R"] = [_loopback_port("RR")]
+    config["io"]["jack"] = links
+    return config
+
+
+def output_channels(value):
+    """"1,2" as (1, 2): two channels of the device, counted from one."""
+    parts = [part.strip() for part in value.split(",")]
+    if len(parts) != 2 or not all(p.isascii() and p.isdecimal() and int(p) >= 1
+                                  for p in parts):
+        raise RoleError(f"Output channels {value!r}: two channel numbers from 1, "
+                        "like 1,2.")
+    return int(parts[0]), int(parts[1])
+
+
+def _positions(names):
+    return "[ " + " ".join(names) + " ]"
+
+
+def loopback_conf(device, main, phones):
+    """The PipeWire sink a3-laptop-out the engine plays into. Its playback
+    side follows `device` and, unlike a pinned stream, falls back to the
+    default sink while the device is gone and returns to it when it is back:
+    the fallback is PipeWire's job (R4). No device: the default sink."""
+    capture = ["FL", "FR"] + (["RL", "RR"] if phones else [])
+    playback = []
+    if device:
+        channels = list(main) + (list(phones) if phones else [])
+        positions = [f"AUX{channel - 1}" for channel in channels]
+        playback += [f'target.object = "{device}"',
+                     f"audio.position = {_positions(positions)}"]
+    playback += ["node.dont-fallback = false", "node.passive = false"]
+    return (WRITTEN_BY
+            + "context.modules = [\n"
+            "{   name = libpipewire-module-loopback\n"
+            "    args = {\n"
+            '        node.description = "A3 laptop out"\n'
+            "        capture.props = {\n"
+            f'            node.name = "{OWN_LOOPBACK}"\n'
+            f'            media.class = "{SINK_CLASS}"\n'
+            f"            audio.position = {_positions(capture)}\n"
+            "        }\n"
+            "        playback.props = {\n"
+            f'            node.name = "playback.{OWN_LOOPBACK}"\n'
+            + "".join(f"            {line}\n" for line in playback)
+            + "        }\n"
+            "    }\n"
+            "}\n"
+            "]\n")
+
+
+def analyzer_env(truth):
+    """The beat-analyzer's /beat to the Core on this machine."""
+    listener = next(entry for entry in truth["listeners"]
+                    if entry["name"] == CORE_OSC_LISTENER)
+    return WRITTEN_BY + f"OSC_HOST_core={LOCAL_HOST}:{listener['port']}\n"
+
+
+def wiring_files(home):
+    """Every file the wiring writes and owns, for leaving. Not engine.json:
+    that one is owned only while it is as written (ENGINE_JSON_STATE)."""
+    home = Path(home)
+    return [home / LAPTOP_TRUTH, home / LOOPBACK_CONF, home / ANALYZER_ENV,
+            home / RATE_LINK]
+
+
+def read_shipped_engine():
+    try:
+        return json.loads(ENGINE_CONFIG.read_text())
+    except (OSError, ValueError) as error:
+        raise RoleError(f"{ENGINE_CONFIG} is not readable ({error}): the a3-core-app "
+                        "package should have installed it.")
+
+
+def _sha256(text):
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def write_engine_config(ctx, text):
+    """engine.json, unless the user changed the one written last."""
+    path = ctx.home / ENGINE_JSON
+    if path.exists():
+        recorded = ctx.state.get(SECTION, ENGINE_JSON_STATE)
+        if _sha256(path.read_text()) != recorded:
+            ctx.runner.log(ENGINE_JSON_LEFT)
+            return
+    write_home_file(ctx, path, text)
+    ctx.state.set(SECTION, ENGINE_JSON_STATE, _sha256(text), dry_run=ctx.runner.dry_run)
+
+
+def _json_text(data):
+    return json.dumps(data, indent=1) + "\n"
+
+
 # -- the role ---------------------------------------------------------------------
 
 class Laptop(Role):
@@ -179,7 +321,21 @@ class Laptop(Role):
 
     def _wire(self, ctx, letters):
         """The local links between the decks, the engine and the output
-        device (Task 14)."""
+        device. `letters` are the units' (Task 15); the engine counts its
+        decks from [laptop] decks or the truth."""
+        s = ctx.settings
+        device = s.get(SECTION, "output_device").strip()
+        phones_value = s.get(SECTION, "output_phones").strip()
+        # Parsed before any file: a bad channel is refused with nothing written.
+        main = output_channels(s.get(SECTION, "output_main")) if device else None
+        phones = output_channels(phones_value) if phones_value else None
+        truth = read_truth(ctx)
+        engine = laptop_engine_config(read_shipped_engine(), wanted_decks(s), phones is not None)
+        write_home_file(ctx, ctx.home / LAPTOP_TRUTH, _json_text(laptop_truth(truth)))
+        write_engine_config(ctx, _json_text(engine))
+        write_home_file(ctx, ctx.home / LOOPBACK_CONF, loopback_conf(device, main, phones))
+        write_home_file(ctx, ctx.home / ANALYZER_ENV, analyzer_env(truth))
+        link_server_rate(ctx)
 
     def _units(self, ctx, letters):
         """The deck instances and the Core's units for one machine (Task 15)."""

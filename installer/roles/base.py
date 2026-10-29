@@ -207,6 +207,37 @@ class Role:
 SCREEN_PACKAGES = ("xinit", "i3", "x11-xserver-utils")
 
 
+# -- files in the home -----------------------------------------------------------
+
+# StemDeck's server rate, which every machine with decks links into its own
+# PipeWire config (deck-host, laptop).
+SHIPPED_RATE = Path("/usr/share/stemdeck/10-stemdeck-rate.conf")
+RATE_LINK = Path(".config/pipewire/pipewire.conf.d") / SHIPPED_RATE.name
+
+
+def write_home_file(ctx, path, text):
+    """`text` into `path` (folders made), and every line of it in the log."""
+    ctx.runner.log(f"# {path}:\n" + "".join(f"#   {line}\n" for line in text.splitlines()))
+    if ctx.runner.dry_run:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text)
+
+
+def rate_link(ctx):
+    return ctx.home / RATE_LINK
+
+
+def link_server_rate(ctx):
+    link = rate_link(ctx)
+    ctx.runner.log(f"# {link} -> {SHIPPED_RATE}")
+    if ctx.runner.dry_run:
+        return
+    link.parent.mkdir(parents=True, exist_ok=True)
+    link.unlink(missing_ok=True)
+    link.symlink_to(SHIPPED_RATE)
+
+
 # -- systemd user units -------------------------------------------------------
 
 TWO_DECK_OFF = "ExecCondition=/bin/false"

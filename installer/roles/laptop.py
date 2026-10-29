@@ -51,6 +51,10 @@ SINK_CLASS = "Audio/Sink"
 NODE_TYPE = "PipeWire:Interface:Node"
 # The engine config a3-core-app ships, which the laptop's is made from.
 ENGINE_CONFIG = Path("/usr/share/a3-engine/engine.json")
+# Its keys the engine reads as paths, a relative one against the config
+# file's own folder (a3-core app/ConfigFile.cpp): in the laptop's copy, under
+# ~/.config, they would point into the home.
+ENGINE_PATH_KEYS = ("spatial",)
 
 # What the wiring writes, under the user's home. The one truth of the laptop
 # (R8): ~/.config/a3/network.json is the rig's and never written here.
@@ -174,12 +178,23 @@ def _loopback_port(position):
     return f"{OWN_LOOPBACK}:playback_{position}"
 
 
+def anchored_paths(config, folder):
+    """Each of ENGINE_PATH_KEYS that is relative, made absolute against
+    `folder`, the shipped file's; an absolute one stays."""
+    for key in ENGINE_PATH_KEYS:
+        value = config.get(key)
+        if isinstance(value, str) and value and not Path(value).is_absolute():
+            config[key] = str(Path(folder) / value)
+
+
 def laptop_engine_config(shipped, decks, phones):
     """The shipped engine config with the laptop's links only: rec, the
     binaural main (R3), to the loopback and the analyzer; phones to its rear
     pair. No analog, no main or booth: a laptop has no rig behind it. The
-    decks link themselves (unnamed slots are local StemDecks)."""
+    decks link themselves (unnamed slots are local StemDecks). Its paths
+    point where the shipped file's did (ENGINE_CONFIG's folder)."""
     config = copy.deepcopy(shipped)
+    anchored_paths(config, ENGINE_CONFIG.parent)
     if decks is None:
         config["engine"].pop("decks", None)   # as many as the truth knows
     else:

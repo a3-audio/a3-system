@@ -487,13 +487,45 @@ def shipped_engine():
                             "rec_L": ["beat-analyzer:bpm_1"],
                             "phones_L": ["system:playback_9"],
                             "deckA_1": ["StemDeck-A:bformat_1"]}},
-            "spatial": {"order": 3}}
+            # As the real data/engine.json: relative to the shipped file's folder.
+            "spatial": "spatial"}
 
 
 def conf_block(conf, name):
     """The text of `name = { ... }` in a loopback conf (no nested braces)."""
     start = conf.index(name + " = {")
     return conf[start:conf.index("}", start)]
+
+
+REAL_ENGINE_JSON = REPO / "a3-core/data/engine.json"
+
+
+class TheEnginesPaths(unittest.TestCase):
+    """The engine reads a relative path in engine.json against the file's own
+    folder (a3-core app/ConfigFile.cpp); the laptop's copy lives in another."""
+
+    def test_a_relative_spatial_points_at_the_shipped_folder(self):
+        config = laptop.laptop_engine_config({"engine": {}, "io": {}, "spatial": "spatial"},
+                                             None, False)
+        self.assertEqual("/usr/share/a3-engine/spatial", config["spatial"])
+
+    def test_an_absolute_spatial_stays(self):
+        config = laptop.laptop_engine_config({"engine": {}, "io": {}, "spatial": "/opt/sp"},
+                                             None, False)
+        self.assertEqual("/opt/sp", config["spatial"])
+
+    def test_the_shipped_dict_stays_relative(self):
+        shipped = {"engine": {}, "io": {}, "spatial": "spatial"}
+        laptop.laptop_engine_config(shipped, None, False)
+        self.assertEqual("spatial", shipped["spatial"])
+
+    def test_the_real_engine_json_gets_an_absolute_spatial(self):
+        if not REAL_ENGINE_JSON.is_file():
+            self.skipTest(f"{REAL_ENGINE_JSON} is not checked out")
+        shipped = json.loads(REAL_ENGINE_JSON.read_text())
+        config = laptop.laptop_engine_config(shipped, None, False)
+        self.assertEqual("/usr/share/a3-engine/spatial", config["spatial"])
+        self.assertTrue(Path(config["spatial"]).is_absolute())
 
 
 class LocalWiring(LaptopCase):
@@ -511,7 +543,7 @@ class LocalWiring(LaptopCase):
         config = laptop.laptop_engine_config(shipped_engine(), None, False)
         self.assertNotIn("decks", config["engine"])
         self.assertEqual(4, config["engine"]["channels"])
-        self.assertEqual({"order": 3}, config["spatial"])
+        self.assertEqual("/usr/share/a3-engine/spatial", config["spatial"])
         self.assertEqual(3, laptop.laptop_engine_config(shipped_engine(), 3, False)["engine"]["decks"])
 
     def test_rec_is_the_laptops_main_and_feeds_the_analyzer(self):
@@ -568,6 +600,7 @@ class LocalWiring(LaptopCase):
         self.assertEqual("127.0.0.1", truth["hosts"]["core"])
         engine = json.loads((home / ".config/a3/engine/engine.json").read_text())
         self.assertNotIn("decks", engine["engine"])
+        self.assertEqual(str(laptop.ENGINE_CONFIG.parent / "spatial"), engine["spatial"])
         conf = (home / ".config/pipewire/pipewire.conf.d/60-a3-laptop-out.conf").read_text()
         self.assertIn(USB, conf)
         env = (home / ".config/beat-analyzer/conf.d/60-a3-laptop.env").read_text()

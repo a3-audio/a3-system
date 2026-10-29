@@ -119,6 +119,19 @@ class LaptopCase(unittest.TestCase):
         self.addCleanup(patcher.stop)
         return ctx, log
 
+    def wiring_ctx(self, settings=None):
+        ctx, log = self.ctx(settings)
+        laptop.TRUTH.write_text(json.dumps(shipped_truth()))
+        engine = Path(ctx.home) / "shipped-engine.json"
+        engine.write_text(json.dumps(shipped_engine()))
+        for name, value in (("ENGINE_CONFIG", engine),
+                            ("SHIPPED_RATE", Path(ctx.home) / "10-stemdeck-rate.conf")):
+            patcher = mock.patch.object(base, name, value) if name == "SHIPPED_RATE" \
+                else mock.patch.object(laptop, name, value)
+            patcher.start()
+            self.addCleanup(patcher.stop)
+        return ctx, log
+
 
 class TheDecks(unittest.TestCase):
     def test_letters_follow_the_engine_scheme(self):
@@ -543,19 +556,6 @@ class LocalWiring(LaptopCase):
 
     # -- written into the home
 
-    def wiring_ctx(self, settings=None):
-        ctx, log = self.ctx(settings)
-        laptop.TRUTH.write_text(json.dumps(shipped_truth()))
-        engine = Path(ctx.home) / "shipped-engine.json"
-        engine.write_text(json.dumps(shipped_engine()))
-        for name, value in (("ENGINE_CONFIG", engine),
-                            ("SHIPPED_RATE", Path(ctx.home) / "10-stemdeck-rate.conf")):
-            patcher = mock.patch.object(base, name, value) if name == "SHIPPED_RATE" \
-                else mock.patch.object(laptop, name, value)
-            patcher.start()
-            self.addCleanup(patcher.stop)
-        return ctx, log
-
     def wire(self, ctx):
         laptop.Laptop()._wire(ctx, ["A", "B", "C", "D"])
 
@@ -668,6 +668,207 @@ class TheSharedHomeHelpers(unittest.TestCase):
         self.assertIs(base.write_home_file, screen.write_home_file)
         self.assertIs(base.link_server_rate, deckhost.link_server_rate)
         self.assertEqual(Path("/usr/share/stemdeck/10-stemdeck-rate.conf"), base.SHIPPED_RATE)
+
+
+REAL_UNITS = (
+    Path("/home/aaa/a3-system/wt/a3-core/feat/core-app-package/packaging/a3-engine.service"),
+    Path("/home/aaa/a3-system/wt/a3-core/feat/core-app-package/packaging/a3-core.service"),
+    Path("/home/aaa/a3-system/wt/a3-core/feat/core-app-package/packaging/a3-core-window.service"),
+    Path("/home/aaa/a3-system/a3-motion/ui/platform_config/a3-motion.service"),
+    Path("/home/aaa/a3-system/wt/stemdeck/feat/deck-window-flag/.config/systemd/user/stemdeck@.service"),
+    Path("/home/aaa/a3-system/wt/stemdeck/feat/deck-window-flag/.config/systemd/user/stemdeck.service"),
+)
+LETTERS = ["A", "B", "C", "D"]
+
+
+def service_lines(text):
+    """The lines after [Service], without comments."""
+    lines = text.splitlines()
+    return [line for line in lines[lines.index("[Service]") + 1:]
+            if line and not line.startswith("#")]
+
+
+class UnitsCase(LaptopCase):
+    def units(self, ctx, letters=LETTERS):
+        laptop.Laptop()._units(ctx, letters)
+
+    def drop_in(self, ctx, unit):
+        return (ctx.user_units / f"{unit}.d" / "laptop.conf").read_text()
+
+
+class Units(UnitsCase):
+    def test_every_drop_in_resets_the_environment_first(self):
+        ctx, _ = self.ctx()
+        self.units(ctx)
+        self.assertEqual(("a3-engine.service", "a3-core.service", "a3-core-window.service",
+                          "a3-motion.service", "stemdeck@.service"), laptop.UNITS_WITH_TRUTH)
+        for unit in laptop.UNITS_WITH_TRUTH:
+            with self.subTest(unit):
+                text = self.drop_in(ctx, unit)
+                self.assertTrue(text.startswith(laptop.WRITTEN_BY))
+                lines = service_lines(text)
+                self.assertEqual("Environment=", lines[0])
+                self.assertIn("Environment=A3_OSC_TRUTH=%h/.config/a3/laptop/a3-osc.json", lines)
+                self.assertIn("Environment=A3_SCREEN_TRIES=1", lines)
+                self.assertIn("CPUAffinity=", lines)
+
+    def test_no_drop_in_names_the_display(self):
+        # The session's imported DISPLAY/XAUTHORITY win (Review Focus 2).
+        ctx, _ = self.ctx()
+        self.units(ctx)
+        for path in ctx.user_units.glob("*.d/laptop.conf"):
+            with self.subTest(path.parent.name):
+                self.assertNotIn("DISPLAY", path.read_text())
+                self.assertNotIn("XAUTHORITY", path.read_text())
+
+    def test_the_engine_keeps_its_preload(self):
+        ctx, _ = self.ctx()
+        self.units(ctx)
+        self.assertIn("Environment=LD_PRELOAD=/usr/lib/a3-core/libjack-rt-priority.so",
+                      service_lines(self.drop_in(ctx, "a3-engine.service")))
+        for unit in laptop.UNITS_WITH_TRUTH[1:]:
+            with self.subTest(unit):
+                self.assertNotIn("LD_PRELOAD", self.drop_in(ctx, unit))
+
+    def test_decks_run_windowed(self):
+        ctx, _ = self.ctx()
+        self.units(ctx)
+        self.assertIn("Environment=STEMDECK_WINDOW=",
+                      service_lines(self.drop_in(ctx, "stemdeck@.service")))
+
+    def test_the_two_deck_player_stays_off_with_the_laptop_s_mark(self):
+        ctx, log = self.ctx()
+        self.units(ctx)
+        self.assertEqual(base.two_deck_off_drop_in(laptop.WRITTEN_BY),
+                         self.drop_in(ctx, "stemdeck.service"))
+        self.assertNotIn(deckhost.WRITTEN_BY, self.drop_in(ctx, "stemdeck.service"))
+        self.assertIn("systemctl --user stop stemdeck.service", log.commands())
+
+    def test_nothing_is_enabled_at_boot(self):
+        ctx, log = self.ctx()
+        self.units(ctx)
+        self.assertEqual([], [c for c in log.commands() if "enable" in c.split()])
+        self.assertEqual([], list(ctx.user_units.glob("*.wants")))
+        self.assertEqual([], [c for c in log.commands()
+                              if c.split()[:3] in (["systemctl", "--user", "start"],
+                                                   ["systemctl", "--user", "restart"])])
+
+    def test_the_user_manager_reloads_after_the_drop_ins(self):
+        ctx, log = self.ctx()
+        self.units(ctx)
+        self.assertIn("systemctl --user daemon-reload", log.commands())
+
+    def test_the_installed_letters_are_recorded(self):
+        ctx, _ = self.ctx()
+        self.units(ctx, ["A", "B", "C"])
+        self.assertEqual("A,B,C", ctx.state.get("laptop", "letters"))
+
+    def test_fewer_decks_stop_the_extra_instances(self):
+        ctx, log = self.ctx()
+        self.units(ctx, LETTERS)
+        self.units(ctx, ["A", "B"])
+        stops = [c for c in log.commands() if c.startswith("systemctl --user stop stemdeck@")]
+        self.assertEqual(["systemctl --user stop stemdeck@C.service",
+                          "systemctl --user stop stemdeck@D.service"], stops)
+        self.assertEqual("A,B", ctx.state.get("laptop", "letters"))
+
+    def test_the_install_writes_the_units_for_the_counted_decks(self):
+        ctx, _ = self.ctx({("laptop", "decks"): "2"})
+        with mock.patch.object(laptop.Laptop, "_wire"):
+            laptop.Laptop().install(ctx)
+        self.assertEqual("A,B", ctx.state.get("laptop", "letters"))
+
+    def test_systemd_reads_the_drop_ins(self):
+        if shutil.which("systemd-analyze") is None:
+            self.skipTest("systemd-analyze is not installed")
+        real = [path for path in REAL_UNITS if path.is_file()]
+        if len(real) < len(REAL_UNITS):
+            self.skipTest("the unit files of a3-core, Motion UI and StemDeck are not checked out "
+                          "here: " + ", ".join(str(p) for p in REAL_UNITS if not p.is_file()))
+        ctx, _ = self.ctx()
+        self.units(ctx)
+        tree = Path(ctx.home) / "unit-tree"
+        shutil.copytree(ctx.user_units, tree)
+        for path in real:
+            shutil.copy(path, tree / path.name)
+        # Without the default path (no trailing colon) this machine's own units
+        # stay out; the targets every service is ordered after are stubs.
+        for target in ("basic.target", "default.target", "graphical.target"):
+            (tree / target).write_text("[Unit]\nDescription=stub\n")
+        units = ["a3-engine.service", "a3-core.service", "a3-core-window.service",
+                 "a3-motion.service", "stemdeck@A.service", "stemdeck.service"]
+        self.assertEqual([], syntax_problems(tree, units))
+        # The negative control: a bad key in a drop-in is reported, so the
+        # drop-ins are read and the filter does not hide everything.
+        bad = tree / "a3-engine.service.d" / "laptop.conf"
+        bad.write_text(bad.read_text() + "NoSuchKey=1\n")
+        self.assertTrue(any(str(bad) in line for line in syntax_problems(tree, units)))
+
+
+def syntax_problems(tree, units):
+    """systemd-analyze's lines, without those on missing executables: the
+    apps are not installed where the tests run."""
+    import os
+    import subprocess
+    done = subprocess.run(["systemd-analyze", "--user", "verify", *units],
+                          capture_output=True, text=True,
+                          env={**os.environ, "SYSTEMD_UNIT_PATH": str(tree)})
+    lines = (done.stdout + done.stderr).splitlines()
+    return [line for line in lines if line.strip() and "is not executable" not in line]
+
+
+class Leaving(UnitsCase):
+    def installed(self):
+        ctx, log = self.wiring_ctx()
+        laptop.Laptop()._wire(ctx, LETTERS)
+        self.units(ctx)
+        return ctx, log
+
+    def test_leaving_removes_what_it_wrote_and_keeps_engine_json(self):
+        ctx, log = self.installed()
+        role = laptop.Laptop()
+        home = Path(ctx.home)
+        drop_ins = [ctx.user_units / f"{unit}.d" / "laptop.conf"
+                    for unit in laptop.UNITS_WITH_TRUTH + ("stemdeck.service",)]
+        self.assertEqual(sorted(drop_ins + laptop.wiring_files(home)),
+                         sorted(role.leaving_files(ctx)))
+        self.assertNotIn(home / laptop.ENGINE_JSON, role.leaving_files(ctx))
+        self.assertTrue(any("engine.json" in item for item in role.stays))
+        self.assertEqual(["a3-engine.service", "a3-core.service", "a3-core-window.service",
+                          "a3-motion.service", "stemdeck@A.service", "stemdeck@B.service",
+                          "stemdeck@C.service", "stemdeck@D.service"], role.leaving_units(ctx))
+        self.assertEqual(list(laptop.APPS), role.leaving_packages(ctx))
+        del log[:]
+        role.uninstall(ctx)
+        commands = log.commands()
+        self.assertIn("systemctl --user disable --now stemdeck@D.service", commands)
+        self.assertIn("systemctl --user disable --now a3-engine.service", commands)
+        for path in drop_ins + laptop.wiring_files(home):
+            with self.subTest(path):
+                self.assertIn(f"rm -f {path}", commands)
+        self.assertNotIn(f"rm -f {home / laptop.ENGINE_JSON}", commands)
+        self.assertIn("systemctl --user daemon-reload", commands)
+        self.assertEqual(f"root: {A3_ROOT} remove {FIVE_APPS}", commands[-1])
+        self.assertEqual("", ctx.state.get("laptop", "letters"))
+
+    def test_a_hand_drop_in_of_the_laptop_s_name_stays(self):
+        ctx, _ = self.installed()
+        hand = ctx.user_units / "a3-motion.service.d" / "laptop.conf"
+        hand.write_text("[Service]\nEnvironment=MINE=1\n")
+        role = laptop.Laptop()
+        self.assertNotIn(hand, role.leaving_files(ctx))
+        self.assertEqual([hand], role.leaving_kept(ctx))
+
+    def test_deck_host_s_two_deck_drop_in_is_not_the_laptop_s(self):
+        ctx, _ = self.ctx()
+        theirs = ctx.user_units / "stemdeck.service.d" / deckhost.DROP_IN
+        theirs.parent.mkdir(parents=True)
+        theirs.write_text(base.two_deck_off_drop_in(deckhost.WRITTEN_BY))
+        self.assertNotIn(theirs, laptop.Laptop().leaving_files(ctx))
+        self.assertNotIn(theirs, laptop.Laptop().leaving_kept(ctx))
+        ours = ctx.user_units / "stemdeck.service.d" / "laptop.conf"
+        ours.write_text(base.two_deck_off_drop_in(laptop.WRITTEN_BY))
+        self.assertFalse(deckhost._written_by_us(ours))
 
 
 class FromSourceAtTheStart(Main):

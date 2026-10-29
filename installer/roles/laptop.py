@@ -31,7 +31,8 @@ from ..archive import a3_root_command
 from ..system import CommandFailed
 from . import apppackage, desk, motion, stemdeck
 from ..settings import DEFAULTS
-from .base import RATE_LINK, Role, RoleError, link_server_rate, write_home_file
+from .base import (RATE_LINK, Role, RoleError, link_server_rate, systemctl_user,
+                   two_deck_off_drop_in, write_drop_in, write_home_file)
 from .core import ANALYZER, CORE_APP
 
 SECTION = "laptop"
@@ -293,6 +294,61 @@ def _json_text(data):
     return json.dumps(data, indent=1) + "\n"
 
 
+# -- the units ------------------------------------------------------------------
+
+# The units that read the truth and draw on the screen; each gets UNIT_DROP_IN.
+UNITS_WITH_TRUTH = ("a3-engine.service", "a3-core.service", "a3-core-window.service",
+                    "a3-motion.service", "stemdeck@.service")
+DECK_TEMPLATE = "stemdeck@.service"
+TWO_DECK_UNIT = "stemdeck.service"
+UNIT_DROP_IN = "laptop.conf"
+# What the Environment= reset drops from a unit and the laptop still needs.
+# DISPLAY=:0 is dropped on purpose and never set again (Review Focus 2).
+KEPT_ENVIRONMENT = {
+    "a3-engine.service": ("LD_PRELOAD=/usr/lib/a3-core/libjack-rt-priority.so",),
+    # Empty: the decks run windowed beside the session's other windows (Task 12).
+    DECK_TEMPLATE: ("STEMDECK_WINDOW=",),
+}
+# [state] laptop letters: the deck instances the last install was for.
+LETTERS_STATE = "letters"
+
+
+def unit_drop_in(unit):
+    """The laptop's drop-in for one of UNITS_WITH_TRUTH."""
+    environment = (f"A3_OSC_TRUTH=%h/{LAPTOP_TRUTH}", "A3_SCREEN_TRIES=1",
+                   *KEPT_ENVIRONMENT.get(unit, ()))
+    return (WRITTEN_BY
+            + "# Environment= first: the unit's own display line goes, so the display the\n"
+            "# session imported into the user manager (with its authority) is used.\n"
+            "# One try for the screen: a session's screen is there or it is not.\n"
+            "# CPUAffinity= empty: the rig's core layout is not this machine's.\n"
+            "[Service]\n"
+            "Environment=\n"
+            + "".join(f"Environment={line}\n" for line in environment)
+            + "CPUAffinity=\n")
+
+
+def deck_instance(letter):
+    return f"stemdeck@{letter}.service"
+
+
+def recorded_letters(ctx):
+    value = ctx.state.get(SECTION, LETTERS_STATE)
+    return value.split(",") if value else []
+
+
+def drop_in_paths(ctx):
+    """Every drop-in the laptop writes, by name."""
+    return [ctx.user_units / f"{unit}.d" / UNIT_DROP_IN
+            for unit in UNITS_WITH_TRUTH + (TWO_DECK_UNIT,)]
+
+
+def _written_by_us(path):
+    """A drop-in of the laptop's name that carries its mark; one written by
+    hand is not ours to delete."""
+    return not path.exists() or WRITTEN_BY in path.read_text(errors="replace")
+
+
 # -- the role ---------------------------------------------------------------------
 
 class Laptop(Role):
@@ -370,5 +426,45 @@ class Laptop(Role):
         return main, phones
 
     def _units(self, ctx, letters):
-        """The deck instances and the Core's units for one machine (Task 15)."""
+        """The drop-ins that put the rig's units on this session's screen with
+        the laptop's truth. Nothing is enabled or started (R9): they run when
+        started by hand or by the Canvas app."""
+        for unit in UNITS_WITH_TRUTH:
+            write_drop_in(ctx, unit, UNIT_DROP_IN, unit_drop_in(unit))
+        write_drop_in(ctx, TWO_DECK_UNIT, UNIT_DROP_IN, two_deck_off_drop_in(WRITTEN_BY))
+        # a3-core-app's postinst reloads no user manager.
+        systemctl_user(ctx, "daemon-reload")
+        # The ExecCondition keeps it from starting; one that runs goes now.
+        systemctl_user(ctx, "stop", TWO_DECK_UNIT, check=False)
+        for letter in recorded_letters(ctx):
+            if letter not in letters:
+                systemctl_user(ctx, "stop", deck_instance(letter), check=False)
+        ctx.state.set(SECTION, LETTERS_STATE, ",".join(letters), dry_run=ctx.runner.dry_run)
+
+    # -- leaving
+
+    stays = ("~/.config/a3/engine/engine.json: it may carry the user's own links "
+             "(the installer cannot tell after the packages are gone)",
+             "library, sessions, recordings, stems and Motion UI's data")
+
+    def leaving_units(self, ctx):
+        return ([unit for unit in UNITS_WITH_TRUTH if unit != DECK_TEMPLATE]
+                + [deck_instance(letter) for letter in recorded_letters(ctx)])
+
+    def leaving_files(self, ctx):
+        return ([path for path in drop_in_paths(ctx) if _written_by_us(path)]
+                + wiring_files(ctx.home))
+
+    def leaving_kept(self, ctx):
+        return [path for path in drop_in_paths(ctx) if not _written_by_us(path)]
+
+    def leaving_packages(self, ctx):
+        return list(APPS)
+
+    def uninstall(self, ctx):
+        super().uninstall(ctx)
+        ctx.state.remove(SECTION, LETTERS_STATE, dry_run=ctx.runner.dry_run)
+        # Through the helper whatever this run's mode: the laptop's apps came
+        # from the archive and a3-root holds them.
+        ctx.runner.run(a3_root_command(ctx, "remove", *self.leaving_packages(ctx)), root=True)
 

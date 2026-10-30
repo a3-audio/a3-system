@@ -11,11 +11,13 @@ target_sources(a3-canvas-tests PRIVATE
     CoreProbeTests.cpp
     PackagesTests.cpp
     StartPlanTests.cpp
+    StatusPollerTests.cpp
     SystemdTests.cpp
     TileStatusTests.cpp
     ${A3CANVAS_LIBRARY_SOURCES})
 target_include_directories(a3-canvas-tests PRIVATE "${PROJECT_SOURCE_DIR}/Source" "${CMAKE_CURRENT_SOURCE_DIR}")
 target_compile_definitions(a3-canvas-tests PRIVATE ${A3CANVAS_DEFINITIONS}
+    JUCE_MODAL_LOOPS_PERMITTED=1
     A3CANVAS_FIXTURES="${CMAKE_CURRENT_SOURCE_DIR}/fixtures")
 target_compile_options(a3-canvas-tests PRIVATE -Werror=switch)
 target_link_libraries(a3-canvas-tests

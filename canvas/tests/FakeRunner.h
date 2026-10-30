@@ -28,10 +28,10 @@ public:
             if (const auto found = answers.find (commandLine); found != answers.end())
                 reply = found->second;
         }
-        if (line)
+        // Line by line, blank lines included, as ProcessRunner hands them on.
+        if (line && reply.output.isNotEmpty())
             for (const auto& text : juce::StringArray::fromLines (reply.output))
-                if (text.isNotEmpty())
-                    line (text);
+                line (text);
         return reply.exitCode;
     }
 

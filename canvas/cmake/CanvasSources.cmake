@@ -13,6 +13,7 @@ set(_a3canvas_sources
     model/TileStatus.cpp
     sys/CoreProbe.cpp
     sys/Packages.cpp
+    sys/StatusPoller.cpp
     sys/ProcessRunner.cpp
     sys/Systemd.cpp)
 list(TRANSFORM _a3canvas_sources PREPEND "${A3CANVAS_INCLUDE_DIR}/" OUTPUT_VARIABLE A3CANVAS_LIBRARY_SOURCES)

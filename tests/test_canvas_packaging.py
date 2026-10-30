@@ -55,6 +55,11 @@ class CanvasPackaging(unittest.TestCase):
         self.assertNotIn("pkexec", control)
         self.assertNotIn("polkitd", control)
 
+    def test_the_recipe_has_every_maintainer_script_the_builder_wants(self):
+        from installer import package
+        for name in package.DEBIAN_FILES:
+            self.assertTrue((RECIPE / "DEBIAN" / name).is_file(), name)
+
     def test_an_unknown_step_is_a_usage_error(self):
         result = subprocess.run([str(RECIPE / "stage"), "pack"], capture_output=True, text=True)
         self.assertEqual(2, result.returncode)

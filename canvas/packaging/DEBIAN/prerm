@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Raphael Eismann
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Nothing to do: the Canvas has no unit and touches nothing outside the package.
+set -e
+
+exit 0

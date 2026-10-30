@@ -460,6 +460,19 @@ class ArchiveFromBareForge(unittest.TestCase):
         self.assertIn("third_party/mid", note.getvalue())
 
 
+class RecipeVersion(unittest.TestCase):
+    """The recipe learns the version the package gets, so an app can show it (a3-canvas)."""
+
+    def test_the_recipe_is_run_with_the_package_version_in_its_environment(self):
+        with mock.patch.object(package.subprocess, "run") as run:
+            package.run_recipe("/src/canvas/packaging/stage", ["build", "/src", "/b", "/j", "2"], "03.0+12")
+        args, kwargs = run.call_args
+        self.assertEqual(["/src/canvas/packaging/stage", "build", "/src", "/b", "/j", "2"], args[0])
+        self.assertEqual("03.0+12", kwargs["env"]["A3_PACKAGE_VERSION"])
+        self.assertEqual(os.environ.get("PATH"), kwargs["env"]["PATH"], "the rest of the environment is kept")
+        self.assertTrue(kwargs["check"])
+
+
 class RevisionCheck(unittest.TestCase):
     def test_a_dash_first_revision_is_refused_before_git_is_asked(self):
         with mock.patch.object(package, "git", side_effect=AssertionError("git asked")):

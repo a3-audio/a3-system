@@ -427,6 +427,13 @@ def _log(message):
     print(message, file=sys.stderr)
 
 
+def run_recipe(stage_script, arguments, version):
+    """The recipe's step, with the version the package will carry in A3_PACKAGE_VERSION: an app
+    that shows its version (a3-canvas) is built with the package's, not a guess of its own."""
+    env = {**os.environ, "A3_PACKAGE_VERSION": version}
+    subprocess.run([stage_script, *arguments], check=True, stdout=sys.stderr, env=env)
+
+
 def build(repo, rev=None, out=Path.home() / "a3-debs", cache=Path.home() / ".cache/a3-build",
           jobs=DEFAULT_JOBS, juce=Path.home() / "local/juce", test=False, log=_log,
           recipe=DEFAULT_RECIPE, with_submodules=True):
@@ -448,13 +455,12 @@ def build(repo, rev=None, out=Path.home() / "a3-debs", cache=Path.home() / ".cac
     sync_tree(fresh, src)
     _remove(fresh)
     stage_script = str(src / recipe / "stage")
-    subprocess.run([stage_script, "build", str(src), str(build_dir), str(juce), str(jobs),
-                    *(["--test"] if test else [])], check=True, stdout=sys.stderr)
+    run_recipe(stage_script, ["build", str(src), str(build_dir), str(juce), str(jobs),
+                              *(["--test"] if test else [])], version)
     stage = Path(tempfile.mkdtemp(prefix="stage-", dir=work))
     try:
         refuse_inside(repo, stage)
-        subprocess.run([stage_script, "files", str(src), str(build_dir), str(stage)],
-                       check=True, stdout=sys.stderr)
+        run_recipe(stage_script, ["files", str(src), str(build_dir), str(stage)], version)
         install_debian(src, stage, recipe)
         control = stage / "DEBIAN" / "control"
         architecture = host_architecture()

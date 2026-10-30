@@ -16,7 +16,7 @@ This repository carries all of them as submodules, together with the
 [beat-analyzer](https://a3-audio.github.io/a3-doc/user/beat-analyzer.html) and the docs.
 One clone gives a set of states that belong together.
 
-![The A³ Motion UI](https://a3-audio.github.io/a3-doc/_images/a3-motion-ui-display-one-clip.png)
+![Four StemDecks around the A³ desk and A³ Motion, each deck playing its own track](docs/a3-setup.jpg)
 
 **Everything else is in the documentation: https://a3-audio.github.io/a3-doc/**
 

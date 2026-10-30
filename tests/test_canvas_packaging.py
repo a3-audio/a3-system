@@ -61,9 +61,9 @@ class CanvasPackaging(unittest.TestCase):
         for name in package.DEBIAN_FILES:
             self.assertTrue((RECIPE / "DEBIAN" / name).is_file(), name)
 
-    def test_the_shipped_support_targets_are_all_empty(self):
+    def test_the_shipped_support_target_is_the_maintainers_paypal(self):
         import json
-        self.assertEqual({"kofi": "", "paypal": "", "bitcoin": ""},
+        self.assertEqual({"kofi": "", "paypal": "https://www.paypal.com/paypalme/RaphaelEismann", "bitcoin": ""},
                          json.loads((RECIPE / "canvas.json").read_text()))
 
     def cmake_arguments(self, environment):

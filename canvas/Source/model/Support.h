@@ -8,12 +8,12 @@
 
 namespace canvas
 {
-// Where "Support A³" leads, from ~/.config/a3/canvas.json or the package's default (all empty).
+// Where "Support A³" leads, from ~/.config/a3/canvas.json or the package's default (the maintainer's PayPal).
 // An entry that is not what its key says is dropped, so nobody is sent to a mistyped target.
 struct SupportConfig
 {
     juce::String kofi;      // https://ko-fi.com/<name>
-    juce::String paypal;    // https://paypal.me/<name>
+    juce::String paypal;    // https://paypal.me/<name> or https://www.paypal.com/paypalme/<name>
     juce::String bitcoin;   // an address (1…, 3… or bc1…)
 
     bool isEmpty() const { return kofi.isEmpty() && paypal.isEmpty() && bitcoin.isEmpty(); }

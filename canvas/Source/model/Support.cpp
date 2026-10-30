@@ -27,6 +27,15 @@ bool isLinkTo (const juce::String& text, std::initializer_list<const char*> host
     return false;
 }
 
+// paypal.me/<name>, or the same as PayPal writes it on its own site: www.paypal.com/paypalme/<name>.
+bool isPayPalMe (const juce::String& text)
+{
+    if (isLinkTo (text, { "paypal.me", "www.paypal.me" }))
+        return true;
+    const juce::String personal = "https://www.paypal.com/paypalme/";
+    return isLinkTo (text, { "www.paypal.com" }) && text.startsWith (personal) && text.length() > personal.length();
+}
+
 // The address's form only (prefix, alphabet, length); the checksum is the wallet's to check.
 bool isBitcoinAddress (const juce::String& text)
 {
@@ -53,7 +62,7 @@ SupportConfig parseSupport (const juce::String& jsonText)
     SupportConfig support;
     if (const auto kofi = entry (json, "kofi"); isLinkTo (kofi, { "ko-fi.com", "www.ko-fi.com" }))
         support.kofi = kofi;
-    if (const auto paypal = entry (json, "paypal"); isLinkTo (paypal, { "paypal.me", "www.paypal.me" }))
+    if (const auto paypal = entry (json, "paypal"); isPayPalMe (paypal))
         support.paypal = paypal;
     if (const auto bitcoin = entry (json, "bitcoin"); isBitcoinAddress (bitcoin))
         support.bitcoin = bitcoin;

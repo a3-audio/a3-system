@@ -40,12 +40,9 @@ Snapshot demoSnapshot (const std::vector<Tile>& tiles, const TruthNetwork& truth
         if (tile.kind == TileKind::deck && ! stopped)
         {
             facts.core.presentDecks.insert (tile.deck);
-            facts.core.deckHosts[tile.deck] = "127.0.0.1";
         }
     }
     facts.network = { truth, coreAddresses (truth) };
-    facts.core.deskHost = "127.0.0.1";
-    facts.core.motionHost = "127.0.0.1";
     facts.core.reachable = true;
     facts.core.engineHeard = true;
     facts.engine.answers = true;

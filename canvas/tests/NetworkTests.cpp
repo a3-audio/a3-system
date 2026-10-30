@@ -29,11 +29,6 @@ Facts factsOnTheCore()
     facts.network = { fixtureTruth(), { "192.168.8.10", "192.168.9.10" } };
     return facts;
 }
-
-bool isPrivate (const juce::String& address)
-{
-    return address.startsWith ("192.168.") || address.startsWith ("10.") || address.startsWith ("127.");
-}
 }
 
 TEST (Network, TheTruthNamesTheHostsAndTheTwoNetworks)
@@ -93,12 +88,12 @@ TEST (Hosts, UnknownIsLocalWhenInstalledHereElseBlank)
 {
     auto facts = factsOnTheCore();
     facts.packages["stemdeck"] = { "03.0+281", "03.0+281" };
-    EXPECT_EQ (hostLine (tileOf ("deck-C"), facts), juce::String::fromUTF8 ("local · 192.168.8.10"));
+    EXPECT_EQ (hostLine (tileOf ("deck-D"), facts), juce::String::fromUTF8 ("local · 192.168.8.10"));
     facts.packages.erase ("stemdeck");
-    EXPECT_EQ (hostLine (tileOf ("deck-C"), facts), "");
+    EXPECT_EQ (hostLine (tileOf ("deck-D"), facts), "");
     facts.network.own = {};
-    facts.packages["beat-analyzer"] = { "1.0", "1.0" };
-    EXPECT_EQ (hostLine (tileOf ("analyzer"), facts), "local") << "no address of its own to name";
+    facts.packages["stemdeck"] = { "03.0+281", "03.0+281" };
+    EXPECT_EQ (hostLine (tileOf ("deck-D"), facts), "local") << "no address of its own to name";
 }
 
 TEST (Hosts, TheDeskAndMotionWhereCoreHearsThem)
@@ -110,17 +105,31 @@ TEST (Hosts, TheDeskAndMotionWhereCoreHearsThem)
     EXPECT_EQ (hostLine (tileOf ("motion"), facts), "192.168.8.20");
 }
 
-// The demo's addresses are the shipped truth's, never invented ones.
+// Core's live report comes first; where it is silent the truth names the machine, never a guess.
+TEST (Hosts, TheTruthNamesWhatCoreDoesNotReport)
+{
+    auto facts = factsOnTheCore();
+    EXPECT_EQ (hostLine (tileOf ("deck-B"), facts), "192.168.8.23");
+    EXPECT_EQ (hostLine (tileOf ("deck-C"), facts), "192.168.8.20");
+    EXPECT_EQ (hostLine (tileOf ("motion"), facts), "192.168.8.20");
+    EXPECT_EQ (hostLine (tileOf ("deck-A"), facts), juce::String::fromUTF8 ("local · 192.168.8.10"));
+    EXPECT_EQ (hostLine (tileOf ("analyzer"), facts), juce::String::fromUTF8 ("local · 192.168.8.10"));
+    facts.core.deckHosts = { { 2, "192.168.8.30" } };
+    EXPECT_EQ (hostLine (tileOf ("deck-B"), facts), "192.168.8.30") << "Core's report wins";
+}
+
+// The demo reads the same truth: every address in it is a file value, none is typed into the code.
 TEST (Hosts, TheDemoShowsTheTruthsAddresses)
 {
     const auto snapshot = demoSnapshot (catalog (4), fixtureTruth());
     EXPECT_EQ (snapshot.facts.network.own, (std::vector<juce::String> { "192.168.8.10", "192.168.9.10" }));
-    for (const auto& tile : catalog (4))
-    {
-        const auto line = hostLine (tile, snapshot.facts);
-        for (const auto& word : juce::StringArray::fromTokens (line, juce::String::fromUTF8 (" ·"), {}))
-            if (word.containsChar ('.'))
-                EXPECT_TRUE (isPrivate (word)) << tile.id << ": " << line;
-    }
+    EXPECT_TRUE (snapshot.facts.core.deckHosts.empty());
+    EXPECT_TRUE (snapshot.facts.core.motionHost.isEmpty());
+    EXPECT_EQ (hostLine (tileOf ("deck-B"), snapshot.facts), "192.168.8.23");
+    EXPECT_EQ (hostLine (tileOf ("deck-C"), snapshot.facts), "192.168.8.20");
+    EXPECT_EQ (hostLine (tileOf ("motion"), snapshot.facts), "192.168.8.20");
+    EXPECT_EQ (hostLine (tileOf ("core"), snapshot.facts), juce::String::fromUTF8 ("local · 192.168.8.10"));
+    EXPECT_EQ (hostLine (tileOf ("deck-A"), snapshot.facts), juce::String::fromUTF8 ("local · 192.168.8.10"));
+    EXPECT_EQ (hostLine (tileOf ("analyzer"), snapshot.facts), juce::String::fromUTF8 ("local · 192.168.8.10"));
     EXPECT_TRUE (demoSnapshot (catalog (4), {}).facts.network.own.empty()) << "no truth, no addresses";
 }

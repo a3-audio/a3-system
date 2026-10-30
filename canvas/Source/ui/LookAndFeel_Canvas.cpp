@@ -18,6 +18,19 @@ juce::Colour lightColour (Light light)
     return skin::textMuted;
 }
 
+juce::Font canvasFont (float height, bool bold)
+{
+    return juce::Font (juce::FontOptions (height, bold ? juce::Font::bold : juce::Font::plain));
+}
+
+void drawCaption (juce::Graphics& g, const juce::String& text, juce::Rectangle<int> area, const Metrics& m,
+                  juce::Justification justification)
+{
+    g.setColour (skin::textMuted);
+    g.setFont (canvasFont (m.caption(), true).withExtraKerningFactor (0.08f));
+    g.drawText (text.toUpperCase(), area, justification, false);
+}
+
 LookAndFeel_Canvas::LookAndFeel_Canvas()
 {
     setColourScheme ({ skin::surface, skin::background, skin::surfaceRaised, skin::textMuted.withAlpha (skin::alphaOutline),
@@ -31,6 +44,7 @@ LookAndFeel_Canvas::LookAndFeel_Canvas()
     setColour (juce::TextEditor::textColourId, skin::textMuted);
     setColour (juce::TextEditor::highlightColourId, skin::accent.withAlpha (skin::alphaFillEmphasis));
     setColour (juce::Label::textColourId, skin::textPrimary);
+    setColour (juce::HyperlinkButton::textColourId, skin::textPrimary);
     setColour (juce::ScrollBar::thumbColourId, skin::textMuted.withAlpha (skin::alphaOutline));
     setColour (juce::AlertWindow::backgroundColourId, skin::surfaceRaised);
     setColour (juce::AlertWindow::textColourId, skin::textPrimary);

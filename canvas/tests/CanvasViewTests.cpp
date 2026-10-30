@@ -1,10 +1,13 @@
 // SPDX-FileCopyrightText: 2026 Raphael Eismann
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include <set>
+
 #include <gtest/gtest.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include "model/Demo.h"
+#include "model/Greeter.h"
 #include "ui/CanvasWindow.h"
 
 using namespace canvas;
@@ -214,6 +217,206 @@ TEST (CanvasWindow, TheDemoShowsARunningRigWithTheLastDeckStopped)
     EXPECT_GT (lumaVariance (image), 50.0) << "the page paints";
 }
 
+// -- The greeter -------------------------------------------------------------------
+
+namespace
+{
+constexpr int laptopWidth = 1920, laptopHeight = 1080;
+const juce::Colour logoInk { 255, 255, 243 };   // the website's logo fill, #FFFFF3
+
+int pixelsNear (const juce::Image& image, juce::Rectangle<int> area, juce::Colour colour, int tolerance = 12)
+{
+    int count = 0;
+    area = area.getIntersection (image.getBounds());
+    for (int y = area.getY(); y < area.getBottom(); ++y)
+        for (int x = area.getX(); x < area.getRight(); ++x)
+            count += near (image.getPixelAt (x, y), colour, tolerance) ? 1 : 0;
+    return count;
+}
+
+juce::Image snapshotOf (juce::Component& component) { return component.createComponentSnapshot (component.getLocalBounds(), true, 1.0f); }
+
+std::map<juce::String, PackageFacts> allInstalled()
+{
+    std::map<juce::String, PackageFacts> packages;
+    for (const auto& name : greeterPackages())
+        packages[name] = { "03.0+800", "03.0+800" };
+    return packages;
+}
+
+// A greeter on its own, in the Canvas's look, as the band of the rig's screen.
+struct LookedGreeter
+{
+    LookAndFeel_Canvas look;
+    GreeterComponent greeter;
+
+    explicit LookedGreeter (const juce::String& support = {}) : greeter (support, "0.1.0")
+    {
+        greeter.setLookAndFeel (&look);
+        greeter.setSize (rigWidth, GreeterComponent::bandHeight (look.getMetrics()));
+    }
+    ~LookedGreeter() { greeter.setLookAndFeel (nullptr); }
+};
+
+// Where a component sits in the view, in the view's coordinates.
+juce::Rectangle<int> inView (CanvasView& view, juce::Component& child) { return view.getLocalArea (&child, child.getLocalBounds()); }
+
+void expectTheWholePageFits (CanvasView& view)
+{
+    const auto greeter = view.greeter().getBounds();
+    const auto key = Metrics::forSize (view.getWidth(), view.getHeight()).key();
+    EXPECT_TRUE (view.getLocalBounds().contains (greeter));
+    for (auto* button : { &view.startAllButton(), &view.stopAllButton() })
+    {
+        EXPECT_FALSE (button->getBounds().intersects (greeter)) << "the rig's keys are not the greeter's";
+        EXPECT_GE (button->getHeight(), juce::roundToInt (key) - 1) << "a fingertip and more";
+    }
+    for (size_t i = 0; i < view.getTiles().size(); ++i)
+    {
+        const auto tile = view.getTiles()[i]->getBounds();
+        EXPECT_TRUE (view.getLocalBounds().contains (tile)) << i;
+        EXPECT_FALSE (tile.intersects (greeter)) << i;
+        EXPECT_GE (tile.getHeight(), TileComponent::leastHeight (Metrics::forSize (view.getWidth(), view.getHeight())) - 1)
+            << i << ": its lines clear its keys";
+    }
+    EXPECT_GE (view.logPane().getHeight(), Metrics::forSize (view.getWidth(), view.getHeight()).caption() * 3) << "the log has lines";
+}
+}
+
+// The rig's portrait screen: the greeter across the top, the rig under it.
+TEST (CanvasView, TheGreeterLeadsThePageOnTheRigsScreen)
+{
+    CanvasView view (catalog (4));
+    view.setSize (rigWidth, rigHeight);
+    expectTheWholePageFits (view);
+    for (const auto& tile : view.getTiles())
+        EXPECT_GE (tile->getY(), view.greeter().getBottom());
+    EXPECT_GE (view.startAllButton().getY(), view.greeter().getBottom());
+    EXPECT_LT (view.greeter().getY(), view.getHeight() / 10) << "it is the first thing on the page";
+}
+
+// Fewer decks, fewer tiles: two columns again when they fit.
+TEST (CanvasView, TwoDecksKeepTwoColumnsOnTheRigsScreen)
+{
+    CanvasView view (catalog (2));
+    view.setSize (rigWidth, rigHeight);
+    expectTheWholePageFits (view);
+    std::set<int> columns;
+    for (const auto& tile : view.getTiles())
+        columns.insert (tile->getX());
+    EXPECT_EQ (columns.size(), 2u);
+}
+
+// A laptop's landscape screen: the greeter as a column at the left, the rig beside it.
+TEST (CanvasView, TheGreeterIsAColumnBesideTheRigOnALaptop)
+{
+    CanvasView view (catalog (4));
+    view.setSize (laptopWidth, laptopHeight);
+    expectTheWholePageFits (view);
+    for (const auto& tile : view.getTiles())
+        EXPECT_GE (tile->getX(), view.greeter().getRight());
+    EXPECT_GT (view.greeter().getHeight(), laptopHeight / 2);
+}
+
+TEST (Greeter, TheLinksAreHyperlinksToTheirTargets)
+{
+    LookedGreeter looked;
+    auto& greeter = looked.greeter;
+    ASSERT_EQ (greeter.getLinks().size(), 3);
+    const auto expected = greeterLinks ({});
+    for (int i = 0; i < greeter.getLinks().size(); ++i)
+    {
+        EXPECT_EQ (greeter.getLinks()[i]->getButtonText(), expected[(size_t) i].label);
+        EXPECT_EQ (greeter.getLinks()[i]->getURL().toString (false), expected[(size_t) i].url);
+    }
+}
+
+TEST (Greeter, NoSupportKeyWhileUnsetOneWhenSet)
+{
+    const auto labels = [] (GreeterComponent& g) {
+        juce::StringArray texts;
+        for (auto* link : g.getLinks())
+            if (link->isVisible())
+                texts.add (link->getButtonText());
+        return texts;
+    };
+    LookedGreeter unset;
+    EXPECT_FALSE (labels (unset.greeter).contains (juce::String::fromUTF8 ("Support A³")));
+
+    LookedGreeter looked ("https://example.org/support");
+    auto& set = looked.greeter;
+    ASSERT_TRUE (labels (set).contains (juce::String::fromUTF8 ("Support A³")));
+    auto* support = set.getLinks().getLast();
+    EXPECT_TRUE (set.getLocalBounds().contains (support->getBounds()));
+    EXPECT_GT (pixelsUnlike (snapshotOf (set), support->getBounds(), skin::surface), 30) << "the key paints";
+}
+
+// A paint test per state (memory "A page test must paint").
+TEST (Greeter, TheLogoPaintsInTheWebsitesInkAtBothSizes)
+{
+    for (const auto& size : { juce::Point<int> (rigWidth, rigHeight), juce::Point<int> (laptopWidth, laptopHeight) })
+    {
+        CanvasView view (catalog (4));
+        view.setSize (size.x, size.y);
+        const auto image = snapshotOf (view);
+        const auto logo = view.getLocalArea (&view.greeter(), view.greeter().logoArea().toNearestInt());
+        EXPECT_GT (logo.getHeight(), Metrics::forSize (size.x, size.y).key() * 1.5f) << size.x << ": the logo leads";
+        EXPECT_GT (pixelsNear (image, logo, logoInk), logo.getWidth() * logo.getHeight() / 20) << size.x;
+        EXPECT_EQ (pixelsNear (image, view.getLocalBounds().withTrimmedTop (view.greeter().getBottom()), logoInk), 0)
+            << size.x << ": the logo's ink is the logo's alone";
+    }
+}
+
+TEST (Greeter, InstalledVersionsPaintInTextAndMissingOnesMuted)
+{
+    LookedGreeter lookedInstalled;
+    auto& installed = lookedInstalled.greeter;
+    installed.setPackages (allInstalled());
+    auto image = snapshotOf (installed);
+    EXPECT_GT (pixelsNear (image, installed.versionsArea(), skin::textPrimary, 20), 40) << "the versions are read";
+
+    LookedGreeter lookedMissing;
+    auto& missing = lookedMissing.greeter;
+    auto packages = allInstalled();
+    for (auto& [name, facts] : packages)
+        facts.installed = {};
+    missing.setPackages (packages);
+    image = snapshotOf (missing);
+    const auto canvasRow = missing.versionRowArea (static_cast<int> (greeterPackages().size()));
+    for (int row = 0; row < static_cast<int> (greeterPackages().size()); ++row)
+        EXPECT_EQ (pixelsNear (image, missing.versionRowArea (row), skin::textPrimary, 20), 0) << row << ": not installed, not lit";
+    EXPECT_GT (pixelsNear (image, canvasRow, skin::textPrimary, 20), 10) << "the Canvas itself runs";
+    EXPECT_GT (pixelsUnlike (image, missing.versionsArea(), skin::surfaceRaised), 200) << "but it is all written";
+}
+
+TEST (Greeter, AnUpdatePaintsInTheAccent)
+{
+    LookedGreeter looked;
+    auto& greeter = looked.greeter;
+    auto packages = allInstalled();
+    packages["stemdeck"].candidate = "03.0+900";
+    greeter.setPackages (packages);
+    EXPECT_GT (pixelsNear (snapshotOf (greeter), greeter.versionRowArea (1), skin::accent, 20), 10);
+}
+
+TEST (Greeter, TheLicenceLineIsWritten)
+{
+    LookedGreeter looked;
+    auto& greeter = looked.greeter;
+    EXPECT_GT (pixelsUnlike (snapshotOf (greeter), greeter.licenceArea(), skin::surfaceRaised), 100);
+}
+
+TEST (CanvasWindow, TheDemoSaysItIsADemo)
+{
+    CanvasView view (catalog (4));
+    CanvasController controller (view, demoSetup (4));
+    EXPECT_TRUE (view.getSubtitle().startsWith ("Demo"));
+    view.setSize (rigWidth, rigHeight);
+    const auto image = snapshotOf (view);
+    EXPECT_GT (pixelsUnlike (image, view.subtitleArea(), skin::surface), 100) << "and paints it";
+    EXPECT_GT (pixelsNear (image, inView (view, view.greeter()), skin::textPrimary, 20), 200) << "the demo's versions";
+}
+
 // For the maintainer's eye: with A3CANVAS_SNAPSHOT_DIR set, the demo at the rig's size as a PNG.
 TEST (CanvasWindow, WritesTheRigSizedScreenForReview)
 {
@@ -233,6 +436,13 @@ TEST (CanvasWindow, WritesTheRigSizedScreenForReview)
     juce::FileOutputStream stream (file);
     ASSERT_TRUE (stream.openedOk());
     ASSERT_TRUE (juce::PNGImageFormat().writeImageToStream (view.createComponentSnapshot (view.getLocalBounds(), true, 1.0f), stream));
+
+    view.setSize (1920, 1080);
+    const auto laptop = juce::File (directory).getChildFile ("a3-canvas-laptop.png");
+    laptop.deleteFile();
+    juce::FileOutputStream laptopStream (laptop);
+    ASSERT_TRUE (laptopStream.openedOk());
+    ASSERT_TRUE (juce::PNGImageFormat().writeImageToStream (view.createComponentSnapshot (view.getLocalBounds(), true, 1.0f), laptopStream));
 }
 
 namespace

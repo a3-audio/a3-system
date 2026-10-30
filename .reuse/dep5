@@ -28,6 +28,11 @@ Files: canvas/tests/fixtures/*
 Copyright: 2020-2026 A3 Audio <contact@a3-audio.com>
 License: CC0-1.0
 
+Files: canvas/assets/a3-logo.svg
+Copyright: 2024-2026 A3 Audio <contact@a3-audio.com>
+License: CC-BY-SA-4.0
+Comment: The website's logo (a3-audio.github.io src/img/a3_logo-wed_dark.svg), unchanged.
+
 Files: canvas/packaging/a3-canvas.desktop canvas/packaging/DEBIAN/control
 Copyright: 2020-2026 A3 Audio <contact@a3-audio.com>
 License: CC0-1.0

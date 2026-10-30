@@ -6,23 +6,12 @@ namespace canvas
 {
 namespace
 {
-// Shares of the page: the header, and the band of log and packages under the tiles.
-constexpr float headerShare = 0.085f;
-constexpr float bottomShare = 0.2f;
+// The log takes at least this share of the rig's column, and what tiles past roomyTileShare would leave empty.
+constexpr float logShare = 0.25f;
+constexpr float roomyTileShare = 1.3f;
+// The greeter's share of a landscape page's width.
+constexpr float columnShare = 0.3f;
 constexpr int maxLogLines = 400;
-
-juce::Font font (float height, bool bold = false)
-{
-    return juce::Font (juce::FontOptions (height, bold ? juce::Font::bold : juce::Font::plain));
-}
-
-// Captions are upper case and tracked, as on every A³ page (designer skill).
-void drawCaption (juce::Graphics& g, const juce::String& text, juce::Rectangle<int> area, const Metrics& m)
-{
-    g.setColour (skin::textMuted);
-    g.setFont (font (m.caption(), true).withExtraKerningFactor (0.08f));
-    g.drawText (text.toUpperCase(), area, juce::Justification::centredLeft, false);
-}
 
 bool landscape (juce::Rectangle<int> area) { return area.getWidth() > area.getHeight(); }
 }
@@ -37,54 +26,9 @@ void showConfirmation (const juce::String& question, const juce::String& detail,
     });
 }
 
-// -- InstallPanel ----------------------------------------------------------------
-
-Metrics InstallPanel::metrics() const
-{
-    if (auto* look = dynamic_cast<LookAndFeel_Canvas*> (&getLookAndFeel()))
-        return look->getMetrics();
-    return {};
-}
-
-void InstallPanel::setPackages (const std::map<juce::String, PackageFacts>& p)
-{
-    if (p.size() == packages.size()
-        && std::equal (p.begin(), p.end(), packages.begin(), [] (const auto& a, const auto& b) {
-               return a.first == b.first && a.second.installed == b.second.installed && a.second.candidate == b.second.candidate;
-           }))
-        return;
-    packages = p;
-    repaint();
-}
-
-void InstallPanel::paint (juce::Graphics& g)
-{
-    const auto m = metrics();
-    if (auto* look = dynamic_cast<LookAndFeel_Canvas*> (&getLookAndFeel()))
-        look->drawCard (g, getLocalBounds().toFloat());
-    auto area = getLocalBounds().reduced (juce::roundToInt (m.padding()));
-    drawCaption (g, "Packages", area.removeFromTop (juce::roundToInt (m.caption() * 1.8f)), m);
-
-    const int row = juce::roundToInt (m.body() * 1.55f);
-    for (const auto& [name, facts] : packages)
-    {
-        if (area.getHeight() < row)
-            break;
-        auto line = area.removeFromTop (row);
-        g.setFont (font (m.body()));
-        g.setColour (facts.installed.isEmpty() ? skin::textMuted : skin::textPrimary);
-        g.drawText (name, line, juce::Justification::centredLeft, true);
-        juce::String version = facts.installed.isEmpty() ? juce::String ("not installed") : facts.installed;
-        if (facts.updateAvailable())
-            version << juce::String::fromUTF8 (" → ") << facts.candidate;
-        g.setColour (facts.updateAvailable() ? skin::accent : skin::textMuted);
-        g.drawText (version, line, juce::Justification::centredRight, true);
-    }
-}
-
 // -- CanvasView -------------------------------------------------------------------
 
-CanvasView::CanvasView (std::vector<Tile> tiles)
+CanvasView::CanvasView (std::vector<Tile> tiles, const juce::String& support) : greeting (support)
 {
     setLookAndFeel (&look);
     setOpaque (true);
@@ -132,7 +76,7 @@ CanvasView::CanvasView (std::vector<Tile> tiles)
     log.setCaretVisible (false);
     log.setScrollbarsShown (true);
     addAndMakeVisible (log);
-    addAndMakeVisible (install);
+    addAndMakeVisible (greeting);
 }
 
 CanvasView::~CanvasView()
@@ -154,7 +98,7 @@ void CanvasView::show (const Snapshot& snapshot)
         const auto found = snapshot.facts.packages.find (package);
         tileComponents[i]->setStatus (snapshot.statuses[i], found != snapshot.facts.packages.end() ? found->second.installed : juce::String());
     }
-    install.setPackages (snapshot.facts.packages);
+    greeting.setPackages (snapshot.facts.packages);
 }
 
 void CanvasView::appendLog (const juce::String& line)
@@ -180,14 +124,7 @@ void CanvasView::setBusy (bool busy)
 void CanvasView::setSubtitle (const juce::String& text)
 {
     subtitle = text;
-    repaint (headerArea());
-}
-
-juce::Rectangle<int> CanvasView::headerArea() const
-{
-    const auto m = look.getMetrics();
-    auto area = getLocalBounds().reduced (juce::roundToInt (m.padding() * 1.5f));
-    return area.removeFromTop (juce::roundToInt (std::max (m.key(), getHeight() * headerShare)));
+    repaint (subtitleBox);
 }
 
 void CanvasView::paint (juce::Graphics& g)
@@ -195,17 +132,10 @@ void CanvasView::paint (juce::Graphics& g)
     const auto m = look.getMetrics();
     g.fillAll (skin::surface);
 
-    auto header = headerArea();
-    const auto text = header.removeFromLeft (header.getWidth() / 2);
-    const auto titleHeight = juce::roundToInt (m.title() * 1.3f);
-    auto titleArea = text.withHeight (titleHeight).withY (text.getCentreY() - titleHeight / 2 - juce::roundToInt (m.caption() * 0.7f));
+    drawCaption (g, "Rig", rigCaptionBox, m);
     g.setColour (skin::textPrimary);
-    g.setFont (font (m.title(), true));
-    g.drawText (juce::String::fromUTF8 ("A³ Canvas"), titleArea, juce::Justification::centredLeft, false);
-    g.setColour (skin::textMuted);
-    g.setFont (font (m.caption()));
-    g.drawText (subtitle, titleArea.translated (0, titleHeight).withHeight (juce::roundToInt (m.caption() * 1.6f)),
-                juce::Justification::centredLeft, true);
+    g.setFont (canvasFont (m.body()));
+    g.drawText (subtitle, subtitleBox, juce::Justification::centredLeft, true);
 
     look.drawCard (g, logCard.toFloat());
     drawCaption (g, "Log", logCard.reduced (juce::roundToInt (m.padding())).withHeight (juce::roundToInt (m.caption() * 1.8f)), m);
@@ -213,33 +143,65 @@ void CanvasView::paint (juce::Graphics& g)
 
 void CanvasView::resized()
 {
-    const auto m = Metrics::forWidth (getWidth());
+    const auto m = Metrics::forSize (getWidth(), getHeight());
     look.setMetrics (m);
     const int pad = juce::roundToInt (m.padding());
-    const int gap = juce::roundToInt (m.gap());
 
     auto area = getLocalBounds().reduced (juce::roundToInt (m.padding() * 1.5f));
-    auto header = area.removeFromTop (headerArea().getHeight());
+    // Two columns of tiles (or more, see layoutRig) under the band on the rig's portrait screen, four beside the column on a laptop.
+    if (landscape (getLocalBounds()))
+    {
+        greeting.setBounds (area.removeFromLeft (juce::roundToInt (area.getWidth() * columnShare)));
+        area.removeFromLeft (juce::roundToInt (m.padding() * 1.5f));
+        layoutRig (area, 4);
+        return;
+    }
+    greeting.setBounds (area.removeFromTop (GreeterComponent::bandHeight (m)));
+    area.removeFromTop (pad);
+    layoutRig (area, 2);
+}
+
+// The rig's line with its keys, the tiles, and the log under them.
+void CanvasView::layoutRig (juce::Rectangle<int> area, int columns)
+{
+    const auto m = look.getMetrics();
+    const int pad = juce::roundToInt (m.padding());
+    const int gap = juce::roundToInt (m.gap());
     const int keyHeight = juce::roundToInt (m.key());
     const int keyWidth = juce::roundToInt (m.key() * 2.4f);
-    auto keys = header.withSizeKeepingCentre (header.getWidth(), keyHeight);
-    stopAll.setBounds (keys.removeFromRight (keyWidth));
-    keys.removeFromRight (gap);
-    startAll.setBounds (keys.removeFromRight (keyWidth));
+
+    auto line = area.removeFromTop (keyHeight);
+    stopAll.setBounds (line.removeFromRight (keyWidth));
+    line.removeFromRight (gap);
+    startAll.setBounds (line.removeFromRight (keyWidth));
+    line.removeFromRight (pad);
+    const int captionHeight = juce::roundToInt (m.caption() * 1.8f);
+    auto text = line.withSizeKeepingCentre (line.getWidth(), captionHeight + juce::roundToInt (m.body() * 1.5f));
+    rigCaptionBox = text.removeFromTop (captionHeight);
+    subtitleBox = text;
     area.removeFromTop (pad);
 
-    auto bottom = area.removeFromBottom (juce::roundToInt (getHeight() * bottomShare));
+    // Each tile keeps the height its lines and keys need, and the log a few lines: where the
+    // columns asked for leave too few rows of that height, a column more (four decks on the rig).
+    const int count = static_cast<int> (tileComponents.size());
+    const int leastLog = pad * 2 + captionHeight + juce::roundToInt (m.caption() * 4.0f);
+    const auto rowsFor = [count] (int c) { return juce::jmax (1, (count + c - 1) / c); };
+    const auto leastTilesFor = [&] (int c) {
+        return juce::roundToInt (rowsFor (c) * TileComponent::leastHeight (m)) + (rowsFor (c) - 1) * gap;
+    };
+    while (columns < count && leastTilesFor (columns) + pad + leastLog > area.getHeight())
+        ++columns;
+    const int rows = rowsFor (columns);
+    const int leastTiles = leastTilesFor (columns);
+    // Tiles taller than a third more than they need are only empty card; the log takes the rest.
+    const int roomyTiles = juce::roundToInt (rows * TileComponent::leastHeight (m) * roomyTileShare) + (rows - 1) * gap;
+    const int logHeight = juce::jmin (area.getHeight() - pad - leastTiles,
+                                      juce::jmax (juce::roundToInt (area.getHeight() * logShare), area.getHeight() - pad - roomyTiles));
+    logCard = area.removeFromBottom (logHeight);
     area.removeFromBottom (pad);
-    auto packages = bottom.removeFromRight (juce::roundToInt (bottom.getWidth() * 0.4f));
-    bottom.removeFromRight (pad);
-    install.setBounds (packages);
-    logCard = bottom;
-    log.setBounds (bottom.reduced (pad).withTrimmedTop (juce::roundToInt (m.caption() * 1.8f)));
+    log.setBounds (logCard.reduced (pad).withTrimmedTop (captionHeight));
     log.applyFontToAllText (juce::Font (juce::FontOptions (juce::Font::getDefaultMonospacedFontName(), m.caption(), juce::Font::plain)));
 
-    // The tiles: two columns on the rig's portrait screen, four on a laptop's landscape one.
-    const int columns = landscape (getLocalBounds()) ? 4 : 2;
-    const int rows = juce::jmax (1, (static_cast<int> (tileComponents.size()) + columns - 1) / columns);
     juce::Grid grid;
     grid.columnGap = grid.rowGap = juce::Grid::Px (gap);
     for (int c = 0; c < columns; ++c)

@@ -15,6 +15,7 @@ target_sources(a3-canvas-tests PRIVATE
     SystemdTests.cpp
     TileStatusTests.cpp
     CanvasViewTests.cpp
+    GreeterTests.cpp
     ${A3CANVAS_LIBRARY_SOURCES})
 target_include_directories(a3-canvas-tests PRIVATE "${PROJECT_SOURCE_DIR}/Source" "${CMAKE_CURRENT_SOURCE_DIR}")
 target_compile_definitions(a3-canvas-tests PRIVATE ${A3CANVAS_DEFINITIONS}

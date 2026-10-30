@@ -23,6 +23,9 @@ public:
     juce::TextButton& startStopButton() { return startStop; }
     juce::TextButton& restartButton() { return restart; }
 
+    // The height at which the label, caption and line clear the keys.
+    static float leastHeight (const Metrics& m);
+
     // Where the light and the label are drawn (tests look there).
     juce::Rectangle<float> lightArea() const;
     juce::Rectangle<int> labelArea() const;

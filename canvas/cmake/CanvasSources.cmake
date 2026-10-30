@@ -10,6 +10,7 @@ set(A3CANVAS_INCLUDE_DIR "${A3CANVAS_DIR}/Source")
 set(_a3canvas_sources
     model/AppCatalog.cpp
     model/Demo.cpp
+    model/Greeter.cpp
     model/StartPlan.cpp
     model/TileStatus.cpp
     sys/CoreProbe.cpp
@@ -19,12 +20,20 @@ set(_a3canvas_sources
     sys/Systemd.cpp
     ui/CanvasView.cpp
     ui/CanvasWindow.cpp
+    ui/GreeterComponent.cpp
     ui/LookAndFeel_Canvas.cpp
     ui/TileComponent.cpp)
 list(TRANSFORM _a3canvas_sources PREPEND "${A3CANVAS_INCLUDE_DIR}/" OUTPUT_VARIABLE A3CANVAS_LIBRARY_SOURCES)
 
-set(A3CANVAS_JUCE_MODULES juce::juce_gui_basics)
+# The website's logo, compiled in (CanvasAssets::a3logo_svg), drawn as a juce::Drawable.
+if(NOT TARGET A3CanvasAssets)
+    juce_add_binary_data(A3CanvasAssets NAMESPACE CanvasAssets HEADER_NAME CanvasAssets.h
+        SOURCES "${A3CANVAS_DIR}/assets/a3-logo.svg")
+endif()
+
+set(A3CANVAS_JUCE_MODULES juce::juce_gui_basics A3CanvasAssets)
 
 # No curl: Core and the engine answer plain http on 127.0.0.1, which JUCE's own
-# socket client speaks.
-set(A3CANVAS_DEFINITIONS JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_DISPLAY_SPLASH_SCREEN=0)
+# socket client speaks. A3CANVAS_VERSION is what the greeter shows as the Canvas's own.
+set(A3CANVAS_DEFINITIONS JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_DISPLAY_SPLASH_SCREEN=0
+    A3CANVAS_VERSION="${PROJECT_VERSION}")

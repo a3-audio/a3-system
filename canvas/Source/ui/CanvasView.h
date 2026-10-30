@@ -5,29 +5,19 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include "sys/StatusPoller.h"
+#include "ui/GreeterComponent.h"
 #include "ui/LookAndFeel_Canvas.h"
 #include "ui/TileComponent.h"
 
 namespace canvas
 {
-// The packages the rig is made of, installed against what apt offers. Install, Update and Remove
-// come with the installer interface (plan Tasks 17 and 22); until then no key that does nothing.
-class InstallPanel : public juce::Component
-{
-public:
-    void setPackages (const std::map<juce::String, PackageFacts>& packages);
-    void paint (juce::Graphics&) override;
-
-private:
-    Metrics metrics() const;
-    std::map<juce::String, PackageFacts> packages;
-};
-
-// The Canvas's one page: a header with Start all / Stop all, a tile per program, the log, the packages.
+// The Canvas's one page, a welcome first and a control panel second: the greeter, then the rig's
+// line with Start all / Stop all, a tile per program, and the log. On the rig's portrait screen the
+// greeter is a band across the top; on a landscape screen a column at the left.
 class CanvasView : public juce::Component
 {
 public:
-    explicit CanvasView (std::vector<Tile> tiles);
+    explicit CanvasView (std::vector<Tile> tiles, const juce::String& support = supportTarget);
     ~CanvasView() override;
 
     void show (const Snapshot& snapshot);
@@ -45,21 +35,25 @@ public:
     juce::TextButton& startAllButton() { return startAll; }
     juce::TextButton& stopAllButton() { return stopAll; }
     juce::TextEditor& logPane() { return log; }
+    GreeterComponent& greeter() { return greeting; }
+    const juce::String& getSubtitle() const { return subtitle; }
+    // Where the rig's line (demo or this machine) is written.
+    juce::Rectangle<int> subtitleArea() const { return subtitleBox; }
 
     void paint (juce::Graphics&) override;
     void resized() override;
 
 private:
     void askThen (const juce::String& question, const juce::String& detail, std::function<void()> then);
-    juce::Rectangle<int> headerArea() const;
+    void layoutRig (juce::Rectangle<int> area, int columns);
 
     LookAndFeel_Canvas look;
     juce::String subtitle;
-    juce::Rectangle<int> logCard;
+    juce::Rectangle<int> logCard, rigCaptionBox, subtitleBox;
     juce::TextButton startAll { "Start all" }, stopAll { "Stop all" };
     std::vector<std::unique_ptr<TileComponent>> tileComponents;
     juce::TextEditor log;
-    InstallPanel install;
+    GreeterComponent greeting;
 };
 
 void showConfirmation (const juce::String& question, const juce::String& detail, std::function<void()> then);

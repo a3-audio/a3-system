@@ -30,13 +30,19 @@ constexpr float alphaDisabled = 0.35f;
 constexpr float alphaMuted = 0.5f;
 }
 
-// Every size the Canvas draws, as a share of the window's width: the rig's screen is 768 wide, so
-// at that width these are the skin's own sizes (fontHeader 14.06, fontBody 13.75).
+// Every size the Canvas draws, as a share of the window: the rig's screen is 768 × 1024, so at that
+// size these are the skin's own sizes (fontHeader 14.06, fontBody 13.75).
 struct Metrics
 {
     float unit = 1.0f;   // window width / 768
 
     static Metrics forWidth (int width) { return { static_cast<float> (width) / 768.0f }; }
+    // The rig's page fitted into a window of any shape: a laptop's 1920 × 1080 is the rig's sizes
+    // scaled by its height, not two and a half times them by its width.
+    static Metrics forSize (int width, int height)
+    {
+        return { std::min (static_cast<float> (width) / 768.0f, static_cast<float> (height) / 1024.0f) };
+    }
 
     float title() const { return 26.0f * unit; }
     float header() const { return 19.0f * unit; }
@@ -53,6 +59,11 @@ struct Metrics
 };
 
 juce::Colour lightColour (Light light);
+
+juce::Font canvasFont (float height, bool bold = false);
+// Captions are upper case and tracked, as on every A³ page (designer skill).
+void drawCaption (juce::Graphics&, const juce::String& text, juce::Rectangle<int> area, const Metrics&,
+                  juce::Justification justification = juce::Justification::centredLeft);
 
 class LookAndFeel_Canvas : public juce::LookAndFeel_V4
 {

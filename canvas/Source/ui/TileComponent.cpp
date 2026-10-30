@@ -103,6 +103,12 @@ void TileComponent::paint (juce::Graphics& g)
     g.drawFittedText (status.line, line, juce::Justification::centredLeft, 1);
 }
 
+// The rows paint() stacks from the top and resized() puts the keys under, with a gap between.
+float TileComponent::leastHeight (const Metrics& m)
+{
+    return m.padding() * 2.0f + m.header() * 1.3f + m.caption() * 1.5f + m.body() * 1.6f + m.gap() + m.key();
+}
+
 void TileComponent::resized()
 {
     const auto m = metrics();

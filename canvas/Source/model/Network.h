@@ -23,7 +23,7 @@ struct InterfaceAddress
     juce::String interface, address;
 };
 
-// The truth's network facts and this machine's own addresses, as the greeter and rows name them.
+// The truth's network facts and this machine's own addresses, as the rows name them.
 struct NetworkFacts
 {
     TruthNetwork truth;
@@ -37,5 +37,4 @@ bool isLoopback (const juce::String& address);
 // This machine's addresses: on the control network, then the audio network, then any other;
 // never loopback, link-local (169.254/16) or a container or VM bridge.
 std::vector<juce::String> ownAddresses (const std::vector<InterfaceAddress>& interfaces, const TruthNetwork& truth);
-juce::String machineLine (const std::vector<juce::String>& own);
 }

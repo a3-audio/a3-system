@@ -29,6 +29,8 @@ Facts factsOnTheCore()
     facts.network = { fixtureTruth(), { "192.168.8.10", "192.168.9.10" } };
     return facts;
 }
+
+const juce::String flashedTree = "3435ade1265a41b4d4d73581b9a3cee2ee4415be";
 }
 
 TEST (Network, TheTruthNamesTheHostsAndTheTwoNetworks)
@@ -61,16 +63,10 @@ TEST (Network, ThisMachinesAddressesOnTheA3NetworksFirst)
     EXPECT_EQ (ownAddresses (interfaces, fixtureTruth()), (std::vector<juce::String> { "192.168.8.10", "192.168.9.10", "192.168.43.5" }));
 }
 
-TEST (Network, TheMachineLine)
-{
-    EXPECT_EQ (machineLine ({ "192.168.8.10", "192.168.9.10" }), juce::String::fromUTF8 ("this machine · 192.168.8.10 · 192.168.9.10"));
-    EXPECT_EQ (machineLine ({}), juce::String::fromUTF8 ("this machine · no network address"));
-}
-
 TEST (Hosts, TheEngineRunsOnTheTruthsCore)
 {
     auto facts = factsOnTheCore();
-    EXPECT_EQ (hostLine (tileOf ("core"), facts), juce::String::fromUTF8 ("local · 192.168.8.10")) << "this machine is the core";
+    EXPECT_EQ (hostLine (tileOf ("core"), facts), juce::String::fromUTF8 ("local · 192.168.8.10 · audio 192.168.9.10")) << "this machine is the core";
     facts.network.own = { "192.168.8.5" };
     EXPECT_EQ (hostLine (tileOf ("core"), facts), "192.168.8.10") << "another machine is";
 }
@@ -79,7 +75,7 @@ TEST (Hosts, ADeckWhereCoreHearsIt)
 {
     auto facts = factsOnTheCore();
     facts.core.deckHosts = { { 1, "127.0.0.1" }, { 2, "192.168.8.30" } };
-    EXPECT_EQ (hostLine (tileOf ("deck-A"), facts), juce::String::fromUTF8 ("local · 192.168.8.10"));
+    EXPECT_EQ (hostLine (tileOf ("deck-A"), facts), juce::String::fromUTF8 ("local · 192.168.8.10 · audio 192.168.9.10"));
     EXPECT_EQ (hostLine (tileOf ("deck-B"), facts), "192.168.8.30") << "a deck on another host";
 }
 
@@ -110,8 +106,8 @@ TEST (Hosts, TheTruthNamesWhatCoreDoesNotReport)
     EXPECT_EQ (hostLine (tileOf ("deck-B"), facts), "192.168.8.23");
     EXPECT_EQ (hostLine (tileOf ("deck-C"), facts), "192.168.8.20");
     EXPECT_EQ (hostLine (tileOf ("motion"), facts), "192.168.8.20");
-    EXPECT_EQ (hostLine (tileOf ("deck-A"), facts), juce::String::fromUTF8 ("local · 192.168.8.10"));
-    EXPECT_EQ (hostLine (tileOf ("analyzer"), facts), juce::String::fromUTF8 ("local · 192.168.8.10"));
+    EXPECT_EQ (hostLine (tileOf ("deck-A"), facts), juce::String::fromUTF8 ("local · 192.168.8.10 · audio 192.168.9.10"));
+    EXPECT_EQ (hostLine (tileOf ("analyzer"), facts), juce::String::fromUTF8 ("local · 192.168.8.10 · audio 192.168.9.10"));
     facts.core.deckHosts = { { 2, "192.168.8.30" } };
     EXPECT_EQ (hostLine (tileOf ("deck-B"), facts), "192.168.8.30") << "Core's report wins";
 }
@@ -126,8 +122,62 @@ TEST (Hosts, TheDemoShowsTheTruthsAddresses)
     EXPECT_EQ (hostLine (tileOf ("deck-B"), snapshot.facts), "192.168.8.23");
     EXPECT_EQ (hostLine (tileOf ("deck-C"), snapshot.facts), "192.168.8.20");
     EXPECT_EQ (hostLine (tileOf ("motion"), snapshot.facts), "192.168.8.20");
-    EXPECT_EQ (hostLine (tileOf ("core"), snapshot.facts), juce::String::fromUTF8 ("local · 192.168.8.10"));
-    EXPECT_EQ (hostLine (tileOf ("deck-A"), snapshot.facts), juce::String::fromUTF8 ("local · 192.168.8.10"));
-    EXPECT_EQ (hostLine (tileOf ("analyzer"), snapshot.facts), juce::String::fromUTF8 ("local · 192.168.8.10"));
+    EXPECT_EQ (hostLine (tileOf ("core"), snapshot.facts), juce::String::fromUTF8 ("local · 192.168.8.10 · audio 192.168.9.10"));
+    EXPECT_EQ (hostLine (tileOf ("deck-A"), snapshot.facts), juce::String::fromUTF8 ("local · 192.168.8.10 · audio 192.168.9.10"));
+    EXPECT_EQ (hostLine (tileOf ("analyzer"), snapshot.facts), juce::String::fromUTF8 ("local · 192.168.8.10 · audio 192.168.9.10"));
     EXPECT_TRUE (demoSnapshot (catalog (4), {}).facts.network.own.empty()) << "no truth, no addresses";
+}
+
+// Where it runs here, both networks; where it runs elsewhere, the address Core or the truth names.
+TEST (Hosts, ThisMachineOnTheControlAndTheAudioNetwork)
+{
+    auto facts = factsOnTheCore();
+    EXPECT_EQ (hostLine (tileOf ("core"), facts), juce::String::fromUTF8 ("local · 192.168.8.10 · audio 192.168.9.10"));
+    facts.network.own = { "192.168.8.10" };
+    EXPECT_EQ (hostLine (tileOf ("core"), facts), juce::String::fromUTF8 ("local · 192.168.8.10")) << "no audio network here";
+    facts.network.own = {};
+    facts.core.deckHosts = { { 1, "127.0.0.1" } };
+    EXPECT_EQ (hostLine (tileOf ("deck-A"), facts), "local") << "no address at all";
+}
+
+// The version dpkg knows is this machine's: it is the program's only where the program runs here.
+TEST (Hosts, TheSoftwareVersionIsThisMachinesPackageWhereItRunsHere)
+{
+    auto facts = factsOnTheCore();
+    facts.packages["stemdeck"] = { "03.0+283", "03.0+283" };
+    facts.packages["a3-motion-ui"] = { "03.0+854", "03.0+854" };
+    EXPECT_TRUE (runsHere (tileOf ("deck-A"), facts));
+    EXPECT_EQ (softwareLine (tileOf ("deck-A"), facts), "03.0+283");
+    EXPECT_FALSE (runsHere (tileOf ("deck-B"), facts)) << "the truth's deckhost-b is another machine";
+    EXPECT_EQ (softwareLine (tileOf ("deck-B"), facts), "not reported");
+    EXPECT_EQ (softwareLine (tileOf ("motion"), facts), "not reported") << "installed here, running on .20";
+    EXPECT_EQ (softwareLine (tileOf ("core"), facts), "not installed");
+    EXPECT_TRUE (runsHere (tileOf ("deck-D"), facts)) << "named by nobody: what is here";
+    EXPECT_EQ (softwareLine (tileOf ("deck-D"), facts), "03.0+283");
+}
+
+// Only the Mixer (Pico) and Motion (ESP32 panel) carry firmware; neither device reports it.
+TEST (Hosts, FirmwareOnlyWhereADeviceHasIt)
+{
+    auto facts = factsOnTheCore();
+    EXPECT_EQ (firmwareLine (tileOf ("core"), facts), "");
+    EXPECT_EQ (firmwareLine (tileOf ("deck-A"), facts), "");
+    EXPECT_EQ (firmwareLine (tileOf ("analyzer"), facts), "");
+    EXPECT_EQ (firmwareLine (tileOf ("mixer"), facts), "not reported");
+    EXPECT_EQ (firmwareLine (tileOf ("motion"), facts), "not reported");
+}
+
+// On Motion's machine: what the installer flashed, by the tag when it is the system's firmware.
+TEST (Hosts, TheMotionFirmwareTheInstallerFlashedHere)
+{
+    auto facts = factsOnTheCore();
+    facts.network.own = { "192.168.8.20" };
+    facts.flashedMotionFirmware = flashedTree;
+    facts.system.motionFirmwareTree = flashedTree;
+    facts.system.motionFirmwareTag = "v03.0+80";
+    EXPECT_EQ (firmwareLine (tileOf ("motion"), facts), "v03.0+80");
+    facts.system.motionFirmwareTree = "0000000000000000000000000000000000000000";
+    EXPECT_EQ (firmwareLine (tileOf ("motion"), facts), "tree 3435ade") << "another firmware than the system's";
+    facts.network.own = { "192.168.8.10" };
+    EXPECT_EQ (firmwareLine (tileOf ("motion"), facts), "not reported") << "Motion runs elsewhere";
 }

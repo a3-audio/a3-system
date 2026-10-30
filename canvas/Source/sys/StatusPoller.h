@@ -36,6 +36,9 @@ public:
     std::function<void (const Snapshot&)> onSnapshot;
     // This machine's addresses and the truth's hosts, asked each poll; set before start().
     std::function<NetworkFacts()> networkFacts;
+    // The system version's pins and the Motion firmware the installer flashed here, asked now and
+    // then (they change on an install); set before start().
+    std::function<std::pair<SystemFacts, juce::String>()> systemFacts;
 
     void start();
     void stop();
@@ -55,6 +58,8 @@ private:
     std::map<juce::String, PackageFacts> policy;
     juce::uint32 policyAskedAt = 0;
     bool policyAsked = false;
+    SystemFacts system;
+    juce::String flashedMotionFirmware;
 
     std::mutex latestLock;
     Snapshot latest;

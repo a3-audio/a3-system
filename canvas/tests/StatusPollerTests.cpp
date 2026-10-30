@@ -108,6 +108,28 @@ TEST (StatusPoller, ThePolicyIsAskedOnlyNowAndThen)
     EXPECT_EQ (policies, 1);
 }
 
+// The pins and the flashed firmware change on an install, not by the second: read with the policy.
+TEST (StatusPoller, TheSystemIsReadNowAndThenAndKeptInEverySnapshot)
+{
+    RunningRig rig;
+    StatusPoller poller (rig.tiles, rig.runner, rig.http());
+    int reads = 0;
+    poller.systemFacts = [&reads] {
+        ++reads;
+        return std::make_pair (SystemFacts { true, "v03.0", {}, {}, {} }, juce::String ("3435ade"));
+    };
+    juce::String lastVersion, lastFlashed;
+    for (int i = 0; i < 3; ++i)
+    {
+        const auto snapshot = poller.pollOnce();
+        lastVersion = snapshot.facts.system.version;
+        lastFlashed = snapshot.facts.flashedMotionFirmware;
+    }
+    EXPECT_EQ (reads, 1);
+    EXPECT_EQ (lastVersion, "v03.0");
+    EXPECT_EQ (lastFlashed, "3435ade");
+}
+
 TEST (StatusPoller, TheThreadDeliversOnTheMessageThread)
 {
     RunningRig rig;

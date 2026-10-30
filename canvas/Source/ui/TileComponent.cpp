@@ -36,6 +36,14 @@ void TileComponent::setHost (const juce::String& h)
     repaint();
 }
 
+void TileComponent::setFirmware (const juce::String& f)
+{
+    if (f == firmware)
+        return;
+    firmware = f;
+    repaint();
+}
+
 void TileComponent::setBusy (bool b)
 {
     busy = b;
@@ -88,6 +96,22 @@ juce::Rectangle<int> TileComponent::versionArea() const
     auto area = getLocalBounds().toFloat().reduced (m.padding(), 0.0f);
     area.removeFromRight (keyWidth (m) * 2.0f + m.gap() * 2.0f);
     return area.removeFromRight (versionWidth (m)).toNearestInt();
+}
+
+juce::Rectangle<int> TileComponent::softwareArea() const
+{
+    if (firmware.isEmpty())
+        return versionArea();
+    const auto m = metrics();
+    return versionArea().withSizeKeepingCentre (versionArea().getWidth(), juce::roundToInt (lineHeight (m) * 2.0f))
+        .removeFromTop (juce::roundToInt (lineHeight (m)));
+}
+
+juce::Rectangle<int> TileComponent::firmwareArea() const
+{
+    if (firmware.isEmpty())
+        return {};
+    return softwareArea().translated (0, softwareArea().getHeight());
 }
 
 juce::Rectangle<float> TileComponent::textBlock() const
@@ -143,11 +167,18 @@ void TileComponent::paint (juce::Graphics& g)
         g.drawText (juce::String::fromUTF8 ("· ") + host, hostArea(), juce::Justification::centredLeft, true);
     }
 
-    juce::String versionText = version;
+    // "sw" and "fw" only where both are written: one version needs no label.
+    const auto label = [this] (const juce::String& prefix) { return firmware.isEmpty() ? juce::String() : prefix; };
+    juce::String versionText = label ("sw ") + version;
     if (status.updateAvailable)
         versionText << juce::String::fromUTF8 ("  ·  update");
     g.setColour (status.updateAvailable ? skin::accent : skin::textMuted);
-    g.drawText (versionText, versionArea(), juce::Justification::centredRight, true);
+    g.drawText (versionText, softwareArea(), juce::Justification::centredRight, true);
+    if (firmware.isNotEmpty())
+    {
+        g.setColour (skin::textMuted);
+        g.drawText (label ("fw ") + firmware, firmwareArea(), juce::Justification::centredRight, true);
+    }
 }
 
 void TileComponent::resized()

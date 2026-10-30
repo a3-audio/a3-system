@@ -74,6 +74,8 @@ Snapshot StatusPoller::pollOnce()
     if (! policyAsked || now - policyAskedAt >= policyPeriodMs)
     {
         policy = parseAptPolicy (outputOf (runner, aptPolicyCommand (packages)));
+        if (systemFacts)
+            std::tie (system, flashedMotionFirmware) = systemFacts();
         policyAskedAt = now;
         policyAsked = true;
     }
@@ -85,6 +87,8 @@ Snapshot StatusPoller::pollOnce()
     snapshot.facts.engine = parseEngineStatus (http (engineUrl));
     if (networkFacts)
         snapshot.facts.network = networkFacts();
+    snapshot.facts.system = system;
+    snapshot.facts.flashedMotionFirmware = flashedMotionFirmware;
     for (const auto& tile : tiles)
         snapshot.statuses.push_back (statusOf (tile, snapshot.facts));
     return snapshot;

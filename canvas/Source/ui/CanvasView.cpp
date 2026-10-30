@@ -95,13 +95,16 @@ void CanvasView::show (const Snapshot& snapshot)
 {
     for (size_t i = 0; i < tileComponents.size() && i < snapshot.statuses.size(); ++i)
     {
-        const auto& package = tileComponents[i]->getTile().package;
-        const auto found = snapshot.facts.packages.find (package);
-        tileComponents[i]->setStatus (snapshot.statuses[i], found != snapshot.facts.packages.end() ? found->second.installed : juce::String());
-        tileComponents[i]->setHost (hostLine (tileComponents[i]->getTile(), snapshot.facts));
+        const auto& tile = tileComponents[i]->getTile();
+        auto status = snapshot.statuses[i];
+        // An update is this machine's package: no news for a program that runs elsewhere.
+        status.updateAvailable = status.updateAvailable && runsHere (tile, snapshot.facts);
+        tileComponents[i]->setStatus (status, softwareLine (tile, snapshot.facts));
+        tileComponents[i]->setFirmware (firmwareLine (tile, snapshot.facts));
+        tileComponents[i]->setHost (hostLine (tile, snapshot.facts));
     }
-    greeting.setMachineLine (machineLine (snapshot.facts.network.own));
-    greeting.setPackages (snapshot.facts.packages);
+    if (greeting.setSystem (snapshot.facts.system))
+        resized();
 }
 
 void CanvasView::appendLog (const juce::String& line)
@@ -162,7 +165,8 @@ void CanvasView::resized()
     }
     else
     {
-        greeting.setBounds (area.removeFromTop (GreeterComponent::bandHeight (m, greeting.supportCard().getConfig())));
+        greeting.setBounds (area.removeFromTop (
+            GreeterComponent::bandHeight (m, greeting.supportCard().getConfig(), greeting.systemRowCount())));
         area.removeFromTop (pad);
     }
     layoutRig (area);

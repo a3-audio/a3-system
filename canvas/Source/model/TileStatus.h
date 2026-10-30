@@ -4,6 +4,7 @@
 
 #include "model/AppCatalog.h"
 #include "model/Network.h"
+#include "model/System.h"
 #include "sys/CoreProbe.h"
 #include "sys/Packages.h"
 #include "sys/Systemd.h"
@@ -20,6 +21,8 @@ struct Facts
     CoreFacts core;
     EngineFacts engine;
     NetworkFacts network;
+    SystemFacts system;                 // the system version this machine runs (the umbrella's pins)
+    juce::String flashedMotionFirmware; // what the installer last flashed onto the Motion panel here
 };
 
 struct TileStatus

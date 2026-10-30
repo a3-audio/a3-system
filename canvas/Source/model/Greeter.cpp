@@ -6,54 +6,14 @@
 
 namespace canvas
 {
-namespace
-{
-const juce::String canvasPackage = "a3-canvas";
-}
-
-const std::vector<juce::String>& greeterPackages()
-{
-    static const std::vector<juce::String> packages { "a3-core-app", "stemdeck", "a3-desk", "a3-motion-ui", "beat-analyzer" };
-    return packages;
-}
-
 juce::String buildVersion()
 {
     return A3CANVAS_VERSION;
 }
 
-std::vector<VersionRow> versionRows (const std::map<juce::String, PackageFacts>& packages, const juce::String& canvasVersion)
-{
-    std::vector<VersionRow> rows;
-    for (const auto& name : greeterPackages())
-    {
-        VersionRow row;
-        row.package = name;
-        if (const auto found = packages.find (name); found != packages.end())
-        {
-            row.version = found->second.installed;
-            row.candidate = found->second.candidate;
-            row.installed = row.version.isNotEmpty();
-            row.updateAvailable = found->second.updateAvailable();
-        }
-        rows.push_back (row);
-    }
-    rows.push_back ({ canvasPackage, canvasVersion, {}, true, false });
-    return rows;
-}
-
-juce::String versionText (const VersionRow& row)
-{
-    if (! row.installed)
-        return "not installed";
-    if (row.updateAvailable)
-        return row.version + juce::String::fromUTF8 (" → ") + row.candidate;
-    return row.version;
-}
-
 juce::String tagline()
 {
-    return juce::String::fromUTF8 ("Spatial DJ setup — 3D audio for the booth");
+    return "Spatial DJ setup";
 }
 
 // As LICENSES/ in a3-core, a3-mixer, a3-motion and a3-doc have it.

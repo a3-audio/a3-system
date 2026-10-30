@@ -18,6 +18,7 @@ target_sources(a3-canvas-tests PRIVATE
     GreeterTests.cpp
     SupportTests.cpp
     NetworkTests.cpp
+    SystemTests.cpp
     ${A3CANVAS_LIBRARY_SOURCES})
 target_include_directories(a3-canvas-tests PRIVATE ${A3CANVAS_INCLUDE_DIRS} "${CMAKE_CURRENT_SOURCE_DIR}")
 target_compile_definitions(a3-canvas-tests PRIVATE ${A3CANVAS_DEFINITIONS}

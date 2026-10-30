@@ -7,73 +7,15 @@
 
 using namespace canvas;
 
-namespace
-{
-const juce::String canvasBuild = "0.1.0";
-
-const VersionRow& rowFor (const std::vector<VersionRow>& rows, const juce::String& package)
-{
-    for (const auto& row : rows)
-        if (row.package == package)
-            return row;
-    static const VersionRow none;
-    ADD_FAILURE() << "no row for " << package;
-    return none;
-}
-}
-
-TEST (Greeter, OneRowPerComponentInTheRigsOrderAndTheCanvasLast)
-{
-    const auto rows = versionRows ({}, canvasBuild);
-    std::vector<juce::String> packages;
-    for (const auto& row : rows)
-        packages.push_back (row.package);
-    const std::vector<juce::String> expected { "a3-core-app", "stemdeck", "a3-desk", "a3-motion-ui", "beat-analyzer", "a3-canvas" };
-    EXPECT_EQ (packages, expected);
-}
-
-TEST (Greeter, AnInstalledPackageShowsItsVersion)
-{
-    const auto rows = versionRows ({ { "a3-desk", { "03.0+120", "03.0+120" } } }, canvasBuild);
-    const auto& desk = rowFor (rows, "a3-desk");
-    EXPECT_TRUE (desk.installed);
-    EXPECT_EQ (versionText (desk), "03.0+120");
-}
-
-TEST (Greeter, AMissingPackageSaysNotInstalled)
-{
-    const auto rows = versionRows ({ { "a3-desk", { {}, "03.0+120" } } }, canvasBuild);
-    EXPECT_FALSE (rowFor (rows, "a3-desk").installed) << "known to apt, not installed";
-    EXPECT_EQ (versionText (rowFor (rows, "a3-desk")), "not installed");
-    EXPECT_EQ (versionText (rowFor (rows, "stemdeck")), "not installed") << "absent from the facts";
-}
-
-TEST (Greeter, ANewerCandidateIsShownBesideTheInstalledVersion)
-{
-    const auto rows = versionRows ({ { "stemdeck", { "03.0+281", "03.0+290" } } }, canvasBuild);
-    const auto& deck = rowFor (rows, "stemdeck");
-    EXPECT_TRUE (deck.updateAvailable);
-    EXPECT_EQ (versionText (deck), juce::String::fromUTF8 ("03.0+281 → 03.0+290"));
-}
-
-TEST (Greeter, TheCanvasVersionIsItsOwnBuildNotDpkgs)
-{
-    const auto rows = versionRows ({ { "a3-canvas", { "03.0+5", "03.0+5" } } }, canvasBuild);
-    const auto& canvasRow = rowFor (rows, "a3-canvas");
-    EXPECT_TRUE (canvasRow.installed) << "it is running";
-    EXPECT_EQ (versionText (canvasRow), canvasBuild);
-    EXPECT_FALSE (buildVersion().isEmpty()) << "the build stamps one";
-}
-
 TEST (Greeter, TheLicencesInOneLine)
 {
     EXPECT_EQ (licenceLine(), juce::String::fromUTF8 (
                                   "Software GPL-3.0-or-later · Hardware CERN-OHL-S-2.0 · Documentation CC-BY-SA-4.0"));
 }
 
-TEST (Greeter, TheTaglineIsTheWebsites)
+TEST (Greeter, TheTaglineIsShort)
 {
-    EXPECT_EQ (tagline(), juce::String::fromUTF8 ("Spatial DJ setup — 3D audio for the booth"));
+    EXPECT_EQ (tagline(), "Spatial DJ setup") << "the maintainer, 2026-10-30: enough without the suffix";
 }
 
 TEST (Greeter, LinksLeadToTheDocsTheWebsiteAndTheSource)
@@ -99,6 +41,4 @@ TEST (Greeter, TheAboutLines)
 TEST (Greeter, TheCanvasShowsTheVersionItsBuildWasGiven)
 {
     EXPECT_EQ (buildVersion(), A3CANVAS_EXPECTED_VERSION);
-    const auto rows = versionRows ({}, buildVersion());
-    EXPECT_EQ (versionText (rows.back()), A3CANVAS_EXPECTED_VERSION);
 }

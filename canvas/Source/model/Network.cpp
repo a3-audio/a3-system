@@ -81,15 +81,4 @@ std::vector<juce::String> ownAddresses (const std::vector<InterfaceAddress>& int
     control.insert (control.end(), other.begin(), other.end());
     return control;
 }
-
-juce::String machineLine (const std::vector<juce::String>& own)
-{
-    const auto dot = juce::String::fromUTF8 (" · ");
-    if (own.empty())
-        return "this machine" + dot + "no network address";
-    juce::StringArray addresses;
-    for (const auto& address : own)
-        addresses.add (address);
-    return "this machine" + dot + addresses.joinIntoString (dot);
-}
 }

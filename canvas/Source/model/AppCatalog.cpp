@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "AppCatalog.h"
 
+#include "model/Ini.h"
+
 namespace canvas
 {
 namespace
@@ -22,26 +24,6 @@ Tile deckTile (int deck, const juce::String& letter)
 {
     const auto unit = "stemdeck@" + letter + ".service";
     return { TileKind::deck, "deck-" + letter, "Deck " + letter, "StemDeck", { unit }, "stemdeck", unit, deck };
-}
-
-// The value of `key` in `[section]` of an INI text, trimmed; empty when either is absent.
-juce::String iniValue (const juce::String& iniText, const juce::String& section, const juce::String& key)
-{
-    juce::String current;
-    for (const auto& raw : juce::StringArray::fromLines (iniText))
-    {
-        const auto line = raw.trim();
-        if (line.startsWithChar ('['))
-        {
-            current = line.fromFirstOccurrenceOf ("[", false, false).upToFirstOccurrenceOf ("]", false, false).trim();
-            continue;
-        }
-        if (current != section || ! line.containsChar ('='))
-            continue;
-        if (line.upToFirstOccurrenceOf ("=", false, false).trim() == key)
-            return line.fromFirstOccurrenceOf ("=", false, false).trim();
-    }
-    return {};
 }
 }
 

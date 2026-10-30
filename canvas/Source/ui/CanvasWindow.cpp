@@ -27,6 +27,22 @@ juce::String laptopTruth()
     return file.existsAsFile() ? file.getFullPathName() : juce::String();
 }
 
+// Hands commands on until told to stop; after that each one is refused without running.
+class StoppableRunner : public CommandRunner
+{
+public:
+    StoppableRunner (CommandRunner& inner, const std::atomic<bool>& stop) : runner (inner), stopping (stop) {}
+
+    int run (const juce::StringArray& argv, const LineCallback& line) override
+    {
+        return stopping ? -1 : runner.run (argv, line);
+    }
+
+private:
+    CommandRunner& runner;
+    const std::atomic<bool>& stopping;
+};
+
 UnitFacts unitFactsNow (CommandRunner& runner, const juce::String& unit)
 {
     const auto units = parseSystemctlShow (outputOf (runner, showCommand ({ unit })));
@@ -82,9 +98,11 @@ CanvasController::CanvasController (CanvasView& v, CanvasSetup s) : view (v), se
 CanvasController::~CanvasController()
 {
     *alive = false;
+    stopping = true;
     if (poller != nullptr)
         poller->stop();
-    worker.removeAllJobs (true, 20000);
+    // The running command is let finish (a systemctl call returns within its own timeout).
+    worker.removeAllJobs (true, -1);
 }
 
 bool CanvasController::runPlan (const juce::String& title, std::vector<Command> commands)
@@ -100,12 +118,16 @@ bool CanvasController::runPlan (const juce::String& title, std::vector<Command> 
         juce::MessageManager::callAsync ([this, weakAlive, onMessageThread] {
             if (auto still = weakAlive.lock(); still && *still)
                 onMessageThread();
-            juce::ignoreUnused (this);
         });
     };
     worker.addJob ([this, title, commands = std::move (commands), post] {
+        StoppableRunner runner (*setup.runner, stopping);
+        const Waiting waiting { 30, [this] {
+                                   if (! stopping)
+                                       juce::Thread::sleep (500);
+                               } };
         const auto result = execute (
-            commands, *setup.runner, setup.unitFacts, {},
+            commands, runner, setup.unitFacts, waiting,
             [post, this] (const juce::String& line) { post ([this, line] { view.appendLog (line); }); });
         post ([this, title, result] { finish (title, result); });
     });

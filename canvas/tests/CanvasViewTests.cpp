@@ -234,3 +234,41 @@ TEST (CanvasWindow, WritesTheRigSizedScreenForReview)
     ASSERT_TRUE (stream.openedOk());
     ASSERT_TRUE (juce::PNGImageFormat().writeImageToStream (view.createComponentSnapshot (view.getLocalBounds(), true, 1.0f), stream));
 }
+
+namespace
+{
+// Every command takes a while; nothing ever becomes active, so each start waits its full time.
+class SlowRunner : public CommandRunner
+{
+public:
+    explicit SlowRunner (std::atomic<int>& ranCount) : ran (ranCount) {}
+    int run (const juce::StringArray&, const LineCallback&) override
+    {
+        ++ran;
+        juce::Thread::sleep (50);
+        return 0;
+    }
+
+private:
+    std::atomic<int>& ran;
+};
+}
+
+// Quitting during Start all neither hangs the window for the plan's waits nor starts the rest.
+TEST (CanvasWindow, ClosingDuringAPlanStopsIt)
+{
+    std::atomic<int> ran { 0 };
+    CanvasView view (catalog (4));
+    auto setup = demoSetup (4);
+    setup.runner = std::make_unique<SlowRunner> (ran);
+    setup.unitFacts = [] (const juce::String&) { return UnitFacts { "loaded", "activating", "start", "success", 0 }; };
+    const auto commands = startAll (setup.tiles, {});
+    auto controller = std::make_unique<CanvasController> (view, std::move (setup));
+    ASSERT_TRUE (controller->runPlan ("Start all", commands));
+    juce::Thread::sleep (200);   // inside the engine's wait
+
+    const auto before = juce::Time::getMillisecondCounter();
+    controller = nullptr;
+    EXPECT_LT (juce::Time::getMillisecondCounter() - before, 2000u);
+    EXPECT_LT (ran.load(), static_cast<int> (commands.size()));
+}

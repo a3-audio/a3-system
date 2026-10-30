@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
+#include <atomic>
+
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include "model/StartPlan.h"
@@ -42,6 +44,8 @@ private:
     juce::ThreadPool worker { juce::ThreadPoolOptions{}.withNumberOfThreads (1) };
     bool busy = false;
     std::shared_ptr<bool> alive = std::make_shared<bool> (true);
+    // Set when the window goes: the running plan runs no further command and waits no longer.
+    std::atomic<bool> stopping { false };
 };
 
 class CanvasWindow : public juce::DocumentWindow

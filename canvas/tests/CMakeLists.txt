@@ -10,6 +10,7 @@ target_sources(a3-canvas-tests PRIVATE
     AppCatalogTests.cpp
     CoreProbeTests.cpp
     PackagesTests.cpp
+    StartPlanTests.cpp
     SystemdTests.cpp
     TileStatusTests.cpp
     ${A3CANVAS_LIBRARY_SOURCES})

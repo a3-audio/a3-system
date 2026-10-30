@@ -340,6 +340,15 @@ class ArchiveWithSubmodules(unittest.TestCase):
         self.assertFalse((dest / "external/lib/lib.txt").exists())
         self.assertIn("external/lib", note.getvalue())
 
+    def test_without_submodules_archives_only_the_own_tree(self):
+        outer, _ = self.outer_with_sub()
+        dest = tmpdir(self) / "out"
+        with contextlib.redirect_stderr(io.StringIO()) as note:
+            package.archive(outer, "HEAD", dest, with_submodules=False)
+        self.assertEqual("top", (dest / "top.txt").read_text())
+        self.assertFalse((dest / "external/lib/lib.txt").exists())
+        self.assertEqual("", note.getvalue(), "leaving them out is asked for, not news")
+
     def test_a_submodule_whose_folder_is_missing_is_skipped_too(self):
         outer, _ = self.outer_with_sub()
         shutil.rmtree(outer / "external/lib")

@@ -27,3 +27,7 @@ License: CC0-1.0
 Files: canvas/tests/fixtures/*
 Copyright: 2020-2026 A3 Audio <contact@a3-audio.com>
 License: CC0-1.0
+
+Files: canvas/packaging/a3-canvas.desktop canvas/packaging/DEBIAN/control
+Copyright: 2020-2026 A3 Audio <contact@a3-audio.com>
+License: CC0-1.0

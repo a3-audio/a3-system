@@ -327,8 +327,10 @@ def archive_submodule_from_forge(repo, commit, path, sha, dest):
     archive(sibling, sha, dest)
 
 
-def archive(repo, commit, dest):
-    """The committed tree of `commit`, modes kept, into `dest`; every
+def archive(repo, commit, dest, with_submodules=True):
+    """The committed tree of `commit`, modes kept, into `dest`; with
+    `with_submodules` false, that tree alone (a recipe of the umbrella's own,
+    such as canvas/packaging, needs none of the apps). Otherwise every
     initialised submodule at its pinned commit, from its local checkout; an
     uninitialised one is skipped with a note. A bare `repo` has no checkouts:
     its submodules come from sibling bare repos; a sibling without the pinned
@@ -339,6 +341,8 @@ def archive(repo, commit, dest):
     Path(dest).mkdir(parents=True, exist_ok=True)
     with tarfile.open(fileobj=io.BytesIO(data)) as tar:
         tar.extractall(dest, filter="tar")
+    if not with_submodules:
+        return
     bare = is_bare(repo)
     for path, sha in submodule_pins(repo, commit):
         if bare:
@@ -425,7 +429,7 @@ def _log(message):
 
 def build(repo, rev=None, out=Path.home() / "a3-debs", cache=Path.home() / ".cache/a3-build",
           jobs=DEFAULT_JOBS, juce=Path.home() / "local/juce", test=False, log=_log,
-          recipe=DEFAULT_RECIPE):
+          recipe=DEFAULT_RECIPE, with_submodules=True):
     refuse_foreign_recipe(recipe)
     repo = Path(repo).resolve()
     if rev is not None:
@@ -440,7 +444,7 @@ def build(repo, rev=None, out=Path.home() / "a3-debs", cache=Path.home() / ".cac
     refuse_inside(repo, work, src, build_dir, fresh)
     log(f"package: {name} {version} from {repo} at {commit[:10]}")
     _remove(fresh)
-    archive(repo, commit, fresh)
+    archive(repo, commit, fresh, with_submodules=with_submodules)
     sync_tree(fresh, src)
     _remove(fresh)
     stage_script = str(src / recipe / "stage")
@@ -478,12 +482,15 @@ def main(argv=None):
     parser.add_argument("--test", action="store_true", help="run the app's tests before packing")
     parser.add_argument("--recipe", type=Path, default=DEFAULT_RECIPE,
                         help="the package's recipe folder in the repository (default: packaging)")
+    parser.add_argument("--without-submodules", action="store_true",
+                        help="archive the commit's own tree only, no submodule")
     args = parser.parse_args(argv)
     os.umask(0o022)
     lower_priority()
     try:
         deb = build(args.repo, rev=args.rev, out=args.out, cache=args.cache,
-                    jobs=args.jobs, juce=args.juce, test=args.test, recipe=args.recipe)
+                    jobs=args.jobs, juce=args.juce, test=args.test, recipe=args.recipe,
+                    with_submodules=not args.without_submodules)
     except (BuildError, ValueError, subprocess.CalledProcessError) as error:
         print(f"package: {error}", file=sys.stderr)
         return 1

@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Raphael Eismann
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# A³ Canvas's recipe for its Debian package (a3-canvas), called by
+# installer/package.py from an exported tree of the umbrella (git archive,
+# --without-submodules), never the checkout:
+#
+#   canvas/packaging/stage build <src> <build> <juce-prefix> <jobs> [--test]
+#   canvas/packaging/stage files <src> <build> <stage>
+#
+# `build` compiles canvas/ in <build>; `files` lays out the package tree under
+# <stage> (the builder adds DEBIAN/). Neither writes anywhere else. No unit:
+# the Canvas is an app a person opens.
+set -euo pipefail
+
+usage() {
+    echo "usage: $0 build <src> <build> <juce> <jobs> [--test] | files <src> <build> <stage>" >&2
+    exit 2
+}
+
+build() {
+    [[ $# -eq 4 || ( $# -eq 5 && "$5" == --test ) ]] || usage
+    local src=$1 build=$2 juce=$3 jobs=$4 test=${5:-}
+    local tests=OFF
+    [[ "$test" == --test ]] && tests=ON
+    cmake -S "$src/canvas" -B "$build" -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_PREFIX_PATH="$juce" -DA3CANVAS_TESTS="$tests"
+    cmake --build "$build" -j "$jobs"
+    if [[ "$tests" == ON ]]; then
+        xvfb-run -a ctest --test-dir "$build" --output-on-failure
+    fi
+}
+
+files() {
+    [[ $# -eq 3 ]] || usage
+    local src=$1 build=$2 stage=$3
+    install -D -m 755 "$build/A3Canvas_artefacts/Release/a3-canvas" "$stage/usr/bin/a3-canvas"
+    install -D -m 644 "$src/canvas/packaging/a3-canvas.desktop" "$stage/usr/share/applications/a3-canvas.desktop"
+    # .reuse/dep5 is already in Debian's machine-readable copyright format.
+    install -D -m 644 "$src/.reuse/dep5" "$stage/usr/share/doc/a3-canvas/copyright"
+}
+
+case "${1:-}" in
+    build) shift; build "$@" ;;
+    files) shift; files "$@" ;;
+    *) usage ;;
+esac

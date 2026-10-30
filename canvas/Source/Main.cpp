@@ -3,19 +3,25 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
+#include "ui/CanvasWindow.h"
+
+namespace
+{
+constexpr int demoDecks = 4;
+}
+
 class CanvasApp : public juce::JUCEApplication
 {
 public:
-    const juce::String getApplicationName() override { return "A³ Canvas"; }
+    const juce::String getApplicationName() override { return juce::String::fromUTF8 ("A³ Canvas"); }
     const juce::String getApplicationVersion() override { return JUCE_APPLICATION_VERSION_STRING; }
     bool moreThanOneInstanceAllowed() override { return false; }
 
-    void initialise (const juce::String&) override
+    // --demo: a made-up rig that runs nothing, for pictures and for trying the window.
+    void initialise (const juce::String& commandLine) override
     {
-        window = std::make_unique<juce::DocumentWindow> (juce::String::fromUTF8 ("A³ Canvas"), juce::Colours::black,
-                                                         juce::DocumentWindow::allButtons);
-        window->setUsingNativeTitleBar (true);
-        window->centreWithSize (800, 600);
+        const bool demo = juce::StringArray::fromTokens (commandLine, true).contains ("--demo");
+        window = std::make_unique<canvas::CanvasWindow> (demo ? canvas::demoSetup (demoDecks) : canvas::machineSetup());
         window->setVisible (true);
     }
 
@@ -23,7 +29,7 @@ public:
     void systemRequestedQuit() override { quit(); }
 
 private:
-    std::unique_ptr<juce::DocumentWindow> window;
+    std::unique_ptr<canvas::CanvasWindow> window;
 };
 
 START_JUCE_APPLICATION (CanvasApp)

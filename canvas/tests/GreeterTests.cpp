@@ -78,7 +78,7 @@ TEST (Greeter, TheTaglineIsTheWebsites)
 
 TEST (Greeter, LinksLeadToTheDocsTheWebsiteAndTheSource)
 {
-    const auto links = greeterLinks ({});
+    const auto links = greeterLinks();
     ASSERT_EQ (links.size(), 3u);
     EXPECT_EQ (links[0].label, "Documentation");
     EXPECT_EQ (links[0].url, "https://a3-audio.github.io/a3-doc/");
@@ -88,19 +88,17 @@ TEST (Greeter, LinksLeadToTheDocsTheWebsiteAndTheSource)
     EXPECT_EQ (links[2].url, "https://github.com/a3-audio/a3-system");
 }
 
-// Until the maintainer names a target, there is no key that leads to a placeholder.
-TEST (Greeter, NoSupportLinkWhileItsTargetIsUnset)
+// As the website's legal notice and footer name them.
+TEST (Greeter, TheAboutLines)
 {
-    EXPECT_EQ (greeterLinks ({}).size(), 3u);
-    EXPECT_EQ (greeterLinks ("  ").size(), 3u);
-    EXPECT_EQ (greeterLinks ("not a url").size(), 3u) << "only a web address is a target";
-    EXPECT_TRUE (supportTarget.isEmpty()) << "undecided (2026-10-30); set it in Greeter.h when it is";
+    EXPECT_EQ (copyrightLine(), juce::String::fromUTF8 ("© 2020–2026 Raphael Eismann and contributors"));
+    EXPECT_EQ (contactAddress(), "p5hcu1@systemli.org");
 }
 
-TEST (Greeter, TheSupportLinkWhenItsTargetIsSet)
+// The package build hands its version to CMake (-DA3CANVAS_VERSION); a dev build shows the project's.
+TEST (Greeter, TheCanvasShowsTheVersionItsBuildWasGiven)
 {
-    const auto links = greeterLinks ("https://example.org/support");
-    ASSERT_EQ (links.size(), 4u);
-    EXPECT_EQ (links[3].label, juce::String::fromUTF8 ("Support A³"));
-    EXPECT_EQ (links[3].url, "https://example.org/support");
+    EXPECT_EQ (buildVersion(), A3CANVAS_EXPECTED_VERSION);
+    const auto rows = versionRows ({}, buildVersion());
+    EXPECT_EQ (versionText (rows.back()), A3CANVAS_EXPECTED_VERSION);
 }

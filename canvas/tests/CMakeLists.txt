@@ -16,11 +16,15 @@ target_sources(a3-canvas-tests PRIVATE
     TileStatusTests.cpp
     CanvasViewTests.cpp
     GreeterTests.cpp
+    SupportTests.cpp
     ${A3CANVAS_LIBRARY_SOURCES})
-target_include_directories(a3-canvas-tests PRIVATE "${PROJECT_SOURCE_DIR}/Source" "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(a3-canvas-tests PRIVATE ${A3CANVAS_INCLUDE_DIRS} "${CMAKE_CURRENT_SOURCE_DIR}")
 target_compile_definitions(a3-canvas-tests PRIVATE ${A3CANVAS_DEFINITIONS}
     JUCE_MODAL_LOOPS_PERMITTED=1
     A3CANVAS_FIXTURES="${CMAKE_CURRENT_SOURCE_DIR}/fixtures")
+# Only the version test needs it: a new version recompiles one test file.
+set_source_files_properties(GreeterTests.cpp PROPERTIES
+    COMPILE_DEFINITIONS "A3CANVAS_EXPECTED_VERSION=\"${A3CANVAS_SHOWN_VERSION}\"")
 target_compile_options(a3-canvas-tests PRIVATE -Werror=switch)
 target_link_libraries(a3-canvas-tests
     PRIVATE ${A3CANVAS_JUCE_MODULES} GTest::gtest

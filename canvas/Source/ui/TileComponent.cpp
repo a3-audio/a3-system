@@ -55,19 +55,45 @@ Metrics TileComponent::metrics() const
     return {};
 }
 
+namespace
+{
+float keyWidth (const Metrics& m) { return TileComponent::rowKey (m) * 2.1f; }
+float versionWidth (const Metrics& m) { return m.key() * 2.0f; }
+float nameHeight (const Metrics& m) { return m.header() * 1.25f; }
+float lineHeight (const Metrics& m) { return m.caption() * 1.45f; }
+}
+
+float TileComponent::rowHeight (const Metrics& m)
+{
+    return rowKey (m) + m.gap();
+}
+
 juce::Rectangle<float> TileComponent::lightArea() const
 {
     const auto m = metrics();
-    const auto row = getLocalBounds().toFloat().reduced (m.padding()).removeFromTop (m.header() * 1.3f);
-    return row.withWidth (m.light() * 2.0f);
+    return getLocalBounds().toFloat().withTrimmedLeft (m.padding()).withWidth (m.light() * 2.0f);
+}
+
+juce::Rectangle<int> TileComponent::versionArea() const
+{
+    const auto m = metrics();
+    auto area = getLocalBounds().toFloat().reduced (m.padding(), 0.0f);
+    area.removeFromRight (keyWidth (m) * 2.0f + m.gap() * 2.0f);
+    return area.removeFromRight (versionWidth (m)).toNearestInt();
+}
+
+juce::Rectangle<float> TileComponent::textBlock() const
+{
+    const auto m = metrics();
+    auto area = getLocalBounds().toFloat();
+    area.setLeft (lightArea().getRight() + m.gap());
+    area.setRight (static_cast<float> (versionArea().getX()) - m.gap());
+    return area.withSizeKeepingCentre (area.getWidth(), nameHeight (m) + lineHeight (m));
 }
 
 juce::Rectangle<int> TileComponent::labelArea() const
 {
-    const auto m = metrics();
-    auto row = getLocalBounds().toFloat().reduced (m.padding()).removeFromTop (m.header() * 1.3f);
-    row.removeFromLeft (m.light() * 2.0f + m.gap());
-    return row.toNearestInt();
+    return textBlock().removeFromTop (nameHeight (metrics())).toNearestInt();
 }
 
 void TileComponent::paint (juce::Graphics& g)
@@ -75,48 +101,40 @@ void TileComponent::paint (juce::Graphics& g)
     const auto m = metrics();
     auto* look = dynamic_cast<LookAndFeel_Canvas*> (&getLookAndFeel());
     if (look != nullptr)
+    {
         look->drawCard (g, getLocalBounds().toFloat());
-    if (look != nullptr)
         look->drawLight (g, lightArea(), status.light);
+    }
 
-    auto label = labelArea();
+    auto block = textBlock();
+    auto name = block.removeFromTop (nameHeight (m));
+    const auto nameFont = canvasFont (m.header(), true);
     g.setColour (status.light == Light::missing ? skin::textMuted : skin::textPrimary);
-    g.setFont (juce::Font (juce::FontOptions (m.header(), juce::Font::bold)));
-    g.drawFittedText (tile.label, label, juce::Justification::centredLeft, 1);
-
-    auto text = getLocalBounds().toFloat().reduced (m.padding());
-    text.removeFromTop (m.header() * 1.3f);
-    const auto caption = text.removeFromTop (m.caption() * 1.5f).toNearestInt();
+    g.setFont (nameFont);
+    g.drawText (tile.label, name, juce::Justification::centredLeft, true);
+    name.removeFromLeft (juce::GlyphArrangement::getStringWidth (nameFont, tile.label) + m.gap());
     g.setColour (skin::textMuted);
-    g.setFont (juce::Font (juce::FontOptions (m.caption())));
-    juce::String captionText = tile.caption;
-    if (version.isNotEmpty())
-        captionText << juce::String::fromUTF8 ("  ·  ") << version;
-    if (status.updateAvailable)
-        captionText << juce::String::fromUTF8 ("  ·  update");
-    g.drawFittedText (captionText, caption, juce::Justification::centredLeft, 1);
+    g.setFont (canvasFont (m.caption()));
+    g.drawText (tile.caption, name, juce::Justification::centredLeft, true);
 
-    const auto line = text.removeFromTop (m.body() * 1.6f).toNearestInt();
     const bool news = status.light == Light::degraded || status.light == Light::failed;
     g.setColour (news ? lightColour (status.light) : skin::textPrimary.withAlpha (0.85f));
-    g.setFont (juce::Font (juce::FontOptions (m.body())));
-    g.drawFittedText (status.line, line, juce::Justification::centredLeft, 1);
-}
+    g.drawText (status.line, block, juce::Justification::centredLeft, true);
 
-// The rows paint() stacks from the top and resized() puts the keys under, with a gap between.
-float TileComponent::leastHeight (const Metrics& m)
-{
-    return m.padding() * 2.0f + m.header() * 1.3f + m.caption() * 1.5f + m.body() * 1.6f + m.gap() + m.key();
+    juce::String versionText = version;
+    if (status.updateAvailable)
+        versionText << juce::String::fromUTF8 ("  ·  update");
+    g.setColour (status.updateAvailable ? skin::accent : skin::textMuted);
+    g.drawText (versionText, versionArea(), juce::Justification::centredRight, true);
 }
 
 void TileComponent::resized()
 {
     const auto m = metrics();
-    auto area = getLocalBounds().toFloat().reduced (m.padding());
-    auto keys = area.removeFromBottom (m.key());
-    const float half = (keys.getWidth() - m.gap()) * 0.5f;
-    startStop.setBounds (keys.removeFromLeft (half).toNearestInt());
-    keys.removeFromLeft (m.gap());
-    restart.setBounds (keys.toNearestInt());
+    auto keys = getLocalBounds().toFloat().reduced (m.padding(), 0.0f);
+    keys = keys.removeFromRight (keyWidth (m) * 2.0f + m.gap()).withSizeKeepingCentre (keyWidth (m) * 2.0f + m.gap(), rowKey (m));
+    restart.setBounds (keys.removeFromRight (keyWidth (m)).toNearestInt());
+    keys.removeFromRight (m.gap());
+    startStop.setBounds (keys.toNearestInt());
 }
 }

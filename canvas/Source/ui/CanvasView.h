@@ -12,12 +12,13 @@
 namespace canvas
 {
 // The Canvas's one page, a welcome first and a control panel second: the greeter, then the rig's
-// line with Start all / Stop all, a tile per program, and the log. On the rig's portrait screen the
-// greeter is a band across the top; on a landscape screen a column at the left.
+// line with Start all / Stop all, a row per program in two sections (Decks; System: Engine, Mixer,
+// Motion, Beat analyzer), and the log. On the rig's portrait screen the greeter is a band across the
+// top and the whole page fits 768 × 1024; on a landscape screen the greeter is a column at the left.
 class CanvasView : public juce::Component
 {
 public:
-    explicit CanvasView (std::vector<Tile> tiles, const juce::String& support = supportTarget);
+    explicit CanvasView (std::vector<Tile> tiles, SupportConfig support = {});
     ~CanvasView() override;
 
     void show (const Snapshot& snapshot);
@@ -39,17 +40,22 @@ public:
     const juce::String& getSubtitle() const { return subtitle; }
     // Where the rig's line (demo or this machine) is written.
     juce::Rectangle<int> subtitleArea() const { return subtitleBox; }
+    juce::Rectangle<int> decksCaptionArea() const { return decksCaptionBox; }
+    juce::Rectangle<int> systemCaptionArea() const { return systemCaptionBox; }
+    juce::Rectangle<int> logCardArea() const { return logCard; }
 
     void paint (juce::Graphics&) override;
     void resized() override;
 
 private:
     void askThen (const juce::String& question, const juce::String& detail, std::function<void()> then);
-    void layoutRig (juce::Rectangle<int> area, int columns);
+    void layoutRig (juce::Rectangle<int> area);
+    // The rows of one section under its caption; what is left of `area` after them.
+    juce::Rectangle<int> layoutSection (juce::Rectangle<int> area, bool decks, juce::Rectangle<int>& caption);
 
     LookAndFeel_Canvas look;
     juce::String subtitle;
-    juce::Rectangle<int> logCard, rigCaptionBox, subtitleBox;
+    juce::Rectangle<int> logCard, rigCaptionBox, subtitleBox, decksCaptionBox, systemCaptionBox;
     juce::TextButton startAll { "Start all" }, stopAll { "Stop all" };
     std::vector<std::unique_ptr<TileComponent>> tileComponents;
     juce::TextEditor log;

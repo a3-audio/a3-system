@@ -9,7 +9,8 @@
 
 namespace canvas
 {
-// One program of the rig: its light, its name, what it is doing, and Start/Stop and Restart.
+// One program of the rig as a row of the list: its light, its name, what it is doing, its version,
+// and Start/Stop and Restart at the right. (A tile before 2026-10-30; the name stayed.)
 class TileComponent : public juce::Component
 {
 public:
@@ -23,12 +24,15 @@ public:
     juce::TextButton& startStopButton() { return startStop; }
     juce::TextButton& restartButton() { return restart; }
 
-    // The height at which the label, caption and line clear the keys.
-    static float leastHeight (const Metrics& m);
+    // Every row has this height: its keys and a little air.
+    static float rowHeight (const Metrics& m);
+    // The keys of a row: smaller than Start all's (a stop asks first), still well above a fingertip.
+    static float rowKey (const Metrics& m) { return m.key() * 0.75f; }
 
-    // Where the light and the label are drawn (tests look there).
+    // Where the light, the name and the version are drawn (tests look there).
     juce::Rectangle<float> lightArea() const;
     juce::Rectangle<int> labelArea() const;
+    juce::Rectangle<int> versionArea() const;
 
     std::function<void (const Tile&)> onStart, onStop, onRestart;
 
@@ -38,6 +42,8 @@ public:
 private:
     Metrics metrics() const;
     bool isUp() const;
+    // Name over line, centred in the row, between the light and the version.
+    juce::Rectangle<float> textBlock() const;
     void updateButtons();
 
     Tile tile;

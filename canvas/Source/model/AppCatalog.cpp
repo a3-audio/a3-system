@@ -57,7 +57,7 @@ std::vector<Tile> catalog (int decks)
 {
     std::vector<Tile> tiles;
     tiles.push_back ({ TileKind::core, "core", juce::String::fromUTF8 ("A³ Engine"),
-                       juce::String::fromUTF8 ("Engine · Core · window"),
+                       juce::String::fromUTF8 ("on the A³ Core"),
                        { "a3-engine.service", "a3-core.service", "a3-core-window.service" },
                        "a3-core-app", "a3-core-window.service" });
     const auto letters = deckLetters (decks);

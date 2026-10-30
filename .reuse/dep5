@@ -33,6 +33,12 @@ Copyright: 2024-2026 A3 Audio <contact@a3-audio.com>
 License: CC-BY-SA-4.0
 Comment: The website's logo (a3-audio.github.io src/img/a3_logo-wed_dark.svg), unchanged.
 
-Files: canvas/packaging/a3-canvas.desktop canvas/packaging/DEBIAN/control
+Files: canvas/third_party/qrcodegen/*
+Copyright: 2022 Project Nayuki
+License: MIT
+Comment: QR Code generator library 1.8.0, C++ (https://www.nayuki.io/page/qr-code-generator-library),
+ unchanged, from Debian's qr-code-generator_1.8.0.orig.tar.gz.
+
+Files: canvas/packaging/a3-canvas.desktop canvas/packaging/DEBIAN/control canvas/packaging/canvas.json
 Copyright: 2020-2026 A3 Audio <contact@a3-audio.com>
 License: CC0-1.0

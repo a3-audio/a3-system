@@ -11,10 +11,6 @@
 
 namespace canvas
 {
-// Where "Support A³" leads. Undecided (2026-10-30): while it is empty the key is not shown, so
-// nobody is sent to a placeholder. "Support", not "Donate": the UG is not a charity.
-inline const juce::String supportTarget {};
-
 // The packages the greeter names, in the rig's order; the Canvas itself follows as the last row.
 const std::vector<juce::String>& greeterPackages();
 
@@ -26,7 +22,7 @@ struct VersionRow
     bool updateAvailable = false;
 };
 
-// The Canvas's own version, stamped by its build (CMake's project version).
+// The Canvas's own version, stamped by its build: the package's, or CMake's project version.
 juce::String buildVersion();
 
 // A row per greeter package from dpkg's facts ("not installed" where absent), then the Canvas from its build.
@@ -36,12 +32,14 @@ juce::String versionText (const VersionRow& row);
 
 juce::String tagline();
 juce::String licenceLine();
+juce::String copyrightLine();
+juce::String contactAddress();
 
 struct Link
 {
     juce::String label, url;
 };
 
-// Documentation, Website, Source; "Support A³" after them only when `support` is a web address.
-std::vector<Link> greeterLinks (const juce::String& support);
+// Documentation, Website, Source.
+std::vector<Link> greeterLinks();
 }

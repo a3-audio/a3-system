@@ -21,6 +21,7 @@ struct CanvasSetup
     HttpGet http;
     UnitLookup unitFacts;   // what a start waits on: systemd now (the app), always active (--demo)
     juce::String truthPath;
+    SupportConfig support;   // where Support A³ leads, from ~/.config/a3/canvas.json
     bool demo = false;
 };
 

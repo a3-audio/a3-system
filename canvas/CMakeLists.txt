@@ -25,7 +25,7 @@ include(cmake/CanvasSources.cmake)
 
 juce_add_gui_app(A3Canvas PRODUCT_NAME "a3-canvas")
 target_sources(A3Canvas PRIVATE Source/Main.cpp ${A3CANVAS_LIBRARY_SOURCES})
-target_include_directories(A3Canvas PRIVATE Source)
+target_include_directories(A3Canvas PRIVATE ${A3CANVAS_INCLUDE_DIRS})
 target_compile_definitions(A3Canvas PRIVATE ${A3CANVAS_DEFINITIONS}
     JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:A3Canvas,JUCE_PRODUCT_NAME>"
     JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:A3Canvas,JUCE_VERSION>")

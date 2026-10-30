@@ -24,8 +24,10 @@ build() {
     local src=$1 build=$2 juce=$3 jobs=$4 test=${5:-}
     local tests=OFF
     [[ "$test" == --test ]] && tests=ON
+    # A3_PACKAGE_VERSION: the version installer/package.py stamps; empty → the project's own.
     cmake -S "$src/canvas" -B "$build" -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_PREFIX_PATH="$juce" -DA3CANVAS_TESTS="$tests"
+        -DCMAKE_PREFIX_PATH="$juce" -DA3CANVAS_TESTS="$tests" \
+        -DA3CANVAS_VERSION="${A3_PACKAGE_VERSION:-}"
     cmake --build "$build" -j "$jobs"
     if [[ "$tests" == ON ]]; then
         xvfb-run -a ctest --test-dir "$build" --output-on-failure
@@ -37,6 +39,8 @@ files() {
     local src=$1 build=$2 stage=$3
     install -D -m 755 "$build/A3Canvas_artefacts/Release/a3-canvas" "$stage/usr/bin/a3-canvas"
     install -D -m 644 "$src/canvas/packaging/a3-canvas.desktop" "$stage/usr/share/applications/a3-canvas.desktop"
+    # Where Support A³ leads, all empty; ~/.config/a3/canvas.json overrides it.
+    install -D -m 644 "$src/canvas/packaging/canvas.json" "$stage/usr/share/a3/canvas.json"
     # .reuse/dep5 is already in Debian's machine-readable copyright format.
     install -D -m 644 "$src/.reuse/dep5" "$stage/usr/share/doc/a3-canvas/copyright"
 }

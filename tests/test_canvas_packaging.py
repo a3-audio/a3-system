@@ -34,6 +34,7 @@ class CanvasPackaging(unittest.TestCase):
         stage = self.staged()
         files = sorted(str(p.relative_to(stage)) for p in stage.rglob("*") if p.is_file())
         self.assertEqual(["usr/bin/a3-canvas",
+                          "usr/share/a3/canvas.json",
                           "usr/share/applications/a3-canvas.desktop",
                           "usr/share/doc/a3-canvas/copyright"], files)
         self.assertTrue((stage / "usr/bin/a3-canvas").stat().st_mode & 0o111)
@@ -59,6 +60,29 @@ class CanvasPackaging(unittest.TestCase):
         from installer import package
         for name in package.DEBIAN_FILES:
             self.assertTrue((RECIPE / "DEBIAN" / name).is_file(), name)
+
+    def test_the_shipped_support_targets_are_all_empty(self):
+        import json
+        self.assertEqual({"kofi": "", "paypal": "", "bitcoin": ""},
+                         json.loads((RECIPE / "canvas.json").read_text()))
+
+    def cmake_arguments(self, environment):
+        """`stage build` with a stand-in cmake that writes down what it was asked."""
+        bin_dir = tmpdir(self)
+        record = bin_dir / "calls"
+        fake = bin_dir / "cmake"
+        fake.write_text(f'#!/bin/sh\necho "$@" >> "{record}"\n')
+        fake.chmod(0o755)
+        env = {"PATH": f"{bin_dir}:/usr/bin:/bin", **environment}
+        subprocess.run([str(RECIPE / "stage"), "build", str(ROOT), str(tmpdir(self)), "/juce", "1"],
+                       check=True, capture_output=True, env=env)
+        return record.read_text().splitlines()[0].split()
+
+    def test_the_package_version_reaches_cmake(self):
+        self.assertIn("-DA3CANVAS_VERSION=03.0+12", self.cmake_arguments({"A3_PACKAGE_VERSION": "03.0+12"}))
+
+    def test_without_a_package_version_cmake_falls_back_to_its_own(self):
+        self.assertIn("-DA3CANVAS_VERSION=", self.cmake_arguments({}))
 
     def test_an_unknown_step_is_a_usage_error(self):
         result = subprocess.run([str(RECIPE / "stage"), "pack"], capture_output=True, text=True)

@@ -2,21 +2,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Greeter.h"
 
-#ifndef A3CANVAS_VERSION
-    #error "the build stamps A3CANVAS_VERSION (cmake/CanvasSources.cmake)"
-#endif
+#include <CanvasVersion.h>
 
 namespace canvas
 {
 namespace
 {
 const juce::String canvasPackage = "a3-canvas";
-
-bool isWebAddress (const juce::String& text)
-{
-    const auto trimmed = text.trim();
-    return (trimmed.startsWith ("https://") || trimmed.startsWith ("http://")) && ! trimmed.containsAnyOf (" \t\n");
-}
 }
 
 const std::vector<juce::String>& greeterPackages()
@@ -70,13 +62,22 @@ juce::String licenceLine()
     return juce::String::fromUTF8 ("Software GPL-3.0-or-later · Hardware CERN-OHL-S-2.0 · Documentation CC-BY-SA-4.0");
 }
 
-std::vector<Link> greeterLinks (const juce::String& support)
+// The legal notice names the maintainer; the years are the project's (2020, as .reuse/dep5 has it).
+juce::String copyrightLine()
 {
-    std::vector<Link> links { { "Documentation", "https://a3-audio.github.io/a3-doc/" },
-                              { "Website", "https://a3-audio.github.io/" },
-                              { "Source", "https://github.com/a3-audio/a3-system" } };
-    if (isWebAddress (support))
-        links.push_back ({ juce::String::fromUTF8 ("Support A³"), support.trim() });
-    return links;
+    return juce::String::fromUTF8 ("© 2020–2026 Raphael Eismann and contributors");
+}
+
+// The website footer's contact.
+juce::String contactAddress()
+{
+    return "p5hcu1@systemli.org";
+}
+
+std::vector<Link> greeterLinks()
+{
+    return { { "Documentation", "https://a3-audio.github.io/a3-doc/" },
+             { "Website", "https://a3-audio.github.io/" },
+             { "Source", "https://github.com/a3-audio/a3-system" } };
 }
 }

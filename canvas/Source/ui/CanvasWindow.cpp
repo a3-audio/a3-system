@@ -59,6 +59,7 @@ CanvasSetup machineSetup()
     setup.http = httpGetLocal;
     setup.unitFacts = [runner = setup.runner.get()] (const juce::String& unit) { return unitFactsNow (*runner, unit); };
     setup.truthPath = laptopTruth();
+    setup.support = machineSupport();
     return setup;
 }
 
@@ -69,6 +70,8 @@ CanvasSetup demoSetup (int decks)
     setup.runner = std::make_unique<DemoRunner>();
     setup.unitFacts = [] (const juce::String&) { return UnitFacts { "loaded", "active", "running", "success", 0 }; };
     setup.demo = true;
+    // Support A³ is the project's, not the rig's: the demo shows this machine's.
+    setup.support = machineSupport();
     return setup;
 }
 
@@ -149,7 +152,7 @@ void CanvasController::finish (const juce::String& title, const PlanResult& resu
 CanvasWindow::CanvasWindow (CanvasSetup setup)
     : juce::DocumentWindow (juce::String::fromUTF8 ("A³ Canvas"), skin::surface, juce::DocumentWindow::allButtons)
 {
-    auto content = std::make_unique<CanvasView> (setup.tiles);
+    auto content = std::make_unique<CanvasView> (setup.tiles, setup.support);
     view = content.get();
     controller = std::make_unique<CanvasController> (*view, std::move (setup));
     setUsingNativeTitleBar (true);

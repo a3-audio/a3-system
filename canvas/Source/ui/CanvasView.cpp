@@ -6,14 +6,13 @@ namespace canvas
 {
 namespace
 {
-// The log takes at least this share of the rig's column, and what tiles past roomyTileShare would leave empty.
-constexpr float logShare = 0.25f;
-constexpr float roomyTileShare = 1.3f;
 // The greeter's share of a landscape page's width.
 constexpr float columnShare = 0.3f;
 constexpr int maxLogLines = 400;
 
 bool landscape (juce::Rectangle<int> area) { return area.getWidth() > area.getHeight(); }
+int captionRow (const Metrics& m) { return juce::roundToInt (m.caption() * 1.8f); }
+int rowGap (const Metrics& m) { return juce::roundToInt (m.gap() * 0.5f); }
 }
 
 void showConfirmation (const juce::String& question, const juce::String& detail, std::function<void()> then)
@@ -28,7 +27,7 @@ void showConfirmation (const juce::String& question, const juce::String& detail,
 
 // -- CanvasView -------------------------------------------------------------------
 
-CanvasView::CanvasView (std::vector<Tile> tiles, const juce::String& support) : greeting (support)
+CanvasView::CanvasView (std::vector<Tile> tiles, SupportConfig support) : greeting (std::move (support))
 {
     setLookAndFeel (&look);
     setOpaque (true);
@@ -136,9 +135,13 @@ void CanvasView::paint (juce::Graphics& g)
     g.setColour (skin::textPrimary);
     g.setFont (canvasFont (m.body()));
     g.drawText (subtitle, subtitleBox, juce::Justification::centredLeft, true);
+    drawCaption (g, "Decks", decksCaptionBox, m);
+    drawCaption (g, "System", systemCaptionBox, m);
 
+    if (logCard.isEmpty())
+        return;
     look.drawCard (g, logCard.toFloat());
-    drawCaption (g, "Log", logCard.reduced (juce::roundToInt (m.padding())).withHeight (juce::roundToInt (m.caption() * 1.8f)), m);
+    drawCaption (g, "Log", logCard.reduced (juce::roundToInt (m.padding())).withHeight (captionRow (m)), m);
 }
 
 void CanvasView::resized()
@@ -148,68 +151,65 @@ void CanvasView::resized()
     const int pad = juce::roundToInt (m.padding());
 
     auto area = getLocalBounds().reduced (juce::roundToInt (m.padding() * 1.5f));
-    // Two columns of tiles (or more, see layoutRig) under the band on the rig's portrait screen, four beside the column on a laptop.
     if (landscape (getLocalBounds()))
     {
         greeting.setBounds (area.removeFromLeft (juce::roundToInt (area.getWidth() * columnShare)));
         area.removeFromLeft (juce::roundToInt (m.padding() * 1.5f));
-        layoutRig (area, 4);
-        return;
     }
-    greeting.setBounds (area.removeFromTop (GreeterComponent::bandHeight (m)));
-    area.removeFromTop (pad);
-    layoutRig (area, 2);
+    else
+    {
+        greeting.setBounds (area.removeFromTop (GreeterComponent::bandHeight (m, greeting.supportCard().getConfig())));
+        area.removeFromTop (pad);
+    }
+    layoutRig (area);
 }
 
-// The rig's line with its keys, the tiles, and the log under them.
-void CanvasView::layoutRig (juce::Rectangle<int> area, int columns)
+juce::Rectangle<int> CanvasView::layoutSection (juce::Rectangle<int> area, bool decks, juce::Rectangle<int>& caption)
+{
+    const auto m = look.getMetrics();
+    caption = area.removeFromTop (captionRow (m));
+    const int rowHeight = juce::roundToInt (TileComponent::rowHeight (m));
+    bool first = true;
+    for (auto& row : tileComponents)
+    {
+        if ((row->getTile().kind == TileKind::deck) != decks)
+            continue;
+        if (! first)
+            area.removeFromTop (rowGap (m));
+        row->setBounds (area.removeFromTop (rowHeight));
+        first = false;
+    }
+    return area;
+}
+
+// The rig's line with its keys, the two sections, and the log in what is left: the log gives way
+// first when the page is short, never a row.
+void CanvasView::layoutRig (juce::Rectangle<int> area)
 {
     const auto m = look.getMetrics();
     const int pad = juce::roundToInt (m.padding());
-    const int gap = juce::roundToInt (m.gap());
     const int keyHeight = juce::roundToInt (m.key());
     const int keyWidth = juce::roundToInt (m.key() * 2.4f);
 
     auto line = area.removeFromTop (keyHeight);
     stopAll.setBounds (line.removeFromRight (keyWidth));
-    line.removeFromRight (gap);
+    line.removeFromRight (juce::roundToInt (m.gap()));
     startAll.setBounds (line.removeFromRight (keyWidth));
     line.removeFromRight (pad);
-    const int captionHeight = juce::roundToInt (m.caption() * 1.8f);
-    auto text = line.withSizeKeepingCentre (line.getWidth(), captionHeight + juce::roundToInt (m.body() * 1.5f));
-    rigCaptionBox = text.removeFromTop (captionHeight);
+    auto text = line.withSizeKeepingCentre (line.getWidth(), captionRow (m) + juce::roundToInt (m.body() * 1.5f));
+    rigCaptionBox = text.removeFromTop (captionRow (m));
     subtitleBox = text;
     area.removeFromTop (pad);
 
-    // Each tile keeps the height its lines and keys need, and the log a few lines: where the
-    // columns asked for leave too few rows of that height, a column more (four decks on the rig).
-    const int count = static_cast<int> (tileComponents.size());
-    const int leastLog = pad * 2 + captionHeight + juce::roundToInt (m.caption() * 4.0f);
-    const auto rowsFor = [count] (int c) { return juce::jmax (1, (count + c - 1) / c); };
-    const auto leastTilesFor = [&] (int c) {
-        return juce::roundToInt (rowsFor (c) * TileComponent::leastHeight (m)) + (rowsFor (c) - 1) * gap;
-    };
-    while (columns < count && leastTilesFor (columns) + pad + leastLog > area.getHeight())
-        ++columns;
-    const int rows = rowsFor (columns);
-    const int leastTiles = leastTilesFor (columns);
-    // Tiles taller than a third more than they need are only empty card; the log takes the rest.
-    const int roomyTiles = juce::roundToInt (rows * TileComponent::leastHeight (m) * roomyTileShare) + (rows - 1) * gap;
-    const int logHeight = juce::jmin (area.getHeight() - pad - leastTiles,
-                                      juce::jmax (juce::roundToInt (area.getHeight() * logShare), area.getHeight() - pad - roomyTiles));
-    logCard = area.removeFromBottom (logHeight);
-    area.removeFromBottom (pad);
-    log.setBounds (logCard.reduced (pad).withTrimmedTop (captionHeight));
-    log.applyFontToAllText (juce::Font (juce::FontOptions (juce::Font::getDefaultMonospacedFontName(), m.caption(), juce::Font::plain)));
+    area = layoutSection (area, true, decksCaptionBox);
+    area.removeFromTop (pad);
+    area = layoutSection (area, false, systemCaptionBox);
+    area.removeFromTop (pad);
 
-    juce::Grid grid;
-    grid.columnGap = grid.rowGap = juce::Grid::Px (gap);
-    for (int c = 0; c < columns; ++c)
-        grid.templateColumns.add (juce::Grid::TrackInfo (juce::Grid::Fr (1)));
-    for (int r = 0; r < rows; ++r)
-        grid.templateRows.add (juce::Grid::TrackInfo (juce::Grid::Fr (1)));
-    for (auto& tile : tileComponents)
-        grid.items.add (juce::GridItem (*tile));
-    grid.performLayout (area);
+    const bool roomForLog = area.getHeight() >= pad * 2 + captionRow (m) + juce::roundToInt (m.caption() * 2.0f);
+    logCard = roomForLog ? area : juce::Rectangle<int>();
+    log.setVisible (roomForLog);
+    log.setBounds (logCard.reduced (pad).withTrimmedTop (captionRow (m)));
+    log.applyFontToAllText (juce::Font (juce::FontOptions (juce::Font::getDefaultMonospacedFontName(), m.caption(), juce::Font::plain)));
 }
 }

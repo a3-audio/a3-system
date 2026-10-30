@@ -3,6 +3,7 @@
 #pragma once
 
 #include "model/AppCatalog.h"
+#include "model/Network.h"
 #include "sys/CoreProbe.h"
 #include "sys/Packages.h"
 #include "sys/Systemd.h"
@@ -18,6 +19,7 @@ struct Facts
     std::map<juce::String, PackageFacts> packages;
     CoreFacts core;
     EngineFacts engine;
+    NetworkFacts network;
 };
 
 struct TileStatus

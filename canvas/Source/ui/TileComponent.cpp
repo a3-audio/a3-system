@@ -28,6 +28,14 @@ void TileComponent::setStatus (const TileStatus& s, const juce::String& v)
     repaint();
 }
 
+void TileComponent::setHost (const juce::String& h)
+{
+    if (h == host)
+        return;
+    host = h;
+    repaint();
+}
+
 void TileComponent::setBusy (bool b)
 {
     busy = b;
@@ -96,6 +104,15 @@ juce::Rectangle<int> TileComponent::labelArea() const
     return textBlock().removeFromTop (nameHeight (metrics())).toNearestInt();
 }
 
+// The state line's rest, after the state.
+juce::Rectangle<int> TileComponent::hostArea() const
+{
+    const auto m = metrics();
+    auto line = textBlock().withTrimmedTop (nameHeight (m));
+    line.removeFromLeft (juce::GlyphArrangement::getStringWidth (canvasFont (m.caption()), status.line) + m.gap());
+    return line.toNearestInt();
+}
+
 void TileComponent::paint (juce::Graphics& g)
 {
     const auto m = metrics();
@@ -120,6 +137,11 @@ void TileComponent::paint (juce::Graphics& g)
     const bool news = status.light == Light::degraded || status.light == Light::failed;
     g.setColour (news ? lightColour (status.light) : skin::textPrimary.withAlpha (0.85f));
     g.drawText (status.line, block, juce::Justification::centredLeft, true);
+    if (host.isNotEmpty())
+    {
+        g.setColour (skin::textMuted);
+        g.drawText (juce::String::fromUTF8 ("· ") + host, hostArea(), juce::Justification::centredLeft, true);
+    }
 
     juce::String versionText = version;
     if (status.updateAvailable)

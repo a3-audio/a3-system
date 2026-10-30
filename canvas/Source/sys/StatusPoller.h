@@ -34,6 +34,8 @@ public:
 
     // Called on the message thread with the newest snapshot.
     std::function<void (const Snapshot&)> onSnapshot;
+    // This machine's addresses and the truth's hosts, asked each poll; set before start().
+    std::function<NetworkFacts()> networkFacts;
 
     void start();
     void stop();

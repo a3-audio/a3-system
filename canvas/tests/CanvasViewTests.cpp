@@ -9,6 +9,7 @@
 #include "model/Demo.h"
 #include "model/Greeter.h"
 #include "model/Support.h"
+#include "Fixtures.h"
 #include "ui/CanvasWindow.h"
 
 using namespace canvas;
@@ -257,6 +258,7 @@ std::vector<std::pair<juce::String, juce::Rectangle<int>>> elementsOf (CanvasVie
         { "logo", fromGreeter (greeter.logoArea().toNearestInt()) },
         { "tagline", fromGreeter (greeter.taglineArea()) },
         { "about", fromGreeter (greeter.aboutArea()) },
+        { "machine line", fromGreeter (greeter.machineLineArea()) },
         { "versions", fromGreeter (greeter.versionsArea()) },
         { "start all", view.startAllButton().getBounds() },
         { "stop all", view.stopAllButton().getBounds() },
@@ -434,6 +436,41 @@ TEST (Greeter, AnUpdatePaintsInTheAccent)
     EXPECT_GT (pixelsNear (snapshotOf (greeter), greeter.versionRowArea (1), skin::accent, 20), 10);
 }
 
+TEST (Greeter, ThisMachinesAddressesAreWritten)
+{
+    LookedGreeter looked;
+    auto& greeter = looked.greeter;
+    greeter.setMachineLine (juce::String::fromUTF8 ("this machine · 192.168.8.10 · 192.168.9.10"));
+    const auto image = snapshotOf (greeter);
+    EXPECT_GT (pixelsUnlike (image, greeter.machineLineArea(), skin::surface), 100);
+    EXPECT_EQ (pixelsNear (image, greeter.machineLineArea(), skin::textPrimary, 20), 0) << "muted";
+    EXPECT_FALSE (greeter.machineLineArea().intersects (greeter.aboutArea()));
+}
+
+TEST (TileComponent, TheHostIsAMutedLineUnderTheName)
+{
+    LookAndFeel_Canvas look;
+    TileComponent row (deckTile());
+    row.setStatus (statusWith (Light::running), "03.0");
+    row.setHost (juce::String::fromUTF8 ("local · 192.168.8.10"));
+    const auto image = paintedTile (row, look);
+    EXPECT_GE (row.hostArea().getY(), row.labelArea().getBottom() - 1) << "under the name";
+    EXPECT_GT (pixelsUnlike (image, row.hostArea(), skin::surfaceRaised), 60);
+    EXPECT_EQ (pixelsNear (image, row.hostArea(), skin::textPrimary, 20), 0) << "muted";
+    EXPECT_LT (row.hostArea().getRight(), row.versionArea().getX() + 1);
+    row.setLookAndFeel (nullptr);
+}
+
+TEST (CanvasWindow, TheDemoNamesTheTruthsAddresses)
+{
+    CanvasView view (catalog (4));
+    auto setup = demoSetup (4);
+    setup.truth = parseTruthNetwork (juce::JSON::parse (fixture ("truth-network.json")));
+    CanvasController controller (view, std::move (setup));
+    EXPECT_TRUE (view.greeter().getMachineLine().contains ("192.168.8.10"));
+    EXPECT_TRUE (view.getTiles().front()->getHost().contains ("192.168.8.10")) << "the engine on the core";
+}
+
 // -- Support A³ ---------------------------------------------------------------------
 
 TEST (Support, HiddenWhileNothingIsSet)
@@ -505,6 +542,20 @@ TEST (CanvasWindow, TheDemoSaysItIsADemo)
 
 namespace
 {
+// What every installation shows: the package's canvas.json.
+SupportConfig shippedSupport()
+{
+    return loadSupport ({}, juce::File (A3CANVAS_FIXTURES).getChildFile ("../../packaging/canvas.json"));
+}
+
+// The demo as on a machine with the shipped truth (this one may have none).
+CanvasSetup demoWithTheTruth()
+{
+    auto setup = demoSetup (4);
+    setup.truth = parseTruthNetwork (juce::JSON::parse (fixture ("truth-network.json")));
+    return setup;
+}
+
 void writePng (juce::Component& component, const juce::File& file)
 {
     file.deleteFile();
@@ -520,8 +571,8 @@ TEST (CanvasWindow, WritesTheRigSizedScreenForReview)
     const auto directory = juce::SystemStats::getEnvironmentVariable ("A3CANVAS_SNAPSHOT_DIR", {});
     if (directory.isEmpty())
         GTEST_SKIP() << "A3CANVAS_SNAPSHOT_DIR not set";
-    CanvasView view (catalog (4));
-    CanvasController controller (view, demoSetup (4));
+    CanvasView view (catalog (4), shippedSupport());
+    CanvasController controller (view, demoWithTheTruth());
     view.setSize (rigWidth, rigHeight);
     view.appendLog ("-- Start all");
     for (const auto& command : startAll (catalog (4), "/home/dj/.config/a3/laptop/a3-osc.json"))
@@ -535,7 +586,7 @@ TEST (CanvasWindow, WritesTheRigSizedScreenForReview)
 
     // With every support entry set to an example (not a real target), for the layout's sake.
     CanvasView supported (catalog (4), everySupport());
-    CanvasController supportedController (supported, demoSetup (4));
+    CanvasController supportedController (supported, demoWithTheTruth());
     supported.setSize (rigWidth, rigHeight);
     writePng (supported, juce::File (directory).getChildFile ("a3-canvas-support-example.png"));
 }

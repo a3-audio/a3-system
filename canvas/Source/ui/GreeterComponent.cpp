@@ -20,8 +20,13 @@ float versionFontHeight (const Metrics& m) { return m.caption() * 1.1f; }
 int versionRow (const Metrics& m) { return juce::roundToInt (versionFontHeight (m) * 1.55f); }
 int aboutRow (const Metrics& m) { return juce::roundToInt (m.caption() * 1.6f); }
 int taglineRow (const Metrics& m) { return juce::roundToInt (m.title() * 1.25f); }
+// The hero's text: caption, a one-line tagline, the links and this machine's addresses.
+int heroTextHeight (const Metrics& m)
+{
+    return captionRow (m) + taglineRow (m) + juce::roundToInt (linkHeight (m)) + aboutRow (m);
+}
 // The logo leads the band at four title heights, as the hero on the website leads its page.
-int heroHeight (const Metrics& m) { return juce::roundToInt (m.title() * 4.0f); }
+int heroHeight (const Metrics& m) { return std::max (juce::roundToInt (m.title() * 4.0f), heroTextHeight (m)); }
 
 float textWidth (const juce::Font& font, const juce::String& text) { return juce::GlyphArrangement::getStringWidth (font, text); }
 juce::Font taglineFont (const Metrics& m) { return canvasFont (m.title(), true); }
@@ -71,6 +76,14 @@ int GreeterComponent::bandHeight (const Metrics& m, const SupportConfig& support
     const int cards = std::max (cardHeight (m, bandColumns),
                                 supportConfig.isEmpty() ? 0 : SupportComponent::preferredHeight (m, supportConfig));
     return heroHeight (m) + bandAboutHeight (m) + juce::roundToInt (m.padding()) + cards;
+}
+
+void GreeterComponent::setMachineLine (const juce::String& line)
+{
+    if (line == machineText)
+        return;
+    machineText = line;
+    repaint (machineBox);
 }
 
 void GreeterComponent::setPackages (const std::map<juce::String, PackageFacts>& packages)
@@ -155,23 +168,27 @@ void GreeterComponent::layoutBand (juce::Rectangle<int> area)
     hero.removeFromLeft (pad * 2);
     const int lines = taglineLines (static_cast<float> (hero.getWidth())).size();
     const int link = juce::roundToInt (linkHeight (m));
-    auto text = hero.withSizeKeepingCentre (hero.getWidth(), captionRow (m) + lines * taglineRow (m) + link);
+    auto text = hero.withSizeKeepingCentre (hero.getWidth(), captionRow (m) + lines * taglineRow (m) + link + aboutRow (m));
     captionBox = text.removeFromTop (captionRow (m));
     taglineBox = text.removeFromTop (lines * taglineRow (m));
-    layoutLinkRow (links, text, juce::Justification::centredLeft, m);
+    layoutLinkRow (links, text.removeFromTop (link), juce::Justification::centredLeft, m);
+    machineBox = text;
 
     // Under the logo.
     area.removeFromTop (juce::roundToInt (m.gap()));
     layoutAbout (area.removeFromTop (2 * aboutRow (m)));
     area.removeFromTop (pad);
 
+    // One row of cards, one height.
+    const int cards = std::max (cardHeight (m, bandColumns),
+                                support.isVisible() ? SupportComponent::preferredHeight (m, support.getConfig()) : 0);
+    area.setHeight (cards);
     if (support.isVisible())
     {
-        support.setBounds (area.removeFromRight (SupportComponent::preferredWidth (m, support.getConfig()))
-                               .withHeight (SupportComponent::preferredHeight (m, support.getConfig())));
+        support.setBounds (area.removeFromRight (SupportComponent::preferredWidth (m, support.getConfig())));
         area.removeFromRight (juce::roundToInt (m.gap() * 1.5f));
     }
-    layoutCard (area.withHeight (std::max (cardHeight (m, bandColumns), support.isVisible() ? support.getHeight() : 0)), bandColumns);
+    layoutCard (area, bandColumns);
 }
 
 // The column: logo, line, links and About from the top, the cards at the foot.
@@ -189,6 +206,7 @@ void GreeterComponent::layoutColumn (juce::Rectangle<int> area)
     taglineBox = area.removeFromTop (taglineLines (static_cast<float> (area.getWidth())).size() * taglineRow (m));
     area.removeFromTop (pad);
     layoutLinkRow (links, area.removeFromTop (juce::roundToInt (linkHeight (m)) * 2), juce::Justification::centred, m);
+    machineBox = area.removeFromTop (aboutRow (m));
 
     if (support.isVisible())
     {
@@ -224,6 +242,7 @@ void GreeterComponent::paint (juce::Graphics& g)
 
     g.setColour (skin::textMuted);
     g.setFont (aboutFont (m));
+    g.drawText (machineText, machineBox, align, true);
     auto aboutLine = aboutBox;
     for (const auto& line : aboutLines (static_cast<float> (aboutBox.getWidth())))
         g.drawText (line, aboutLine.removeFromTop (aboutRow (m)), align, true);

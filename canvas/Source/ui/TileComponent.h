@@ -18,6 +18,9 @@ public:
 
     void setStatus (const TileStatus& status, const juce::String& version);
     void setBusy (bool busy);
+    // Where it runs ("local · 192.168.8.10", an address, or nothing), muted after its state line.
+    void setHost (const juce::String& host);
+    const juce::String& getHost() const { return host; }
 
     const Tile& getTile() const { return tile; }
     const TileStatus& getStatus() const { return status; }
@@ -33,6 +36,7 @@ public:
     juce::Rectangle<float> lightArea() const;
     juce::Rectangle<int> labelArea() const;
     juce::Rectangle<int> versionArea() const;
+    juce::Rectangle<int> hostArea() const;
 
     std::function<void (const Tile&)> onStart, onStop, onRestart;
 
@@ -48,7 +52,7 @@ private:
 
     Tile tile;
     TileStatus status;
-    juce::String version;
+    juce::String version, host;
     bool busy = false;
     juce::TextButton startStop, restart { "Restart" };
 };

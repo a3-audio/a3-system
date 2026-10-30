@@ -10,9 +10,19 @@ const juce::String demoVersion = "03.0";
 
 UnitFacts runningUnit (int pid) { return { "loaded", "active", "running", "success", pid }; }
 UnitFacts stoppedUnit() { return { "loaded", "inactive", "dead", "success", 0 }; }
+
+// The truth's core address on each of its networks, without the prefix.
+std::vector<juce::String> coreAddresses (const TruthNetwork& truth)
+{
+    std::vector<juce::String> own;
+    for (const auto& cidr : { truth.control, truth.audio })
+        if (cidr.isNotEmpty())
+            own.push_back (cidr.upToFirstOccurrenceOf ("/", false, false));
+    return own;
+}
 }
 
-Snapshot demoSnapshot (const std::vector<Tile>& tiles)
+Snapshot demoSnapshot (const std::vector<Tile>& tiles, const TruthNetwork& truth)
 {
     int lastDeck = 0;
     for (const auto& tile : tiles)
@@ -28,8 +38,14 @@ Snapshot demoSnapshot (const std::vector<Tile>& tiles)
         for (const auto& unit : tile.units)
             facts.units[unit] = stopped ? stoppedUnit() : runningUnit (pid++);
         if (tile.kind == TileKind::deck && ! stopped)
+        {
             facts.core.presentDecks.insert (tile.deck);
+            facts.core.deckHosts[tile.deck] = "127.0.0.1";
+        }
     }
+    facts.network = { truth, coreAddresses (truth) };
+    facts.core.deskHost = "127.0.0.1";
+    facts.core.motionHost = "127.0.0.1";
     facts.core.reachable = true;
     facts.core.engineHeard = true;
     facts.engine.answers = true;

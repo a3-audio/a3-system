@@ -22,6 +22,9 @@ public:
     explicit GreeterComponent (SupportConfig support = {}, juce::String canvasVersion = buildVersion());
 
     void setPackages (const std::map<juce::String, PackageFacts>& packages);
+    // "this machine · 192.168.8.10 · …", muted under the links.
+    void setMachineLine (const juce::String& line);
+    const juce::String& getMachineLine() const { return machineText; }
 
     // The height the band needs (the portrait page asks before it lays out the rig).
     static int bandHeight (const Metrics& m, const SupportConfig& support);
@@ -31,6 +34,7 @@ public:
     juce::Rectangle<float> logoArea() const { return logoBox; }
     juce::Rectangle<int> taglineArea() const { return taglineBox; }
     juce::Rectangle<int> aboutArea() const { return aboutBox; }
+    juce::Rectangle<int> machineLineArea() const { return machineBox; }
     juce::Rectangle<int> licenceArea() const { return licenceBox; }
     juce::Rectangle<int> versionsArea() const { return card; }
     juce::Rectangle<int> versionRowArea (int row) const;
@@ -50,12 +54,13 @@ private:
 
     std::unique_ptr<juce::Drawable> logo;
     const juce::String canvasVersion;
+    juce::String machineText;
     std::vector<VersionRow> rows;
     juce::OwnedArray<juce::HyperlinkButton> links;
     SupportComponent support;
 
     juce::Rectangle<float> logoBox;
-    juce::Rectangle<int> captionBox, taglineBox, aboutBox, licenceBox, card, cardCaption;
+    juce::Rectangle<int> captionBox, taglineBox, machineBox, aboutBox, licenceBox, card, cardCaption;
     std::vector<juce::Rectangle<int>> rowBoxes;
 };
 }

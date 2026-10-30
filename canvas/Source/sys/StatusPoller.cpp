@@ -83,6 +83,8 @@ Snapshot StatusPoller::pollOnce()
     snapshot.facts.packages = packageFacts (parseDpkgQuery (outputOf (runner, dpkgQueryCommand (packages))), policy, packages);
     snapshot.facts.core = parseRig (http (rigUrl));
     snapshot.facts.engine = parseEngineStatus (http (engineUrl));
+    if (networkFacts)
+        snapshot.facts.network = networkFacts();
     for (const auto& tile : tiles)
         snapshot.statuses.push_back (statusOf (tile, snapshot.facts));
     return snapshot;

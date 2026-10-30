@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CanvasView.h"
 
+#include "model/Hosts.h"
+
 namespace canvas
 {
 namespace
@@ -96,7 +98,9 @@ void CanvasView::show (const Snapshot& snapshot)
         const auto& package = tileComponents[i]->getTile().package;
         const auto found = snapshot.facts.packages.find (package);
         tileComponents[i]->setStatus (snapshot.statuses[i], found != snapshot.facts.packages.end() ? found->second.installed : juce::String());
+        tileComponents[i]->setHost (hostLine (tileComponents[i]->getTile(), snapshot.facts));
     }
+    greeting.setMachineLine (machineLine (snapshot.facts.network.own));
     greeting.setPackages (snapshot.facts.packages);
 }
 

@@ -8,7 +8,11 @@ set(A3CANVAS_INCLUDE_DIR "${A3CANVAS_DIR}/Source")
 
 # Everything but Main.cpp.
 set(_a3canvas_sources
-    model/AppCatalog.cpp)
+    model/AppCatalog.cpp
+    model/TileStatus.cpp
+    sys/CoreProbe.cpp
+    sys/Packages.cpp
+    sys/Systemd.cpp)
 list(TRANSFORM _a3canvas_sources PREPEND "${A3CANVAS_INCLUDE_DIR}/" OUTPUT_VARIABLE A3CANVAS_LIBRARY_SOURCES)
 
 set(A3CANVAS_JUCE_MODULES juce::juce_gui_basics)

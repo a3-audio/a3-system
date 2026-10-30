@@ -1,0 +1,6 @@
+Id=xdg-desktop-portal.service
+LoadState=loaded
+ActiveState=failed
+SubState=failed
+MainPID=0
+Result=timeout

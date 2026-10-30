@@ -1,0 +1,15 @@
+git:
+  Installed: 1:2.53.0-1
+  Candidate: 1:2.53.0-1
+  Version table:
+ *** 1:2.53.0-1 500
+        500 http://deb.debian.org/debian testing/main amd64 Packages
+        100 /var/lib/dpkg/status
+appstream:
+  Installed: (none)
+  Candidate: 1.2.1-1
+  Version table:
+     1.2.1-1 500
+        500 http://deb.debian.org/debian testing/main amd64 Packages
+     0.16.2-1 -1
+        100 /var/lib/dpkg/status

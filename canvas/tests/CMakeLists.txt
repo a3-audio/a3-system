@@ -8,6 +8,10 @@ juce_add_console_app(a3-canvas-tests PRODUCT_NAME "a3-canvas-tests")
 target_sources(a3-canvas-tests PRIVATE
     TestRunner.cpp
     AppCatalogTests.cpp
+    CoreProbeTests.cpp
+    PackagesTests.cpp
+    SystemdTests.cpp
+    TileStatusTests.cpp
     ${A3CANVAS_LIBRARY_SOURCES})
 target_include_directories(a3-canvas-tests PRIVATE "${PROJECT_SOURCE_DIR}/Source" "${CMAKE_CURRENT_SOURCE_DIR}")
 target_compile_definitions(a3-canvas-tests PRIVATE ${A3CANVAS_DEFINITIONS}

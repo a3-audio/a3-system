@@ -36,6 +36,8 @@ class Context:
         self.state = State(self.home / STATE_FILE)
         # Answers that hold for this run only, e.g. which parts to replace.
         self.answers = {}
+        # install --network: ask the Core's network again, stored answer or not.
+        self.ask_network = False
 
     @property
     def user_units(self):

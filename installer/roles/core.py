@@ -251,7 +251,14 @@ class Core(Role):
     build_packages = tuple(p for p in CORE_BUILD_PACKAGES if p not in SCREEN_PACKAGES)
     needs_screen = True
 
-    def configure(self, ctx):
+    @staticmethod
+    def network_is_due(ctx):
+        """The network is asked on the first install (nothing stored) and on
+        `install --network`; after that the stored answers stand."""
+        return ctx.ask_network or not ctx.settings.in_file("core", "configure_network")
+
+    @staticmethod
+    def ask_network(ctx):
         s, ask = ctx.settings, ctx.prompter
         s.set_flag("core", "configure_network", ask.yesno(
             "Set up this Core's network?\n(No leaves the network as it is.)",
@@ -264,6 +271,11 @@ class Core(Role):
                                   ("audio_port", "Second socket for AES67 audio and PTP (empty: none)"),
                                   ("audio_address", "Address on the audio network (e.g. 192.168.9.10/24)")):
                 s.set("core", key, ask.text(question, s.get("core", key)))
+
+    def configure(self, ctx):
+        s, ask = ctx.settings, ctx.prompter
+        if self.network_is_due(ctx):
+            self.ask_network(ctx)
         s.set_flag("core", "headless", ask.yesno(
             "Run without a monitor (dummy screen, VNC only)?",
             s.flag("core", "headless")))

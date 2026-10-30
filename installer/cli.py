@@ -5,6 +5,8 @@
                                  at VERSION (default: the stored branch, or
                                  the newest tag when a tag is stored)
     install --config FILE        no questions: FILE's roles and settings
+    install --network            ask the Core's network questions again (otherwise
+                                 only the first install asks; the stored answers stand)
     install --dry-run            show every command, run none
     install --from-source        build the apps from the pinned submodules
                                  instead of taking the archive's packages
@@ -52,6 +54,7 @@ def parse(argv):
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--update", nargs="?", const="", metavar="VERSION")
     parser.add_argument("--config", type=Path, metavar="FILE")
+    parser.add_argument("--network", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--from-source", action="store_true")
     parser.add_argument("--flash-firmware", action="store_true")
@@ -359,6 +362,7 @@ def main(argv=None):
     runner = Runner(dry_run=args.dry_run)
     ctx = Context(REPO, settings, runner, make_prompter(interactive), platform,
                   from_source=args.from_source)
+    ctx.ask_network = args.network
     if args.flash_firmware:
         ctx.answers["flash_firmware"] = True
     if ssh_key:

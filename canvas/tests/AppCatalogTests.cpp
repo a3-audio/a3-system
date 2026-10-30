@@ -61,6 +61,8 @@ TEST (Catalog, EveryTileHasALabel)
     for (const auto& tile : catalog (4))
         EXPECT_TRUE (tile.label.isNotEmpty()) << tile.id;
     EXPECT_EQ (tileWithId (catalog (4), "deck-C").label, "Deck C");
+    // A³ Core is the hardware; the tile starts the audio backend on it (names of 2026-10-30).
+    EXPECT_EQ (tileWithId (catalog (4), "core").label, juce::String::fromUTF8 ("A³ Engine"));
 }
 
 TEST (Catalog, LettersMatchTheInstaller)

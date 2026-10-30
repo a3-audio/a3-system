@@ -33,8 +33,8 @@ Snapshot demoSnapshot (const std::vector<Tile>& tiles)
     facts.core.reachable = true;
     facts.core.engineHeard = true;
     facts.engine.answers = true;
-    facts.engine.sampleRate = 48000;
-    facts.engine.blockSize = 256;
+    facts.engine.sampleRate = 44100;   // the rig: 44.1 kHz, 128 frames
+    facts.engine.blockSize = 128;
     facts.engine.dspLoadPercent = 14.0f;
     for (const auto& tile : tiles)
         snapshot.statuses.push_back (statusOf (tile, facts));

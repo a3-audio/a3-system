@@ -56,7 +56,7 @@ std::vector<juce::String> deckLetters (int count)
 std::vector<Tile> catalog (int decks)
 {
     std::vector<Tile> tiles;
-    tiles.push_back ({ TileKind::core, "core", juce::String::fromUTF8 ("A³ Core"),
+    tiles.push_back ({ TileKind::core, "core", juce::String::fromUTF8 ("A³ Engine"),
                        juce::String::fromUTF8 ("Engine · Core · window"),
                        { "a3-engine.service", "a3-core.service", "a3-core-window.service" },
                        "a3-core-app", "a3-core-window.service" });

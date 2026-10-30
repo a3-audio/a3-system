@@ -83,17 +83,15 @@ TEST (Hosts, ADeckWhereCoreHearsIt)
     EXPECT_EQ (hostLine (tileOf ("deck-B"), facts), "192.168.8.30") << "a deck on another host";
 }
 
-// Core does not know: a program installed here is local; one that is not is nobody's guess.
-TEST (Hosts, UnknownIsLocalWhenInstalledHereElseBlank)
+// Neither Core nor the truth names the host: no address, installed here or not (no fixed values,
+// the maintainer, 2026-10-30: "sonst ist's kein Status").
+TEST (Hosts, UnknownStaysBlankEvenWhenInstalledHere)
 {
     auto facts = factsOnTheCore();
     facts.packages["stemdeck"] = { "03.0+281", "03.0+281" };
-    EXPECT_EQ (hostLine (tileOf ("deck-D"), facts), juce::String::fromUTF8 ("local · 192.168.8.10"));
+    EXPECT_EQ (hostLine (tileOf ("deck-D"), facts), "");
     facts.packages.erase ("stemdeck");
     EXPECT_EQ (hostLine (tileOf ("deck-D"), facts), "");
-    facts.network.own = {};
-    facts.packages["stemdeck"] = { "03.0+281", "03.0+281" };
-    EXPECT_EQ (hostLine (tileOf ("deck-D"), facts), "local") << "no address of its own to name";
 }
 
 TEST (Hosts, TheDeskAndMotionWhereCoreHearsThem)

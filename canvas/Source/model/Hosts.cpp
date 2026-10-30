@@ -47,11 +47,6 @@ juce::String local (const NetworkFacts& network)
     return network.own.empty() ? juce::String ("local") : "local" + juce::String::fromUTF8 (" · ") + network.own.front();
 }
 
-bool installedHere (const Tile& tile, const Facts& facts)
-{
-    const auto package = facts.packages.find (tile.package);
-    return package != facts.packages.end() && package->second.installed.isNotEmpty();
-}
 }
 
 juce::String hostLine (const Tile& tile, const Facts& facts)
@@ -59,6 +54,6 @@ juce::String hostLine (const Tile& tile, const Facts& facts)
     const auto address = knownAddress (tile, facts);
     if (address.isNotEmpty())
         return isOwn (address, facts.network) ? local (facts.network) : address;
-    return installedHere (tile, facts) ? local (facts.network) : juce::String();
+    return {};   // neither Core nor the truth names it: no guess, it would be no status
 }
 }

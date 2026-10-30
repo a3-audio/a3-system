@@ -9,8 +9,9 @@
 
 namespace canvas
 {
-// One program of the rig as a row of the list: its light, its name, what it is doing, its version,
-// and Start/Stop and Restart at the right. (A tile before 2026-10-30; the name stayed.)
+// One program of the rig as a row of the list: its light, its name, what it is doing and where, its
+// software version (with its device's firmware under it where it has one), and Start/Stop and
+// Restart at the right. (A tile before 2026-10-30; the name stayed.)
 class TileComponent : public juce::Component
 {
 public:
@@ -18,6 +19,11 @@ public:
 
     void setStatus (const TileStatus& status, const juce::String& version);
     void setBusy (bool busy);
+    // Its device's firmware ("v03.0+80", "not reported"); empty for a program without one.
+    void setFirmware (const juce::String& firmware);
+    // Where it runs ("local · 192.168.8.10", an address, or nothing), muted after its state line.
+    void setHost (const juce::String& host);
+    const juce::String& getHost() const { return host; }
 
     const Tile& getTile() const { return tile; }
     const TileStatus& getStatus() const { return status; }
@@ -33,6 +39,10 @@ public:
     juce::Rectangle<float> lightArea() const;
     juce::Rectangle<int> labelArea() const;
     juce::Rectangle<int> versionArea() const;
+    // Within the version column: the software line, and under it the firmware line (empty without one).
+    juce::Rectangle<int> softwareArea() const;
+    juce::Rectangle<int> firmwareArea() const;
+    juce::Rectangle<int> hostArea() const;
 
     std::function<void (const Tile&)> onStart, onStop, onRestart;
 
@@ -48,7 +58,7 @@ private:
 
     Tile tile;
     TileStatus status;
-    juce::String version;
+    juce::String version, firmware, host;
     bool busy = false;
     juce::TextButton startStop, restart { "Restart" };
 };

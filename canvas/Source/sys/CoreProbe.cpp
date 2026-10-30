@@ -24,8 +24,24 @@ CoreFacts parseRig (const juce::String& body)
     facts.reachable = true;
     if (const auto* decks = rig["decks"].getArray())
         for (const auto& deck : *decks)
-            if (static_cast<bool> (deck["present"]) && static_cast<int> (deck["deck"]) >= 1)
-                facts.presentDecks.insert (static_cast<int> (deck["deck"]));
+        {
+            const int number = static_cast<int> (deck["deck"]);
+            if (number < 1)
+                continue;
+            if (static_cast<bool> (deck["present"]))
+                facts.presentDecks.insert (number);
+            if (deck["host"].isString() && deck["host"].toString().isNotEmpty())
+                facts.deckHosts[number] = deck["host"].toString();
+        }
+    if (const auto* desks = rig["desks"].getArray())
+        for (const auto& desk : *desks)
+            if (desk["kind"].toString() == "desk" && desk["host"].isString())
+            {
+                facts.deskHost = desk["host"].toString();
+                break;
+            }
+    if (rig["motion"]["followed"].isString())
+        facts.motionHost = rig["motion"]["followed"].toString();
     facts.engineHeard = static_cast<bool> (rig["engine"]["heard"]);
     return facts;
 }

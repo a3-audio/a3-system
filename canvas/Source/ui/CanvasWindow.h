@@ -22,6 +22,9 @@ struct CanvasSetup
     UnitLookup unitFacts;   // what a start waits on: systemd now (the app), always active (--demo)
     juce::String truthPath;
     SupportConfig support;   // where Support A³ leads, from ~/.config/a3/canvas.json
+    TruthNetwork truth;      // the hosts and networks the truth names
+    // The umbrella's pins and the flashed Motion firmware (git and install.state; reads only).
+    std::function<std::pair<SystemFacts, juce::String>()> systemFacts;
     bool demo = false;
 };
 

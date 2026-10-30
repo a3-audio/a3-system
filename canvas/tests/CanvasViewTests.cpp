@@ -9,6 +9,7 @@
 #include "model/Demo.h"
 #include "model/Greeter.h"
 #include "model/Support.h"
+#include "Fixtures.h"
 #include "ui/CanvasWindow.h"
 
 using namespace canvas;
@@ -65,6 +66,14 @@ double lumaVariance (const juce::Image& image)
 }
 
 Tile deckTile() { return catalog (1)[1]; }
+
+Tile motionTile()
+{
+    for (const auto& tile : catalog (1))
+        if (tile.kind == TileKind::motion)
+            return tile;
+    return {};
+}
 
 juce::Colour over (juce::Colour top, juce::Colour ground) { return ground.overlaidWith (top); }
 
@@ -224,12 +233,17 @@ int pixelsNear (const juce::Image& image, juce::Rectangle<int> area, juce::Colou
 
 juce::Image snapshotOf (juce::Component& component) { return component.createComponentSnapshot (component.getLocalBounds(), true, 1.0f); }
 
-std::map<juce::String, PackageFacts> allInstalled()
+// The umbrella as on a machine with everything checked out: every row the card can have, one not checked out.
+SystemFacts fullSystem()
 {
-    std::map<juce::String, PackageFacts> packages;
-    for (const auto& name : greeterPackages())
-        packages[name] = { "03.0+800", "03.0+800" };
-    return packages;
+    SystemFacts system;
+    system.found = true;
+    system.version = "v03.0+271";
+    for (const auto& name : { "a3-core", "a3-doc", "a3-mixer", "a3-mixer firmware", "a3-motion", "a3-motion firmware",
+                              "a3-motion/ui", "beat-analyzer", "stemdeck" })
+        system.rows.push_back ({ name, "v03.0+413" });
+    system.rows.push_back ({ "stemseparator", {} });
+    return system;
 }
 
 // A greeter on its own, in the Canvas's look, as the band of the rig's screen.
@@ -241,7 +255,9 @@ struct LookedGreeter
     explicit LookedGreeter (SupportConfig support = {}) : greeter (std::move (support), "0.1.0")
     {
         greeter.setLookAndFeel (&look);
-        greeter.setSize (rigWidth, GreeterComponent::bandHeight (look.getMetrics(), greeter.supportCard().getConfig()));
+        greeter.setSystem (fullSystem());
+        greeter.setSize (rigWidth, GreeterComponent::bandHeight (look.getMetrics(), greeter.supportCard().getConfig(),
+                                                                 static_cast<int> (fullSystem().rows.size())));
     }
     ~LookedGreeter() { greeter.setLookAndFeel (nullptr); }
 };
@@ -257,7 +273,8 @@ std::vector<std::pair<juce::String, juce::Rectangle<int>>> elementsOf (CanvasVie
         { "logo", fromGreeter (greeter.logoArea().toNearestInt()) },
         { "tagline", fromGreeter (greeter.taglineArea()) },
         { "about", fromGreeter (greeter.aboutArea()) },
-        { "versions", fromGreeter (greeter.versionsArea()) },
+        { "licence", fromGreeter (greeter.licenceArea()) },
+        { "system", fromGreeter (greeter.systemArea()) },
         { "start all", view.startAllButton().getBounds() },
         { "stop all", view.stopAllButton().getBounds() },
         { "rig line", view.subtitleArea() },
@@ -320,6 +337,24 @@ TEST (CanvasView, ALaptopKeepsWorking)
     expectEverythingFitsApart (view);
     for (const auto& row : view.getTiles())
         EXPECT_GE (row->getX(), view.greeter().getRight());
+}
+
+// Every submodule and firmware row of the A³ System card, at both sizes, Support set.
+TEST (CanvasView, EverythingFitsWithTheWholeSystemListed)
+{
+    for (const auto& size : { juce::Point<int> (rigWidth, rigHeight), juce::Point<int> (laptopWidth, laptopHeight) })
+    {
+        CanvasView view (catalog (4), everySupport());
+        view.setSize (size.x, size.y);
+        Snapshot snapshot;
+        snapshot.facts.system = fullSystem();
+        snapshot.statuses.resize (view.getTiles().size());
+        view.show (snapshot);
+        expectEverythingFitsApart (view);
+        auto& greeter = view.greeter();
+        for (int row = 0; row < static_cast<int> (fullSystem().rows.size()); ++row)
+            EXPECT_TRUE (greeter.systemArea().contains (greeter.systemRowArea (row))) << size.x << ": row " << row;
+    }
 }
 
 // Decks first, A to D; then the system: Engine, Mixer, Motion, Beat analyzer. Rows of one height.
@@ -393,45 +428,89 @@ TEST (Greeter, TheLogoPaintsInTheWebsitesInkAtBothSizes)
     }
 }
 
-TEST (Greeter, TheAboutBlockIsWrittenUnderTheLogo)
+// Copyright and contact under the links; the licences at the very bottom (the maintainer, 2026-10-30).
+TEST (Greeter, TheLicencesAreTheLastLineAndTheAboutFollowsTheLinks)
+{
+    for (const auto& size : { juce::Point<int> (rigWidth, rigHeight), juce::Point<int> (laptopWidth, laptopHeight) })
+    {
+        CanvasView view (catalog (4), everySupport());
+        view.setSize (size.x, size.y);
+        auto& greeter = view.greeter();
+        const auto image = snapshotOf (greeter);
+        EXPECT_GT (pixelsUnlike (image, greeter.aboutArea(), skin::surface), 200) << size.x << ": copyright and contact";
+        EXPECT_GT (pixelsUnlike (image, greeter.licenceArea(), skin::surface), 200) << size.x << ": the licences";
+        EXPECT_GE (greeter.licenceArea().getY(), greeter.systemArea().getBottom()) << size.x;
+        EXPECT_GE (greeter.licenceArea().getY(), greeter.supportCard().getBottom()) << size.x;
+        EXPECT_GE (greeter.licenceArea().getY(), greeter.aboutArea().getBottom()) << size.x;
+        for (auto* link : greeter.getLinks())
+        {
+            EXPECT_LE (link->getBottom(), greeter.aboutArea().getY()) << size.x << ": the about block under the links";
+            EXPECT_EQ (link->getY(), greeter.getLinks()[0]->getY()) << size.x << ": " << link->getButtonText() << " in the one row";
+        }
+    }
+}
+
+// "A³ System": each submodule with the tag of its pinned commit, read in text; not checked out, muted.
+TEST (Greeter, TheSystemCardNamesEachSubmodulesTag)
 {
     LookedGreeter looked;
     auto& greeter = looked.greeter;
-    EXPECT_GE (greeter.aboutArea().getY(), juce::roundToInt (greeter.logoArea().getBottom()));
-    EXPECT_GT (pixelsUnlike (snapshotOf (greeter), greeter.aboutArea(), skin::surface), 300) << "copyright, contact, licences";
-    EXPECT_TRUE (greeter.aboutArea().contains (greeter.licenceArea()));
+    const auto image = snapshotOf (greeter);
+    const auto last = static_cast<int> (fullSystem().rows.size()) - 1;
+    for (int row = 0; row < last; ++row)
+        EXPECT_GT (pixelsNear (image, greeter.systemRowArea (row), skin::textPrimary, 20), 10) << row << ": a tag, read";
+    EXPECT_EQ (pixelsNear (image, greeter.systemRowArea (last), skin::textPrimary, 20), 0) << "not checked out, muted";
+    EXPECT_GT (pixelsUnlike (image, greeter.systemRowArea (last), skin::surfaceRaised), 50) << "but written";
 }
 
-TEST (Greeter, InstalledVersionsPaintInTextAndMissingOnesMuted)
-{
-    LookedGreeter lookedInstalled;
-    auto& installed = lookedInstalled.greeter;
-    installed.setPackages (allInstalled());
-    auto image = snapshotOf (installed);
-    EXPECT_GT (pixelsNear (image, installed.versionsArea(), skin::textPrimary, 20), 40) << "the versions are read";
-
-    LookedGreeter lookedMissing;
-    auto& missing = lookedMissing.greeter;
-    auto packages = allInstalled();
-    for (auto& [name, facts] : packages)
-        facts.installed = {};
-    missing.setPackages (packages);
-    image = snapshotOf (missing);
-    const auto canvasRow = missing.versionRowArea (static_cast<int> (greeterPackages().size()));
-    for (int row = 0; row < static_cast<int> (greeterPackages().size()); ++row)
-        EXPECT_EQ (pixelsNear (image, missing.versionRowArea (row), skin::textPrimary, 20), 0) << row << ": not installed, not lit";
-    EXPECT_GT (pixelsNear (image, canvasRow, skin::textPrimary, 20), 10) << "the Canvas itself runs";
-    EXPECT_GT (pixelsUnlike (image, missing.versionsArea(), skin::surfaceRaised), 200) << "but it is all written";
-}
-
-TEST (Greeter, AnUpdatePaintsInTheAccent)
+TEST (Greeter, NoCheckoutSaysSo)
 {
     LookedGreeter looked;
     auto& greeter = looked.greeter;
-    auto packages = allInstalled();
-    packages["stemdeck"].candidate = "03.0+900";
-    greeter.setPackages (packages);
-    EXPECT_GT (pixelsNear (snapshotOf (greeter), greeter.versionRowArea (1), skin::accent, 20), 10);
+    greeter.setSystem ({});
+    EXPECT_EQ (greeter.systemRowCount(), 1) << "one line that says there is no checkout";
+    EXPECT_GT (pixelsUnlike (snapshotOf (greeter), greeter.systemRowArea (0), skin::surfaceRaised), 50);
+}
+
+// Software over firmware at the right, where the row's device has firmware.
+TEST (TileComponent, AFirmwareLineUnderTheSoftwareVersion)
+{
+    LookAndFeel_Canvas look;
+    TileComponent row (motionTile());
+    row.setStatus (statusWith (Light::running), "03.0+855");
+    row.setFirmware ("not reported");
+    const auto image = paintedTile (row, look);
+    EXPECT_FALSE (row.firmwareArea().isEmpty());
+    EXPECT_GE (row.firmwareArea().getY(), row.softwareArea().getBottom()) << "under the software";
+    EXPECT_GT (pixelsUnlike (image, row.softwareArea(), skin::surfaceRaised), 20);
+    EXPECT_GT (pixelsUnlike (image, row.firmwareArea(), skin::surfaceRaised), 20);
+    EXPECT_LT (row.firmwareArea().getRight(), row.startStopButton().getX() + 1);
+    row.setFirmware ({});
+    EXPECT_TRUE (row.firmwareArea().isEmpty()) << "a program without firmware has one line";
+    row.setLookAndFeel (nullptr);
+}
+
+TEST (TileComponent, TheHostIsAMutedLineUnderTheName)
+{
+    LookAndFeel_Canvas look;
+    TileComponent row (deckTile());
+    row.setStatus (statusWith (Light::running), "03.0");
+    row.setHost (juce::String::fromUTF8 ("local · 192.168.8.10"));
+    const auto image = paintedTile (row, look);
+    EXPECT_GE (row.hostArea().getY(), row.labelArea().getBottom() - 1) << "under the name";
+    EXPECT_GT (pixelsUnlike (image, row.hostArea(), skin::surfaceRaised), 60);
+    EXPECT_EQ (pixelsNear (image, row.hostArea(), skin::textPrimary, 20), 0) << "muted";
+    EXPECT_LT (row.hostArea().getRight(), row.versionArea().getX() + 1);
+    row.setLookAndFeel (nullptr);
+}
+
+TEST (CanvasWindow, TheDemoNamesTheTruthsAddresses)
+{
+    CanvasView view (catalog (4));
+    auto setup = demoSetup (4);
+    setup.truth = parseTruthNetwork (juce::JSON::parse (fixture ("truth-network.json")));
+    CanvasController controller (view, std::move (setup));
+    EXPECT_TRUE (view.getTiles().front()->getHost().contains ("192.168.8.10")) << "the engine on the core";
 }
 
 // -- Support A³ ---------------------------------------------------------------------
@@ -499,12 +578,26 @@ TEST (CanvasWindow, TheDemoSaysItIsADemo)
     view.setSize (rigWidth, rigHeight);
     const auto image = snapshotOf (view);
     EXPECT_GT (pixelsUnlike (image, view.subtitleArea(), skin::surface), 100) << "and paints it";
-    EXPECT_GT (pixelsNear (image, view.getLocalArea (&view.greeter(), view.greeter().versionsArea()), skin::textPrimary, 20), 100)
-        << "the demo's versions";
+    EXPECT_GT (pixelsUnlike (image, view.getLocalArea (&view.greeter(), view.greeter().systemArea()), skin::surface), 100)
+        << "the demo's A³ System card";
 }
 
 namespace
 {
+// What every installation shows: the package's canvas.json.
+SupportConfig shippedSupport()
+{
+    return loadSupport ({}, juce::File (A3CANVAS_FIXTURES).getChildFile ("../../packaging/canvas.json"));
+}
+
+// The demo as on a machine with the shipped truth (this one may have none).
+CanvasSetup demoWithTheTruth()
+{
+    auto setup = demoSetup (4);
+    setup.truth = parseTruthNetwork (juce::JSON::parse (fixture ("truth-network.json")));
+    return setup;
+}
+
 void writePng (juce::Component& component, const juce::File& file)
 {
     file.deleteFile();
@@ -520,8 +613,8 @@ TEST (CanvasWindow, WritesTheRigSizedScreenForReview)
     const auto directory = juce::SystemStats::getEnvironmentVariable ("A3CANVAS_SNAPSHOT_DIR", {});
     if (directory.isEmpty())
         GTEST_SKIP() << "A3CANVAS_SNAPSHOT_DIR not set";
-    CanvasView view (catalog (4));
-    CanvasController controller (view, demoSetup (4));
+    CanvasView view (catalog (4), shippedSupport());
+    CanvasController controller (view, demoWithTheTruth());
     view.setSize (rigWidth, rigHeight);
     view.appendLog ("-- Start all");
     for (const auto& command : startAll (catalog (4), "/home/dj/.config/a3/laptop/a3-osc.json"))
@@ -535,7 +628,7 @@ TEST (CanvasWindow, WritesTheRigSizedScreenForReview)
 
     // With every support entry set to an example (not a real target), for the layout's sake.
     CanvasView supported (catalog (4), everySupport());
-    CanvasController supportedController (supported, demoSetup (4));
+    CanvasController supportedController (supported, demoWithTheTruth());
     supported.setSize (rigWidth, rigHeight);
     writePng (supported, juce::File (directory).getChildFile ("a3-canvas-support-example.png"));
 }

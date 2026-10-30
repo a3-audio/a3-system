@@ -3,6 +3,8 @@
 #include "CanvasWindow.h"
 
 #include "model/Demo.h"
+#include "sys/Interfaces.h"
+#include "sys/SystemRepo.h"
 
 namespace canvas
 {
@@ -18,6 +20,14 @@ int machineDecks()
     const auto truth = juce::JSON::parse (shippedTruth.loadFileAsString());
     const int truthDecks = truthDeckCount (truth, defaultDecks);
     return decksFromInstallConf (home().getChildFile (".config/a3/install.conf").loadFileAsString(), truthDecks);
+}
+
+// The truth the Canvas names hosts from: the laptop's when written, else the shipped one.
+TruthNetwork machineTruth()
+{
+    const auto laptop = home().getChildFile (".config/a3/laptop/a3-osc.json");
+    const auto file = laptop.existsAsFile() ? laptop : shippedTruth;
+    return parseTruthNetwork (juce::JSON::parse (file.loadFileAsString()));
 }
 
 // Plan R8: the laptop's one truth, when the installer's role laptop has written it.
@@ -43,6 +53,16 @@ private:
     const std::atomic<bool>& stopping;
 };
 
+// Git through a runner of its own: the demo's runs nothing, and reading the checkout changes nothing.
+std::function<std::pair<SystemFacts, juce::String>()> systemReader (bool withFlashedFirmware)
+{
+    auto runner = std::make_shared<ProcessRunner>();
+    return [runner, withFlashedFirmware] {
+        return std::make_pair (readSystem (*runner, machineRepo()),
+                               withFlashedFirmware ? machineFlashedMotionFirmware() : juce::String());
+    };
+}
+
 UnitFacts unitFactsNow (CommandRunner& runner, const juce::String& unit)
 {
     const auto units = parseSystemctlShow (outputOf (runner, showCommand ({ unit })));
@@ -60,6 +80,8 @@ CanvasSetup machineSetup()
     setup.unitFacts = [runner = setup.runner.get()] (const juce::String& unit) { return unitFactsNow (*runner, unit); };
     setup.truthPath = laptopTruth();
     setup.support = machineSupport();
+    setup.truth = machineTruth();
+    setup.systemFacts = systemReader (true);
     return setup;
 }
 
@@ -72,6 +94,10 @@ CanvasSetup demoSetup (int decks)
     setup.demo = true;
     // Support A³ is the project's, not the rig's: the demo shows this machine's.
     setup.support = machineSupport();
+    // The demo's addresses are the shipped truth's (192.168.8.x), never made up.
+    setup.truth = parseTruthNetwork (juce::JSON::parse (shippedTruth.loadFileAsString()));
+    // The system card is this machine's checkout, as it is: a made-up tag would be no status.
+    setup.systemFacts = systemReader (false);
     return setup;
 }
 
@@ -89,12 +115,17 @@ CanvasController::CanvasController (CanvasView& v, CanvasSetup s) : view (v), se
     if (setup.demo)
     {
         view.setSubtitle (juce::String::fromUTF8 ("Demo · a made-up rig, connected to nothing"));
-        view.show (demoSnapshot (tiles));
+        auto snapshot = demoSnapshot (tiles, setup.truth);
+        if (setup.systemFacts)
+            snapshot.facts.system = setup.systemFacts().first;
+        view.show (snapshot);
         return;
     }
     view.setSubtitle (juce::SystemStats::getComputerName() + juce::String::fromUTF8 (" · ") + juce::String (tiles.size()) + " programs");
     poller = std::make_unique<StatusPoller> (tiles, *setup.runner, setup.http);
     poller->onSnapshot = [this] (const Snapshot& snapshot) { view.show (snapshot); };
+    poller->networkFacts = [truth = setup.truth] { return NetworkFacts { truth, ownAddresses (listInterfaces(), truth) }; };
+    poller->systemFacts = setup.systemFacts;
     poller->start();
 }
 

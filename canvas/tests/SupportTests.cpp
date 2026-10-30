@@ -32,7 +32,7 @@ TEST (Support, AllThreeWhenAllAreValid)
     EXPECT_FALSE (support.isEmpty());
 }
 
-TEST (Support, TheShippedDefaultIsAllEmpty)
+TEST (Support, AnAllEmptyFileIsEmpty)
 {
     const auto support = parseSupport (R"({ "kofi": "", "paypal": "", "bitcoin": "" })");
     EXPECT_TRUE (support.isEmpty());
@@ -63,6 +63,17 @@ TEST (Support, WhatIsNotALinkOrAnAddressIsRefused)
         EXPECT_TRUE (parseSupport (juce::String ("{ \"kofi\": \"") + kofi + "\" }").kofi.isEmpty()) << kofi;
     for (const auto* bitcoin : { "bc1", "not an address", "0BoatSLRHtKNngkdXEeobR76b53LETtpyT", "1BoatSLRHtKNngkdXEeobR76b53LETtpyI" /* I is not base58 */ })
         EXPECT_TRUE (parseSupport (juce::String ("{ \"bitcoin\": \"") + bitcoin + "\" }").bitcoin.isEmpty()) << bitcoin;
+}
+
+// PayPal's two forms of a personal link, and nothing else on paypal.com.
+TEST (Support, PayPalMeInBothForms)
+{
+    EXPECT_EQ (parseSupport (R"({ "paypal": "https://paypal.me/someone" })").paypal, "https://paypal.me/someone");
+    EXPECT_EQ (parseSupport (R"({ "paypal": "https://www.paypal.com/paypalme/RaphaelEismann" })").paypal,
+               "https://www.paypal.com/paypalme/RaphaelEismann");
+    for (const auto* other : { "https://www.paypal.com/signin", "https://www.paypal.com/paypalme/", "https://www.paypal.com/donate/?id=x",
+                               "https://www.paypal.com/paypalmex/someone", "https://paypal.com/paypalme/someone" })
+        EXPECT_TRUE (parseSupport (juce::String ("{ \"paypal\": \"") + other + "\" }").paypal.isEmpty()) << other;
 }
 
 TEST (Support, NotJsonIsEmpty)

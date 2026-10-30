@@ -11,14 +11,20 @@ set(_a3canvas_sources
     model/AppCatalog.cpp
     model/Demo.cpp
     model/Greeter.cpp
+    model/Hosts.cpp
+    model/Ini.cpp
+    model/Network.cpp
     model/StartPlan.cpp
     model/Support.cpp
+    model/System.cpp
     model/TileStatus.cpp
     sys/CoreProbe.cpp
+    sys/Interfaces.cpp
     sys/Packages.cpp
     sys/StatusPoller.cpp
     sys/ProcessRunner.cpp
     sys/Systemd.cpp
+    sys/SystemRepo.cpp
     ui/CanvasView.cpp
     ui/CanvasWindow.cpp
     ui/GreeterComponent.cpp

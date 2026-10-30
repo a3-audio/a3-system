@@ -16,6 +16,17 @@ TEST (CoreProbe, TheRigNamesThePresentDecks)
     EXPECT_TRUE (core.engineHeard);
 }
 
+// Who sent each deck's hello, the desk Core hears, and the Motion it follows.
+TEST (CoreProbe, TheRigSaysWhereDecksDeskAndMotionAre)
+{
+    const auto core = parseRig (fixture ("core-rig.json"));
+    EXPECT_EQ (core.deckHosts, (std::map<int, juce::String> { { 1, "127.0.0.1" }, { 2, "127.0.0.1" }, { 3, "127.0.0.1" } }))
+        << "deck 4 has never been heard";
+    EXPECT_EQ (core.deskHost, "127.0.0.1");
+    EXPECT_EQ (core.motionHost, "127.0.0.1");
+    EXPECT_TRUE (parseRig ("{}").deckHosts.empty());
+}
+
 TEST (CoreProbe, NoAnswerIsUnreachable)
 {
     EXPECT_FALSE (parseRig ({}).reachable);

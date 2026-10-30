@@ -10,45 +10,57 @@ namespace canvas
 {
 namespace
 {
-// The versions card's columns in the band and in the column.
+// The A³ System card's columns in the band and in the column.
 constexpr int bandColumns = 2;
 constexpr int columnColumns = 1;
 
-int rowCount() { return static_cast<int> (greeterPackages().size()) + 1; }
 int captionRow (const Metrics& m) { return juce::roundToInt (m.caption() * 1.8f); }
-float versionFontHeight (const Metrics& m) { return m.caption() * 1.1f; }
-int versionRow (const Metrics& m) { return juce::roundToInt (versionFontHeight (m) * 1.55f); }
+float systemFontHeight (const Metrics& m) { return m.caption() * 1.1f; }
+int systemRow (const Metrics& m) { return juce::roundToInt (systemFontHeight (m) * 1.55f); }
 int aboutRow (const Metrics& m) { return juce::roundToInt (m.caption() * 1.6f); }
 int taglineRow (const Metrics& m) { return juce::roundToInt (m.title() * 1.25f); }
+// The hero's text: caption, the tagline, the links and the copyright line under them.
+int heroTextHeight (const Metrics& m)
+{
+    return captionRow (m) + taglineRow (m) + juce::roundToInt (linkHeight (m)) + aboutRow (m);
+}
 // The logo leads the band at four title heights, as the hero on the website leads its page.
-int heroHeight (const Metrics& m) { return juce::roundToInt (m.title() * 4.0f); }
+int heroHeight (const Metrics& m) { return std::max (juce::roundToInt (m.title() * 4.0f), heroTextHeight (m)); }
 
 float textWidth (const juce::Font& font, const juce::String& text) { return juce::GlyphArrangement::getStringWidth (font, text); }
 juce::Font taglineFont (const Metrics& m) { return canvasFont (m.title(), true); }
 juce::Font aboutFont (const Metrics& m) { return canvasFont (m.caption()); }
 
-juce::String aboutHead() { return copyrightLine() + juce::String::fromUTF8 (" · ") + contactAddress(); }
+const juce::String dot = juce::String::fromUTF8 (" · ");
+juce::String aboutHead() { return copyrightLine() + dot + contactAddress(); }
 
-int cardHeight (const Metrics& m, int columns)
+// One line where it fits, else a line per "·"-separated part.
+juce::StringArray linesToFit (const juce::String& text, const juce::Font& font, float width)
 {
-    const int rowsPerColumn = (rowCount() + columns - 1) / columns;
-    return juce::roundToInt (m.padding() * 2.0f) + captionRow (m) + rowsPerColumn * versionRow (m);
+    if (textWidth (font, text) <= width)
+        return { text };
+    auto parts = juce::StringArray::fromTokens (text, juce::String::fromUTF8 ("·"), {});
+    for (auto& part : parts)
+        part = part.trim();
+    return parts;
 }
 
-// The band: the hero, the About block's two lines, the cards.
-int bandAboutHeight (const Metrics& m) { return juce::roundToInt (m.gap()) + 2 * aboutRow (m); }
+int cardRows (int rows, int columns) { return (rows + columns - 1) / columns; }
 
-juce::Colour versionColour (const VersionRow& row)
+int cardHeight (const Metrics& m, int rows, int columns)
 {
-    if (! row.installed)
-        return skin::textMuted;
-    return row.updateAvailable ? skin::accent : skin::textPrimary;
+    return juce::roundToInt (m.padding() * 2.0f) + captionRow (m) + cardRows (rows, columns) * systemRow (m);
 }
+
+int systemRowsOf (const SystemFacts& system) { return system.found ? static_cast<int> (system.rows.size()) : 1; }
+
+// Under the card: the space, then the licences.
+int licenceFoot (const Metrics& m, int lines) { return juce::roundToInt (m.padding()) + lines * aboutRow (m); }
 }
 
 GreeterComponent::GreeterComponent (SupportConfig supportConfig, juce::String version)
     : logo (juce::Drawable::createFromImageData (CanvasAssets::a3logo_svg, CanvasAssets::a3logo_svgSize)),
-      canvasVersion (std::move (version)), rows (versionRows ({}, canvasVersion)), support (std::move (supportConfig))
+      canvasVersion (std::move (version)), support (std::move (supportConfig))
 {
     setOpaque (true);
     std::vector<std::pair<juce::String, juce::String>> targets;
@@ -66,66 +78,45 @@ Metrics GreeterComponent::metrics() const
     return {};
 }
 
-int GreeterComponent::bandHeight (const Metrics& m, const SupportConfig& supportConfig)
+int GreeterComponent::bandHeight (const Metrics& m, const SupportConfig& supportConfig, int systemRows)
 {
-    const int cards = std::max (cardHeight (m, bandColumns),
+    const int cards = std::max (cardHeight (m, systemRows, bandColumns),
                                 supportConfig.isEmpty() ? 0 : SupportComponent::preferredHeight (m, supportConfig));
-    return heroHeight (m) + bandAboutHeight (m) + juce::roundToInt (m.padding()) + cards;
+    return heroHeight (m) + juce::roundToInt (m.gap()) + cards + licenceFoot (m, 1);
 }
 
-void GreeterComponent::setPackages (const std::map<juce::String, PackageFacts>& packages)
+int GreeterComponent::systemRowCount() const
 {
-    auto next = versionRows (packages, canvasVersion);
-    const auto same = [] (const VersionRow& a, const VersionRow& b) {
-        return a.package == b.package && a.version == b.version && a.candidate == b.candidate;
-    };
-    if (std::equal (next.begin(), next.end(), rows.begin(), rows.end(), same))
-        return;
-    rows = std::move (next);
-    repaint (card);
+    return systemRowsOf (system);
 }
 
-juce::Rectangle<int> GreeterComponent::versionRowArea (int row) const
+bool GreeterComponent::setSystem (const SystemFacts& next)
+{
+    const auto same = [] (const SystemRow& a, const SystemRow& b) { return a.name == b.name && a.tag == b.tag; };
+    if (next.found == system.found && next.version == system.version
+        && std::equal (next.rows.begin(), next.rows.end(), system.rows.begin(), system.rows.end(), same))
+        return false;
+    const bool resize = systemRowsOf (next) != systemRowsOf (system);
+    system = next;
+    if (resize)
+        resized();
+    repaint();
+    return resize;
+}
+
+juce::Rectangle<int> GreeterComponent::systemRowArea (int row) const
 {
     return juce::isPositiveAndBelow (row, static_cast<int> (rowBoxes.size())) ? rowBoxes[(size_t) row] : juce::Rectangle<int>();
 }
 
-// One line where it fits, else broken after the dash, as the website breaks it.
-juce::StringArray GreeterComponent::taglineLines (float width) const
-{
-    const auto line = tagline();
-    if (textWidth (taglineFont (metrics()), line) <= width)
-        return { line };
-    const auto dash = juce::String::fromUTF8 ("—");
-    return { line.upToFirstOccurrenceOf (dash, true, false).trim(), line.fromFirstOccurrenceOf (dash, false, false).trim() };
-}
-
-// Copyright and contact on one line, the licences on the next; split where a line is too wide.
 juce::StringArray GreeterComponent::aboutLines (float width) const
 {
-    const auto font = aboutFont (metrics());
-    juce::StringArray lines;
-    if (textWidth (font, aboutHead()) <= width)
-        lines.add (aboutHead());
-    else
-        lines.addArray ({ copyrightLine(), contactAddress() });
-    if (textWidth (font, licenceLine()) <= width)
-        lines.add (licenceLine());
-    else
-        lines.addArray (juce::StringArray::fromTokens (licenceLine(), juce::String::fromUTF8 ("·"), {}));
-    for (auto& line : lines)
-        line = line.trim();
-    return lines;
+    return linesToFit (aboutHead(), aboutFont (metrics()), width);
 }
 
-void GreeterComponent::layoutAbout (juce::Rectangle<int> area)
+juce::StringArray GreeterComponent::licenceLines (float width) const
 {
-    const auto m = metrics();
-    const auto lines = aboutLines (static_cast<float> (area.getWidth()));
-    aboutBox = area.withHeight (lines.size() * aboutRow (m));
-    // The licences are the last lines: those after the copyright and contact.
-    const int licenceLines = lines.size() - (lines[0] == aboutHead() ? 1 : 2);
-    licenceBox = aboutBox.withTrimmedTop (aboutBox.getHeight() - licenceLines * aboutRow (m));
+    return linesToFit (licenceLine(), aboutFont (metrics()), width);
 }
 
 void GreeterComponent::layoutCard (juce::Rectangle<int> area, int columns)
@@ -134,15 +125,16 @@ void GreeterComponent::layoutCard (juce::Rectangle<int> area, int columns)
     card = area;
     auto inner = card.reduced (juce::roundToInt (m.padding()));
     cardCaption = inner.removeFromTop (captionRow (m));
-    const int rowsPerColumn = (rowCount() + columns - 1) / columns;
+    const int rows = systemRowCount();
+    const int rowsPerColumn = cardRows (rows, columns);
     const int columnGap = juce::roundToInt (m.padding() * 1.5f);
     const int columnWidth = (inner.getWidth() - columnGap * (columns - 1)) / columns;
     rowBoxes.clear();
-    for (int row = 0; row < rowCount(); ++row)
+    for (int row = 0; row < rows; ++row)
     {
         const int column = row / rowsPerColumn;
-        rowBoxes.push_back ({ inner.getX() + column * (columnWidth + columnGap), inner.getY() + (row % rowsPerColumn) * versionRow (m),
-                              columnWidth, versionRow (m) });
+        rowBoxes.push_back ({ inner.getX() + column * (columnWidth + columnGap), inner.getY() + (row % rowsPerColumn) * systemRow (m),
+                              columnWidth, systemRow (m) });
     }
 }
 
@@ -150,52 +142,57 @@ void GreeterComponent::layoutBand (juce::Rectangle<int> area)
 {
     const auto m = metrics();
     const int pad = juce::roundToInt (m.padding());
+    licenceBox = area.removeFromBottom (aboutRow (m));
+    area.removeFromBottom (pad);
+
     auto hero = area.removeFromTop (heroHeight (m));
     logoBox = hero.removeFromLeft (hero.getHeight()).toFloat();
     hero.removeFromLeft (pad * 2);
-    const int lines = taglineLines (static_cast<float> (hero.getWidth())).size();
     const int link = juce::roundToInt (linkHeight (m));
-    auto text = hero.withSizeKeepingCentre (hero.getWidth(), captionRow (m) + lines * taglineRow (m) + link);
+    auto text = hero.withSizeKeepingCentre (hero.getWidth(), heroTextHeight (m));
     captionBox = text.removeFromTop (captionRow (m));
-    taglineBox = text.removeFromTop (lines * taglineRow (m));
-    layoutLinkRow (links, text, juce::Justification::centredLeft, m);
+    taglineBox = text.removeFromTop (taglineRow (m));
+    layoutLinkRow (links, text.removeFromTop (link), juce::Justification::centredLeft, m);
+    aboutBox = text.removeFromTop (aboutRow (m));
 
-    // Under the logo.
+    // One row of cards, one height.
     area.removeFromTop (juce::roundToInt (m.gap()));
-    layoutAbout (area.removeFromTop (2 * aboutRow (m)));
-    area.removeFromTop (pad);
-
+    const int cards = std::max (cardHeight (m, systemRowCount(), bandColumns),
+                                support.isVisible() ? SupportComponent::preferredHeight (m, support.getConfig()) : 0);
+    area.setHeight (cards);
     if (support.isVisible())
     {
-        support.setBounds (area.removeFromRight (SupportComponent::preferredWidth (m, support.getConfig()))
-                               .withHeight (SupportComponent::preferredHeight (m, support.getConfig())));
+        support.setBounds (area.removeFromRight (SupportComponent::preferredWidth (m, support.getConfig())));
         area.removeFromRight (juce::roundToInt (m.gap() * 1.5f));
     }
-    layoutCard (area.withHeight (std::max (cardHeight (m, bandColumns), support.isVisible() ? support.getHeight() : 0)), bandColumns);
+    layoutCard (area, bandColumns);
 }
 
-// The column: logo, line, links and About from the top, the cards at the foot.
+// The column: logo, line, links and About from the top; the cards and the licences at the foot.
 void GreeterComponent::layoutColumn (juce::Rectangle<int> area)
 {
     const auto m = metrics();
     const int pad = juce::roundToInt (m.padding());
+    const auto width = static_cast<float> (area.getWidth());
     const int logoSide = juce::roundToInt (std::min (getWidth() * 0.5f, getHeight() * 0.25f));
     logoBox = area.removeFromTop (logoSide).withSizeKeepingCentre (logoSide, logoSide).toFloat();
-    area.removeFromTop (pad);
-    const int aboutLineCount = aboutLines (static_cast<float> (area.getWidth())).size();
-    layoutAbout (area.removeFromTop (aboutLineCount * aboutRow (m)));
     area.removeFromTop (pad * 2);
     captionBox = area.removeFromTop (captionRow (m));
-    taglineBox = area.removeFromTop (taglineLines (static_cast<float> (area.getWidth())).size() * taglineRow (m));
+    taglineBox = area.removeFromTop (taglineRow (m));
     area.removeFromTop (pad);
-    layoutLinkRow (links, area.removeFromTop (juce::roundToInt (linkHeight (m)) * 2), juce::Justification::centred, m);
+    // Two rows of room, should the three not fit side by side.
+    const int linkRows = linkRowWidth (links, m) <= width ? 1 : 2;
+    layoutLinkRow (links, area.removeFromTop (juce::roundToInt (linkHeight (m)) * linkRows), juce::Justification::centred, m);
+    aboutBox = area.removeFromTop (aboutLines (width).size() * aboutRow (m));
 
+    licenceBox = area.removeFromBottom (licenceLines (width).size() * aboutRow (m));
+    area.removeFromBottom (pad);
     if (support.isVisible())
     {
         support.setBounds (area.removeFromBottom (SupportComponent::preferredHeight (m, support.getConfig())));
         area.removeFromBottom (pad);
     }
-    layoutCard (area.removeFromBottom (cardHeight (m, columnColumns)), columnColumns);
+    layoutCard (area.removeFromBottom (cardHeight (m, systemRowCount(), columnColumns)), columnColumns);
 }
 
 void GreeterComponent::resized()
@@ -204,6 +201,44 @@ void GreeterComponent::resized()
         layoutColumn (getLocalBounds());
     else
         layoutBand (getLocalBounds());
+}
+
+// The column has room for a line per part; the band's one line is fitted where it is a little narrow.
+void GreeterComponent::paintLines (juce::Graphics& g, juce::Rectangle<int> box, const juce::StringArray& lines,
+                                   const juce::String& whole, const Metrics& m, juce::Justification align) const
+{
+    if (! isColumn())
+    {
+        g.drawFittedText (whole, box, align, 1, 0.85f);
+        return;
+    }
+    for (const auto& line : lines)
+        g.drawText (line, box.removeFromTop (aboutRow (m)), align, true);
+}
+
+void GreeterComponent::paintSystemCard (juce::Graphics& g, const Metrics& m) const
+{
+    if (auto* look = dynamic_cast<LookAndFeel_Canvas*> (&getLookAndFeel()))
+        look->drawCard (g, card.toFloat());
+    drawCaption (g, juce::String::fromUTF8 ("A³ System"), cardCaption, m);
+    g.setFont (canvasFont (systemFontHeight (m)));
+    g.setColour (skin::textPrimary);
+    g.drawText (system.version, cardCaption, juce::Justification::centredRight, true);
+
+    if (! system.found)
+    {
+        g.setColour (skin::textMuted);
+        g.drawText ("no a3-system checkout on this machine", systemRowArea (0), juce::Justification::centredLeft, true);
+        return;
+    }
+    for (size_t i = 0; i < system.rows.size() && i < rowBoxes.size(); ++i)
+    {
+        const auto& row = system.rows[i];
+        g.setColour (skin::textMuted);
+        g.drawText (row.name, rowBoxes[i], juce::Justification::centredLeft, true);
+        g.setColour (row.tag.isNotEmpty() ? skin::textPrimary : skin::textMuted);
+        g.drawText (systemTagText (row), rowBoxes[i], juce::Justification::centredRight, true);
+    }
 }
 
 void GreeterComponent::paint (juce::Graphics& g)
@@ -215,29 +250,16 @@ void GreeterComponent::paint (juce::Graphics& g)
     if (logo != nullptr)
         logo->drawWithin (g, logoBox, juce::RectanglePlacement::centred, 1.0f);
 
-    drawCaption (g, juce::String::fromUTF8 ("A³ Canvas"), captionBox, m, align);
+    drawCaption (g, juce::String::fromUTF8 ("A³ Canvas ") + canvasVersion, captionBox, m, align);
     g.setColour (skin::textPrimary);
     g.setFont (taglineFont (m));
-    auto lineBox = taglineBox;
-    for (const auto& line : taglineLines (static_cast<float> (taglineBox.getWidth())))
-        g.drawText (line, lineBox.removeFromTop (taglineRow (m)), align, true);
+    g.drawFittedText (tagline(), taglineBox, align, 1);
 
     g.setColour (skin::textMuted);
     g.setFont (aboutFont (m));
-    auto aboutLine = aboutBox;
-    for (const auto& line : aboutLines (static_cast<float> (aboutBox.getWidth())))
-        g.drawText (line, aboutLine.removeFromTop (aboutRow (m)), align, true);
+    paintLines (g, aboutBox, aboutLines (static_cast<float> (aboutBox.getWidth())), aboutHead(), m, align);
+    paintLines (g, licenceBox, licenceLines (static_cast<float> (licenceBox.getWidth())), licenceLine(), m, align);
 
-    if (auto* look = dynamic_cast<LookAndFeel_Canvas*> (&getLookAndFeel()))
-        look->drawCard (g, card.toFloat());
-    drawCaption (g, "Versions", cardCaption, m);
-    g.setFont (canvasFont (versionFontHeight (m)));
-    for (size_t i = 0; i < rows.size() && i < rowBoxes.size(); ++i)
-    {
-        g.setColour (skin::textMuted);
-        g.drawText (rows[i].package, rowBoxes[i], juce::Justification::centredLeft, true);
-        g.setColour (versionColour (rows[i]));
-        g.drawText (versionText (rows[i]), rowBoxes[i], juce::Justification::centredRight, true);
-    }
+    paintSystemCard (g, m);
 }
 }

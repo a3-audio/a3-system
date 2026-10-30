@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=A³ Canvas
-Comment=The A³ rig on one screen: every program's state, started and stopped in its order
-Exec=a3-canvas
-Terminal=false
-Categories=AudioVideo;Audio;

@@ -461,13 +461,13 @@ class ArchiveFromBareForge(unittest.TestCase):
 
 
 class RecipeVersion(unittest.TestCase):
-    """The recipe learns the version the package gets, so an app can show it (a3-canvas)."""
+    """The recipe learns the version the package gets, so an app can show it."""
 
     def test_the_recipe_is_run_with_the_package_version_in_its_environment(self):
         with mock.patch.object(package.subprocess, "run") as run:
-            package.run_recipe("/src/canvas/packaging/stage", ["build", "/src", "/b", "/j", "2"], "03.0+12")
+            package.run_recipe("/src/packaging/stage", ["build", "/src", "/b", "/j", "2"], "03.0+12")
         args, kwargs = run.call_args
-        self.assertEqual(["/src/canvas/packaging/stage", "build", "/src", "/b", "/j", "2"], args[0])
+        self.assertEqual(["/src/packaging/stage", "build", "/src", "/b", "/j", "2"], args[0])
         self.assertEqual("03.0+12", kwargs["env"]["A3_PACKAGE_VERSION"])
         self.assertEqual(os.environ.get("PATH"), kwargs["env"]["PATH"], "the rest of the environment is kept")
         self.assertTrue(kwargs["check"])

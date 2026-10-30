@@ -330,7 +330,7 @@ def archive_submodule_from_forge(repo, commit, path, sha, dest):
 def archive(repo, commit, dest, with_submodules=True):
     """The committed tree of `commit`, modes kept, into `dest`; with
     `with_submodules` false, that tree alone (a recipe of the umbrella's own,
-    such as canvas/packaging, needs none of the apps). Otherwise every
+    needs none of the apps). Otherwise every
     initialised submodule at its pinned commit, from its local checkout; an
     uninitialised one is skipped with a note. A bare `repo` has no checkouts:
     its submodules come from sibling bare repos; a sibling without the pinned
@@ -429,7 +429,7 @@ def _log(message):
 
 def run_recipe(stage_script, arguments, version):
     """The recipe's step, with the version the package will carry in A3_PACKAGE_VERSION: an app
-    that shows its version (a3-canvas) is built with the package's, not a guess of its own."""
+    that shows its version is built with the package's, not a guess of its own."""
     env = {**os.environ, "A3_PACKAGE_VERSION": version}
     subprocess.run([stage_script, *arguments], check=True, stdout=sys.stderr, env=env)
 

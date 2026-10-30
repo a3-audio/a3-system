@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """A whole A³ rig on one machine: the Core program and its engine, the
 StemDeck decks, the desk, Motion UI and the beat-analyzer, for a laptop
-(A³ Canvas step 2, 2026-10-28). Debian testing, i3 on Xorg, PipeWire.
+(2026-10-28). Debian testing, i3 on Xorg, PipeWire.
 
 Packages only (plan ruling R10): the five apps come by name from the archive
 in one a3-root call, so apt sees them together. Not the package a3-core: that
@@ -328,8 +328,7 @@ KEPT_ENVIRONMENT = {
     DECK_TEMPLATE: ("STEMDECK_WINDOW=",),
 }
 # The switch the laptop's rig runs under, in the user manager's environment
-# (systemctl --user set-environment A3_LAPTOP_RIG=on, by the Canvas or by
-# hand), which the units' Environment= reset does not touch.
+# (systemctl --user set-environment A3_LAPTOP_RIG=on, by hand), which the units' Environment= reset does not touch.
 RIG_SWITCH = "A3_LAPTOP_RIG"
 # Units a package enables globally (systemctl --global enable), which no
 # user-level disable undoes: a3-motion-ui's postinst, so default.target pulls
@@ -341,7 +340,7 @@ SWITCH_CONDITION = f'ExecCondition=/usr/bin/test "${{{RIG_SWITCH}}}" = on\n'
 SINK_GOES_LATER = (f"the {OWN_LOOPBACK} sink: it disappears at the next PipeWire restart "
                    "or login")
 # The desk runs as a transient unit of this name (systemd-run), started by
-# the Canvas or by hand; it may not exist, and a transient unit is not disabled.
+# hand; it may not exist, and a transient unit is not disabled.
 DESK_UNIT = "a3-desk.service"
 # [state] laptop letters: the deck instances the last install was for.
 LETTERS_STATE = "letters"
@@ -484,7 +483,7 @@ class Laptop(Role):
     def _units(self, ctx, letters):
         """The drop-ins that put the rig's units on this session's screen with
         the laptop's truth. Nothing is enabled or started (R9): they run when
-        started by hand or by the Canvas app."""
+        started by hand."""
         for unit in UNITS_WITH_TRUTH:
             write_drop_in(ctx, unit, UNIT_DROP_IN, unit_drop_in(unit))
         write_drop_in(ctx, TWO_DECK_UNIT, UNIT_DROP_IN, two_deck_off_drop_in(WRITTEN_BY))

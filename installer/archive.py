@@ -14,7 +14,7 @@ KEYRING = Path("/usr/share/keyrings/a3-audio.gpg")
 SOURCES = Path("/etc/apt/sources.list.d/a3-audio.sources")
 SUITES = ("forky", "trixie")
 A3_PACKAGES = ("a3-core", "a3-core-app", "stemdeck", "a3-desk",
-               "a3-motion-ui", "beat-analyzer", "a3-canvas")
+               "a3-motion-ui", "beat-analyzer")
 
 A3_ROOT = Path(__file__).resolve().parent / "a3-root"
 

@@ -1,5 +1,0 @@
-// SPDX-FileCopyrightText: 2026 Raphael Eismann
-// SPDX-License-Identifier: GPL-3.0-or-later
-// Written by cmake/CanvasSources.cmake: the package's version when the package build passes one.
-#pragma once
-#define A3CANVAS_VERSION "@A3CANVAS_SHOWN_VERSION@"

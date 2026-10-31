@@ -56,8 +56,8 @@ class AppPackage:
 def pinned_commit(ctx, submodule, *inner):
     """The commit the umbrella pins for `submodule` -- the release's, whatever
     the submodule's working copy holds. `inner` walks on through submodules of
-    submodules, one rev-parse per boundary: ("a3-core", "beat-analyzer") is the
-    commit a3-core's pinned commit records for its beat-analyzer."""
+    submodules, one rev-parse per boundary: ("a3-core", "a3-beat-analyzer") is
+    the commit a3-core's pinned commit records for its a3-beat-analyzer."""
     commit = ctx.runner.output(["git", "-C", ctx.repo, "rev-parse", f"HEAD:{submodule}"]).strip()
     folder = ctx.repo / submodule
     for path in inner:

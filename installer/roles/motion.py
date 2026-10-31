@@ -25,7 +25,8 @@ from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
                    enable_and_restart, systemctl_user)
 from .updater import install_updater
 
-UI = Path("a3-motion/ui")
+# a3-motion's submodule, named by its repository since 2026-10-31 (was ui).
+UI = Path("a3-motion/a3-motion-ui")
 FIRMWARE = Path("a3-motion/firmware")
 BOARD_FILE = FIRMWARE / "boards" / "esp32-s3-devkitc-1-n16r8.json"
 BY_ID = Path("/dev/serial/by-id")
@@ -39,7 +40,7 @@ APP = apppackage.AppPackage(PACKAGE, UNIT)
 
 
 def pinned_commit(ctx):
-    """The ui commit the release pins: the umbrella pins a3-motion, a3-motion pins ui."""
+    """The UI commit the release pins: the umbrella pins a3-motion, a3-motion pins a3-motion-ui."""
     return apppackage.pinned_commit(ctx, *UI.parts)
 
 
@@ -84,8 +85,8 @@ def buildable_pin(ctx, ui):
     pin predates the package."""
     commit = pinned_commit(ctx)
     if not has_packaging(ctx, ui, commit):
-        raise RoleError(f"a3-motion/ui at {commit[:10]} has no packaging/stage: a3-motion's "
-                        "ui pin is older than the package; raise it first.")
+        raise RoleError(f"{UI} at {commit[:10]} has no packaging/stage: a3-motion's "
+                        "a3-motion-ui pin is older than the package; raise it first.")
     return commit, ensure_juce(ctx)
 
 

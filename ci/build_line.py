@@ -30,9 +30,9 @@ UMBRELLA_OUT = "umbrella-debs"
 ROLE_OF_PATH = {
     "a3-core": "core",
     "a3-stemdeck": "stemdeck",
-    "a3-mixer/ui": "desk",
-    "a3-motion/ui": "motion",
-    "a3-core/beat-analyzer": "core",
+    "a3-mixer/a3-mixer-ui": "desk",
+    "a3-motion/a3-motion-ui": "motion",
+    "a3-core/a3-beat-analyzer": "core",
 }
 CI_TOOLS = ("git", "python3", "dpkg-dev", "build-essential", "ccache",
             "ca-certificates", "curl", "gnupg")

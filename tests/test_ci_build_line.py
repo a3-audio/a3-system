@@ -45,8 +45,8 @@ class FakeGit:
         rev, path = git_args[1], git_args[2]
         if folder == str(UMBRELLA) and path in ("a3-core", "a3-stemdeck", "a3-mixer", "a3-motion"):
             return f"160000 commit {SHA[path]}\t{path}\n"
-        nested = {("a3-motion", "ui"): "ui-in-motion", ("a3-mixer", "ui"): "ui-in-mixer",
-                  ("a3-core", "beat-analyzer"): "analyzer-in-core"}
+        nested = {("a3-motion", "a3-motion-ui"): "ui-in-motion", ("a3-mixer", "a3-mixer-ui"): "ui-in-mixer",
+                  ("a3-core", "a3-beat-analyzer"): "analyzer-in-core"}
         for (parent, inner), key in nested.items():
             if folder == str(UMBRELLA / parent) and rev == SHA[parent] and path == inner:
                 return f"160000 commit {SHA[key]}\t{inner}\n"
@@ -72,9 +72,9 @@ class Commands(unittest.TestCase):
         self.assertEqual([c[5] for c in built], [SHA["a3-core"], SHA["a3-stemdeck"], SHA["a3-mixer"]])
 
     def test_a_nested_submodule_is_built_at_its_parents_pin(self):
-        built = commands(line(paths=("a3-motion/ui", "a3-mixer/ui", "a3-core/beat-analyzer")))
-        self.assertEqual([b[3] for b in built], ["/umbrella/a3-motion/ui", "/umbrella/a3-mixer/ui",
-                                                 "/umbrella/a3-core/beat-analyzer"])
+        built = commands(line(paths=("a3-motion/a3-motion-ui", "a3-mixer/a3-mixer-ui", "a3-core/a3-beat-analyzer")))
+        self.assertEqual([b[3] for b in built], ["/umbrella/a3-motion/a3-motion-ui", "/umbrella/a3-mixer/a3-mixer-ui",
+                                                 "/umbrella/a3-core/a3-beat-analyzer"])
         self.assertEqual([b[5] for b in built],
                          [SHA["ui-in-motion"], SHA["ui-in-mixer"], SHA["analyzer-in-core"]])
 

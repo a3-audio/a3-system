@@ -134,9 +134,9 @@ class LinesJson(unittest.TestCase):
 
     def test_builds(self):
         self.assertEqual(self.paths("forky"),
-            ["a3-core", "a3-stemdeck", "a3-mixer/ui", "a3-motion/ui", "a3-core/beat-analyzer", "."])
+            ["a3-core", "a3-stemdeck", "a3-mixer/a3-mixer-ui", "a3-motion/a3-motion-ui", "a3-core/a3-beat-analyzer", "."])
         self.assertEqual(self.paths("trixie"),
-            ["a3-core", "a3-stemdeck", "a3-mixer/ui", "a3-motion/ui", "a3-core/beat-analyzer", "."])
+            ["a3-core", "a3-stemdeck", "a3-mixer/a3-mixer-ui", "a3-motion/a3-motion-ui", "a3-core/a3-beat-analyzer", "."])
         for line in self.lines.values():
             for build in line["builds"]:
                 if build["path"] == ".":

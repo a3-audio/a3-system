@@ -2,7 +2,7 @@
 `a3-desk` (spec virtual-desk, 2026-10-16).
 
 Built by installer/package.py from the commit of a3-mixer-ui -- a3-mixer's
-submodule ui since 2026-10-31, as a3-motion-ui is a3-motion's -- that the
+submodule a3-mixer-ui since 2026-10-31, as a3-motion-ui is a3-motion's -- that the
 umbrella's a3-mixer pin records, like StemDeck and Motion UI; installed with
 apt and held. No unit: it is an
 app a person opens (a3-desk, or the launcher), on any machine with a screen --
@@ -15,8 +15,8 @@ from .apppackage import has_packaging
 from .base import JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce
 from .updater import install_updater
 
-# The umbrella pins a3-mixer, a3-mixer pins ui (a3-mixer-ui).
-PIN_PATH = ("a3-mixer", "ui")
+# The umbrella pins a3-mixer, a3-mixer pins a3-mixer-ui.
+PIN_PATH = ("a3-mixer", "a3-mixer-ui")
 SOURCE = "/".join(PIN_PATH)
 PACKAGE = "a3-desk"
 APP = apppackage.AppPackage(PACKAGE, unit="")
@@ -36,15 +36,15 @@ def buildable_pin(ctx, source):
     pin predates the desk's packaging."""
     commit = pinned_commit(ctx)
     if not has_packaging(ctx, source, commit, APP.recipe):
-        raise RoleError(f"a3-mixer/ui at {commit[:10]} has no {APP.recipe}/stage: a3-mixer's "
-                        "ui pin is older than the desk as a3-mixer-ui; raise it first.")
+        raise RoleError(f"{SOURCE} at {commit[:10]} has no {APP.recipe}/stage: a3-mixer's "
+                        "a3-mixer-ui pin is older than the desk's own repository; raise it first.")
     return commit, ensure_juce(ctx)
 
 
 class Desk(Role):
     name = "desk"
     label = "A³ Desk (the A³ Mixer on a screen)"
-    # a3-mixer with its ui, recursively.
+    # a3-mixer with its a3-mixer-ui, recursively.
     submodules = (PIN_PATH[0],)
     platforms = ("debian",)
     packages = SCREEN_PACKAGES

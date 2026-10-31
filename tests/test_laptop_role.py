@@ -752,11 +752,11 @@ REAL_UNITS = {
     "a3-engine.service": REPO / "a3-core/packaging",
     "a3-core.service": REPO / "a3-core/packaging",
     "a3-core-window.service": REPO / "a3-core/packaging",
-    "a3-motion.service": REPO / "a3-motion/ui/platform_config",
+    "a3-motion.service": REPO / "a3-motion/a3-motion-ui/platform_config",
     "stemdeck@.service": REPO / "stemdeck/.config/systemd/user",
     "stemdeck.service": REPO / "stemdeck/.config/systemd/user",
 }
-SUBMODULES = (REPO / "a3-core", REPO / "a3-motion/ui", REPO / "a3-stemdeck")
+SUBMODULES = (REPO / "a3-core", REPO / "a3-motion/a3-motion-ui", REPO / "a3-stemdeck")
 LETTERS = ["A", "B", "C", "D"]
 
 

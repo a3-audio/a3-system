@@ -12,7 +12,7 @@ marker; the postinst takes them as given (a3-core 8573e2b, 8dcb2c7, #68).
 
 The beat-analyzer comes with it as a package of its own, `beat-analyzer`,
 built from the pinned commit like StemDeck and held. Its repository is a3-core's
-submodule beat-analyzer since 2026-10-31 (before, the umbrella's), so a3-core's
+submodule a3-beat-analyzer since 2026-10-31 (before, the umbrella's), so a3-core's
 pin of it is the release's and it comes with a3-core's checkout. a3-core only recommends
 it and adds what is A3 about its unit as a drop-in (a3-core.conf: part of
 a3-main, after JACK, off CPU 0); the package does not enable its unit,
@@ -54,7 +54,7 @@ CORE_UNITS = (
 )
 
 # a3-core's submodule (2026-10-31): the umbrella pins a3-core, a3-core pins it.
-ANALYZER_PIN_PATH = ("a3-core", "beat-analyzer")
+ANALYZER_PIN_PATH = ("a3-core", "a3-beat-analyzer")
 ANALYZER_SOURCE = "/".join(ANALYZER_PIN_PATH)
 ANALYZER_UNIT = "beat-analyzer.service"
 ANALYZER = apppackage.AppPackage("beat-analyzer", ANALYZER_UNIT,

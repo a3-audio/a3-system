@@ -357,9 +357,9 @@ class TheProductsNameThePinnedJuce(unittest.TestCase):
 
     DOCS = {
         "stemdeck": ("a3-stemdeck", "README.md"),
-        "a3-motion-ui README": ("a3-motion/ui", "README.md"),
-        "a3-motion-ui ARCHITECTURE": ("a3-motion/ui", "ARCHITECTURE.md"),
-        "a3-mixer-ui README": ("a3-mixer/ui", "README.md"),
+        "a3-motion-ui README": ("a3-motion/a3-motion-ui", "README.md"),
+        "a3-motion-ui ARCHITECTURE": ("a3-motion/a3-motion-ui", "ARCHITECTURE.md"),
+        "a3-mixer-ui README": ("a3-mixer/a3-mixer-ui", "README.md"),
     }
 
     @staticmethod
@@ -1920,11 +1920,11 @@ class MotionPinnedCommit(unittest.TestCase):
         ctx = mock.Mock(runner=Fake(), repo=Path("/repo"))
         self.assertEqual("uisha", motion.pinned_commit(ctx))
         self.assertEqual([["git", "-C", "/repo", "rev-parse", "HEAD:a3-motion"],
-                          ["git", "-C", "/repo/a3-motion", "rev-parse", "motionsha:ui"]], calls)
+                          ["git", "-C", "/repo/a3-motion", "rev-parse", "motionsha:a3-motion-ui"]], calls)
 
 
 class NestedPinnedCommit(unittest.TestCase):
-    """A pin inside a pin (a3-core/beat-analyzer, a3-mixer/ui): one rev-parse
+    """A pin inside a pin (a3-core/a3-beat-analyzer, a3-mixer/a3-mixer-ui): one rev-parse
     per submodule boundary, each in the submodule that records the next."""
 
     def pinned(self, *path):
@@ -1946,13 +1946,13 @@ class NestedPinnedCommit(unittest.TestCase):
         self.assertEqual([["git", "-C", "/repo", "rev-parse", "HEAD:stemdeck"]], calls)
 
     def test_a3_core_pins_the_beat_analyzer(self):
-        commit, calls = self.pinned("a3-core", "beat-analyzer")
+        commit, calls = self.pinned("a3-core", "a3-beat-analyzer")
         self.assertEqual("innersha", commit)
         self.assertEqual([["git", "-C", "/repo", "rev-parse", "HEAD:a3-core"],
-                          ["git", "-C", "/repo/a3-core", "rev-parse", "outersha:beat-analyzer"]], calls)
+                          ["git", "-C", "/repo/a3-core", "rev-parse", "outersha:a3-beat-analyzer"]], calls)
 
     def test_the_core_role_reads_the_analyzer_inside_a3_core(self):
-        self.assertEqual(core.ANALYZER_SOURCE, "a3-core/beat-analyzer")
+        self.assertEqual(core.ANALYZER_SOURCE, "a3-core/a3-beat-analyzer")
 
 
 class MotionComesAsAPackage(unittest.TestCase):
@@ -1981,7 +1981,7 @@ class MotionComesAsAPackage(unittest.TestCase):
         commands, ctx = self.install()
         build = next(c for c in commands if "installer/package.py" in c)
         self.assertTrue(build.startswith("python3 "), build)
-        self.assertIn(str(ctx.repo / "a3-motion/ui"), build)
+        self.assertIn(str(ctx.repo / "a3-motion/a3-motion-ui"), build)
         self.assertIn(f"--rev {UI_PIN}", build)
         self.assertIn("--jobs 2", build)
         self.assertFalse(any("build.sh" in c for c in commands), commands)
@@ -2439,7 +2439,7 @@ class TheAnalyzerComesWithTheCoreAsAPackage(unittest.TestCase):
         commands, ctx = self.install()
         build = next(c for c in commands
                      if "installer/package.py" in c and "beat-analyzer" in c)
-        self.assertIn(str(ctx.repo / "a3-core" / "beat-analyzer"), build)
+        self.assertIn(str(ctx.repo / "a3-core" / "a3-beat-analyzer"), build)
         self.assertIn(f"--rev {ANALYZER_PIN}", build)
 
     def test_after_a3_core_installed_then_held(self):

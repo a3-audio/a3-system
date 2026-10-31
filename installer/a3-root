@@ -38,6 +38,8 @@ from pathlib import Path
 
 ARCHIVE_URL = "https://a3-audio.github.io/a3-system"
 KEYRING = Path("/usr/share/keyrings/a3-audio.gpg")
+# The a3-update package ships the archive key itself, so install-release needs no apt source.
+PACKAGE_KEYRING = Path("/usr/lib/a3-update/a3-audio.gpg")
 SOURCES = Path("/etc/apt/sources.list.d/a3-audio.sources")
 SUITES = ("forky", "trixie")
 A3_PACKAGES = ("a3-core", "a3-core-app", "stemdeck", "a3-desk",
@@ -354,10 +356,18 @@ def release_packages(run, env, debs):
     return packages
 
 
-def do_install_release(args, run, env, keyring):
+def release_keyring(package_keyring, keyring):
+    for candidate in (package_keyring, keyring):
+        if candidate.is_file():
+            return candidate
+    raise Refused(f"no A3 keyring: neither {package_keyring} nor {keyring} exists.")
+
+
+def do_install_release(args, run, env, package_keyring, keyring):
     check_arguments(args)
     if len(args) != 1:
         raise Refused("install-release takes one folder.")
+    keyring = release_keyring(package_keyring, keyring)
     folder = release_folder(args[0])
     names = release_debs(folder)
     work = Path(tempfile.mkdtemp(prefix="a3-release-"))
@@ -397,7 +407,8 @@ def do_join_audio(args, run, env):
 
 
 def main(argv, run=subprocess.run, env=os.environ,
-         key_file=KEY_FILE, keyring=KEYRING, sources=SOURCES):
+         key_file=KEY_FILE, keyring=KEYRING, sources=SOURCES,
+         package_keyring=PACKAGE_KEYRING):
     verb, args = (argv[0], argv[1:]) if argv else (None, [])
     try:
         if verb == "source":
@@ -409,7 +420,7 @@ def main(argv, run=subprocess.run, env=os.environ,
         if verb == "join-audio":
             return do_join_audio(args, run, env)
         if verb == "install-release":
-            return do_install_release(args, run, env, keyring)
+            return do_install_release(args, run, env, package_keyring, keyring)
         raise Refused("verbs: source, install, remove, join-audio, install-release.")
     except Refused as why:
         print(f"a3-root: {why}", file=sys.stderr)

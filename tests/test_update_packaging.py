@@ -4,6 +4,7 @@
 out, its modes, the control and the unit. No dpkg-deb: the stage is checked."""
 
 import configparser
+import shutil
 import stat
 import subprocess
 import sys
@@ -26,6 +27,12 @@ def tmpdir(case):
     return Path(tmp.name)
 
 
+def fingerprints(key):
+    shown = subprocess.run(["gpg", "--batch", "--show-keys", "--with-colons", str(key)],
+                           check=True, capture_output=True, text=True).stdout
+    return [line.split(":")[9] for line in shown.splitlines() if line.startswith("fpr:")]
+
+
 def mode(path):
     return stat.S_IMODE(path.stat().st_mode)
 
@@ -40,7 +47,8 @@ class UpdatePackaging(unittest.TestCase):
     def test_the_package_is_the_helper_the_service_and_its_unit(self):
         stage = self.staged()
         files = sorted(str(p.relative_to(stage)) for p in stage.rglob("*") if p.is_file())
-        self.assertEqual(["usr/lib/a3-update/a3-root",
+        self.assertEqual(["usr/lib/a3-update/a3-audio.gpg",
+                          "usr/lib/a3-update/a3-root",
                           "usr/lib/a3-update/a3-update",
                           "usr/lib/systemd/user/a3-update.service",
                           "usr/share/doc/a3-update/copyright"], files)
@@ -50,10 +58,19 @@ class UpdatePackaging(unittest.TestCase):
         shipped = self.staged() / "usr/lib/a3-update/a3-root"
         self.assertEqual((ROOT / "installer" / "a3-root").read_bytes(), shipped.read_bytes())
 
+    @unittest.skipUnless(shutil.which("gpg"), "needs gpg")
+    def test_the_keyring_is_the_archive_key_in_binary_form(self):
+        keyring = self.staged() / "usr/lib/a3-update/a3-audio.gpg"
+        self.assertFalse(keyring.read_bytes().startswith(b"-----BEGIN"))
+        self.assertEqual(fingerprints(ROOT / "installer/keys/a3-audio-archive.asc"),
+                         fingerprints(keyring))
+        self.assertTrue(fingerprints(keyring))
+
     def test_modes(self):
         stage = self.staged()
         self.assertEqual(0o755, mode(stage / "usr/lib/a3-update/a3-root"))
         self.assertEqual(0o755, mode(stage / "usr/lib/a3-update/a3-update"))
+        self.assertEqual(0o644, mode(stage / "usr/lib/a3-update/a3-audio.gpg"))
         self.assertEqual(0o644, mode(stage / "usr/lib/systemd/user/a3-update.service"))
         self.assertEqual(0o644, mode(stage / "usr/share/doc/a3-update/copyright"))
         for folder in (p for p in stage.rglob("*") if p.is_dir()):

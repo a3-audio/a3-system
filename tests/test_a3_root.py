@@ -348,11 +348,12 @@ class InstallRelease(HelperTest):
         gpg(sign_with or self.home, "--armor", "--detach-sign",
             "--output", str(signature), str(sums))
 
-    def install(self, folder=None):
+    def install(self, folder=None, keyring=None, package_keyring=None):
         err = io.StringIO()
         with contextlib.redirect_stderr(err):
             code = self.main("install-release", str(folder or self.release),
-                             keyring=self.keyring)
+                             keyring=keyring or self.keyring,
+                             package_keyring=package_keyring or self.tmp / "no-package-keyring")
         self.stderr = err.getvalue()
         return code
 
@@ -390,6 +391,34 @@ class InstallRelease(HelperTest):
         self.assertEqual(len(gpgv), 1)
         self.assertIn(str(self.keyring), gpgv[0])
         self.assertEqual(self.helper.KEYRING, Path("/usr/share/keyrings/a3-audio.gpg"))
+
+    def test_the_packages_keyring_comes_first(self):
+        self.good_release()
+        missing = self.tmp / "no-checkout-keyring"
+        self.assertEqual(self.install(keyring=missing, package_keyring=self.keyring), 0, self.stderr)
+        gpgv = [c for c in self.run_.commands if c[0] == "gpgv"]
+        self.assertIn(str(self.keyring), gpgv[0])
+
+    def test_the_packages_keyring_wins_over_the_checkouts(self):
+        """A release signed for the package's key is refused against the other one."""
+        self.good_release()
+        wrong = self.tmp / "wrong.gpg"
+        wrong.write_bytes(gpg(self.other, "--export"))
+        self.assertEqual(self.install(keyring=self.keyring, package_keyring=wrong), 2)
+        self.assertIn(str(wrong), self.stderr)
+
+    def test_without_the_package_the_default_keyring_is_the_fallback(self):
+        self.good_release()
+        self.assertEqual(self.install(), 0, self.stderr)
+        self.assertEqual(self.helper.PACKAGE_KEYRING, Path("/usr/lib/a3-update/a3-audio.gpg"))
+
+    def test_no_keyring_at_all_is_refused_with_a_reason(self):
+        self.good_release()
+        none = self.tmp / "none"
+        self.assertEqual(self.install(keyring=none, package_keyring=none), 2)
+        self.assertEqual(self.run_.installing(), [])
+        self.assertIn("keyring", self.stderr)
+        self.assertEqual(len(self.stderr.strip().splitlines()), 1, self.stderr)
 
     def test_apt_installs_private_copies_not_the_callers_files(self):
         """The caller owns <dir> and could swap a file after the checks."""

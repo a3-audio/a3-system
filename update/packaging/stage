@@ -31,6 +31,17 @@ files() {
     install -D -m 755 "$src/installer/a3-root" "$stage/usr/lib/a3-update/a3-root"
     install -D -m 755 "$src/update/a3-update" "$stage/usr/lib/a3-update/a3-update"
     install -D -m 644 "$src/update/a3-update.service" "$stage/usr/lib/systemd/user/a3-update.service"
+    # The archive's public key as a binary keyring for gpgv, converted by a3-root's own
+    # dearmor (one source key, one conversion); install-release verifies against it.
+    python3 -I - "$src/installer/a3-root" "$src/installer/keys/a3-audio-archive.asc" \
+        "$stage/usr/lib/a3-update/a3-audio.gpg" <<'PY'
+import importlib.machinery, importlib.util, sys
+loader = importlib.machinery.SourceFileLoader("a3_root", sys.argv[1])
+module = importlib.util.module_from_spec(importlib.util.spec_from_loader("a3_root", loader))
+loader.exec_module(module)
+open(sys.argv[3], "wb").write(module.dearmor(open(sys.argv[2]).read()))
+PY
+    chmod 644 "$stage/usr/lib/a3-update/a3-audio.gpg"
     # .reuse/dep5 is already in Debian's machine-readable copyright format.
     install -D -m 644 "$src/.reuse/dep5" "$stage/usr/share/doc/a3-update/copyright"
 }

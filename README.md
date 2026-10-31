@@ -107,6 +107,7 @@ A³ System                   the umbrella: installer, CI, pins  v03.2      GPL-3
 ├─ a3-core                  A³ Core and its window             v03.2      GPL-3.0
 │  └─ a3-beat-analyzer      the beat clock                     v03.2      GPL-3.0
 ├─ a3-doc                   the documentation                  v03.2      CC-BY-SA-4.0
+├─ a3-kicad-lib             the shared KiCad parts library     0652a57    CERN-OHL-S
 ├─ a3-mixer                 A³ Mixer                           v03.2      GPL-3.0
 │  ├─ pcb                   the boards
 │  │  ├─ v0_2               the built board                    rev v0.2   CERN-OHL-S

@@ -14,7 +14,7 @@ It is made of four parts:
 
 This repository carries all of them as submodules, together with the docs; the
 [beat-analyzer](https://a3-audio.github.io/a3-doc/user/beat-analyzer.html) comes
-inside a3-core, the stem separator inside a3-stemdeck, and a3-prodj (the pro-DJ,
+inside a3-core, the stem separator inside a3-stemdeck, and a3-pro-dj (the pro-DJ,
 planned) sits beside them. One clone gives a set of states that belong together.
 
 ![Four StemDecks around the A³ desk and A³ Motion, each deck playing its own track](https://a3-audio.github.io/img/a3-setup.jpg)
@@ -117,7 +117,7 @@ A³ System                                          GPL-3.0
 │  ├─ housing                                      CERN-OHL-S
 │  ├─ firmware                                     GPL-3.0
 │  └─ a3-motion-ui       the Motion UI             GPL-3.0
-├─ a3-prodj           the pro-DJ (planned)         GPL-3.0
+├─ a3-pro-dj          the pro-DJ (planned)         GPL-3.0
 └─ a3-stemdeck        the stem decks               GPL-3.0
    └─ a3-stem-separator  the stems, made off the rig GPL-3.0
 ```

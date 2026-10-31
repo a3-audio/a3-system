@@ -41,6 +41,6 @@
 
 # The pro-DJ: the set seen from the floor's centre, later the autopilot that
 # conducts StemDeck and Motion through Core. Part of the release from v03.2.
-[submodule "a3-prodj"]
-	path = a3-prodj
-	url = https://github.com/a3-audio/a3-prodj
+[submodule "a3-pro-dj"]
+	path = a3-pro-dj
+	url = https://github.com/a3-audio/a3-pro-dj

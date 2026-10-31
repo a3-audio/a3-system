@@ -257,7 +257,8 @@ class TheInstall(LaptopCase):
         self.install(ctx)
         commands = log.commands()
         installs = [c for c in commands if c.startswith(f"root: {A3_ROOT} install")]
-        self.assertEqual([f"root: {A3_ROOT} install {FIVE_APPS}"], installs)
+        self.assertEqual([f"root: {A3_ROOT} install {FIVE_APPS}",
+                          f"root: {A3_ROOT} install a3-update"], installs)
         installed = [name for c in installs for name in c.split()[3:]]
         self.assertNotIn("a3-core", installed)
         self.assertFalse(any("apt-get" in c or "package.py" in c for c in commands), commands)

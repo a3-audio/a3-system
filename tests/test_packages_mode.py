@@ -102,7 +102,8 @@ class PackagesMode(unittest.TestCase):
             with self.subTest(name):
                 commands = self.install(name)
                 installs = [c for c in commands if c.startswith(f"root: {A3_ROOT} install")]
-                self.assertEqual([f"root: {A3_ROOT} install {p}" for p in packages], installs)
+                self.assertEqual([f"root: {A3_ROOT} install {p}"
+                                  for p in packages + ["a3-update"]], installs)
                 self.assertFalse(any("apt-get" in c or "apt-mark hold" in c for c in commands),
                                  commands)
 

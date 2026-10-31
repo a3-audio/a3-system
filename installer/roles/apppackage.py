@@ -43,6 +43,10 @@ class AppPackage:
     kept_drop_ins: tuple = ()
     # The recipe folder in the app's repository its .deb is built from.
     recipe: str = DEFAULT_RECIPE
+    # A recipe of the umbrella's own (a3-update): its tree alone, no submodule.
+    without_submodules: bool = False
+    # A package of scripts (its control says Architecture: all).
+    arch_all: bool = False
 
     @property
     def packaged_unit(self):
@@ -68,11 +72,13 @@ def build(ctx, app, source, commit, juce):
     out = ctx.home / "a3-debs"
     cache = ctx.home / ".cache" / "a3-build"
     recipe = [] if app.recipe == DEFAULT_RECIPE else ["--recipe", app.recipe]
+    own_tree = ["--without-submodules"] if app.without_submodules else []
+    juce_option = [] if juce is None else ["--juce", juce]
     ctx.runner.run(["python3", ctx.repo / "installer" / "package.py", source,
                     "--rev", commit, "--out", out, "--cache", cache,
-                    "--jobs", BUILD_JOBS, "--juce", juce, *recipe])
-    return debs.deb_path(out, app.package, debs.version_of(source, commit),
-                         debs.host_architecture())
+                    "--jobs", BUILD_JOBS, *juce_option, *recipe, *own_tree])
+    architecture = debs.ALL_ARCHITECTURES if app.arch_all else debs.host_architecture()
+    return debs.deb_path(out, app.package, debs.version_of(source, commit), architecture)
 
 
 def obtain(ctx, app, source, commit, juce):

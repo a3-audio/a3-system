@@ -34,6 +34,7 @@ from ..settings import DEFAULTS
 from .base import (RATE_LINK, Role, RoleError, link_server_rate, systemctl_user,
                    two_deck_off_drop_in, write_drop_in, write_home_file)
 from .core import ANALYZER, CORE_APP
+from .updater import install_updater
 
 SECTION = "laptop"
 APP_PACKAGES = (CORE_APP, stemdeck.APP, desk.APP, motion.APP, ANALYZER)
@@ -430,6 +431,7 @@ class Laptop(Role):
             # An update: the installed truth's range refuses before any change too.
             deck_count(ctx.settings, read_truth(ctx))
         self._install_apps(ctx)
+        install_updater(ctx)
         if ctx.runner.dry_run and not self._packages_here():
             ctx.runner.log(DRY_RUN_WITHOUT_PACKAGES)
         else:

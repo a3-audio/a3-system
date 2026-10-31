@@ -23,6 +23,7 @@ from . import apppackage
 from .apppackage import has_packaging
 from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
                    enable_and_restart, systemctl_user)
+from .updater import install_updater
 
 UI = Path("a3-motion/ui")
 FIRMWARE = Path("a3-motion/firmware")
@@ -120,6 +121,7 @@ class Motion(Role):
         self._firmware(ctx)
         enable_and_restart(ctx, UNIT)
         apppackage.check_packaged_unit_wins(ctx, APP)
+        install_updater(ctx)
 
     stays = ("the build cache ~/.cache/a3-build/a3-motion-ui and the packages in ~/a3-debs",
              "~/.local/share/a3-motion (config, skins, patterns, takes) "

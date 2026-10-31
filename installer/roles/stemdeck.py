@@ -23,6 +23,7 @@ from . import apppackage
 from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
                    enable_and_restart, install_user_unit,
                    remove_files, systemctl_user)
+from .updater import install_updater
 
 SOURCE = "stemdeck"
 UNIT = "stemdeck.service"
@@ -135,6 +136,7 @@ class StemDeck(Role):
         self._hand_over_library(ctx)
         enable_and_restart(ctx, UNIT)
         apppackage.check_packaged_unit_wins(ctx, APP)
+        install_updater(ctx)
 
     def _hand_over_library(self, ctx):
         """The library folder made if missing and written into StemDeck's

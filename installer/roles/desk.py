@@ -11,6 +11,7 @@ the hardware desk's Pi, and it stays as it is.
 from . import apppackage
 from .apppackage import has_packaging
 from .base import JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce
+from .updater import install_updater
 
 SOURCE = "a3-mixer"
 PACKAGE = "a3-desk"
@@ -50,6 +51,7 @@ class Desk(Role):
         source = ctx.repo / SOURCE
         commit, juce = buildable_pin(ctx, source) if ctx.from_source else (None, None)
         apppackage.install(ctx, APP, apppackage.obtain(ctx, APP, source, commit, juce))
+        install_updater(ctx)
 
     def leaving_packages(self, ctx):
         return [PACKAGE]

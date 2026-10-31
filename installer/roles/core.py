@@ -35,6 +35,7 @@ from . import apppackage
 from .apppackage import has_packaging
 from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
                    juce_prefix, systemctl_user)
+from .updater import install_updater
 
 PACKAGE_DIR = Path("a3-core/platform-config/debian-x86_64/a3-core")
 SHIPPED_CONFIG = PACKAGE_DIR / "home/aaa/.local/share/a3-core/config"
@@ -331,6 +332,7 @@ class Core(Role):
         systemctl_user(ctx, "try-restart", CORE_APP.unit)
         apppackage.check_packaged_unit_wins(ctx, CORE_APP)
         self._analyzer(ctx, source, commit)
+        install_updater(ctx)
 
     def _analyzer(self, ctx, source, commit):
         """After a3-core, whose postinst moves its old checkout unit aside and

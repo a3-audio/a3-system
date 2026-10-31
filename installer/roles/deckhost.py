@@ -63,6 +63,7 @@ from .base import (SHIPPED_RATE, TWO_DECK_OFF, Role, RoleError, link_server_rate
                    remove_files, systemctl_user, two_deck_off_drop_in, write_drop_in,
                    write_home_file)
 from .motion import UNIT as MOTION_UNIT
+from .updater import install_updater
 
 LETTERS = "ABCD"
 LINK_MAP = "/usr/share/stemdeck/links-aes67.json"
@@ -483,6 +484,7 @@ class DeckHost(Role):
         self._ptp_client(ctx)
         self._pipewire_jack_path(ctx)
         self._enable_instance(ctx, letter)
+        install_updater(ctx)
 
     def _leave_old_letter(self, ctx, letter):
         old = ctx.state.get("deck-host", "letter")

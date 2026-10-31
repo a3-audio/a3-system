@@ -82,8 +82,8 @@ def scan(root, arch, directory):
 
 
 def scan_packages(root, suite, arch):
-    suite_pool = root / "pool" / suite / "main"
-    suite_pool.mkdir(parents=True, exist_ok=True)
+    for pool in (root / "pool" / "main", root / "pool" / suite / "main"):
+        pool.mkdir(parents=True, exist_ok=True)
     shared = scan(root, arch, "pool/main")
     own_all = scan(root, "all", f"pool/{suite}/main")
     return (shared + own_all).encode()

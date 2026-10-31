@@ -5,7 +5,7 @@
     "image": "debian:testing",
     "builds": [
       {"path": "a3-core", "recipes": ["packaging/app", "packaging"]},
-      {"path": "stemdeck", "recipes": ["packaging"]},
+      {"path": "a3-stemdeck", "recipes": ["packaging"]},
       {"path": "a3-mixer/ui", "recipes": ["packaging"]},
       {"path": "a3-motion/ui", "recipes": ["packaging"]},
       {"path": "a3-core/beat-analyzer", "recipes": ["packaging"]},
@@ -18,7 +18,7 @@
     "image": "debian:trixie",
     "builds": [
       {"path": "a3-core", "recipes": ["packaging/app"]},
-      {"path": "stemdeck", "recipes": ["packaging"]},
+      {"path": "a3-stemdeck", "recipes": ["packaging"]},
       {"path": "a3-mixer/ui", "recipes": ["packaging"]},
       {"path": "a3-motion/ui", "recipes": ["packaging"]},
       {"path": "a3-core/beat-analyzer", "recipes": ["packaging"]},

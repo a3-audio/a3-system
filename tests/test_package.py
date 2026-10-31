@@ -19,7 +19,7 @@ sys.path.insert(0, str(REPO))
 
 from installer import package  # noqa: E402
 
-STEMDECK = REPO / "stemdeck"
+STEMDECK = REPO / "a3-stemdeck"
 
 
 def tmpdir(case):
@@ -593,12 +593,12 @@ class DebianScripts(unittest.TestCase):
         with self.assertRaises(package.BuildError):
             package.install_debian(src, stage)
 
-    @unittest.skipUnless((REPO / "stemdeck/packaging/DEBIAN").is_dir(),
+    @unittest.skipUnless((REPO / "a3-stemdeck/packaging/DEBIAN").is_dir(),
                          "the stemdeck submodule is not checked out here")
     def test_stemdecks_own_four_files_are_all_there(self):
         stage = tmpdir(self) / "stage"
         stage.mkdir()
-        package.install_debian(REPO / "stemdeck", stage)
+        package.install_debian(REPO / "a3-stemdeck", stage)
         self.assertEqual(sorted(self.SCRIPTS), sorted(p.name for p in (stage / "DEBIAN").iterdir()))
 
 

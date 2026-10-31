@@ -125,7 +125,7 @@ class TheRoleIsOffered(unittest.TestCase):
         self.assertTrue(BY_NAME["stemdeck"].supported("raspios"))
 
     def test_it_builds_from_stemdeck_only(self):
-        self.assertEqual(needed_submodules(["deck-host"], from_source=True), ["stemdeck"])
+        self.assertEqual(needed_submodules(["deck-host"], from_source=True), ["a3-stemdeck"])
         self.assertTrue(BY_NAME["deck-host"].needs_screen)
         self.assertIn("linuxptp", BY_NAME["deck-host"].packages)
 

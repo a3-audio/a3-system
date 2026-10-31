@@ -756,7 +756,7 @@ REAL_UNITS = {
     "stemdeck@.service": REPO / "stemdeck/.config/systemd/user",
     "stemdeck.service": REPO / "stemdeck/.config/systemd/user",
 }
-SUBMODULES = (REPO / "a3-core", REPO / "a3-motion/ui", REPO / "stemdeck")
+SUBMODULES = (REPO / "a3-core", REPO / "a3-motion/ui", REPO / "a3-stemdeck")
 LETTERS = ["A", "B", "C", "D"]
 
 

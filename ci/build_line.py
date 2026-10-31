@@ -29,7 +29,7 @@ UMBRELLA_OUT = "umbrella-debs"
 # own recipe has none: it compiles nothing.
 ROLE_OF_PATH = {
     "a3-core": "core",
-    "stemdeck": "stemdeck",
+    "a3-stemdeck": "stemdeck",
     "a3-mixer/ui": "desk",
     "a3-motion/ui": "motion",
     "a3-core/beat-analyzer": "core",

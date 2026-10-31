@@ -25,7 +25,9 @@ from .base import (JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce,
                    remove_files, systemctl_user)
 from .updater import install_updater
 
-SOURCE = "stemdeck"
+# The umbrella's path, the repository's name since 2026-10-31 (a3-audio/a3-stemdeck);
+# the package and the role keep the name stemdeck.
+SOURCE = "a3-stemdeck"
 UNIT = "stemdeck.service"
 # Not qjackctl.service: an older Core's, and a machine that becomes a Core
 # would have one file for two owners.

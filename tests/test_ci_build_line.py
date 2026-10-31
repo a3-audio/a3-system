@@ -17,7 +17,7 @@ from ci import build_line  # noqa: E402
 
 UMBRELLA = Path("/umbrella")
 SHA = {
-    "a3-core": "c" * 40, "stemdeck": "d" * 40, "a3-mixer": "e" * 40,
+    "a3-core": "c" * 40, "a3-stemdeck": "d" * 40, "a3-mixer": "e" * 40,
     "a3-motion": "a" * 40, "analyzer-in-core": "b" * 40, "ui-in-motion": "f" * 40,
     "ui-in-mixer": "7" * 40,
     "umbrella": "9" * 40,
@@ -43,7 +43,7 @@ class FakeGit:
             return SHA["umbrella"] + "\n"
         assert git_args[0] == "ls-tree", git_args
         rev, path = git_args[1], git_args[2]
-        if folder == str(UMBRELLA) and path in ("a3-core", "stemdeck", "a3-mixer", "a3-motion"):
+        if folder == str(UMBRELLA) and path in ("a3-core", "a3-stemdeck", "a3-mixer", "a3-motion"):
             return f"160000 commit {SHA[path]}\t{path}\n"
         nested = {("a3-motion", "ui"): "ui-in-motion", ("a3-mixer", "ui"): "ui-in-mixer",
                   ("a3-core", "beat-analyzer"): "analyzer-in-core"}
@@ -53,7 +53,7 @@ class FakeGit:
         return ""  # the umbrella's tree stops at its own submodules
 
 
-def line(arch="amd64", paths=("a3-core", "stemdeck")):
+def line(arch="amd64", paths=("a3-core", "a3-stemdeck")):
     return {"arch": arch, "builds": [{"path": p, "recipes": ["packaging"]} for p in paths]}
 
 
@@ -64,12 +64,12 @@ def commands(line_, git=None):
 
 class Commands(unittest.TestCase):
     def test_each_submodule_is_built_at_the_umbrellas_pin(self):
-        built = commands(line(paths=("a3-core", "stemdeck", "a3-mixer")))
+        built = commands(line(paths=("a3-core", "a3-stemdeck", "a3-mixer")))
         self.assertEqual(built[0], [
             "python3", "-I", "/umbrella/installer/package.py", "/umbrella/a3-core",
             "--rev", SHA["a3-core"], "--out", "/out", "--cache", "/cache",
             "--juce", "/juce", "--jobs", "2", "--recipe", "packaging"])
-        self.assertEqual([c[5] for c in built], [SHA["a3-core"], SHA["stemdeck"], SHA["a3-mixer"]])
+        self.assertEqual([c[5] for c in built], [SHA["a3-core"], SHA["a3-stemdeck"], SHA["a3-mixer"]])
 
     def test_a_nested_submodule_is_built_at_its_parents_pin(self):
         built = commands(line(paths=("a3-motion/ui", "a3-mixer/ui", "a3-core/beat-analyzer")))
@@ -148,7 +148,7 @@ class Main(unittest.TestCase):
         code, out, _ = self.run_main(["trixie", "--repo", str(UMBRELLA)],
                                      self.fake_builder("arm64"))
         self.assertEqual(code, 0)
-        self.assertEqual(out.splitlines()[1], "/out/stemdeck_1.0_amd64.deb")
+        self.assertEqual(out.splitlines()[1], "/out/a3-stemdeck_1.0_amd64.deb")
         self.assertEqual(len(out.splitlines()), 6)
 
     def test_every_deb_of_a_two_recipe_repo_is_architecture_checked(self):

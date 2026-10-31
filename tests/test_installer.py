@@ -281,18 +281,18 @@ class OnlyWhatTheRolesNeed(unittest.TestCase):
     def test_each_role_names_what_it_builds_from(self):
         # The beat-analyzer is a3-core's submodule (2026-10-31): it comes with a3-core, recursively.
         self.assertEqual(["a3-core"], needed_submodules(["core"], from_source=True))
-        self.assertEqual(["stemdeck"], needed_submodules(["stemdeck"], from_source=True))
+        self.assertEqual(["a3-stemdeck"], needed_submodules(["stemdeck"], from_source=True))
         self.assertEqual(["a3-motion"], needed_submodules(["motion"], from_source=True))
 
     def test_in_install_order_and_once(self):
-        self.assertEqual(["a3-core", "stemdeck", "a3-motion"],
+        self.assertEqual(["a3-core", "a3-stemdeck", "a3-motion"],
                          needed_submodules(["motion", "stemdeck", "core", "core"], from_source=True))
 
     def test_only_those_are_initialised(self):
         commands = self.submodule_commands(["stemdeck", "motion"])
         update = [c for c in commands if "update" in c]
         self.assertEqual(1, len(update))
-        self.assertTrue(update[0].endswith("--init --recursive -- stemdeck a3-motion"),
+        self.assertTrue(update[0].endswith("--init --recursive -- a3-stemdeck a3-motion"),
                         update[0])
         self.assertNotIn("a3-doc", " ".join(commands))
 
@@ -356,7 +356,7 @@ class TheProductsNameThePinnedJuce(unittest.TestCase):
     repository records, it is JUCE_VERSION: one JUCE for every product."""
 
     DOCS = {
-        "stemdeck": ("stemdeck", "README.md"),
+        "stemdeck": ("a3-stemdeck", "README.md"),
         "a3-motion-ui README": ("a3-motion/ui", "README.md"),
         "a3-motion-ui ARCHITECTURE": ("a3-motion/ui", "ARCHITECTURE.md"),
         "a3-mixer-ui README": ("a3-mixer/ui", "README.md"),
@@ -2179,7 +2179,7 @@ class StemDeckWiresItselfWithoutTheCore(unittest.TestCase):
 
     def test_without_the_core_its_patchbay_unit_is_installed_and_enabled(self):
         commands, ctx = self.install(roles=())
-        source = REPO / "stemdeck" / ".config/systemd/user" / self.PATCHBAY_UNIT
+        source = REPO / "a3-stemdeck" / ".config/systemd/user" / self.PATCHBAY_UNIT
         self.assertIn(f"install -D -m 644 {source} {ctx.user_units / self.PATCHBAY_UNIT}",
                       commands)
         self.assertIn(f"systemctl --user enable {self.PATCHBAY_UNIT}", commands)

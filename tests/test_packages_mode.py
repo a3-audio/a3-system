@@ -139,7 +139,7 @@ class FromSource(unittest.TestCase):
             stemdeck.StemDeck().install(ctx)
         commands = [c.replace(tmp, "~").replace(str(REPO), "REPO") for c in log.commands()]
         self.assertEqual([
-            "python3 REPO/installer/package.py REPO/stemdeck --rev "
+            "python3 REPO/installer/package.py REPO/a3-stemdeck --rev "
             "0123456789abcdef0123456789abcdef01234567 --out ~/a3-debs "
             "--cache ~/.cache/a3-build --jobs 2 --juce /juce",
             "env DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-downgrades "
@@ -199,7 +199,7 @@ class OnlyTheSubmodulesARoleReads(unittest.TestCase):
         # stemdeck: its patchbay unit; motion: the panel firmware; desk and
         # deck-host read nothing from a submodule.
         self.assertEqual(["a3-core"], needed_submodules(["core"], from_source=False))
-        self.assertEqual(["stemdeck"], needed_submodules(["stemdeck"], from_source=False))
+        self.assertEqual(["a3-stemdeck"], needed_submodules(["stemdeck"], from_source=False))
         self.assertEqual(["a3-motion"], needed_submodules(["motion"], from_source=False))
         self.assertEqual([], needed_submodules(["desk"], from_source=False))
         self.assertEqual([], needed_submodules(["deck-host"], from_source=False))

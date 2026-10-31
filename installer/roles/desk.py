@@ -15,7 +15,8 @@ from .updater import install_updater
 
 SOURCE = "a3-mixer"
 PACKAGE = "a3-desk"
-APP = apppackage.AppPackage(PACKAGE, unit="")
+# a3-mixer's top level reads like a3-motion's (2026-10-31): the desk is ui/.
+APP = apppackage.AppPackage(PACKAGE, unit="", recipe="ui/packaging")
 
 
 def pinned_commit(ctx):
@@ -31,8 +32,8 @@ def buildable_pin(ctx, source):
     """(the pinned commit, JUCE) for a build from source; refused when the
     pin predates the desk's packaging."""
     commit = pinned_commit(ctx)
-    if not has_packaging(ctx, source, commit):
-        raise RoleError(f"a3-mixer at {commit[:10]} has no packaging/stage: the a3-mixer pin "
+    if not has_packaging(ctx, source, commit, APP.recipe):
+        raise RoleError(f"a3-mixer at {commit[:10]} has no {APP.recipe}/stage: the a3-mixer pin "
                         "is older than the desk; raise it first.")
     return commit, ensure_juce(ctx)
 

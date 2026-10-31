@@ -141,6 +141,8 @@ class LinesJson(unittest.TestCase):
             for build in line["builds"]:
                 if build["path"] == ".":
                     self.assertEqual(build["recipes"], ["update/packaging"])
+                elif build["path"] == "a3-mixer":
+                    self.assertEqual(build["recipes"], ["ui/packaging"])
                 elif build["path"] != "a3-core":
                     self.assertEqual(build["recipes"], ["packaging"])
 

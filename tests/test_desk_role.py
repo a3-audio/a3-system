@@ -17,10 +17,16 @@ from test_installer import PIN, RecordingRunner, context  # noqa: E402
 from installer.roles import BY_NAME, needed_submodules  # noqa: E402
 
 
-def desk_seams(packaged=True):
+def desk_seams(packaged=True, asked=None):
     from installer.roles import apppackage, desk
     stack = ExitStack()
-    stack.enter_context(mock.patch.object(desk, "has_packaging", lambda *_: packaged))
+
+    def has_packaging(_ctx, _source, _commit, recipe="packaging"):
+        if asked is not None:
+            asked.append(recipe)
+        return packaged
+
+    stack.enter_context(mock.patch.object(desk, "has_packaging", has_packaging))
     stack.enter_context(mock.patch.object(desk, "ensure_juce", lambda _ctx: Path("/juce")))
     stack.enter_context(mock.patch.object(desk, "pinned_commit", lambda _ctx: PIN))
     stack.enter_context(mock.patch.object(apppackage.debs, "version_of", lambda *_: "03.0+9"))
@@ -48,14 +54,14 @@ class TheDeskIsARole(unittest.TestCase):
 
 
 class TheDeskComesAsAPackage(unittest.TestCase):
-    def install(self, packaged=True):
+    def install(self, packaged=True, asked=None):
         from installer.roles import desk
         tmp = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, tmp)
         ctx, log = context(tmp, {("roles", "desk"): "yes"})
         ctx.runner = RecordingRunner(log=log)
         ctx.user_units.mkdir(parents=True)
-        with desk_seams(packaged):
+        with desk_seams(packaged, asked):
             desk.Desk().install(ctx)
         return log.commands(), ctx
 
@@ -74,6 +80,15 @@ class TheDeskComesAsAPackage(unittest.TestCase):
         self.assertIn(f"--rev {PIN}", build)
         self.assertIn(str(ctx.repo / "a3-mixer"), build)
         self.assertTrue(build.startswith("python3 "), build)
+
+    def test_the_recipe_is_the_desks_folder_ui_packaging(self):
+        """a3-mixer's top level reads like a3-motion's since 2026-10-31: the
+        desk is ui/, its recipe ui/packaging/."""
+        asked = []
+        commands, _ = self.install(asked=asked)
+        self.assertEqual(asked, ["ui/packaging"])
+        build = next(c for c in commands if "installer/package.py" in c)
+        self.assertIn("--recipe ui/packaging", build)
 
     def test_it_installs_then_holds(self):
         commands, ctx = self.install()

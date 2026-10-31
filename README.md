@@ -96,6 +96,31 @@ origin's newest commit, and moves a machine on a tag to the newest tag;
 `install --update v03.1` names one. See the
 [release notes](https://a3-audio.github.io/a3-doc/ressources/release-notes.html).
 
+## What's in A³ System
+
+One version is one tag across every repository; the releases carry the notes
+and the Debian packages: [releases](https://github.com/a3-audio/a3-system/releases).
+
+```
+A³ System                                        GPL-3.0
+├─ a3-core         A³ Core and its window        GPL-3.0
+├─ a3-doc          the documentation             CC-BY-SA-4.0
+├─ a3-mixer        A³ Mixer and the virtual desk GPL-3.0
+│  ├─ pcb                                        CERN-OHL-S
+│  ├─ housing                                    CERN-OHL-S
+│  └─ firmware                                   GPL-3.0
+├─ a3-motion       A³ Motion                     GPL-3.0
+│  ├─ pcb                                        CERN-OHL-S
+│  ├─ housing                                    CERN-OHL-S
+│  ├─ firmware                                   GPL-3.0
+│  └─ ui           the Motion UI                 GPL-3.0
+├─ beat-analyzer   the beat clock                GPL-3.0
+└─ stemdeck        the stem decks                GPL-3.0
+```
+
+Code is GPL-3.0-or-later, boards and 3D-print files CERN-OHL-S-2.0, the
+documentation CC-BY-SA-4.0; each repository's `.reuse/dep5` has the details.
+
 ## Pro DJ Link
 
 StemDeck and the beat-analyzer work with Pro DJ Link: they follow the tempo

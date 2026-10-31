@@ -8,7 +8,8 @@
       {"path": "stemdeck", "recipes": ["packaging"]},
       {"path": "a3-mixer", "recipes": ["packaging"]},
       {"path": "a3-motion/ui", "recipes": ["packaging"]},
-      {"path": "beat-analyzer", "recipes": ["packaging"]}
+      {"path": "beat-analyzer", "recipes": ["packaging"]},
+      {"path": ".", "recipes": ["update/packaging"]}
     ]
   },
   "trixie": {
@@ -20,7 +21,8 @@
       {"path": "stemdeck", "recipes": ["packaging"]},
       {"path": "a3-mixer", "recipes": ["packaging"]},
       {"path": "a3-motion/ui", "recipes": ["packaging"]},
-      {"path": "beat-analyzer", "recipes": ["packaging"]}
+      {"path": "beat-analyzer", "recipes": ["packaging"]},
+      {"path": ".", "recipes": ["update/packaging"]}
     ]
   }
 }

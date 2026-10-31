@@ -12,6 +12,7 @@ that fails, naming it. The second prints the apt packages a build host needs.
 
 import argparse
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -19,7 +20,13 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 GITLINK_MODE = "160000"
 
-# Which installer role's build packages build which path.
+# The umbrella's own tree: a recipe of its own (update/packaging, a3-update)
+# is built at the umbrella's commit, without the apps.
+UMBRELLA_PATH = "."
+UMBRELLA_OUT = "umbrella-debs"
+
+# Which installer role's build packages build which path. The umbrella's
+# own recipe has none: it compiles nothing.
 ROLE_OF_PATH = {
     "a3-core": "core",
     "stemdeck": "stemdeck",
@@ -58,7 +65,10 @@ def gitlink_at(containing, rev, relative, run):
 
 
 def pinned_commit(repo, path, run):
-    """Walk `path` through the nested submodules; each boundary is one gitlink."""
+    """Walk `path` through the nested submodules; each boundary is one gitlink.
+    The umbrella itself is built at its own commit."""
+    if path == UMBRELLA_PATH:
+        return run(["git", "-C", str(repo), "rev-parse", "--verify", "HEAD^{commit}"]).strip()
     containing, rev, parts = Path(repo), "HEAD", path.split("/")
     while parts:
         for length in range(1, len(parts) + 1):
@@ -72,11 +82,32 @@ def pinned_commit(repo, path, run):
     return rev
 
 
+def package_out(path, out, cache):
+    """package.py writes nowhere in the repository it builds, and `out` lies in
+    the umbrella's workspace: the umbrella's own package goes beside the cache
+    and collect() copies it over."""
+    return Path(cache) / UMBRELLA_OUT if path == UMBRELLA_PATH else out
+
+
+def collect(debs, out):
+    """Every deb in `out`: one built elsewhere is copied in. The new paths."""
+    Path(out).mkdir(parents=True, exist_ok=True)
+    collected = []
+    for deb in map(Path, debs):
+        target = Path(out) / deb.name
+        if deb.resolve() != target.resolve():
+            shutil.copyfile(deb, target)
+        collected.append(str(target))
+    return collected
+
+
 def package_command(repo, path, rev, out, cache, juce, jobs, recipe):
+    out = package_out(path, out, cache)
     return ["python3", "-I", str(repo / "installer" / "package.py"), str(repo / path),
             "--rev", rev, "--out", str(out), "--cache", str(cache),
             "--juce", str(juce), "--jobs", str(jobs),
-            "--recipe", recipe]
+            "--recipe", recipe,
+            *(["--without-submodules"] if path == UMBRELLA_PATH else [])]
 
 
 def build_targets(line):
@@ -117,7 +148,9 @@ def build_depends(line):
     from installer import roles
     needed = set(CI_TOOLS)
     for build in line["builds"]:
-        needed.update(role_build_packages(roles.BY_NAME[ROLE_OF_PATH[build["path"]]]))
+        role = ROLE_OF_PATH.get(build["path"])
+        if role:
+            needed.update(role_build_packages(roles.BY_NAME[role]))
     return sorted(needed)
 
 
@@ -134,7 +167,7 @@ def parse_arguments(argv):
     return parser.parse_args(argv)
 
 
-def main(argv=None, run=run):
+def main(argv=None, run=run, collect=collect):
     args = parse_arguments(argv)
     lines = load_lines()
     if args.suite not in lines:
@@ -149,7 +182,7 @@ def main(argv=None, run=run):
     try:
         commands = build_commands(line, repo, args.out.resolve(), args.cache,
                                   args.juce, args.jobs, run=run)
-        debs = build_line(line, commands, run)
+        debs = collect(build_line(line, commands, run), args.out.resolve())
     except BuildLineError as error:
         print(f"build_line: {error}", file=sys.stderr)
         return 1

@@ -19,6 +19,7 @@ UMBRELLA = Path("/umbrella")
 SHA = {
     "a3-core": "c" * 40, "stemdeck": "d" * 40, "a3-mixer": "e" * 40,
     "a3-motion": "a" * 40, "beat-analyzer": "b" * 40, "ui-in-motion": "f" * 40,
+    "umbrella": "9" * 40,
 }
 BUILD_DEPENDS = "libasound2-dev\nlibx11-dev\npython3\ndpkg-dev\n"
 
@@ -36,6 +37,8 @@ class FakeGit:
         folder, *git_args = command[2:] if command[1] == "-C" else (None, *command[1:])
         if git_args[0] == "show":
             return BUILD_DEPENDS
+        if git_args == ["rev-parse", "--verify", "HEAD^{commit}"] and folder == str(UMBRELLA):
+            return SHA["umbrella"] + "\n"
         assert git_args[0] == "ls-tree", git_args
         rev, path = git_args[1], git_args[2]
         if folder == str(UMBRELLA) and path in ("a3-core", "stemdeck", "a3-mixer",
@@ -80,6 +83,33 @@ class Commands(unittest.TestCase):
         self.assertEqual({c[3] for c in built}, {"/umbrella/a3-core"})
         self.assertEqual({c[5] for c in built}, {SHA["a3-core"]})
 
+    def test_the_umbrella_itself_is_built_at_its_own_commit_without_submodules(self):
+        """a3-update's recipe is the umbrella's own (update/packaging)."""
+        own = {"arch": "amd64", "builds": [{"path": ".", "recipes": ["update/packaging"]}]}
+        built = commands(own)
+        self.assertEqual(built, [[
+            "python3", "-I", "/umbrella/installer/package.py", "/umbrella",
+            "--rev", SHA["umbrella"], "--out", "/cache/umbrella-debs", "--cache", "/cache",
+            "--juce", "/juce", "--jobs", "2", "--recipe", "update/packaging",
+            "--without-submodules"]])
+
+    def test_the_umbrellas_deb_is_built_outside_the_checkout_and_collected(self):
+        """package.py writes nowhere in the repo it builds, and the line's out
+        folder is in the umbrella's workspace: the deb is copied over after."""
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            out, elsewhere = tmp / "out", tmp / "cache" / "umbrella-debs"
+            out.mkdir()
+            elsewhere.mkdir(parents=True)
+            (out / "stemdeck_1_amd64.deb").write_bytes(b"s")
+            (elsewhere / "a3-update_1_all.deb").write_bytes(b"u")
+            collected = build_line.collect([str(out / "stemdeck_1_amd64.deb"),
+                                            str(elsewhere / "a3-update_1_all.deb")], out)
+            self.assertEqual([str(out / "stemdeck_1_amd64.deb"), str(out / "a3-update_1_all.deb")],
+                             collected)
+            self.assertEqual(b"u", (out / "a3-update_1_all.deb").read_bytes())
+
     def test_a_path_that_is_no_submodule_is_refused(self):
         with self.assertRaisesRegex(build_line.BuildLineError, "nowhere"):
             commands(line(paths=("nowhere",)))
@@ -89,7 +119,7 @@ class Main(unittest.TestCase):
     def run_main(self, argv, run, fields=None):
         out = io.StringIO()
         with contextlib.redirect_stdout(out), contextlib.redirect_stderr(io.StringIO()) as err:
-            code = build_line.main(argv, run=run)
+            code = build_line.main(argv, run=run, collect=lambda debs, _out: debs)
         return code, out.getvalue(), err.getvalue()
 
     def test_an_unknown_suite_is_refused_with_the_known_ones(self):
@@ -115,13 +145,13 @@ class Main(unittest.TestCase):
                                      self.fake_builder("arm64"))
         self.assertEqual(code, 0)
         self.assertEqual(out.splitlines()[1], "/out/stemdeck_1.0_amd64.deb")
-        self.assertEqual(len(out.splitlines()), 5)
+        self.assertEqual(len(out.splitlines()), 6)
 
     def test_every_deb_of_a_two_recipe_repo_is_architecture_checked(self):
         code, out, err = self.run_main(["forky", "--repo", str(UMBRELLA)],
                                        self.fake_builder("amd64"))
         self.assertEqual(code, 0, err)
-        self.assertEqual(len(out.splitlines()), 6)
+        self.assertEqual(len(out.splitlines()), 7)
 
     def test_the_second_recipe_failing_names_the_repo_and_recipe(self):
         git = FakeGit()
@@ -137,6 +167,11 @@ class Main(unittest.TestCase):
         code, _, err = self.run_main(["forky", "--repo", str(UMBRELLA)], run)
         self.assertEqual(code, 1)
         self.assertIn("a3-core (packaging)", err)
+
+    def test_every_line_builds_a3_update(self):
+        for suite, line_ in build_line.load_lines().items():
+            with self.subTest(suite=suite):
+                self.assertIn({"path": ".", "recipes": ["update/packaging"]}, line_["builds"])
 
     def test_trixie_builds_the_program_package_only(self):
         lines = build_line.load_lines()

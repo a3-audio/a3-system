@@ -12,9 +12,10 @@ It is made of four parts:
 - [StemDeck](https://a3-audio.github.io/a3-doc/user/stemdeck.html): a stem player with
   two decks of four stems each.
 
-This repository carries all of them as submodules, together with the
-[beat-analyzer](https://a3-audio.github.io/a3-doc/user/beat-analyzer.html) and the docs.
-One clone gives a set of states that belong together.
+This repository carries all of them as submodules, together with the docs; the
+[beat-analyzer](https://a3-audio.github.io/a3-doc/user/beat-analyzer.html) comes
+inside a3-core, the stem separator inside a3-stemdeck, and a3-prodj (the pro-DJ,
+planned) sits beside them. One clone gives a set of states that belong together.
 
 ![Four StemDecks around the A³ desk and A³ Motion, each deck playing its own track](https://a3-audio.github.io/img/a3-setup.jpg)
 
@@ -23,7 +24,7 @@ One clone gives a set of states that belong together.
 ## Stereo in, stems out
 
 A CDJ gives you a finished stereo mix, and a stereo mix only moves as a whole.
-The stems come from [**stemseparator**](https://github.com/rafjagger/stemseparator),
+The stems come from [**a3-stem-separator**](https://github.com/a3-audio/a3-stem-separator),
 a separate tool that runs on your own computer, not on the rig: it splits each
 stereo track into four stems on a rented cloud GPU and writes them as a stem set
 StemDeck plays. Each stem then gets its own A³ channel and can travel the room
@@ -37,7 +38,7 @@ on its own path.
 - It shows the cost before it uploads anything.
 
 How to set it up and run it: the
-[stemseparator README](https://github.com/rafjagger/stemseparator#readme).
+[a3-stem-separator README](https://github.com/a3-audio/a3-stem-separator#readme).
 
 ## Getting started
 
@@ -53,7 +54,7 @@ Debian packages it builds against; they are installed with one `apt-get` (throug
 `aaa` in on tty1 and start X with i3 there, without a display manager, from the
 next reboot on. The StemDeck role asks where the stem library is and hands the
 path to StemDeck. The Desk role installs the virtual desk, the A³ Mixer on a
-screen, as the app `a3-desk` from the pinned a3-mixer (no service). The Core
+screen, as the app `a3-desk` from a3-mixer's pinned a3-mixer-ui (no service). The Core
 role installs only on the machine that owns the Core
 address in a3-core's `a3-osc.json` (or whose Core network answers set it): a second Core
 would announce itself in the same LAN; the other roles install either way. `install --dry-run` shows what it would do. For now it
@@ -102,22 +103,28 @@ One version is one tag across every repository; the releases carry the notes
 and the Debian packages: [releases](https://github.com/a3-audio/a3-system/releases).
 
 ```
-A³ System                                        GPL-3.0
-├─ a3-core         A³ Core and its window        GPL-3.0
-├─ a3-doc          the documentation             CC-BY-SA-4.0
-├─ a3-mixer        A³ Mixer                      GPL-3.0
-│  ├─ pcb                                        CERN-OHL-S
-│  ├─ housing                                    CERN-OHL-S
-│  ├─ firmware                                   GPL-3.0
-│  └─ ui           the virtual desk              GPL-3.0
-├─ a3-motion       A³ Motion                     GPL-3.0
-│  ├─ pcb                                        CERN-OHL-S
-│  ├─ housing                                    CERN-OHL-S
-│  ├─ firmware                                   GPL-3.0
-│  └─ ui           the Motion UI                 GPL-3.0
-├─ beat-analyzer   the beat clock                GPL-3.0
-└─ stemdeck        the stem decks                GPL-3.0
+A³ System                                          GPL-3.0
+├─ a3-core            A³ Core and its window       GPL-3.0
+│  └─ a3-beat-analyzer   the beat clock            GPL-3.0
+├─ a3-doc             the documentation            CC-BY-SA-4.0
+├─ a3-mixer           A³ Mixer                     GPL-3.0
+│  ├─ pcb                                          CERN-OHL-S
+│  ├─ housing                                      CERN-OHL-S
+│  ├─ firmware                                     GPL-3.0
+│  └─ a3-mixer-ui        the virtual desk          GPL-3.0
+├─ a3-motion          A³ Motion                    GPL-3.0
+│  ├─ pcb                                          CERN-OHL-S
+│  ├─ housing                                      CERN-OHL-S
+│  ├─ firmware                                     GPL-3.0
+│  └─ a3-motion-ui       the Motion UI             GPL-3.0
+├─ a3-prodj           the pro-DJ (planned)         GPL-3.0
+└─ a3-stemdeck        the stem decks               GPL-3.0
+   └─ a3-stem-separator  the stems, made off the rig GPL-3.0
 ```
+
+Every submodule sits at its repository's name, the nested ones inside the
+repository that pins them, so `git clone --recurse-submodules` (or the
+installer, which updates recursively) brings them along.
 
 Code is GPL-3.0-or-later, boards and 3D-print files CERN-OHL-S-2.0, the
 documentation CC-BY-SA-4.0; each repository's `.reuse/dep5` has the details.

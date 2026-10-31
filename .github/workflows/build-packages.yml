@@ -1,0 +1,160 @@
+# SPDX-FileCopyrightText: 2026 Raphael Eismann
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Every package of the system, built from the umbrella's pins for each line in
+# ci/lines.json and install-tested in a clean container; the .debs are left as
+# the run's debs-<suite> artifacts. Called by packages.yml (which publishes the
+# apt archive) and by release-debs.yml (which attaches them to a release); it
+# publishes nothing itself.
+name: Build packages
+
+on:
+  workflow_call:
+    inputs:
+      # What to check out; empty is the caller's own commit.
+      ref:
+        type: string
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+env:
+  # A debconf prompt (tzdata and the like) would stall a container job for hours.
+  DEBIAN_FRONTEND: noninteractive
+
+defaults:
+  run:
+    # Named explicitly, GitHub runs bash -eo pipefail: a failing script in
+    # front of a pipe fails the step (the default is bash -e only).
+    shell: bash
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.lines.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      # A tag from before the package build (v03.0) has no lines to build.
+      - name: The ref has package lines
+        env:
+          REF: ${{ inputs.ref }}
+        run: |
+          test -f ci/lines.json || { echo "::error::${REF:-$GITHUB_SHA} has no ci/lines.json: nothing to build"; exit 1; }
+
+      - name: Read the lines
+        id: lines
+        run: echo "matrix=$(python3 ci/matrix.py)" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: matrix
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.matrix.outputs.matrix) }}
+    runs-on: ${{ matrix.runner }}
+    # The line's own Debian: dpkg-shlibdeps writes Depends against the
+    # libraries of the system the package will be installed on.
+    container: ${{ matrix.image }}
+    env:
+      CCACHE_DIR: /github/home/.ccache
+      # Two lines' ccache plus two JUCE caches share GitHub's 10 GB.
+      CCACHE_MAXSIZE: 1500M
+      # package.py's CMake builds pick these up from the environment.
+      CMAKE_C_COMPILER_LAUNCHER: ccache
+      CMAKE_CXX_COMPILER_LAUNCHER: ccache
+    steps:
+      # The Debian images have neither git nor python3; checkout needs git for
+      # history and submodules.
+      - name: Checkout tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates python3
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          # The whole history: package versions are read off the v* tags.
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Trust the workspace
+        run: git config --global --add safe.directory '*'
+
+      - name: Submodule tags
+        run: git submodule foreach --recursive git fetch --tags --quiet
+
+      - name: Build tools
+        run: python3 ci/build_line.py ${{ matrix.suite }} --build-depends | xargs -r apt-get install -y --no-install-recommends
+
+      - name: Cache JUCE
+        id: juce
+        uses: actions/cache@v4
+        with:
+          path: /opt/juce
+          key: juce-9.0.3-${{ matrix.suite }}-${{ matrix.arch }}-v1
+
+      - name: Build JUCE
+        if: steps.juce.outputs.cache-hit != 'true'
+        run: |
+          git clone --depth 1 --branch 9.0.3 https://github.com/juce-framework/JUCE.git "$RUNNER_TEMP/JUCE"
+          cmake -S "$RUNNER_TEMP/JUCE" -B "$RUNNER_TEMP/JUCE/build" -DCMAKE_INSTALL_PREFIX=/opt/juce -DCMAKE_BUILD_TYPE=Release
+          cmake --build "$RUNNER_TEMP/JUCE/build" --target install -j4
+
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: /github/home/.ccache
+          key: ccache-${{ matrix.suite }}-${{ matrix.arch }}-${{ github.sha }}
+          restore-keys: ccache-${{ matrix.suite }}-${{ matrix.arch }}-
+
+      # Into the workspace, not $RUNNER_TEMP: in a container job the actions'
+      # path inputs do not see $RUNNER_TEMP where the shell does.
+      - name: Build the line
+        run: python3 ci/build_line.py ${{ matrix.suite }} --out "$GITHUB_WORKSPACE/out/debs" --cache "$RUNNER_TEMP/work" --juce /opt/juce --jobs 4
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: debs-${{ matrix.suite }}
+          path: out/debs/*.deb
+          if-no-files-found: error
+
+  install-test:
+    # One failing build line skips both install tests; publishing needs both anyway.
+    needs: [matrix, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.matrix.outputs.matrix) }}
+    runs-on: ${{ matrix.runner }}
+    container: ${{ matrix.image }}
+    steps:
+      - name: Checkout tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates python3 dpkg-dev
+
+      # The ci/ and installer/ scripts only; the packages come as an artifact.
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          submodules: false
+
+      - name: Download
+        uses: actions/download-artifact@v4
+        with:
+          name: debs-${{ matrix.suite }}
+          path: debs
+
+      - name: Index
+        run: python3 ci/archive.py index "$RUNNER_TEMP/archive" ${{ matrix.suite }} ${{ matrix.arch }} debs/*.deb
+
+      - name: Install every package
+        run: python3 ci/install_test.py "$RUNNER_TEMP/archive" ${{ matrix.suite }}

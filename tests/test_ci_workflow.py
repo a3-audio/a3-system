@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2026 Raphael Eismann
 # SPDX-License-Identifier: GPL-3.0-or-later
-""".github/workflows/packages.yml: build, install-test and publish every package.
+"""The package workflows: build-packages.yml builds and install-tests every line,
+packages.yml calls it and publishes the apt archive.
 
 Plain text checks: there is no YAML library here, and adding one is a dependency.
 
@@ -14,67 +15,29 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from installer.roles import base  # noqa: E402
+from workflows import (BUILD_PACKAGES, PACKAGES, all_workflows, job_blocks,  # noqa: E402
+                       run_commands, top_block)
 
-WORKFLOW = REPO / ".github" / "workflows" / "packages.yml"
 COMMITTED_KEY = REPO / "installer" / "keys" / "a3-audio-archive.asc"
-JOB_INDENT = "  "
+CALL_BUILD = "uses: ./.github/workflows/build-packages.yml"
 
 
-def workflow_text():
-    return WORKFLOW.read_text()
-
-
-def job_blocks(text):
-    """Each job's lines, keyed by name: a job starts at two-space indent under `jobs:`."""
-    blocks, current, in_jobs = {}, None, False
-    for line in text.splitlines():
-        if line.startswith("jobs:"):
-            in_jobs = True
-            continue
-        if not in_jobs:
-            continue
-        if line and not line.startswith(" "):
-            break
-        heading = re.match(rf"^{JOB_INDENT}([A-Za-z0-9_-]+):\s*$", line)
-        if heading:
-            current = heading.group(1)
-            blocks[current] = []
-        elif current:
-            blocks[current].append(line)
-    return {name: "\n".join(lines) for name, lines in blocks.items()}
-
-
-def run_commands(text):
-    """Every command line of every `run:`, inline or in a `run: |` block."""
-    commands, block_indent = [], None
-    for line in text.splitlines():
-        stripped = line.strip()
-        indent = len(line) - len(line.lstrip())
-        if block_indent is not None:
-            if stripped and indent < block_indent:
-                block_indent = None
-            elif stripped:
-                commands.append(stripped)
-                continue
-        found = re.match(r"^\s*(?:- )?run:\s*(.*)$", line)
-        if not found:
-            continue
-        if found.group(1) in ("|", ">"):
-            block_indent = indent + 2
-        else:
-            commands.append(found.group(1))
-    return commands
-
-
-class Jobs(unittest.TestCase):
+class Packages(unittest.TestCase):
     def setUp(self):
-        self.text = workflow_text()
+        self.text = PACKAGES.read_text()
         self.jobs = job_blocks(self.text)
 
-    def test_the_jobs_are_matrix_build_install_test_publish(self):
-        self.assertEqual(list(self.jobs), ["matrix", "build", "install-test", "publish"])
+    def test_the_jobs_are_the_build_call_and_publish(self):
+        self.assertEqual(list(self.jobs), ["packages", "publish"])
+
+    def test_the_build_is_the_reusable_workflow_at_the_pushed_commit(self):
+        self.assertIn(CALL_BUILD, self.jobs["packages"])
+        # No `with: ref`: the called checkouts take the push's own commit, as before.
+        self.assertNotIn("with:", self.jobs["packages"])
+        self.assertNotIn("secrets:", self.jobs["packages"])
 
     def test_the_signing_key_is_named_and_only_publish_sees_it(self):
         self.assertEqual(self.text.count("secrets.GPG_PRIVATE_KEY"), 1)
@@ -83,25 +46,13 @@ class Jobs(unittest.TestCase):
         self.assertIn("debian:trixie", (REPO / "ci" / "lines.json").read_text())
         self.assertNotIn("pages-deploy", self.text)
 
-    def test_the_matrix_comes_from_lines_json(self):
-        self.assertIn("python3 ci/matrix.py", self.jobs["matrix"])
-        for job in ("build", "install-test"):
-            self.assertIn("fromJSON(needs.matrix.outputs.matrix)", self.jobs[job])
-            self.assertIn("runs-on: ${{ matrix.runner }}", self.jobs[job])
-            self.assertIn("container: ${{ matrix.image }}", self.jobs[job])
-
-    def test_every_action_is_pinned_to_a_major_tag(self):
-        uses = re.findall(r"uses:\s*(\S+)", self.text)
-        self.assertTrue(uses)
-        for action in uses:
-            self.assertRegex(action, r"^[\w.-]+/[\w.-]+@v\d+$")
-
     def test_triggers_are_main_tags_and_by_hand(self):
-        on_block = self.text.split("\non:", 1)[1].split("\npermissions:", 1)[0]
+        on_block = top_block(self.text, "on")
         self.assertIn("branches: [main]", on_block)
         self.assertIn('tags: ["v*"]', on_block)
         self.assertIn("workflow_dispatch:", on_block)
         self.assertNotIn("pull_request", on_block)
+        self.assertNotIn("release", on_block)
 
     def test_the_workflow_reads_and_only_publish_writes(self):
         self.assertIn("permissions:\n  contents: read", self.text)
@@ -109,25 +60,85 @@ class Jobs(unittest.TestCase):
         self.assertIn("contents: write", self.jobs["publish"])
 
 
-class Shell(unittest.TestCase):
+class BuildPackages(unittest.TestCase):
     def setUp(self):
-        self.text = workflow_text()
-        self.top = self.text.split("\njobs:", 1)[0]
+        self.text = BUILD_PACKAGES.read_text()
+        self.jobs = job_blocks(self.text)
 
+    def test_the_jobs_are_matrix_build_install_test(self):
+        self.assertEqual(list(self.jobs), ["matrix", "build", "install-test"])
+
+    def test_it_is_only_called_never_triggered(self):
+        on_block = top_block(self.text, "on")
+        self.assertIn("workflow_call:", on_block)
+        for trigger in ("push:", "release:", "workflow_dispatch:", "pull_request"):
+            self.assertNotIn(trigger, on_block)
+
+    def test_ref_is_an_optional_string_input(self):
+        on_block = top_block(self.text, "on")
+        self.assertRegex(on_block, r"inputs:\n(?:\s+#.*\n)*\s+ref:\n")
+        self.assertIn("type: string", on_block)
+        self.assertIn("required: false", on_block)
+        self.assertIn('default: ""', on_block)
+
+    def test_every_checkout_takes_the_ref(self):
+        checkouts = self.text.count("uses: actions/checkout@v4")
+        self.assertEqual(checkouts, 3)
+        self.assertEqual(self.text.count("ref: ${{ inputs.ref }}"), checkouts)
+
+    def test_it_reads_and_publishes_nothing(self):
+        self.assertIn("permissions:\n  contents: read", self.text)
+        self.assertNotIn("contents: write", self.text)
+        self.assertNotIn("secrets.", self.text)
+        self.assertNotIn("gh-pages", self.text)
+        self.assertNotIn("gh release", self.text)
+
+    def test_a_ref_without_package_lines_stops_with_a_message(self):
+        self.assertLess(self.jobs["matrix"].index("test -f ci/lines.json"),
+                        self.jobs["matrix"].index("python3 ci/matrix.py"))
+        self.assertIn("::error::", self.jobs["matrix"])
+
+    def test_the_matrix_comes_from_lines_json(self):
+        self.assertIn("python3 ci/matrix.py", self.jobs["matrix"])
+        for job in ("build", "install-test"):
+            self.assertIn("fromJSON(needs.matrix.outputs.matrix)", self.jobs[job])
+            self.assertIn("runs-on: ${{ matrix.runner }}", self.jobs[job])
+            self.assertIn("container: ${{ matrix.image }}", self.jobs[job])
+
+
+class EveryWorkflow(unittest.TestCase):
+    def test_every_action_is_pinned_to_a_major_tag_or_is_local(self):
+        for workflow in all_workflows():
+            uses = re.findall(r"uses:\s*(\S+)", workflow.read_text())
+            self.assertTrue(uses, workflow.name)
+            for action in uses:
+                if action.startswith("./.github/workflows/"):
+                    self.assertTrue((REPO / action).is_file(), action)
+                    continue
+                self.assertRegex(action, r"^[\w.-]+/[\w.-]+@v\d+$")
+
+
+class Shell(unittest.TestCase):
     def test_apt_never_waits_for_a_prompt(self):
-        self.assertRegex(self.top, r"(?m)^env:\n(?:\s+#.*\n)*  DEBIAN_FRONTEND: noninteractive$")
+        for workflow in (PACKAGES, BUILD_PACKAGES):
+            top = workflow.read_text().split("\njobs:", 1)[0]
+            self.assertRegex(top, r"(?m)^env:\n(?:\s+#.*\n)*  DEBIAN_FRONTEND: noninteractive$",
+                             workflow.name)
 
     def test_a_failing_script_in_a_pipe_fails_the_step(self):
         # GitHub runs `shell: bash` as bash -eo pipefail; its default is bash -e.
-        self.assertRegex(self.top, r"(?m)^defaults:\n  run:\n(?:\s+#.*\n)*    shell: bash$")
+        for workflow in all_workflows():
+            top = workflow.read_text().split("\njobs:", 1)[0]
+            self.assertRegex(top, r"(?m)^defaults:\n  run:\n(?:\s+#.*\n)*    shell: bash$",
+                             workflow.name)
 
     def test_an_empty_package_list_installs_nothing(self):
-        self.assertIn("| xargs -r apt-get install", self.text)
+        self.assertIn("| xargs -r apt-get install", BUILD_PACKAGES.read_text())
 
 
 class Build(unittest.TestCase):
     def setUp(self):
-        self.build = job_blocks(workflow_text())["build"]
+        self.build = job_blocks(BUILD_PACKAGES.read_text())["build"]
 
     def test_the_checkout_has_history_submodules_and_their_tags(self):
         self.assertIn("fetch-depth: 0", self.build)
@@ -162,7 +173,7 @@ class Build(unittest.TestCase):
 
 class InstallTest(unittest.TestCase):
     def setUp(self):
-        self.job = job_blocks(workflow_text())["install-test"]
+        self.job = job_blocks(BUILD_PACKAGES.read_text())["install-test"]
 
     def test_it_needs_build_and_installs_from_an_index(self):
         self.assertIn("needs: [matrix, build]", self.job)
@@ -176,10 +187,11 @@ class InstallTest(unittest.TestCase):
 
 class Publish(unittest.TestCase):
     def setUp(self):
-        self.job = job_blocks(workflow_text())["publish"]
+        self.job = job_blocks(PACKAGES.read_text())["publish"]
 
     def test_it_runs_after_the_install_test_on_main_and_tags_only(self):
-        self.assertIn("needs: install-test", self.job)
+        # The called workflow ends with the install test: needing it waits for both lines.
+        self.assertIn("needs: packages", self.job)
         self.assertIn("if: github.ref == 'refs/heads/main' || "
                       "startsWith(github.ref, 'refs/tags/v')", self.job)
 
@@ -210,19 +222,20 @@ class Publish(unittest.TestCase):
 
 class RunLines(unittest.TestCase):
     def test_every_python_call_is_a_ci_script(self):
-        commands = run_commands(workflow_text())
-        # An apt-get line names python3 as a package, not as a call.
-        python_calls = [command for command in commands if "python3" in command
-                        and not command.startswith("apt-get")]
-        self.assertTrue(python_calls)
-        for command in python_calls:
-            self.assertRegex(command, r"python3 ci/\w+\.py")
-            self.assertNotIn("python3 -c", command)
+        for workflow in all_workflows():
+            commands = run_commands(workflow.read_text())
+            # An apt-get line names python3 as a package, not as a call.
+            python_calls = [command for command in commands if "python3" in command
+                            and not command.startswith("apt-get")]
+            for command in python_calls:
+                self.assertRegex(command, r"python3 ci/\w+\.py", workflow.name)
+                self.assertNotIn("python3 -c", command)
 
     def test_no_inline_hashing_or_index_making(self):
-        commands = "\n".join(run_commands(workflow_text()))
-        for tool in ("sha256sum", "md5sum", "dpkg-scanpackages", "--detach-sign"):
-            self.assertNotIn(tool, commands)
+        for workflow in all_workflows():
+            commands = "\n".join(run_commands(workflow.read_text()))
+            for tool in ("sha256sum", "md5sum", "dpkg-scanpackages", "--detach-sign"):
+                self.assertNotIn(tool, commands, workflow.name)
 
 
 class CommittedKey(unittest.TestCase):

@@ -49,7 +49,7 @@ class Jobs(unittest.TestCase):
 
     def test_the_archive_is_not_published_from_here(self):
         self.assertNotIn("workflows/packages.yml", self.text)
-        for publishing in ("gh-pages", "GPG_PRIVATE_KEY", "archive.py sign", "secrets: inherit"):
+        for publishing in ("gh-pages", "archive.py index", "secrets: inherit"):
             self.assertNotIn(publishing, self.text)
 
     def test_the_workflow_reads_and_only_the_upload_writes(self):
@@ -89,6 +89,52 @@ class Upload(unittest.TestCase):
         # A dispatch input in ${{ }} inside run: would be pasted into the shell.
         for command in self.commands:
             self.assertNotIn("${{", command)
+
+
+class Signature(unittest.TestCase):
+    """SHA256SUMS signed with the archive's key: a machine trusts a release by
+    the keyring it already has, not by HTTPS alone."""
+
+    def setUp(self):
+        self.text = RELEASE_DEBS.read_text()
+        self.jobs = job_blocks(self.text)
+        self.job = self.jobs["upload"]
+        self.commands = run_commands(self.job)
+
+    def index(self, prefix):
+        found = [i for i, command in enumerate(self.commands) if command.startswith(prefix)]
+        self.assertEqual(len(found), 1, prefix)
+        return found[0]
+
+    def test_only_the_upload_sees_the_archive_key(self):
+        self.assertEqual(self.text.count("secrets.GPG_PRIVATE_KEY"), 1)
+        self.assertIn("GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}", self.job)
+        self.assertNotIn("secrets", self.jobs["packages"])
+
+    def test_the_key_is_imported_as_packages_yml_does(self):
+        self.assertIn('mkdir -m 700 "$RUNNER_TEMP/gnupg"', self.commands)
+        self.assertIn("printf '%s\\n' \"$GPG_PRIVATE_KEY\" | "
+                      'gpg --homedir "$RUNNER_TEMP/gnupg" --batch --import', self.commands)
+
+    def test_the_key_must_match_the_committed_one_before_it_signs(self):
+        self.assertIn("python3 ci/archive.py key-matches installer/keys/a3-audio-archive.asc "
+                      '--gpg-home "$RUNNER_TEMP/gnupg"', self.commands)
+        self.assertLess(self.index("python3 ci/archive.py key-matches"),
+                        self.index("python3 ci/archive.py sign-detached"))
+
+    def test_the_sums_are_signed_after_naming_and_before_the_upload(self):
+        self.assertIn('python3 ci/archive.py sign-detached assets/SHA256SUMS '
+                      '--gpg-home "$RUNNER_TEMP/gnupg"', self.commands)
+        self.assertLess(self.index("python3 ci/release_assets.py"),
+                        self.index("python3 ci/archive.py sign-detached"))
+        self.assertLess(self.index("python3 ci/archive.py sign-detached"),
+                        self.index("gh release upload"))
+
+    def test_no_new_action_comes_with_it(self):
+        uses = sorted(set(line.split("uses:", 1)[1].strip()
+                          for line in self.text.splitlines() if "uses:" in line))
+        self.assertEqual(uses, ["./.github/workflows/build-packages.yml",
+                                "actions/checkout@v4", "actions/download-artifact@v4"])
 
 
 if __name__ == "__main__":

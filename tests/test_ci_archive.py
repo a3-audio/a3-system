@@ -161,6 +161,22 @@ class Signing(unittest.TestCase):
             done = subprocess.run(["gpg", "--homedir", str(home), *args], capture_output=True)
             self.assertEqual(done.returncode, 0, done.stderr)
 
+    def test_sign_detached_writes_an_armored_signature_beside_the_file(self):
+        work = tmpdir(self)
+        home = throwaway_gpg_home(self)
+        sums = work / "SHA256SUMS"
+        sums.write_text("0" * 64 + "  a3-core_1.0_amd64.deb\n")
+        archive.sign_detached(sums, home)
+        signature = work / "SHA256SUMS.asc"
+        self.assertTrue(signature.read_text().startswith("-----BEGIN PGP SIGNATURE-----"))
+        self.assertEqual(sorted(p.name for p in work.iterdir()), ["SHA256SUMS", "SHA256SUMS.asc"])
+        keyring = tmpdir(self) / "a3.gpg"
+        keyring.write_bytes(subprocess.run(["gpg", "--homedir", str(home), "--export"],
+                                           check=True, capture_output=True).stdout)
+        done = subprocess.run(["gpgv", "--keyring", str(keyring), str(signature), str(sums)],
+                              capture_output=True)
+        self.assertEqual(done.returncode, 0, done.stderr)
+
     def test_key_matches_the_committed_public_key(self):
         home = throwaway_gpg_home(self)
         committed = export_public(home, tmpdir(self) / "a3.asc")
@@ -195,6 +211,15 @@ class CommandLine(unittest.TestCase):
         code, _, _ = self.run_main(["sign", str(release), "--gpg-home", str(home)])
         self.assertEqual(code, 0)
         self.assertTrue((work / "InRelease").is_file())
+
+    def test_sign_detached_dispatch(self):
+        work = tmpdir(self)
+        home = throwaway_gpg_home(self)
+        sums = work / "SHA256SUMS"
+        sums.write_text("x\n")
+        code, _, _ = self.run_main(["sign-detached", str(sums), "--gpg-home", str(home)])
+        self.assertEqual(code, 0)
+        self.assertTrue((work / "SHA256SUMS.asc").is_file())
 
     def test_key_matches_exit_codes_and_message_names_both_fingerprints(self):
         home = throwaway_gpg_home(self)

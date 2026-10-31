@@ -3,9 +3,11 @@
 #
 # A version's .debs on a3-system's GitHub release: every line built from the
 # tag's pins and install-tested (build-packages.yml), then attached to the
-# release of that tag with a SHA256SUMS. The apt archive is packages.yml's
-# business and is not touched from here. By hand, for a release that already
-# exists: Actions -> Release debs -> Run workflow, tag v03.1.
+# release of that tag with a SHA256SUMS, signed with the archive's key
+# (SHA256SUMS.asc): a machine trusts a release by the keyring it already has,
+# not by HTTPS alone. The apt archive is packages.yml's business and is not
+# touched from here. By hand, for a release that already exists:
+# Actions -> Release debs -> Run workflow, tag v03.1.
 name: Release debs
 
 on:
@@ -59,6 +61,22 @@ jobs:
 
       - name: Name the assets
         run: python3 ci/release_assets.py debs assets
+
+      # As packages.yml's publish job does; only this job sees the key.
+      - name: Import the signing key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: |
+          mkdir -m 700 "$RUNNER_TEMP/gnupg"
+          printf '%s\n' "$GPG_PRIVATE_KEY" | gpg --homedir "$RUNNER_TEMP/gnupg" --batch --import
+
+      # A key that differs from the committed one would sign sums no installed
+      # machine trusts: stop before anything is signed.
+      - name: The key matches the committed one
+        run: python3 ci/archive.py key-matches installer/keys/a3-audio-archive.asc --gpg-home "$RUNNER_TEMP/gnupg"
+
+      - name: Sign SHA256SUMS
+        run: python3 ci/archive.py sign-detached assets/SHA256SUMS --gpg-home "$RUNNER_TEMP/gnupg"
 
       - name: Attach to the release
         env:

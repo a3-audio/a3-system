@@ -5,10 +5,13 @@
 
     python3 ci/archive.py index <root> <suite> <arch> <deb>...
     python3 ci/archive.py sign <release> [--gpg-home DIR]
+    python3 ci/archive.py sign-detached <file> [--gpg-home DIR]
     python3 ci/archive.py key-matches <committed.asc> [--gpg-home DIR]
 
 All suites share <root>/pool; each suite has its own dists/<suite>/ with its own
 Packages, listing only the debs of its architecture (plus arch "all").
+sign-detached writes <file>.asc, an armored detached signature: a release's
+SHA256SUMS signed with the archive's key, which every machine already trusts.
 """
 
 import argparse
@@ -107,6 +110,12 @@ def sign(release, gpg_home=None):
                     "--output", str(release.parent / "InRelease"), str(release)))
 
 
+def sign_detached(path, gpg_home=None):
+    path = Path(path)
+    run(gpg_command(gpg_home, "--armor", "--detach-sign",
+                    "--output", f"{path}.asc", str(path)))
+
+
 def primary_fingerprints(colon_listing):
     # The fpr line after each pub/sec record is the primary key's; subkeys follow.
     found, expecting = [], False
@@ -145,7 +154,8 @@ def command_line():
     index.add_argument("suite")
     index.add_argument("arch")
     index.add_argument("debs", nargs="+", type=Path)
-    for name, positional in (("sign", "release"), ("key-matches", "committed")):
+    for name, positional in (("sign", "release"), ("sign-detached", "file"),
+                             ("key-matches", "committed")):
         sub = commands.add_parser(name)
         sub.add_argument(positional, type=Path)
         sub.add_argument("--gpg-home", type=Path)
@@ -159,6 +169,8 @@ def main(argv=None):
             print(index_suite(args.root, args.suite, args.arch, args.debs))
         elif args.command == "sign":
             sign(args.release, args.gpg_home)
+        elif args.command == "sign-detached":
+            sign_detached(args.file, args.gpg_home)
         else:
             return report_key_match(args)
     except ArchiveError as error:

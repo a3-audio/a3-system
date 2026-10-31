@@ -105,10 +105,11 @@ and the Debian packages: [releases](https://github.com/a3-audio/a3-system/releas
 A³ System                                        GPL-3.0
 ├─ a3-core         A³ Core and its window        GPL-3.0
 ├─ a3-doc          the documentation             CC-BY-SA-4.0
-├─ a3-mixer        A³ Mixer and the virtual desk GPL-3.0
+├─ a3-mixer        A³ Mixer                      GPL-3.0
 │  ├─ pcb                                        CERN-OHL-S
 │  ├─ housing                                    CERN-OHL-S
-│  └─ firmware                                   GPL-3.0
+│  ├─ firmware                                   GPL-3.0
+│  └─ ui           the virtual desk              GPL-3.0
 ├─ a3-motion       A³ Motion                     GPL-3.0
 │  ├─ pcb                                        CERN-OHL-S
 │  ├─ housing                                    CERN-OHL-S

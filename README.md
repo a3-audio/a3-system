@@ -23,24 +23,21 @@ One clone gives a set of states that belong together.
 ## Stereo in, stems out
 
 A CDJ gives you a finished stereo mix, and a stereo mix only moves as a whole.
-StemDeck splits a stereo track into four stems itself: **drums, bass, other and
-vocals**. Each stem then gets its own A³ channel and can travel the room on its
-own path.
+The stems come from [**stemseparator**](https://github.com/rafjagger/stemseparator),
+a separate tool that runs on your own computer, not on the rig: it splits each
+stereo track into four stems on a rented cloud GPU and writes them as a stem set
+StemDeck plays. Each stem then gets its own A³ channel and can travel the room
+on its own path.
 
-- **In:** stereo files, or a whole folder, dropped onto the library, or picked
-  with **Create stems…**. FLAC, WAV, MP3, AIFF, OGG, M4A and Opus work.
-- **Out:** one stem set per track, `Title - 1 - drums` to `Title - 4 - vocals`,
-  in one target folder for the whole batch. A copy of the original goes into
-  `originals/`.
-- The stems keep the original's format. MP3, M4A and Opus become FLAC.
-- The separation is [Demucs](https://github.com/adefossez/demucs) (`htdemucs`).
-  It runs in the background on all cores but the audio thread's, so **the decks
-  play on while a track is separated**.
+- **In:** FLAC, WAV or AIFF, single tracks or whole folders; finished tracks are
+  skipped, an interrupted run continues.
+- **Out:** one stem set per track, 44.1 kHz / 24-bit FLAC, by default the four
+  stems `1 - low`, `2 - tops`, `3 - music`, `4 - vocals`, plus a copy of the
+  original under `originals/`. Copy the library to the machines that play it.
+- It shows the cost before it uploads anything.
 
-![The StemDeck library with the Create stems… button](https://a3-audio.github.io/a3-doc/_images/stemdeck-library.png)
-
-How to start it, what you get and the one-time setup:
-[Making stems from a stereo track](https://a3-audio.github.io/a3-doc/user/stemdeck.html#stemdeck-stem-creator).
+How to set it up and run it: the
+[stemseparator README](https://github.com/rafjagger/stemseparator#readme).
 
 ## Getting started
 

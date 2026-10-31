@@ -1,0 +1,14 @@
+#!/bin/sh
+# The unit file is still there now, so the links of `systemctl --global
+# enable` go cleanly. Not on upgrade: the new version keeps it enabled.
+set -e
+
+case "$1" in
+	remove|deconfigure)
+		if command -v systemctl >/dev/null 2>&1; then
+			systemctl --global disable a3-update.service || true
+		fi
+		;;
+esac
+
+exit 0

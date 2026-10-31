@@ -1,0 +1,17 @@
+Package: a3-update
+Version: 0
+Architecture: all
+Maintainer: Rafjagger
+Section: admin
+Priority: optional
+Depends: python3, gpgv
+Recommends: sudo
+Description: A3 update, each machine's updater for a signed A3 release
+ A user service (a3-update.service) that installs the A3 packages of this
+ machine from a release of a3-system when Core asks: it downloads the
+ release's .debs for this machine, checks them against the signed
+ SHA256SUMS and hands them to the root helper /usr/lib/a3-update/a3-root,
+ which checks the signature with the A3 key, installs and holds them.
+ .
+ Root only through one sudoers line, written once by hand, never by the
+ package: aaa ALL=(root) NOPASSWD: /usr/lib/a3-update/a3-root install-release *

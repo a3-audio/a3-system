@@ -1,0 +1,6 @@
+#!/bin/sh
+# Nothing to do: prerm disabled the unit; the last job's record in
+# ~/.local/state/a3-update is the user's.
+set -e
+
+exit 0

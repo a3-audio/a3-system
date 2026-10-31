@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2026 Raphael Eismann
+# SPDX-License-Identifier: GPL-3.0-or-later
+[Unit]
+Description=A3 update: installs a signed A3 release when Core asks
+
+[Service]
+ExecStart=/usr/lib/a3-update/a3-update
+# Without a truth naming update.control (a device before Core's first
+# announce) it ends; it tries again until the truth is there.
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,14 @@
+#!/bin/sh
+# Enables the updater's user unit for every user, and nothing else: no write
+# into any home, no restart (an update restarts it itself, last), and no
+# sudoers file -- that line is the maintainer's to write.
+set -e
+
+if [ "$1" = "configure" ] && command -v systemctl >/dev/null 2>&1; then
+	systemctl --global enable a3-update.service || true
+	for user in $(loginctl list-users --no-legend 2>/dev/null | awk '{print $2}'); do
+		systemctl --user --machine="$user@" daemon-reload 2>/dev/null || true
+	done
+fi
+
+exit 0

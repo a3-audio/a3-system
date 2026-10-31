@@ -8,8 +8,10 @@
     python3 ci/archive.py sign-detached <file> [--gpg-home DIR]
     python3 ci/archive.py key-matches <committed.asc> [--gpg-home DIR]
 
-All suites share <root>/pool; each suite has its own dists/<suite>/ with its own
-Packages, listing only the debs of its architecture (plus arch "all").
+Arch-specific debs share <root>/pool/main; arch "all" debs live in
+<root>/pool/<suite>/main, since the lines build them separately under one file
+name. Each suite has its own dists/<suite>/ with its own Packages, listing the
+debs of its architecture plus its own arch "all" debs.
 sign-detached writes <file>.asc, an armored detached signature: a release's
 SHA256SUMS signed with the archive's key, which every machine already trusts.
 """
@@ -39,10 +41,11 @@ def deb_field(deb, field):
     return run(["dpkg-deb", "-f", str(deb), field]).strip()
 
 
-def pool_directory(root, package):
+def pool_directory(root, package, suite=None):
     # Debian's rule: lib* packages are filed under their first four letters.
     prefix = package[:4] if package.startswith("lib") else package[:1]
-    return root / "pool" / "main" / prefix / package
+    base = root / "pool" / (f"{suite}/main" if suite else "main")
+    return base / prefix / package
 
 
 def check_architecture(deb, arch):
@@ -51,26 +54,45 @@ def check_architecture(deb, arch):
         raise ArchiveError(f"{deb.name} is {found}, this suite wants {arch}")
 
 
-def copy_into_pool(root, debs, arch):
+def copy_into_pool(root, debs, arch, suite):
+    # Arch "all" debs of two lines share a file name but not their bytes, so
+    # each suite files its own; arch-specific debs cannot collide.
     for deb in debs:
         deb = Path(deb)
         check_architecture(deb, arch)
-        folder = pool_directory(root, deb_field(deb, "Package"))
+        own_suite = suite if deb_field(deb, "Architecture") == "all" else None
+        folder = pool_directory(root, deb_field(deb, "Package"), own_suite)
         folder.mkdir(parents=True, exist_ok=True)
         shutil.copy2(deb, folder / deb.name)
 
 
-def scan_packages(root, arch):
-    # Run from root so Filename is pool/main/...; --arch keeps the other
-    # line's debs, which share the pool, out of this suite's index.
-    return run(["dpkg-scanpackages", "--multiversion", "--arch", arch, "pool"],
-               cwd=root).encode()
+def remove_shared_arch_all(root):
+    # Older archives filed arch "all" debs in the shared pool, where the lines
+    # overwrote each other.
+    for deb in (root / "pool" / "main").rglob("*.deb"):
+        if deb_field(deb, "Architecture") == "all":
+            deb.unlink()
+
+
+def scan(root, arch, directory):
+    # Run from root so Filename is relative to it; --arch keeps other
+    # architectures out of the index.
+    return run(["dpkg-scanpackages", "--multiversion", "--arch", arch, directory],
+               cwd=root)
+
+
+def scan_packages(root, suite, arch):
+    suite_pool = root / "pool" / suite / "main"
+    suite_pool.mkdir(parents=True, exist_ok=True)
+    shared = scan(root, arch, "pool/main")
+    own_all = scan(root, "all", f"pool/{suite}/main")
+    return (shared + own_all).encode()
 
 
 def write_packages(root, suite, arch):
     folder = root / "dists" / suite / "main" / f"binary-{arch}"
     folder.mkdir(parents=True, exist_ok=True)
-    packages = scan_packages(root, arch)
+    packages = scan_packages(root, suite, arch)
     (folder / "Packages").write_bytes(packages)
     (folder / "Packages.gz").write_bytes(gzip.compress(packages, mtime=0))
     return {f"main/binary-{arch}/Packages": packages,
@@ -89,7 +111,8 @@ def release_text(suite, arch_list, files, date):
 
 def index_suite(root, suite, arch, debs):
     root = Path(root)
-    copy_into_pool(root, debs, arch)
+    remove_shared_arch_all(root)
+    copy_into_pool(root, debs, arch, suite)
     files = write_packages(root, suite, arch)
     date = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
     release = root / "dists" / suite / "Release"

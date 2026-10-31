@@ -5,6 +5,7 @@ Run with:  python3 -m unittest discover -s tests
 
 import contextlib
 import gzip
+import hashlib
 import io
 import json
 import os
@@ -28,9 +29,11 @@ def tmpdir(case):
     return Path(tmp.name)
 
 
-def make_deb(folder, package, arch, version="1.0"):
+def make_deb(folder, package, arch, version="1.0", payload=None):
     tree = folder / f"{package}_{arch}-tree"
     (tree / "DEBIAN").mkdir(parents=True)
+    if payload is not None:
+        (tree / "payload").write_text(payload)
     (tree / "DEBIAN" / "control").write_text(
         f"Package: {package}\nVersion: {version}\nArchitecture: {arch}\n"
         "Maintainer: A3 <contact@a3-audio.com>\nDescription: test package\n")
@@ -115,6 +118,60 @@ class IndexSuite(unittest.TestCase):
         archive.index_suite(root, "forky", "amd64", [make_deb(work, "a3-mixer", "all")])
         self.assertIn("Package: a3-mixer\n",
                       (root / "dists/forky/main/binary-amd64/Packages").read_text())
+
+
+def index_hash(packages_text, filename):
+    for stanza in packages_text.split("\n\n"):
+        if f"Filename: {filename}\n" in stanza:
+            return next(l.split(": ", 1)[1] for l in stanza.splitlines()
+                        if l.startswith("SHA256: "))
+    raise AssertionError(f"{filename} not in index")
+
+
+class ArchAllPerSuite(unittest.TestCase):
+    def build_two_suites(self):
+        work = tmpdir(self)
+        root = work / "archive"
+        one, two = work / "one", work / "two"
+        one.mkdir(); two.mkdir()
+        forky = make_deb(one, "a3-update", "all", payload="forky")
+        trixie = make_deb(two, "a3-update", "all", payload="trixie")
+        archive.index_suite(root, "forky", "amd64", [forky])
+        archive.index_suite(root, "trixie", "arm64", [trixie])
+        return root
+
+    def test_same_named_all_debs_do_not_collide(self):
+        root = self.build_two_suites()
+        for suite, arch in (("forky", "amd64"), ("trixie", "arm64")):
+            text = (root / f"dists/{suite}/main/binary-{arch}/Packages").read_text()
+            filename = f"pool/{suite}/main/a/a3-update/a3-update_1.0_all.deb"
+            self.assertEqual(text.count("Package: a3-update\n"), 1)
+            digest = hashlib.sha256((root / filename).read_bytes()).hexdigest()
+            self.assertEqual(index_hash(text, filename), digest)
+
+    def test_all_debs_stay_out_of_the_shared_pool(self):
+        root = self.build_two_suites()
+        self.assertEqual(list((root / "pool/main").rglob("*.deb")), [])
+
+    def test_arch_debs_stay_in_the_shared_pool_and_alongside_all(self):
+        work = tmpdir(self)
+        root = work / "archive"
+        archive.index_suite(root, "forky", "amd64",
+                            [make_deb(work, "a3-core", "amd64"), make_deb(work, "a3-update", "all")])
+        text = (root / "dists/forky/main/binary-amd64/Packages").read_text()
+        self.assertIn("Filename: pool/main/a/a3-core/a3-core_1.0_amd64.deb\n", text)
+        self.assertIn("Filename: pool/forky/main/a/a3-update/a3-update_1.0_all.deb\n", text)
+
+    def test_legacy_all_deb_in_the_shared_pool_is_removed_and_not_indexed(self):
+        work = tmpdir(self)
+        root = work / "archive"
+        legacy = make_deb(work, "a3-old", "all")
+        folder = root / "pool/main/a/a3-old"
+        folder.mkdir(parents=True)
+        (folder / legacy.name).write_bytes(legacy.read_bytes())
+        archive.index_suite(root, "forky", "amd64", [make_deb(work, "a3-core", "amd64")])
+        self.assertFalse((folder / legacy.name).exists())
+        self.assertNotIn("a3-old", (root / "dists/forky/main/binary-amd64/Packages").read_text())
 
 
 class LinesJson(unittest.TestCase):

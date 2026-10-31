@@ -132,8 +132,7 @@ A³ System                   the umbrella: installer, CI, pins  v03.2      GPL-3
    ├─ kiss_fft              FFT inside BTrack                  1.3.0      BSD-3-Clause
    ├─ Neumann KU 100 HRIR   the binaural head                  2013       CC-BY-3.0
    ├─ platform-espressif32  the Motion board definition        2026-05    Apache-2.0
-   ├─ Roboto                the window's font                  1.100141   Apache-2.0
-   └─ SnapMagic MCP3208     the mixer's ADC footprint          2025-11    SnapMagic
+   └─ Roboto                the window's font                  1.100141   Apache-2.0
 ```
 
 Every submodule sits at its repository's name, the nested ones inside the

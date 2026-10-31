@@ -7,9 +7,15 @@
     a3-root install <pkg>...    apt-get update, install, hold (noninteractive)
     a3-root remove <pkg>...     unhold, apt-get remove (noninteractive)
     a3-root join-audio          add the calling user to the group audio
+    a3-root install-release <dir>
+                                a release's .debs from <dir>: SHA256SUMS signed
+                                with the A3 key, every .deb listed in it, an A3
+                                package for this machine; then install, hold
 
 Package names must be A3 packages and nothing may look like an option: root
-should never be a way to run arbitrary apt. Exit codes: 0 done, 2 refused,
+should never be a way to run arbitrary apt. install-release checks and installs
+private root-owned copies of the files, so whoever owns <dir> cannot swap a
+file between the checks and apt. Exit codes: 0 done, 2 refused,
 otherwise the failing command's own.
 
 Stdlib only and no import from the rest of the repository: this file is
@@ -19,8 +25,12 @@ it on purpose; a test keeps the two equal.
 
 import base64
 import binascii
+import hashlib
 import os
 import pwd
+import re
+import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -33,6 +43,10 @@ SUITES = ("forky", "trixie")
 A3_PACKAGES = ("a3-core", "a3-core-app", "stemdeck", "a3-desk",
                "a3-motion-ui", "beat-analyzer")
 KEY_FILE = Path(__file__).resolve().parent / "keys" / "a3-audio-archive.asc"
+
+RELEASE_SUMS = "SHA256SUMS"
+RELEASE_SIGNATURE = "SHA256SUMS.asc"
+SUMS_LINE = re.compile(r"^([0-9a-f]{64}) [ *](\S+)$")
 
 REFUSED = 2
 
@@ -209,6 +223,161 @@ def do_remove(packages, run, env):
     ])
 
 
+def release_folder(arg):
+    folder = Path(arg)
+    if not folder.is_absolute():
+        raise Refused(f"{arg!r} is not an absolute path.")
+    try:
+        mode = os.lstat(folder).st_mode
+    except OSError:
+        raise Refused(f"{arg} is not there.")
+    if not stat.S_ISDIR(mode):
+        raise Refused(f"{arg} is not a folder (a symlink is not one either).")
+    if mode & stat.S_IWOTH:
+        raise Refused(f"{arg} is world-writable.")
+    return folder
+
+
+def release_debs(folder):
+    """The .deb names in `folder`; refused if anything else lies there or
+    the sums or their signature are missing."""
+    debs, others = [], set()
+    for entry in sorted(os.scandir(folder), key=lambda e: e.name):
+        if entry.name.startswith("-"):
+            raise Refused(f"{entry.name!r} looks like an option.")
+        if entry.is_symlink():
+            raise Refused(f"{entry.name} is a symlink.")
+        if not entry.is_file(follow_symlinks=False):
+            raise Refused(f"{entry.name} is not a regular file.")
+        if entry.name in (RELEASE_SUMS, RELEASE_SIGNATURE):
+            others.add(entry.name)
+        elif entry.name.endswith(".deb"):
+            debs.append(entry.name)
+        else:
+            raise Refused(f"{entry.name} is not a .deb.")
+    for needed in (RELEASE_SUMS, RELEASE_SIGNATURE):
+        if needed not in others:
+            raise Refused(f"{folder} has no {needed}.")
+    if not debs:
+        raise Refused(f"{folder} holds no .deb.")
+    return debs
+
+
+def copy_private(source, target):
+    """`source` copied to `target`, never through a symlink and only from a
+    regular file; returns the copy's sha256."""
+    digest = hashlib.sha256()
+    try:
+        handle = os.open(source, os.O_RDONLY | os.O_NOFOLLOW)
+    except OSError as error:
+        raise Refused(f"Cannot open {source.name}: {error.strerror}.")
+    with os.fdopen(handle, "rb") as src:
+        if not stat.S_ISREG(os.fstat(src.fileno()).st_mode):
+            raise Refused(f"{source.name} is not a regular file.")
+        with open(target, "xb") as out:
+            for block in iter(lambda: src.read(1 << 20), b""):
+                digest.update(block)
+                out.write(block)
+    os.chmod(target, 0o644)
+    return digest.hexdigest()
+
+
+def copy_release(folder, names, work):
+    """The sums, their signature and the .debs copied into `work`; the
+    .debs' sha256 by name."""
+    try:
+        for name in (RELEASE_SUMS, RELEASE_SIGNATURE):
+            copy_private(folder / name, work / name)
+        return {name: copy_private(folder / name, work / name) for name in names}
+    except OSError as error:
+        raise Refused(f"Copying the release failed: {error.strerror or error}.")
+
+
+def parse_sums(text):
+    sums = {}
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        found = SUMS_LINE.match(line)
+        if not found:
+            raise Refused(f"{RELEASE_SUMS} has a malformed line.")
+        sums[found.group(2)] = found.group(1)
+    return sums
+
+
+def check_signature(run, env, keyring, work):
+    gnupg = work / "gnupg"
+    gnupg.mkdir(mode=0o700)
+    done = run(["gpgv", "--homedir", str(gnupg), "--keyring", str(keyring),
+                str(work / RELEASE_SIGNATURE), str(work / RELEASE_SUMS)],
+               env=env, check=False, capture_output=True, text=True)
+    if done.returncode != 0:
+        raise Refused(f"{RELEASE_SIGNATURE} is not a good signature by the A3 key in {keyring}.")
+
+
+def check_sums(sums, digests):
+    for name, digest in digests.items():
+        if name not in sums:
+            raise Refused(f"{name} is not in {RELEASE_SUMS}.")
+        if sums[name] != digest:
+            raise Refused(f"{name} does not match its checksum in {RELEASE_SUMS}.")
+
+
+def query(run, env, command):
+    done = run(command, env=env, check=False, capture_output=True, text=True)
+    return done.returncode, (done.stdout or "").strip()
+
+
+def deb_field(run, env, deb, field):
+    code, value = query(run, env, ["dpkg-deb", "-f", str(deb), field])
+    if code != 0:
+        raise Refused(f"{deb.name} is not a Debian package.")
+    return value
+
+
+def release_packages(run, env, debs):
+    """{package: deb} after checking each is an A3 package for this machine."""
+    code, machine = query(run, env, ["dpkg", "--print-architecture"])
+    if code != 0 or not machine:
+        raise Refused("dpkg does not name this machine's architecture.")
+    packages = {}
+    for deb in debs:
+        package = deb_field(run, env, deb, "Package")
+        arch = deb_field(run, env, deb, "Architecture")
+        if package not in A3_PACKAGES:
+            raise Refused(f"{deb.name}: {package!r} is not an A3 package.")
+        if arch not in (machine, "all"):
+            raise Refused(f"{deb.name} is for {arch}, this machine is {machine}.")
+        if package in packages:
+            raise Refused(f"{package} is in the release twice.")
+        packages[package] = deb
+    return packages
+
+
+def do_install_release(args, run, env, keyring):
+    check_arguments(args)
+    if len(args) != 1:
+        raise Refused("install-release takes one folder.")
+    folder = release_folder(args[0])
+    names = release_debs(folder)
+    work = Path(tempfile.mkdtemp(prefix="a3-release-"))
+    try:
+        # apt reads local .debs as its own user: the copies are readable, root's alone to change.
+        os.chmod(work, 0o755)
+        digests = copy_release(folder, names, work)
+        check_signature(run, env, keyring, work)
+        check_sums(parse_sums((work / RELEASE_SUMS).read_text()), digests)
+        packages = release_packages(run, env, [work / name for name in names])
+        return run_all(run, noninteractive(env), [
+            ["apt-get", "update"],
+            ["apt-get", "install", "-y", "--allow-change-held-packages",
+             *map(str, packages.values())],
+            ["apt-mark", "hold", *packages],
+        ])
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+
+
 def calling_user(env):
     try:
         uid = int(env.get("PKEXEC_UID") or env.get("SUDO_UID"))
@@ -239,7 +408,9 @@ def main(argv, run=subprocess.run, env=os.environ,
             return do_remove(args, run, env)
         if verb == "join-audio":
             return do_join_audio(args, run, env)
-        raise Refused("verbs: source, install, remove, join-audio.")
+        if verb == "install-release":
+            return do_install_release(args, run, env, keyring)
+        raise Refused("verbs: source, install, remove, join-audio, install-release.")
     except Refused as why:
         print(f"a3-root: {why}", file=sys.stderr)
         return REFUSED

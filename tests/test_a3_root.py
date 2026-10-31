@@ -4,6 +4,7 @@
 
 import base64
 import contextlib
+import hashlib
 import io
 import importlib.machinery
 import importlib.util
@@ -11,6 +12,7 @@ import os
 import pwd
 import shutil
 import stat
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -262,6 +264,322 @@ class Source(HelperTest):
         paths = self.paths(committed.read_text())
         self.assertEqual(self.main("source", "trixie", **paths), 0)
         self.assertGreater(paths["keyring"].stat().st_size, 0)
+
+
+def gpg(home, *args):
+    return subprocess.run(["gpg", "--homedir", str(home), "--batch", *args],
+                          check=True, capture_output=True).stdout
+
+
+def make_deb(folder, package, arch, version="1.0", name=None):
+    tree = Path(tempfile.mkdtemp(dir=folder.parent)) / "tree"
+    (tree / "DEBIAN").mkdir(parents=True)
+    (tree / "DEBIAN" / "control").write_text(
+        f"Package: {package}\nVersion: {version}\nArchitecture: {arch}\n"
+        "Maintainer: A3 <contact@a3-audio.com>\nDescription: test package\n")
+    deb = folder / (name or f"{package}_{version}_{arch}.deb")
+    subprocess.run(["dpkg-deb", "--build", str(tree), str(deb)],
+                   check=True, capture_output=True)
+    return deb
+
+
+class ReleaseRunner(Recorder):
+    """Records everything; really runs the checks (gpgv, dpkg-deb), answers
+    the machine's architecture, and pretends apt succeeds."""
+
+    REAL = ("gpgv", "dpkg-deb")
+
+    def __init__(self, arch="amd64", codes=()):
+        super().__init__(codes)
+        self.arch = arch
+
+    def __call__(self, args, **kwargs):
+        if args[0] in self.REAL:
+            self.commands.append(list(args))
+            return subprocess.run(args, **{k: v for k, v in kwargs.items() if k != "check"})
+        if list(args) == ["dpkg", "--print-architecture"]:
+            self.commands.append(list(args))
+            return SimpleNamespace(returncode=0, stdout=f"{self.arch}\n", stderr="")
+        return super().__call__(args, **kwargs)
+
+    def installing(self):
+        return [c for c in self.commands if c[0] in ("apt-get", "apt-mark")]
+
+
+@unittest.skipUnless(shutil.which("gpg") and shutil.which("gpgv") and shutil.which("dpkg-deb"),
+                     "install-release tests need gpg, gpgv and dpkg-deb")
+class InstallRelease(HelperTest):
+    """install-release <dir>: signed sums, A3 names, this machine's arch, or nothing."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.keys = Path(tempfile.mkdtemp())
+        cls.home = cls.keys / "gnupg"
+        cls.home.mkdir(mode=0o700)
+        gpg(cls.home, "--passphrase", "", "--quick-gen-key",
+            "a3 test <test@example.invalid>", "ed25519", "sign", "never")
+        cls.keyring = cls.keys / "a3-audio.gpg"
+        cls.keyring.write_bytes(gpg(cls.home, "--export"))
+        cls.other = cls.keys / "other"
+        cls.other.mkdir(mode=0o700)
+        gpg(cls.other, "--passphrase", "", "--quick-gen-key",
+            "other <other@example.invalid>", "ed25519", "sign", "never")
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.keys)
+
+    def setUp(self):
+        super().setUp()
+        self.run_ = ReleaseRunner()
+        self.release = self.tmp / "release"
+        self.release.mkdir(mode=0o755)
+
+    def release_of(self, *debs, sign_with=None):
+        """SHA256SUMS over the folder's .debs, signed (by default with the A3 key)."""
+        lines = [f"{hashlib.sha256(deb.read_bytes()).hexdigest()}  {deb.name}" for deb in debs]
+        self.write_sums(lines, sign_with)
+
+    def write_sums(self, lines, sign_with=None):
+        sums = self.release / "SHA256SUMS"
+        sums.write_text("\n".join(lines) + "\n")
+        signature = self.release / "SHA256SUMS.asc"
+        signature.unlink(missing_ok=True)
+        gpg(sign_with or self.home, "--armor", "--detach-sign",
+            "--output", str(signature), str(sums))
+
+    def install(self, folder=None):
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            code = self.main("install-release", str(folder or self.release),
+                             keyring=self.keyring)
+        self.stderr = err.getvalue()
+        return code
+
+    def assertRefused(self, why):
+        self.assertEqual(self.install(), 2)
+        self.assertEqual(self.run_.installing(), [])
+        self.assertEqual(len(self.stderr.strip().splitlines()), 1, self.stderr)
+        self.assertIn(why, self.stderr)
+
+    def good_release(self):
+        debs = [make_deb(self.release, "a3-core-app", "amd64"),
+                make_deb(self.release, "stemdeck", "all")]
+        self.release_of(*debs)
+        return debs
+
+    # The happy path.
+
+    def test_a_good_release_is_installed_and_held(self):
+        self.good_release()
+        self.assertEqual(self.install(), 0, self.stderr)
+        update, install, hold = self.run_.installing()
+        self.assertEqual(update, ["apt-get", "update"])
+        self.assertEqual(install[:4], ["apt-get", "install", "-y", "--allow-change-held-packages"])
+        self.assertEqual(sorted(Path(path).name for path in install[4:]),
+                         ["a3-core-app_1.0_amd64.deb", "stemdeck_1.0_all.deb"])
+        for path in install[4:]:
+            self.assertTrue(Path(path).is_absolute(), path)
+        self.assertEqual(hold[:2], ["apt-mark", "hold"])
+        self.assertEqual(sorted(hold[2:]), ["a3-core-app", "stemdeck"])
+
+    def test_the_signature_is_checked_against_the_a3_keyring(self):
+        self.good_release()
+        self.install()
+        gpgv = [c for c in self.run_.commands if c[0] == "gpgv"]
+        self.assertEqual(len(gpgv), 1)
+        self.assertIn(str(self.keyring), gpgv[0])
+        self.assertEqual(self.helper.KEYRING, Path("/usr/share/keyrings/a3-audio.gpg"))
+
+    def test_apt_installs_private_copies_not_the_callers_files(self):
+        """The caller owns <dir> and could swap a file after the checks."""
+        self.good_release()
+        self.install()
+        install = self.run_.installing()[1]
+        for path in install[4:]:
+            self.assertNotEqual(Path(path).parent, self.release)
+
+    def test_no_copy_stays_behind(self):
+        self.good_release()
+        self.install()
+        install = self.run_.installing()[1]
+        self.assertFalse(Path(install[4]).parent.exists())
+
+    def test_apt_runs_noninteractive(self):
+        self.good_release()
+        seen = []
+
+        def run(args, **kwargs):
+            if args[0] in ("apt-get", "apt-mark"):
+                seen.append(kwargs.get("env"))
+            return self.run_(args, **kwargs)
+        self.helper.main(["install-release", str(self.release)], run=run,
+                         env={"PATH": os.environ["PATH"]}, keyring=self.keyring)
+        self.assertEqual(len(seen), 3)
+        for env in seen:
+            self.assertEqual("noninteractive", env["DEBIAN_FRONTEND"])
+
+    def test_a_failing_install_passes_its_code(self):
+        self.good_release()
+        self.run_ = ReleaseRunner(codes=[0, 100])
+        self.assertEqual(self.install(), 100)
+        self.assertEqual(len(self.run_.installing()), 2)
+
+    def test_the_sums_may_list_other_machines_assets(self):
+        debs = self.good_release()
+        lines = (self.release / "SHA256SUMS").read_text().splitlines()
+        self.write_sums(lines + ["0" * 64 + "  a3-core-app_1.0_arm64.deb"])
+        self.assertEqual(self.install(), 0, self.stderr)
+        self.assertEqual(len(self.run_.installing()[1]), 4 + len(debs))
+
+    # Refusals: nothing installed, one line, exit 2.
+
+    def test_a_package_that_is_not_a3_is_refused(self):
+        self.release_of(make_deb(self.release, "curl", "amd64"))
+        self.assertRefused("not an A3 package")
+
+    def test_a_removed_package_is_refused(self):
+        self.release_of(make_deb(self.release, "a3-canvas", "amd64"))
+        self.assertRefused("not an A3 package")
+
+    def test_another_architecture_is_refused(self):
+        self.release_of(make_deb(self.release, "a3-core-app", "arm64"))
+        self.assertRefused("arm64")
+
+    def test_the_machines_architecture_comes_from_dpkg(self):
+        self.run_ = ReleaseRunner(arch="arm64")
+        self.release_of(make_deb(self.release, "a3-core-app", "arm64"))
+        self.assertEqual(self.install(), 0, self.stderr)
+
+    def test_a_wrong_sum_is_refused(self):
+        deb = make_deb(self.release, "a3-core-app", "amd64")
+        self.write_sums(["0" * 64 + f"  {deb.name}"])
+        self.assertRefused("checksum")
+
+    def test_a_deb_not_in_the_sums_is_refused(self):
+        listed = make_deb(self.release, "a3-core-app", "amd64")
+        make_deb(self.release, "stemdeck", "all")
+        self.release_of(listed)
+        self.assertRefused("not in SHA256SUMS")
+
+    def test_a_missing_signature_is_refused(self):
+        self.good_release()
+        (self.release / "SHA256SUMS.asc").unlink()
+        self.assertRefused("SHA256SUMS.asc")
+
+    def test_missing_sums_are_refused(self):
+        self.good_release()
+        (self.release / "SHA256SUMS").unlink()
+        self.assertRefused("SHA256SUMS")
+
+    def test_a_signature_by_another_key_is_refused(self):
+        debs = [make_deb(self.release, "a3-core-app", "amd64")]
+        self.release_of(*debs, sign_with=self.other)
+        self.assertRefused("signature")
+
+    def test_sums_changed_after_signing_are_refused(self):
+        deb = make_deb(self.release, "a3-core-app", "amd64")
+        self.release_of(deb)
+        with (self.release / "SHA256SUMS").open("a") as sums:
+            sums.write("0" * 64 + "  stemdeck_1.0_all.deb\n")
+        self.assertRefused("signature")
+
+    def test_an_option_like_argument_is_refused(self):
+        self.good_release()
+        for argv in (["install-release", "--allow-unauthenticated"],
+                     ["install-release", "-o", str(self.release)]):
+            with self.subTest(argv), contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(self.main(*argv, keyring=self.keyring), 2)
+        self.assertEqual(self.run_.commands, [])
+
+    def test_an_option_like_file_name_is_refused(self):
+        deb = make_deb(self.release, "a3-core-app", "amd64", name="--force-all.deb")
+        self.release_of(deb)
+        self.assertRefused("looks like an option")
+
+    def test_exactly_one_folder_is_taken(self):
+        self.good_release()
+        with contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(self.main("install-release", keyring=self.keyring), 2)
+            self.assertEqual(self.main("install-release", str(self.release), str(self.release),
+                                       keyring=self.keyring), 2)
+        self.assertEqual(self.run_.commands, [])
+
+    def test_a_relative_folder_is_refused(self):
+        self.good_release()
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            self.assertEqual(self.main("install-release", "release", keyring=self.keyring), 2)
+        self.assertIn("absolute", err.getvalue())
+        self.assertEqual(self.run_.commands, [])
+
+    def test_a_world_writable_folder_is_refused(self):
+        self.good_release()
+        os.chmod(self.release, 0o777)
+        self.assertRefused("world-writable")
+
+    def test_a_symlinked_folder_is_refused(self):
+        self.good_release()
+        link = self.tmp / "link"
+        link.symlink_to(self.release)
+        self.assertEqual(self.install(link), 2)
+        self.assertEqual(self.run_.installing(), [])
+
+    def test_a_symlinked_deb_is_refused(self):
+        outside = self.tmp / "outside"
+        outside.mkdir()
+        target = make_deb(outside, "a3-core-app", "amd64")
+        (self.release / target.name).symlink_to(target)
+        self.release_of(target)
+        self.assertRefused("symlink")
+
+    def test_a_symlinked_sums_file_is_refused(self):
+        self.good_release()
+        sums = self.release / "SHA256SUMS"
+        moved = self.tmp / "SHA256SUMS"
+        sums.rename(moved)
+        sums.symlink_to(moved)
+        self.assertRefused("symlink")
+
+    def test_a_subfolder_is_refused(self):
+        self.good_release()
+        (self.release / "more.deb").mkdir()
+        self.assertRefused("not a regular file")
+
+    def test_a_file_that_is_not_a_deb_is_refused(self):
+        self.good_release()
+        (self.release / "postinst.sh").write_text("#!/bin/sh\n")
+        self.assertRefused("not a .deb")
+
+    def test_a_folder_without_debs_is_refused(self):
+        self.write_sums(["0" * 64 + "  a3-core-app_1.0_amd64.deb"])
+        self.assertRefused("no .deb")
+
+    def test_a_file_that_is_not_a_package_is_refused(self):
+        fake = self.release / "a3-core-app_1.0_amd64.deb"
+        fake.write_bytes(b"not a deb")
+        self.release_of(fake)
+        self.assertRefused("not a Debian package")
+
+    def test_an_unreadable_file_is_refused(self):
+        deb, _ = self.good_release()
+        os.chmod(deb, 0)
+        if os.access(deb, os.R_OK):
+            self.skipTest("running as root reads anything")
+        self.assertRefused(deb.name)
+
+    def test_a_failing_copy_is_refused_and_leaves_nothing(self):
+        self.good_release()
+
+        def full(source, target):
+            raise OSError(28, "No space left on device")
+        self.helper.copy_private = full
+        self.assertRefused("No space left on device")
+
+    def test_two_files_of_one_package_are_refused(self):
+        self.release_of(make_deb(self.release, "a3-core-app", "amd64", "1.0"),
+                        make_deb(self.release, "a3-core-app", "amd64", "2.0"))
+        self.assertRefused("twice")
 
 
 class OneSourceOfTruth(HelperTest):

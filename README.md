@@ -108,12 +108,16 @@ A³ System                   the umbrella: installer, CI, pins  v03.2      GPL-3
 │  └─ a3-beat-analyzer      the beat clock                     v03.2      GPL-3.0
 ├─ a3-doc                   the documentation                  v03.2      CC-BY-SA-4.0
 ├─ a3-mixer                 A³ Mixer                           v03.2      GPL-3.0
-│  ├─ pcb                   the board                          rev v0.2   CERN-OHL-S
+│  ├─ pcb                   the boards
+│  │  ├─ v0_2               the built board                    rev v0.2   CERN-OHL-S
+│  │  └─ v3_1               the V03 draft                      rev v3.1   CERN-OHL-S
 │  ├─ housing               the housing                        rev v03.2  CERN-OHL-S
 │  ├─ firmware              the board's firmware               rev v03.2  GPL-3.0
 │  └─ a3-mixer-ui           the virtual desk                   v03.2      GPL-3.0
 ├─ a3-motion                A³ Motion                          v03.2      GPL-3.0
-│  ├─ pcb                   the board                          rev v03.1  CERN-OHL-S
+│  ├─ pcb                   the boards
+│  │  ├─ v0_1               the V02 controller                 rev v0.1   CERN-OHL-S
+│  │  └─ v3_1               the current board                  rev v3.1   CERN-OHL-S
 │  ├─ housing               the housing                        rev v03.2  CERN-OHL-S
 │  ├─ firmware              the board's firmware               rev v03.2  GPL-3.0
 │  └─ a3-motion-ui          the Motion UI                      v03.2      GPL-3.0

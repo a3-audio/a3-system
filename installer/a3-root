@@ -41,7 +41,7 @@ KEYRING = Path("/usr/share/keyrings/a3-audio.gpg")
 SOURCES = Path("/etc/apt/sources.list.d/a3-audio.sources")
 SUITES = ("forky", "trixie")
 A3_PACKAGES = ("a3-core", "a3-core-app", "stemdeck", "a3-desk",
-               "a3-motion-ui", "beat-analyzer")
+               "a3-motion-ui", "beat-analyzer", "a3-update")
 KEY_FILE = Path(__file__).resolve().parent / "keys" / "a3-audio-archive.asc"
 
 RELEASE_SUMS = "SHA256SUMS"

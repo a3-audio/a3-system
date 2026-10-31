@@ -1,0 +1,546 @@
+#!/usr/bin/python3 -I
+# SPDX-FileCopyrightText: 2026 Raphael Eismann
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""a3-update: this machine's updater, asked by Core only.
+
+A user service on every A3 machine. It listens where the truth's
+update.control listener says (a3-osc.json, never a literal here) and answers
+the Core host alone -- and loopback on the Core's own machine:
+
+    GET  /status            {"host", "arch", "codename", "packages": {name: version},
+                             "job": {"state", "tag", "reason", "packages", ...}}
+    POST /update {"tag"}    202 and the job; 409 while a job runs; 400 for a
+                            tag that is no v<version>; 403 from anyone but Core
+
+An update, in a background thread: the release of that tag is read from
+GitHub without login, its SHA256SUMS, SHA256SUMS.asc and the .debs of the A3
+packages installed here (plus a3-update) for this machine's architecture
+(or all) are downloaded into a fresh folder under $XDG_RUNTIME_DIR, checked
+against the sums, and handed to the root helper by its one sudoers line:
+
+    sudo -n /usr/lib/a3-update/a3-root install-release <folder>
+
+which checks the signature with the A3 key, installs and holds. Then the
+user services the updated packages ship are restarted, this one last.
+States: idle, downloading, checking, installing, restarting, done, failed
+(with a reason). The last job is kept in a state file, so it is still there
+after this service's own restart.
+
+Stdlib only. The package list repeats installer/archive.py's on purpose; a
+test keeps the two equal.
+"""
+
+import hashlib
+import ipaddress
+import json
+import os
+import re
+import shutil
+import socket
+import subprocess
+import sys
+import tempfile
+import threading
+import time
+import urllib.parse
+import urllib.request
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+
+A3_PACKAGES = ("a3-core", "a3-core-app", "stemdeck", "a3-desk",
+               "a3-motion-ui", "beat-analyzer", "a3-update")
+SELF_PACKAGE = "a3-update"
+SELF_UNIT = "a3-update.service"
+
+RELEASE_API = "https://api.github.com/repos/a3-audio/a3-system/releases/tags/"
+RELEASE_SUMS = "SHA256SUMS"
+RELEASE_SIGNATURE = "SHA256SUMS.asc"
+A3_ROOT = "/usr/lib/a3-update/a3-root"
+SUDOERS_FILE = "/etc/sudoers.d/a3-update"
+USER_UNITS = "/usr/lib/systemd/user/"
+
+LISTENER = ("update", "control")
+SHIPPED_TRUTH = Path("/usr/share/a3/a3-osc.json")
+CACHED_TRUTH = Path(".cache/a3/a3-osc.json")
+STATE_FILE = Path(".local/state/a3-update/last-job.json")
+OS_RELEASE = Path("/etc/os-release")
+
+TAG = re.compile(r"^v[0-9][0-9A-Za-z.+~-]*$")
+SUMS_LINE = re.compile(r"^([0-9a-f]{64}) [ *](\S+)$")
+PACKAGE_NAME = re.compile(r"^[a-z0-9][a-z0-9+.-]+$")
+MAX_BODY = 4096
+TIMEOUT_SECONDS = 60
+USER_AGENT = "a3-update"
+
+IDLE, DOWNLOADING, CHECKING, INSTALLING, RESTARTING, DONE, FAILED = (
+    "idle", "downloading", "checking", "installing", "restarting", "done", "failed")
+RUNNING = (DOWNLOADING, CHECKING, INSTALLING, RESTARTING)
+
+
+class TruthError(Exception):
+    pass
+
+
+class Busy(Exception):
+    pass
+
+
+class BadRequest(Exception):
+    pass
+
+
+class JobFailed(Exception):
+    pass
+
+
+# -- the truth ---------------------------------------------------------------
+
+def update_listener(truth):
+    program, role = LISTENER
+    for listener in truth.get("listeners", []):
+        if listener.get("program") == program and listener.get("role") == role:
+            return listener
+    raise TruthError(f"the truth names no {program}.{role} listener")
+
+
+def endpoint(truth):
+    """(address to bind, port, the Core's address), all from the truth."""
+    listener = update_listener(truth)
+    hosts = truth.get("hosts", {})
+    try:
+        return hosts[listener["host"]], int(listener["port"]), hosts["core"]
+    except (KeyError, TypeError, ValueError) as error:
+        raise TruthError(f"the truth's update.control or core host is incomplete ({error})")
+
+
+def _readable_truth(path):
+    try:
+        truth = json.loads(Path(path).read_text())
+        endpoint(truth)
+        return truth
+    except (OSError, ValueError, TruthError):
+        return None
+
+
+def load_truth(env, home, shipped=SHIPPED_TRUTH):
+    """$A3_OSC_TRUTH, else what Core last served (~/.cache/a3/a3-osc.json), else
+    the package's file -- as the other devices read it. A file that does not
+    name update.control (an older Core's) is passed over."""
+    candidates = [Path(env["A3_OSC_TRUTH"])] if env.get("A3_OSC_TRUTH") else []
+    candidates += [Path(home) / CACHED_TRUTH, Path(shipped)]
+    for path in candidates:
+        truth = _readable_truth(path)
+        if truth is not None:
+            return truth
+    raise TruthError(f"no truth naming update.control in {', '.join(map(str, candidates))}")
+
+
+# -- who may ask ---------------------------------------------------------------
+
+def _plain(address):
+    found = ipaddress.ip_address(address.split("%", 1)[0])
+    if isinstance(found, ipaddress.IPv6Address) and found.ipv4_mapped:
+        return found.ipv4_mapped
+    return found
+
+
+def from_core(source, core, core_is_here):
+    """Core's address; loopback too when this machine is the Core."""
+    try:
+        found = _plain(source)
+        if found == _plain(core):
+            return True
+        return core_is_here and found.is_loopback
+    except ValueError:
+        return False
+
+
+def is_local_address(address):
+    """Whether this machine holds `address` (it can bind to it)."""
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
+            probe.bind((address, 0))
+        return True
+    except OSError:
+        return False
+
+
+# -- this machine ----------------------------------------------------------------
+
+def output(run, command):
+    done = run(command, capture_output=True, text=True, check=False)
+    return done.returncode, (done.stdout or ""), (done.stderr or "")
+
+
+def machine_architecture(run):
+    code, out, _ = output(run, ["dpkg", "--print-architecture"])
+    if code != 0 or not out.strip():
+        raise JobFailed("dpkg does not name this machine's architecture")
+    return out.strip()
+
+
+def installed_packages(run):
+    """{package: version} of the A3 packages installed here."""
+    _, out, _ = output(run, ["dpkg-query", "-W", "-f",
+                             "${Package}\\t${Version}\\t${db:Status-Status}\\n", *A3_PACKAGES])
+    found = {}
+    for line in out.splitlines():
+        parts = line.split("\t")
+        if len(parts) == 3 and parts[2] == "installed":
+            found[parts[0]] = parts[1]
+    return found
+
+
+def os_codename(os_release=OS_RELEASE):
+    try:
+        for line in Path(os_release).read_text().splitlines():
+            if line.startswith("VERSION_CODENAME="):
+                return line.split("=", 1)[1].strip().strip('"')
+    except OSError:
+        pass
+    return ""
+
+
+def user_units(run, package):
+    """The user services `package` ships, a template as its instances' pattern."""
+    _, out, _ = output(run, ["dpkg-query", "-L", package])
+    units = []
+    for line in out.splitlines():
+        if not line.startswith(USER_UNITS):
+            continue
+        name = line[len(USER_UNITS):]
+        if "/" in name or not name.endswith(".service"):
+            continue
+        units.append(name.replace("@.service", "@*.service"))
+    return units
+
+
+# -- the release ------------------------------------------------------------------
+
+def parse_asset(name):
+    """(package, suite or None, arch) of a release .deb's name:
+    <package>_<version>_<arch>.deb, or <package>_<version>_<suite>_<arch>.deb for
+    an arch-all package two lines built. None for anything else."""
+    if not name.endswith(".deb") or "/" in name:
+        return None
+    parts = name[:-len(".deb")].split("_")
+    if len(parts) == 3:
+        package, _version, arch = parts
+        suite = None
+    elif len(parts) == 4:
+        package, _version, suite, arch = parts
+    else:
+        return None
+    if not PACKAGE_NAME.match(package):
+        return None
+    return package, suite, arch
+
+
+def choose_assets(assets, wanted, arch, suite):
+    """{package: asset} for the `wanted` packages this machine can install."""
+    chosen = {}
+    for asset in assets:
+        parsed = parse_asset(asset.get("name", ""))
+        if parsed is None:
+            continue
+        package, asset_suite, asset_arch = parsed
+        if package not in wanted or package not in A3_PACKAGES:
+            continue
+        if asset_arch not in (arch, "all") or asset_suite not in (None, suite):
+            continue
+        if package in chosen:
+            raise JobFailed(f"the release has {package} twice for {arch}/{suite}")
+        chosen[package] = asset
+    return chosen
+
+
+def parse_sums(text):
+    sums = {}
+    for line in text.splitlines():
+        found = SUMS_LINE.match(line)
+        if found:
+            sums[found.group(2)] = found.group(1)
+    return sums
+
+
+def sha256_of(path):
+    digest = hashlib.sha256()
+    with open(path, "rb") as handle:
+        for block in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def http_get(url):
+    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT,
+                                                   "Accept": "application/vnd.github+json"})
+    with urllib.request.urlopen(request, timeout=TIMEOUT_SECONDS) as answer:
+        return answer.read()
+
+
+def download(url, path):
+    if not url.startswith("https://"):
+        raise JobFailed(f"{url} is not https")
+    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT,
+                                                   "Accept": "application/octet-stream"})
+    with urllib.request.urlopen(request, timeout=TIMEOUT_SECONDS) as answer, \
+            open(path, "xb") as out:
+        shutil.copyfileobj(answer, out)
+
+
+# -- the job ------------------------------------------------------------------------
+
+def idle_job():
+    return {"state": IDLE, "tag": None, "reason": "", "packages": [],
+            "started": None, "finished": None}
+
+
+class Updater:
+    def __init__(self, run=subprocess.run, http_get=http_get, download=download,
+                 runtime_dir=None, state_file=None, hostname=None, codename=None,
+                 spawn=None, on_state=None):
+        self.run = run
+        self.http_get = http_get
+        self.download = download
+        self.runtime_dir = Path(runtime_dir or os.environ.get("XDG_RUNTIME_DIR")
+                                or tempfile.gettempdir())
+        self.state_file = Path(state_file or Path.home() / STATE_FILE)
+        self.hostname = hostname or socket.gethostname()
+        self.codename = codename if codename is not None else os_codename()
+        self.spawn = spawn or (lambda work: threading.Thread(target=work, daemon=True).start())
+        self.on_state = on_state or (lambda state: None)
+        self.lock = threading.Lock()
+        self.job = self._kept_job()
+
+    # state
+
+    def _kept_job(self):
+        try:
+            job = json.loads(self.state_file.read_text())
+        except (OSError, ValueError):
+            return idle_job()
+        if not isinstance(job, dict) or job.get("state") not in (DONE, FAILED):
+            return idle_job()
+        return {**idle_job(), **job}
+
+    def _keep(self):
+        self.state_file.parent.mkdir(parents=True, exist_ok=True)
+        temp = self.state_file.with_name(self.state_file.name + ".part")
+        temp.write_text(json.dumps(self.job))
+        os.replace(temp, self.state_file)
+
+    def _set(self, state, **fields):
+        with self.lock:
+            self.job = {**self.job, "state": state, **fields}
+            if state in (DONE, FAILED):
+                self.job["finished"] = time.time()
+                self._keep()
+        print(f"a3-update: {state} {fields.get('reason', '')}".rstrip(), file=sys.stderr, flush=True)
+        self.on_state(state)
+
+    def status(self):
+        try:
+            arch = machine_architecture(self.run)
+        except JobFailed:
+            arch = ""
+        with self.lock:
+            job = dict(self.job)
+        return {"host": self.hostname, "arch": arch, "codename": self.codename,
+                "packages": installed_packages(self.run), "job": job}
+
+    # an update
+
+    def start(self, tag):
+        if not isinstance(tag, str) or not TAG.match(tag):
+            raise BadRequest(f"{tag!r} is no release tag (v<version>)")
+        with self.lock:
+            if self.job["state"] in RUNNING:
+                raise Busy(dict(self.job))
+            self.job = {**idle_job(), "state": DOWNLOADING, "tag": tag, "started": time.time()}
+            job = dict(self.job)
+        self.on_state(DOWNLOADING)
+        self.spawn(lambda: self._work(tag))
+        return job
+
+    def _work(self, tag):
+        folder = None
+        try:
+            folder = Path(tempfile.mkdtemp(prefix="a3-update-", dir=self.runtime_dir))
+            os.chmod(folder, 0o700)
+            packages = self._download(tag, folder)
+            self._set(CHECKING)
+            self._check(folder, packages)
+            self._set(INSTALLING)
+            self._install(folder)
+            self._set(RESTARTING)
+            restart_self = self._restart(packages)
+            self._set(DONE)
+            if restart_self:
+                # --no-block: the job is done and kept before this process is stopped.
+                self.run(["systemctl", "--user", "--no-block", "try-restart", SELF_UNIT],
+                         check=False)
+        except JobFailed as why:
+            self._set(FAILED, reason=str(why))
+        except Exception as error:  # a job never takes the service down
+            self._set(FAILED, reason=f"{type(error).__name__}: {error}")
+        finally:
+            if folder is not None:
+                shutil.rmtree(folder, ignore_errors=True)
+
+    def _release(self, tag):
+        url = RELEASE_API + urllib.parse.quote(tag, safe="")
+        try:
+            release = json.loads(self.http_get(url))
+        except Exception as error:
+            raise JobFailed(f"the release {tag} cannot be read from GitHub ({error})")
+        assets = release.get("assets") if isinstance(release, dict) else None
+        if not isinstance(assets, list):
+            raise JobFailed(f"the release {tag} lists no assets")
+        return assets
+
+    def _fetch(self, asset, folder):
+        name = asset["name"]
+        try:
+            self.download(asset["browser_download_url"], folder / name)
+        except Exception as error:
+            raise JobFailed(f"downloading {name} failed ({error})")
+        os.chmod(folder / name, 0o644)
+
+    def _download(self, tag, folder):
+        """The sums, their signature and this machine's .debs into `folder`;
+        {package: asset name}."""
+        assets = self._release(tag)
+        by_name = {a.get("name"): a for a in assets}
+        for needed in (RELEASE_SUMS, RELEASE_SIGNATURE):
+            if needed not in by_name:
+                raise JobFailed(f"the release {tag} has no {needed}")
+        arch = machine_architecture(self.run)
+        wanted = set(installed_packages(self.run)) | {SELF_PACKAGE}
+        chosen = choose_assets(assets, wanted, arch, self.codename)
+        if not chosen:
+            raise JobFailed(f"the release {tag} has nothing for this machine ({arch}, "
+                            f"{self.codename}, {', '.join(sorted(wanted))})")
+        with self.lock:
+            self.job["packages"] = sorted(chosen)
+        for name in (RELEASE_SUMS, RELEASE_SIGNATURE):
+            self._fetch(by_name[name], folder)
+        for asset in chosen.values():
+            self._fetch(asset, folder)
+        return {package: asset["name"] for package, asset in chosen.items()}
+
+    def _check(self, folder, packages):
+        """Every .deb against SHA256SUMS before root sees it; a3-root checks
+        again, and the signature."""
+        sums = parse_sums((folder / RELEASE_SUMS).read_text(errors="replace"))
+        for name in packages.values():
+            if sums.get(name) != sha256_of(folder / name):
+                raise JobFailed(f"{name} does not match its checksum in {RELEASE_SUMS}")
+
+    def _install(self, folder):
+        code, out, err = output(self.run, ["sudo", "-n", A3_ROOT, "install-release", str(folder)])
+        if code == 0:
+            return
+        said = (err.strip() or out.strip()).splitlines()[-3:]
+        if code == 1 and any("password" in line or "sudo" in line for line in said):
+            raise JobFailed(f"sudo refused a3-root ({' '.join(said)}); the one-time line in "
+                            f"{SUDOERS_FILE} is missing")
+        raise JobFailed(f"a3-root install-release ended with {code}: {' '.join(said)}")
+
+    def _restart(self, packages):
+        """The updated packages' running user services onto the new version;
+        True when this service's own package was among them."""
+        units = [unit for package in sorted(packages) for unit in user_units(self.run, package)
+                 if unit != SELF_UNIT]
+        self.run(["systemctl", "--user", "daemon-reload"], check=False)
+        if units:
+            code, _, err = output(self.run, ["systemctl", "--user", "try-restart", *units])
+            if code != 0:
+                raise JobFailed(f"installed, but restarting {', '.join(units)} failed: "
+                                f"{err.strip()}")
+        return SELF_PACKAGE in packages
+
+
+# -- HTTP -----------------------------------------------------------------------------
+
+def make_handler(updater, core, core_is_here):
+    class Handler(BaseHTTPRequestHandler):
+        server_version = "a3-update"
+
+        def _answer(self, code, body):
+            data = json.dumps(body).encode()
+            self.send_response(code)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(data)))
+            self.send_header("Connection", "close")
+            self.end_headers()
+            self.wfile.write(data)
+
+        def _from_core(self):
+            if from_core(self.client_address[0], core, core_is_here):
+                return True
+            self.log_message("refused: not from Core")
+            self._answer(403, {"error": "only Core may ask"})
+            return False
+
+        def _body(self):
+            try:
+                length = int(self.headers.get("Content-Length") or 0)
+            except ValueError:
+                length = 0
+            if length <= 0 or length > MAX_BODY:
+                return None
+            return self.rfile.read(length)
+
+        def do_GET(self):
+            if not self._from_core():
+                return
+            if self.path != "/status":
+                return self._answer(404, {"error": "GET /status"})
+            self._answer(200, updater.status())
+
+        def do_POST(self):
+            if not self._from_core():
+                return
+            if self.path != "/update":
+                return self._answer(404, {"error": "POST /update"})
+            try:
+                request = json.loads(self._body() or b"")
+                tag = request.get("tag") if isinstance(request, dict) else None
+                job = updater.start(tag)
+            except (ValueError, BadRequest) as why:
+                return self._answer(400, {"error": str(why) or "a JSON body {\"tag\": ...}"})
+            except Busy as busy:
+                return self._answer(409, {"error": "a job runs", "job": busy.args[0]})
+            self.log_message("update to %s", tag)
+            self._answer(202, {"job": job})
+
+        def log_message(self, form, *args):
+            # Core asks for the status every few seconds: only what changes is logged.
+            print(f"a3-update: {self.client_address[0]} " + form % args, file=sys.stderr,
+                  flush=True)
+
+        def log_request(self, code="-", size="-"):
+            pass
+
+    return Handler
+
+
+def make_server(updater, address, port, core, core_is_here):
+    return ThreadingHTTPServer((address, port), make_handler(updater, core, core_is_here))
+
+
+def main():
+    try:
+        truth = load_truth(os.environ, Path.home())
+        address, port, core = endpoint(truth)
+    except TruthError as why:
+        print(f"a3-update: {why}", file=sys.stderr)
+        return 1
+    server = make_server(Updater(), address, port, core, core_is_here=is_local_address(core))
+    print(f"a3-update: listening on {address}:{port}, answering {core}", file=sys.stderr, flush=True)
+    server.serve_forever()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

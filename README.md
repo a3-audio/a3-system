@@ -103,23 +103,33 @@ One version is one tag across every repository; the releases carry the notes
 and the Debian packages: [releases](https://github.com/a3-audio/a3-system/releases).
 
 ```
-A³ System                                          GPL-3.0
-├─ a3-core            A³ Core and its window       GPL-3.0
-│  └─ a3-beat-analyzer   the beat clock            GPL-3.0
-├─ a3-doc             the documentation            CC-BY-SA-4.0
-├─ a3-mixer           A³ Mixer                     GPL-3.0
-│  ├─ pcb                                          CERN-OHL-S
-│  ├─ housing                                      CERN-OHL-S
-│  ├─ firmware                                     GPL-3.0
-│  └─ a3-mixer-ui        the virtual desk          GPL-3.0
-├─ a3-motion          A³ Motion                    GPL-3.0
-│  ├─ pcb                                          CERN-OHL-S
-│  ├─ housing                                      CERN-OHL-S
-│  ├─ firmware                                     GPL-3.0
-│  └─ a3-motion-ui       the Motion UI             GPL-3.0
-├─ a3-pro-dj          the pro-DJ (planned)         GPL-3.0
-└─ a3-stemdeck        the stem decks               GPL-3.0
-   └─ a3-stem-separator  the stems, made off the rig GPL-3.0
+A³ System                   the umbrella: installer, CI, pins  v03.2      GPL-3.0
+├─ a3-core                  A³ Core and its window             v03.2      GPL-3.0
+│  └─ a3-beat-analyzer      the beat clock                     v03.2      GPL-3.0
+├─ a3-doc                   the documentation                  v03.2      CC-BY-SA-4.0
+├─ a3-mixer                 A³ Mixer                           v03.2      GPL-3.0
+│  ├─ pcb                   the board                          rev v03.1  CERN-OHL-S
+│  ├─ housing               the housing                        rev v03.1  CERN-OHL-S
+│  ├─ firmware              the board's firmware               rev v03.2  GPL-3.0
+│  └─ a3-mixer-ui           the virtual desk                   v03.2      GPL-3.0
+├─ a3-motion                A³ Motion                          v03.2      GPL-3.0
+│  ├─ pcb                   the board                          rev v03.1  CERN-OHL-S
+│  ├─ housing               the housing                        rev v03.1  CERN-OHL-S
+│  ├─ firmware              the board's firmware               rev v03.2  GPL-3.0
+│  └─ a3-motion-ui          the Motion UI                      v03.2      GPL-3.0
+├─ a3-pro-dj                DJ knowledge, the autopilot        v03.2      GPL-3.0
+├─ a3-stemdeck              the stem decks                     v03.2      GPL-3.0
+│  └─ a3-stem-separator     the stems, made off the rig        v03.2      GPL-3.0
+└─ third-party              what A³ is built on
+   ├─ Airwindows            PurestGain, SmoothEQ3, Isolator3   2026-10    MIT
+   ├─ BTrack                beat tracking                      1.0.7      GPL-3.0
+   ├─ IEMPluginSuite        ambisonics encoder and decoders    v1.16.0    GPL-3.0
+   ├─ JUCE                  the application framework          9.0.3      AGPL-3.0 OR JUCE-9
+   ├─ kiss_fft              FFT inside BTrack                  1.3.0      BSD-3-Clause
+   ├─ Neumann KU 100 HRIR   the binaural head                  2013       CC-BY-3.0
+   ├─ platform-espressif32  the Motion board definition        2026-05    Apache-2.0
+   ├─ Roboto                the window's font                  1.100141   Apache-2.0
+   └─ SnapMagic MCP3208     the mixer's ADC footprint          2025-11    SnapMagic
 ```
 
 Every submodule sits at its repository's name, the nested ones inside the
@@ -128,6 +138,8 @@ installer, which updates recursively) brings them along.
 
 Code is GPL-3.0-or-later, boards and 3D-print files CERN-OHL-S-2.0, the
 documentation CC-BY-SA-4.0; each repository's `.reuse/dep5` has the details.
+Third-party works keep the licence their authors set; the a3-core window's
+ABOUT page reads the same list from the checkout.
 
 ## Pro DJ Link
 

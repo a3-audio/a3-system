@@ -24,6 +24,8 @@ def desk_seams(packaged=True):
     stack.enter_context(mock.patch.object(desk, "ensure_juce", lambda _ctx: Path("/juce")))
     stack.enter_context(mock.patch.object(desk, "pinned_commit", lambda _ctx: PIN))
     stack.enter_context(mock.patch.object(apppackage.debs, "version_of", lambda *_: "03.0+9"))
+    # The desk's own steps; the updater every role brings is test_updater_role's.
+    stack.enter_context(mock.patch.object(desk, "install_updater", lambda _ctx: None))
     return stack
 
 

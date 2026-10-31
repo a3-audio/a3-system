@@ -79,6 +79,15 @@ class TheUpdater(unittest.TestCase):
         self.assertTrue(any("a3-update" in line for line in self.log))
 
 
+class TheRecipe(unittest.TestCase):
+    def test_the_app_entry_matches_the_recipes_control(self):
+        control = (REPO / updater.UPDATER.recipe / "DEBIAN" / "control").read_text()
+        self.assertIn(f"Package: {updater.UPDATER.package}\n", control)
+        self.assertEqual("Architecture: all" in control, updater.UPDATER.arch_all)
+        self.assertTrue(updater.UPDATER.without_submodules)
+        self.assertEqual(updater.A3_ROOT, "/usr/lib/a3-update/a3-root")
+
+
 class EveryRoleBringsIt(unittest.TestCase):
     def test_each_role_installs_the_updater(self):
         for name, role in ROLES.items():

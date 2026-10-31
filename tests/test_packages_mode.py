@@ -20,7 +20,8 @@ from test_installer import (PIN, FakeRole, Log, MovingFailingRunner,  # noqa: E4
                             RecordingRunner, context as from_source_context)
 from installer import archive, cli  # noqa: E402
 from installer.prompt import Prompter  # noqa: E402
-from installer.roles import apppackage, core, desk, motion, needed_submodules, stemdeck  # noqa: E402
+from installer.roles import (apppackage, core, desk, motion, needed_submodules,  # noqa: E402
+                             stemdeck, updater)
 from installer.roles.base import Context, State  # noqa: E402
 from installer.settings import Settings  # noqa: E402
 from installer.system import CommandFailed, Runner  # noqa: E402
@@ -132,7 +133,9 @@ class FromSource(unittest.TestCase):
                 mock.patch.object(apppackage.debs, "version_of", lambda *_: "03.0+7"), \
                 mock.patch.object(apppackage.debs, "host_architecture", lambda: "amd64"), \
                 mock.patch.object(apppackage, "fragment_path",
-                                  lambda _ctx, app: app.packaged_unit):
+                                  lambda _ctx, app: app.packaged_unit), \
+                mock.patch.object(updater, "umbrella_commit", lambda _ctx: PIN), \
+                mock.patch.object(apppackage, "has_packaging", lambda *_: True):
             stemdeck.StemDeck().install(ctx)
         commands = [c.replace(tmp, "~").replace(str(REPO), "REPO") for c in log.commands()]
         self.assertEqual([
@@ -146,6 +149,14 @@ class FromSource(unittest.TestCase):
             "systemctl --user daemon-reload",
             "systemctl --user enable stemdeck.service",
             "systemctl --user restart stemdeck.service",
+            "python3 REPO/installer/package.py REPO --rev "
+            "0123456789abcdef0123456789abcdef01234567 --out ~/a3-debs "
+            "--cache ~/.cache/a3-build --jobs 2 --recipe update/packaging --without-submodules",
+            "env DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-downgrades "
+            "--allow-change-held-packages ~/a3-debs/a3-update_03.0+7_all.deb",
+            "apt-mark hold a3-update",
+            "systemctl --user daemon-reload",
+            "systemctl --user restart a3-update.service",
         ], commands)
 
 

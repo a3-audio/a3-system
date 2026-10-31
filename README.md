@@ -116,7 +116,7 @@ A³ System                   the umbrella: installer, CI, pins  v03.2      GPL-3
 │  └─ a3-mixer-ui           the virtual desk                   v03.2      GPL-3.0
 ├─ a3-motion                A³ Motion                          v03.2      GPL-3.0
 │  ├─ pcb                   the boards
-│  │  ├─ v0_1               the V02 controller                 rev v0.1   CERN-OHL-S
+│  │  ├─ v1                 the first boards                   rev v1     CERN-OHL-S
 │  │  └─ v3_1               the current board                  rev v3.1   CERN-OHL-S
 │  ├─ housing               the housing                        rev v03.2  CERN-OHL-S
 │  ├─ firmware              the board's firmware               rev v03.2  GPL-3.0

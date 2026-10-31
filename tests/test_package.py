@@ -177,6 +177,27 @@ class Control(unittest.TestCase):
         self.assertNotIn("amd64", stamped)
 
 
+class PackageArchitecture(unittest.TestCase):
+    """A control that says all is a package of scripts (a3-update): it stays
+    all. Any other is stamped with the building machine's."""
+
+    def test_all_stays_all(self):
+        with mock.patch.object(package, "host_architecture", side_effect=AssertionError("asked")):
+            self.assertEqual("all", package.package_architecture(
+                "Package: a3-update\nArchitecture: all\nDescription: x\n"))
+
+    def test_anything_else_is_the_build_machines(self):
+        with mock.patch.object(package, "host_architecture", return_value="arm64"):
+            self.assertEqual("arm64", package.package_architecture(CONTROL))
+            self.assertEqual("arm64", package.package_architecture("Package: x\n"))
+
+    def test_an_all_package_with_binaries_is_refused(self):
+        with self.assertRaises(package.BuildError):
+            package.refuse_binaries_in_all(["usr/bin/x"], "all")
+        package.refuse_binaries_in_all([], "all")
+        package.refuse_binaries_in_all(["usr/bin/x"], "amd64")
+
+
 class SyncTree(unittest.TestCase):
     """git archive stamps every file with the commit's time, older than the
     last build's objects: only files whose content changed may get a new
@@ -631,7 +652,7 @@ class BuildARecipe(unittest.TestCase):
              "[ \"$1\" = files ] || exit 0\n"
              "mkdir -p \"$4/usr/share/tiny\"\necho hi > \"$4/usr/share/tiny/hi\"\n")
 
-    def repo_with(self, recipes):
+    def repo_with(self, recipes, architecture="amd64"):
         repo = tmpdir(self) / "repo"
         repo.mkdir()
         run_git(repo, "init", "-q")
@@ -639,7 +660,7 @@ class BuildARecipe(unittest.TestCase):
             debian = repo / folder / "DEBIAN"
             debian.mkdir(parents=True)
             (debian / "control").write_text(
-                f"Package: {package_name}\nVersion: 0\nArchitecture: all\n"
+                f"Package: {package_name}\nVersion: 0\nArchitecture: {architecture}\n"
                 f"Depends: {depends}\nDescription: t\n t\n")
             for script in ("postinst", "prerm", "postrm"):
                 (debian / script).write_text("#!/bin/sh\nexit 0\n")
@@ -663,6 +684,15 @@ class BuildARecipe(unittest.TestCase):
         fields = subprocess.run(["dpkg-deb", "-f", str(deb)], check=True,
                                 capture_output=True, text=True).stdout
         self.assertIn("Depends: jackd, tiny (= 03.0+0)\n", fields)
+
+    def test_an_all_recipe_builds_an_all_package(self):
+        repo = self.repo_with({"packaging": ("tiny", "python3")}, architecture="all")
+        root = tmpdir(self)
+        deb = package.build(repo, out=root / "debs", cache=root / "cache", log=lambda _m: None)
+        self.assertEqual("tiny_03.0+0_all.deb", deb.name)
+        architecture = subprocess.run(["dpkg-deb", "-f", str(deb), "Architecture"], check=True,
+                                      capture_output=True, text=True).stdout.strip()
+        self.assertEqual("all", architecture)
 
     def test_a_recipe_outside_the_archived_tree_is_refused(self):
         repo = self.repo_with({"packaging": ("tiny", "${shlibs:Depends}")})

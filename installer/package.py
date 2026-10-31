@@ -20,7 +20,8 @@ live path.
 4. dpkg-deb into <out>/<package>_<version>_<arch>.deb, written under a temporary
    name and renamed, so a half-written package is never there. <arch> is the
    building machine's (amd64 on the NUCs, arm64 on a Raspberry Pi 5) and is
-   stamped into the control, whatever packaging/DEBIAN/control says.
+   stamped into the control, whatever packaging/DEBIAN/control says -- except
+   "all", a package without binaries (a3-update), which stays all.
 
 Nothing is written into the repository, its build folders, or /usr: the
 service never runs what a build is writing. Without --rev the working copy's
@@ -161,6 +162,25 @@ def stamp_control(text, version, shlibs, architecture):
         raise BuildError(f"{SHLIBS_TOKEN} is left unexpanded (folded line, or a stage "
                          "without binaries): it would ship as it is")
     return stamped
+
+
+ALL_ARCHITECTURES = "all"
+
+
+def package_architecture(control_text):
+    """"all" when the recipe's control says so -- a package of scripts, the
+    same on every machine (a3-update); otherwise the building machine's."""
+    for line in control_text.splitlines():
+        if line.startswith("Architecture:") and line.split(":", 1)[1].strip() == ALL_ARCHITECTURES:
+            return ALL_ARCHITECTURES
+    return host_architecture()
+
+
+def refuse_binaries_in_all(binaries, architecture):
+    """An "all" package installs on every machine; machine code would run on one."""
+    if binaries and architecture == ALL_ARCHITECTURES:
+        raise BuildError(f"the control says Architecture: all, but the stage holds binaries: "
+                         f"{', '.join(map(str, binaries))}")
 
 
 def _remove(path):
@@ -463,8 +483,10 @@ def build(repo, rev=None, out=Path.home() / "a3-debs", cache=Path.home() / ".cac
         run_recipe(stage_script, ["files", str(src), str(build_dir), str(stage)], version)
         install_debian(src, stage, recipe)
         control = stage / "DEBIAN" / "control"
-        architecture = host_architecture()
-        shlibs = shlibs_depends(stage) if elf_files(stage) else None
+        architecture = package_architecture(control.read_text())
+        binaries = elf_files(stage)
+        refuse_binaries_in_all(binaries, architecture)
+        shlibs = shlibs_depends(stage) if binaries else None
         control.write_text(stamp_control(control.read_text(), version, shlibs, architecture))
         final = pack(stage, deb_path(out, name, version, architecture))
     finally:

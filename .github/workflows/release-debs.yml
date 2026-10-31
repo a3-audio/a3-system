@@ -1,0 +1,67 @@
+# SPDX-FileCopyrightText: 2026 Raphael Eismann
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# A version's .debs on a3-system's GitHub release: every line built from the
+# tag's pins and install-tested (build-packages.yml), then attached to the
+# release of that tag with a SHA256SUMS. The apt archive is packages.yml's
+# business and is not touched from here. By hand, for a release that already
+# exists: Actions -> Release debs -> Run workflow, tag v03.1.
+name: Release debs
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "The release's tag, e.g. v03.1"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    # Named explicitly, GitHub runs bash -eo pipefail: a failing script in
+    # front of a pipe fails the step (the default is bash -e only).
+    shell: bash
+
+# A second run for the same tag waits; it would upload over the first.
+concurrency:
+  group: release-debs-${{ github.event.release.tag_name || inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  packages:
+    uses: ./.github/workflows/build-packages.yml
+    with:
+      ref: refs/tags/${{ github.event.release.tag_name || inputs.tag }}
+
+  upload:
+    needs: packages
+    # The runner image, not a Debian container: gh is preinstalled there.
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # ci/release_assets.py only; the packages come as artifacts.
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Download
+        uses: actions/download-artifact@v4
+        with:
+          pattern: debs-*
+          path: debs
+
+      - name: Name the assets
+        run: python3 ci/release_assets.py debs assets
+
+      - name: Attach to the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: gh release upload "$TAG" assets/* --clobber --repo a3-audio/a3-system

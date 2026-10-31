@@ -1,8 +1,10 @@
 """The virtual desk -- the A³ Mixer on a screen -- as the Debian package
 `a3-desk` (spec virtual-desk, 2026-10-16).
 
-Built from the a3-mixer commit the umbrella pins by installer/package.py,
-like StemDeck and Motion UI, installed with apt and held. No unit: it is an
+Built by installer/package.py from the commit of a3-mixer-ui -- a3-mixer's
+submodule ui since 2026-10-31, as a3-motion-ui is a3-motion's -- that the
+umbrella's a3-mixer pin records, like StemDeck and Motion UI; installed with
+apt and held. No unit: it is an
 app a person opens (a3-desk, or the launcher), on any machine with a screen --
 a3nuc2 beside Motion, a notebook at the bar. Not the role `mixer`: that is
 the hardware desk's Pi, and it stays as it is.
@@ -13,14 +15,15 @@ from .apppackage import has_packaging
 from .base import JUCE_PACKAGES, SCREEN_PACKAGES, Role, RoleError, ensure_juce
 from .updater import install_updater
 
-SOURCE = "a3-mixer"
+# The umbrella pins a3-mixer, a3-mixer pins ui (a3-mixer-ui).
+PIN_PATH = ("a3-mixer", "ui")
+SOURCE = "/".join(PIN_PATH)
 PACKAGE = "a3-desk"
-# a3-mixer's top level reads like a3-motion's (2026-10-31): the desk is ui/.
-APP = apppackage.AppPackage(PACKAGE, unit="", recipe="ui/packaging")
+APP = apppackage.AppPackage(PACKAGE, unit="")
 
 
 def pinned_commit(ctx):
-    return apppackage.pinned_commit(ctx, SOURCE)
+    return apppackage.pinned_commit(ctx, *PIN_PATH)
 
 
 def package_is_installed(ctx):
@@ -33,15 +36,16 @@ def buildable_pin(ctx, source):
     pin predates the desk's packaging."""
     commit = pinned_commit(ctx)
     if not has_packaging(ctx, source, commit, APP.recipe):
-        raise RoleError(f"a3-mixer at {commit[:10]} has no {APP.recipe}/stage: the a3-mixer pin "
-                        "is older than the desk; raise it first.")
+        raise RoleError(f"a3-mixer/ui at {commit[:10]} has no {APP.recipe}/stage: a3-mixer's "
+                        "ui pin is older than the desk as a3-mixer-ui; raise it first.")
     return commit, ensure_juce(ctx)
 
 
 class Desk(Role):
     name = "desk"
     label = "A³ Desk (the A³ Mixer on a screen)"
-    submodules = (SOURCE,)
+    # a3-mixer with its ui, recursively.
+    submodules = (PIN_PATH[0],)
     platforms = ("debian",)
     packages = SCREEN_PACKAGES
     build_packages = JUCE_PACKAGES

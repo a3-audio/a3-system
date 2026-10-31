@@ -205,8 +205,7 @@ class OnlyTheSubmodulesARoleReads(unittest.TestCase):
         self.assertEqual([], needed_submodules(["deck-host"], from_source=False))
 
     def test_from_source_checks_out_what_builds(self):
-        self.assertEqual(["a3-core", "beat-analyzer"],
-                         needed_submodules(["core"], from_source=True))
+        self.assertEqual(["a3-core"], needed_submodules(["core"], from_source=True))
         self.assertEqual(["a3-mixer"], needed_submodules(["desk"], from_source=True))
 
 

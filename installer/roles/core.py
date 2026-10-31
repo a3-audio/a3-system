@@ -11,7 +11,9 @@ preseeded and marked seen, the network answers with the a3-core/preseeded
 marker; the postinst takes them as given (a3-core 8573e2b, 8dcb2c7, #68).
 
 The beat-analyzer comes with it as a package of its own, `beat-analyzer`,
-built from the pinned commit like StemDeck and held. a3-core only recommends
+built from the pinned commit like StemDeck and held. Its repository is a3-core's
+submodule beat-analyzer since 2026-10-31 (before, the umbrella's), so a3-core's
+pin of it is the release's and it comes with a3-core's checkout. a3-core only recommends
 it and adds what is A3 about its unit as a drop-in (a3-core.conf: part of
 a3-main, after JACK, off CPU 0); the package does not enable its unit,
 a3-main wants it. Before the package, a3-core's a3-user-install.service
@@ -51,7 +53,9 @@ CORE_UNITS = (
     "a3-bar-per-workspace.service", "a3-screencast.service",
 )
 
-ANALYZER_SOURCE = "beat-analyzer"
+# a3-core's submodule (2026-10-31): the umbrella pins a3-core, a3-core pins it.
+ANALYZER_PIN_PATH = ("a3-core", "beat-analyzer")
+ANALYZER_SOURCE = "/".join(ANALYZER_PIN_PATH)
 ANALYZER_UNIT = "beat-analyzer.service"
 ANALYZER = apppackage.AppPackage("beat-analyzer", ANALYZER_UNIT,
                                  kept_drop_ins=("a3-core.conf",))
@@ -243,7 +247,8 @@ def check_core(ctx, lookup=own_addresses):
 class Core(Role):
     name = "core"
     label = "A³ Core (sound server: the a3-core program, beat analyzer)"
-    submodules = ("a3-core", "beat-analyzer")
+    # The beat-analyzer is a3-core's submodule, checked out with it (--recursive).
+    submodules = ("a3-core",)
     # The truth, the shipped config and the postinst's functions (configure).
     config_submodules = ("a3-core",)
     platforms = ("debian",)
@@ -388,14 +393,14 @@ def buildable_pins(ctx):
                             "umbrella's a3-core pin is older than its packages; "
                             "raise the a3-core pin first.")
     if not has_packaging(ctx, ctx.repo / ANALYZER_SOURCE, commit):
-        raise RoleError(f"{ANALYZER_SOURCE} at {commit[:10]} has no packaging/stage: the "
-                        f"umbrella's {ANALYZER_SOURCE} pin is older than its package; "
+        raise RoleError(f"{ANALYZER_SOURCE} at {commit[:10]} has no packaging/stage: "
+                        "a3-core's beat-analyzer pin is older than its package; "
                         "raise it first.")
     return commit, core_pin
 
 
 def analyzer_commit(ctx):
-    return apppackage.pinned_commit(ctx, ANALYZER_SOURCE)
+    return apppackage.pinned_commit(ctx, *ANALYZER_PIN_PATH)
 
 
 def core_commit(ctx):

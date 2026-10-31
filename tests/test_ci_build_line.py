@@ -18,14 +18,16 @@ from ci import build_line  # noqa: E402
 UMBRELLA = Path("/umbrella")
 SHA = {
     "a3-core": "c" * 40, "stemdeck": "d" * 40, "a3-mixer": "e" * 40,
-    "a3-motion": "a" * 40, "beat-analyzer": "b" * 40, "ui-in-motion": "f" * 40,
+    "a3-motion": "a" * 40, "analyzer-in-core": "b" * 40, "ui-in-motion": "f" * 40,
+    "ui-in-mixer": "7" * 40,
     "umbrella": "9" * 40,
 }
 BUILD_DEPENDS = "libasound2-dev\nlibx11-dev\npython3\ndpkg-dev\n"
 
 
 class FakeGit:
-    """Answers git ls-tree / git show for an umbrella with one nested submodule."""
+    """Answers git ls-tree / git show for an umbrella whose a3-motion and
+    a3-mixer pin a ui each and whose a3-core pins the beat-analyzer."""
 
     def __init__(self):
         self.calls = []
@@ -41,14 +43,14 @@ class FakeGit:
             return SHA["umbrella"] + "\n"
         assert git_args[0] == "ls-tree", git_args
         rev, path = git_args[1], git_args[2]
-        if folder == str(UMBRELLA) and path in ("a3-core", "stemdeck", "a3-mixer",
-                                                 "a3-motion", "beat-analyzer"):
+        if folder == str(UMBRELLA) and path in ("a3-core", "stemdeck", "a3-mixer", "a3-motion"):
             return f"160000 commit {SHA[path]}\t{path}\n"
-        if folder == str(UMBRELLA) and path == "a3-motion/ui":
-            return ""  # the umbrella's tree stops at a3-motion
-        if folder == str(UMBRELLA / "a3-motion") and rev == SHA["a3-motion"] and path == "ui":
-            return f"160000 commit {SHA['ui-in-motion']}\tui\n"
-        return ""
+        nested = {("a3-motion", "ui"): "ui-in-motion", ("a3-mixer", "ui"): "ui-in-mixer",
+                  ("a3-core", "beat-analyzer"): "analyzer-in-core"}
+        for (parent, inner), key in nested.items():
+            if folder == str(UMBRELLA / parent) and rev == SHA[parent] and path == inner:
+                return f"160000 commit {SHA[key]}\t{inner}\n"
+        return ""  # the umbrella's tree stops at its own submodules
 
 
 def line(arch="amd64", paths=("a3-core", "stemdeck")):
@@ -70,9 +72,11 @@ class Commands(unittest.TestCase):
         self.assertEqual([c[5] for c in built], [SHA["a3-core"], SHA["stemdeck"], SHA["a3-mixer"]])
 
     def test_a_nested_submodule_is_built_at_its_parents_pin(self):
-        built = commands(line(paths=("a3-motion/ui",)))
-        self.assertEqual(built[0][3], "/umbrella/a3-motion/ui")
-        self.assertEqual(built[0][5], SHA["ui-in-motion"])
+        built = commands(line(paths=("a3-motion/ui", "a3-mixer/ui", "a3-core/beat-analyzer")))
+        self.assertEqual([b[3] for b in built], ["/umbrella/a3-motion/ui", "/umbrella/a3-mixer/ui",
+                                                 "/umbrella/a3-core/beat-analyzer"])
+        self.assertEqual([b[5] for b in built],
+                         [SHA["ui-in-motion"], SHA["ui-in-mixer"], SHA["analyzer-in-core"]])
 
     def test_a_repo_with_two_recipes_yields_two_debs(self):
         two = {"arch": "amd64", "builds": [
@@ -187,6 +191,16 @@ class Main(unittest.TestCase):
         self.assertEqual(out, "")
         self.assertIn("a3-core (packaging/app)", err)
         self.assertIn("arm64", err)
+
+
+class EveryPathHasItsRole(unittest.TestCase):
+    def test_every_built_path_but_the_umbrella_names_the_role_that_builds_it(self):
+        """A path missing here builds without its role's packages, and the CI
+        image lacks them (the desk and the analyzer moved on 2026-10-31)."""
+        for suite, line in build_line.load_lines().items():
+            for build in line["builds"]:
+                if build["path"] != build_line.UMBRELLA_PATH:
+                    self.assertIn(build["path"], build_line.ROLE_OF_PATH, suite)
 
 
 class BuildDepends(unittest.TestCase):

@@ -6,9 +6,9 @@
     "builds": [
       {"path": "a3-core", "recipes": ["packaging/app", "packaging"]},
       {"path": "stemdeck", "recipes": ["packaging"]},
-      {"path": "a3-mixer", "recipes": ["ui/packaging"]},
+      {"path": "a3-mixer/ui", "recipes": ["packaging"]},
       {"path": "a3-motion/ui", "recipes": ["packaging"]},
-      {"path": "beat-analyzer", "recipes": ["packaging"]},
+      {"path": "a3-core/beat-analyzer", "recipes": ["packaging"]},
       {"path": ".", "recipes": ["update/packaging"]}
     ]
   },
@@ -19,9 +19,9 @@
     "builds": [
       {"path": "a3-core", "recipes": ["packaging/app"]},
       {"path": "stemdeck", "recipes": ["packaging"]},
-      {"path": "a3-mixer", "recipes": ["ui/packaging"]},
+      {"path": "a3-mixer/ui", "recipes": ["packaging"]},
       {"path": "a3-motion/ui", "recipes": ["packaging"]},
-      {"path": "beat-analyzer", "recipes": ["packaging"]},
+      {"path": "a3-core/beat-analyzer", "recipes": ["packaging"]},
       {"path": ".", "recipes": ["update/packaging"]}
     ]
   }

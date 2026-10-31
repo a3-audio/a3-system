@@ -1,5 +1,6 @@
 """The virtual desk as an installer role (spec virtual-desk Q6): the package
-a3-desk from the pinned a3-mixer, no unit -- an app a person opens."""
+a3-desk from the pinned a3-mixer-ui (a3-mixer's ui submodule), no unit -- an
+app a person opens."""
 
 import shutil
 import sys
@@ -78,17 +79,25 @@ class TheDeskComesAsAPackage(unittest.TestCase):
         commands, ctx = self.install()
         build = next(c for c in commands if "installer/package.py" in c)
         self.assertIn(f"--rev {PIN}", build)
-        self.assertIn(str(ctx.repo / "a3-mixer"), build)
+        self.assertIn(str(ctx.repo / "a3-mixer" / "ui"), build)
         self.assertTrue(build.startswith("python3 "), build)
 
-    def test_the_recipe_is_the_desks_folder_ui_packaging(self):
-        """a3-mixer's top level reads like a3-motion's since 2026-10-31: the
-        desk is ui/, its recipe ui/packaging/."""
+    def test_the_recipe_is_a3_mixer_uis_default_packaging(self):
+        """The desk is a repository of its own since 2026-10-31, a3-mixer-ui,
+        mounted as a3-mixer's ui like a3-motion-ui: its recipe is packaging/."""
         asked = []
         commands, _ = self.install(asked=asked)
-        self.assertEqual(asked, ["ui/packaging"])
+        self.assertEqual(asked, ["packaging"])
         build = next(c for c in commands if "installer/package.py" in c)
-        self.assertIn("--recipe ui/packaging", build)
+        self.assertNotIn("--recipe", build)
+
+    def test_the_pin_is_a3_mixers_pin_of_ui(self):
+        from installer.roles import desk
+        seen = []
+        with mock.patch.object(desk.apppackage, "pinned_commit",
+                               lambda _ctx, *path: seen.append(path) or PIN):
+            self.assertEqual(desk.pinned_commit(None), PIN)
+        self.assertEqual(seen, [("a3-mixer", "ui")])
 
     def test_it_installs_then_holds(self):
         commands, ctx = self.install()

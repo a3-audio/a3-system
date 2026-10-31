@@ -40,9 +40,7 @@ APP = apppackage.AppPackage(PACKAGE, UNIT)
 
 def pinned_commit(ctx):
     """The ui commit the release pins: the umbrella pins a3-motion, a3-motion pins ui."""
-    motion = ctx.runner.output(["git", "-C", ctx.repo, "rev-parse", "HEAD:a3-motion"]).strip()
-    return ctx.runner.output(["git", "-C", ctx.repo / "a3-motion", "rev-parse",
-                              f"{motion}:ui"]).strip()
+    return apppackage.pinned_commit(ctx, *UI.parts)
 
 
 def package_is_installed(ctx):

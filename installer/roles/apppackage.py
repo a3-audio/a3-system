@@ -1,4 +1,4 @@
-"""StemDeck, Motion UI and the beat-analyzer as Debian packages: the steps
+"""StemDeck, Motion UI, the desk and the beat-analyzer as Debian packages: the steps
 these roles take the same way (extracted from roles/stemdeck.py at its second
 user, 2026-10-08).
 
@@ -53,10 +53,17 @@ class AppPackage:
         return str(PACKAGED_UNITS / self.unit)
 
 
-def pinned_commit(ctx, submodule):
+def pinned_commit(ctx, submodule, *inner):
     """The commit the umbrella pins for `submodule` -- the release's, whatever
-    the submodule's working copy holds."""
-    return ctx.runner.output(["git", "-C", ctx.repo, "rev-parse", f"HEAD:{submodule}"]).strip()
+    the submodule's working copy holds. `inner` walks on through submodules of
+    submodules, one rev-parse per boundary: ("a3-core", "beat-analyzer") is the
+    commit a3-core's pinned commit records for its beat-analyzer."""
+    commit = ctx.runner.output(["git", "-C", ctx.repo, "rev-parse", f"HEAD:{submodule}"]).strip()
+    folder = ctx.repo / submodule
+    for path in inner:
+        commit = ctx.runner.output(["git", "-C", folder, "rev-parse", f"{commit}:{path}"]).strip()
+        folder = folder / path
+    return commit
 
 
 def has_packaging(ctx, source, commit, recipe=DEFAULT_RECIPE):

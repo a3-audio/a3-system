@@ -279,12 +279,13 @@ class OnlyWhatTheRolesNeed(unittest.TestCase):
         return [c for c in commands if "submodule" in c or "checkout" in c]
 
     def test_each_role_names_what_it_builds_from(self):
-        self.assertEqual(["a3-core", "beat-analyzer"], needed_submodules(["core"], from_source=True))
+        # The beat-analyzer is a3-core's submodule (2026-10-31): it comes with a3-core, recursively.
+        self.assertEqual(["a3-core"], needed_submodules(["core"], from_source=True))
         self.assertEqual(["stemdeck"], needed_submodules(["stemdeck"], from_source=True))
         self.assertEqual(["a3-motion"], needed_submodules(["motion"], from_source=True))
 
     def test_in_install_order_and_once(self):
-        self.assertEqual(["a3-core", "beat-analyzer", "stemdeck", "a3-motion"],
+        self.assertEqual(["a3-core", "stemdeck", "a3-motion"],
                          needed_submodules(["motion", "stemdeck", "core", "core"], from_source=True))
 
     def test_only_those_are_initialised(self):
@@ -358,6 +359,7 @@ class TheProductsNameThePinnedJuce(unittest.TestCase):
         "stemdeck": ("stemdeck", "README.md"),
         "a3-motion-ui README": ("a3-motion/ui", "README.md"),
         "a3-motion-ui ARCHITECTURE": ("a3-motion/ui", "ARCHITECTURE.md"),
+        "a3-mixer-ui README": ("a3-mixer/ui", "README.md"),
     }
 
     @staticmethod
@@ -1921,6 +1923,38 @@ class MotionPinnedCommit(unittest.TestCase):
                           ["git", "-C", "/repo/a3-motion", "rev-parse", "motionsha:ui"]], calls)
 
 
+class NestedPinnedCommit(unittest.TestCase):
+    """A pin inside a pin (a3-core/beat-analyzer, a3-mixer/ui): one rev-parse
+    per submodule boundary, each in the submodule that records the next."""
+
+    def pinned(self, *path):
+        from installer.roles import apppackage
+        calls = []
+        answers = iter(["outersha\n", "innersha\n"])
+
+        class Fake:
+            def output(self, args, cwd=None):
+                calls.append([str(a) for a in args])
+                return next(answers)
+
+        ctx = mock.Mock(runner=Fake(), repo=Path("/repo"))
+        return apppackage.pinned_commit(ctx, *path), calls
+
+    def test_the_umbrellas_own_pin_is_one_step(self):
+        commit, calls = self.pinned("stemdeck")
+        self.assertEqual("outersha", commit)
+        self.assertEqual([["git", "-C", "/repo", "rev-parse", "HEAD:stemdeck"]], calls)
+
+    def test_a3_core_pins_the_beat_analyzer(self):
+        commit, calls = self.pinned("a3-core", "beat-analyzer")
+        self.assertEqual("innersha", commit)
+        self.assertEqual([["git", "-C", "/repo", "rev-parse", "HEAD:a3-core"],
+                          ["git", "-C", "/repo/a3-core", "rev-parse", "outersha:beat-analyzer"]], calls)
+
+    def test_the_core_role_reads_the_analyzer_inside_a3_core(self):
+        self.assertEqual(core.ANALYZER_SOURCE, "a3-core/beat-analyzer")
+
+
 class MotionComesAsAPackage(unittest.TestCase):
     def install(self, drop_ins=None, hand_unit=None, packaged=True, fail_on=None, error=None,
                 keep=None):
@@ -2405,7 +2439,7 @@ class TheAnalyzerComesWithTheCoreAsAPackage(unittest.TestCase):
         commands, ctx = self.install()
         build = next(c for c in commands
                      if "installer/package.py" in c and "beat-analyzer" in c)
-        self.assertIn(str(ctx.repo / "beat-analyzer"), build)
+        self.assertIn(str(ctx.repo / "a3-core" / "beat-analyzer"), build)
         self.assertIn(f"--rev {ANALYZER_PIN}", build)
 
     def test_after_a3_core_installed_then_held(self):
@@ -2472,7 +2506,8 @@ class TheAnalyzerComesWithTheCoreAsAPackage(unittest.TestCase):
 
     def test_core_installs_app_and_deployment_in_one_apt_call(self):
         commands, ctx = self.install()
-        builds = [c for c in commands if "installer/package.py" in c and str(ctx.repo / "a3-core") in c]
+        builds = [c for c in commands if "installer/package.py" in c
+                  and c.split()[2] == str(ctx.repo / "a3-core")]
         self.assertEqual(2, len(builds), builds)
         app_build = next(c for c in builds if "--recipe packaging/app" in c)
         deployment_build = next(c for c in builds if "--recipe" not in c)

@@ -106,7 +106,9 @@ class StemDeck(Role):
     build_packages = JUCE_PACKAGES + (
         "libflac-dev", "libvorbis-dev", "libogg-dev", "libjack-jackd2-dev",
         # key lock: Rubber Band's time stretcher
-        "librubberband-dev")
+        "librubberband-dev",
+        # NI Stems (.stem.mp4): FFmpeg's demuxer and decoders
+        "libavcodec-dev", "libavformat-dev", "libavutil-dev")
     needs_screen = True
 
     def configure(self, ctx):

@@ -98,12 +98,18 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /opt/juce
-          key: juce-9.0.3-${{ matrix.suite }}-${{ matrix.arch }}-v1
+          key: juce-9.0.3-${{ matrix.suite }}-${{ matrix.arch }}-v2
 
       - name: Build JUCE
         if: steps.juce.outputs.cache-hit != 'true'
         run: |
           git clone --depth 1 --branch 9.0.3 https://github.com/juce-framework/JUCE.git "$RUNNER_TEMP/JUCE"
+          # The Core's FFT runs on FFTW, and JUCE's own FFTW plans make FFTW allocate in the audio callback. a3-core ships a
+          # patch for it and its configure step refuses a JUCE without it. The dry run makes a patch that no longer fits
+          # (a new JUCE, other line endings) fail here, with its own message, not as a configure error later. v2 of the
+          # cache key: v1 holds an unpatched JUCE.
+          patch -p1 --dry-run -d "$RUNNER_TEMP/JUCE" < a3-core/cmake/patches/juce-9.0.3-fftw-realtime.patch
+          patch -p1 -d "$RUNNER_TEMP/JUCE" < a3-core/cmake/patches/juce-9.0.3-fftw-realtime.patch
           cmake -S "$RUNNER_TEMP/JUCE" -B "$RUNNER_TEMP/JUCE/build" -DCMAKE_INSTALL_PREFIX=/opt/juce -DCMAKE_BUILD_TYPE=Release
           cmake --build "$RUNNER_TEMP/JUCE/build" --target install -j4
 

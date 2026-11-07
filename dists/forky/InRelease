@@ -1,0 +1,29 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: a3-audio
+Label: a3-system
+Suite: forky
+Codename: forky
+Date: Sat, 07 Nov 2026 12:18:22 +0000
+Architectures: amd64
+Components: main
+SHA256:
+ 2d1dfce8f44998a1f50518e4425ec33d34eae412d4a9298af8b32f0fafa2fa80 8942 main/binary-amd64/Packages
+ 46d75efb9978ef6470e5bf854204492e0caa774ec3b6242bc85de9cd205e06cd 3588 main/binary-amd64/Packages.gz
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE4YS0FwMXeddKBoXXZedL/pq/AHQFAmrvFw4ACgkQZedL/pq/
+AHStkA/+LsCaUxnjIFR7HWzib3RP83huXTv6nd2PC+wm086oqw0OLh8fsWwgiSYn
+ZcA9ENE45swRlnoC3XvuWhE/vx79TvmBbn92oZ9kDxfiNwtBVrnaHplLhvtBlGP2
+znNAa5wyK7Tk+1hxZNXuIJ+T+2D9o6+C59bgJ28vJ30eNNIMgBnejd6chHgceOxA
+kaGylq/iMi0R5d8Hb/C3ATMe7xuA4JjY7cvjOA7MXvFobXq332FbBljopIH1Hvqa
+AowQiJOaHNfVNPQAYuTwjmY7aoal7wT5qJ88eV7nggl6RVEDhMSKtfOPWbQX0uuJ
+A6wJPgHH6UeNSFHrWC3y1CN+OtkoTZ1J/tiaIsF4YNO8MqOocy/wNpXFVZ/Fr/jy
+60CdZJP+LnZ52Qo1wFJifnJs4cUOfqIHoHlTCJfwvaUliafBTj7Yogb+F+InpdRE
+YgBeXyonM3jpYMXTRGZl5sNzWvoYLPLrJGs6KhttBS+LcnbBcYM3KRWf1/QazHE8
+P67vp7LI/lZ7hMq9T1MkQp3B/kTjTLftTBQL0Qn3t/r7hNwLE/1xbq8lFPjIoGtG
+f48qaMF+QXUAjV9wyMaA0HCZi43FswrWFgPFsp70/oJUxm8zCswPDE7fOgngTgET
+3ftlKH1Jinqt1AqfXij+EX8cGfithIlsLfdgRnFbq8KSSWdBiA0=
+=vUwW
+-----END PGP SIGNATURE-----

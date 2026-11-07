@@ -1,0 +1,10 @@
+Origin: a3-audio
+Label: a3-system
+Suite: trixie
+Codename: trixie
+Date: Sat, 07 Nov 2026 12:18:22 +0000
+Architectures: arm64
+Components: main
+SHA256:
+ 802ca010da5c43da1dc36359bb939cffc5a29f640ddb0898f015fc76cd60c896 7036 main/binary-arm64/Packages
+ c1558bb98ff5242c136e6e0140332290e3b6134808449aad8e53944a32edd203 2926 main/binary-arm64/Packages.gz

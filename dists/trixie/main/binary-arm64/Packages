@@ -1,0 +1,140 @@
+Package: a3-core-app
+Version: 03.2+68
+Architecture: arm64
+Maintainer: Rafjagger
+Depends: libasound2t64 (>= 1.2.13), libc6 (>= 2.38), libegl1, libfftw3-single3 (>= 3.3.10), libfontconfig1 (>= 2.12.6), libfreetype6 (>= 2.13.1), libgcc-s1 (>= 4.0), libgl1, libjack-jackd2-0 (>= 1.9.10+20150825) | libjack-0.125, libstdc++6 (>= 14), pipewire, pipewire-jack, wireplumber, jack-example-tools
+Breaks: a3-core (<< 03.2+68), a3-engine
+Replaces: a3-core (<< 03.2+68), a3-engine
+Filename: pool/main/a/a3-core-app/a3-core-app_03.2+68_arm64.deb
+Size: 11647236
+MD5sum: 5313de9fe2002497bdd06678ee762e6e
+SHA1: 7655a7700320df0b1a7cd0473ec6aa9a778b012d
+SHA256: 169690c743f7d5527e3d50a96bf5da99d7ede1263997ea585d626edbfe90919b
+Section: sound
+Priority: optional
+Description: A3 Core: the a3-core program
+ The A3 program /usr/bin/a3-core: the window, the Core and the audio engine as
+ roles of one binary, and their systemd user units (a3-engine.service,
+ a3-core.service, a3-core-window.service), none enabled by this package. It
+ reads the OSC address truth from /usr/share/a3/a3-osc.json, its config from
+ ~/.config/a3/engine/engine.json or /usr/share/a3-engine/engine.json, and the
+ speaker layouts and IEM data from /usr/share/a3-engine/spatial. A headless
+ JACK host for parity and load runs is shipped as a tool.
+ .
+ Installs on any machine. JACK programs find PipeWire's libjack system-wide,
+ and the audio group may run realtime. The Core machine's deployment around
+ it is the package a3-core.
+
+Package: a3-desk
+Version: 03.2+0
+Architecture: arm64
+Maintainer: Rafjagger
+Depends: libc6 (>= 2.38), libfontconfig1 (>= 2.12.6), libfreetype6 (>= 2.13.1), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 14), libx11-6, libxext6, libxrandr2, libxinerama1, libxcursor1
+Filename: pool/main/a/a3-desk/a3-desk_03.2+0_arm64.deb
+Size: 2240512
+MD5sum: b88aa9132adb30e586c1ee7db20d022f
+SHA1: 1b6263f7d79a4797e4522ece4a3d722648bf1a23
+SHA256: 24f1a7ca62f8767651687688ba8c9b298bbf8f6a83c4492591aef67305c5bfee
+Section: sound
+Priority: optional
+Description: A3 Desk, the A3 Mixer on a screen
+ The virtual desk of the A3 system: the A3 Mixer's layout on any machine of
+ the A3 network -- a second operator, or a stand-in for the hardware desk.
+ It sends what the hardware sends and shows what A3 Core reports; Core
+ follows up to four. Opened by hand (a3-desk); no service.
+
+Package: a3-motion-ui
+Version: 03.2+2
+Architecture: arm64
+Maintainer: Rafjagger
+Depends: libatomic1 (>= 4.8), libc6 (>= 2.38), libegl1, libfontconfig1 (>= 2.12.6), libfreetype6 (>= 2.13.1), libgcc-s1 (>= 3.0), libgl1, libserial1 (>= 1.0.0+git20250423), libstdc++6 (>= 14), x11-utils, x11-xserver-utils, python3, ffmpeg
+Recommends: onboard, dbus-bin, i3
+Filename: pool/main/a/a3-motion-ui/a3-motion-ui_03.2+2_arm64.deb
+Size: 5989364
+MD5sum: acab19884698d1ab1f580b8a5045480a
+SHA1: 95e52f926dfa109ba840c5c99e252210f39246ba
+SHA256: 1502f754c7bdb1fa19270e353fac1ba19713dcb85f0836bc030ab21e7392df0e
+Section: sound
+Priority: optional
+Description: A3 Motion UI, the touch surface of the A3 Motion controller
+ Records and plays movement trajectories for four channels and sends
+ them to A3 Core over OSC; it renders no audio. Runs as the systemd user
+ unit a3-motion.service on i3 workspace 1; the panel is found by its USB ID.
+ .
+ User data stays when the package is removed or purged: settings, skins
+ and the pattern library in ~/.local/share/a3-motion, the log in
+ ~/.local/state/a3-motion. The shipped defaults in /usr/share/a3-motion-ui
+ are copied there at the start, never moved or written over: a file you
+ changed stays, and a newer shipped version goes beside it as
+ <name>.shipped.
+
+Package: beat-analyzer
+Version: 03.2+1
+Architecture: arm64
+Maintainer: Rafjagger
+Depends: libc6 (>= 2.38), libgcc-s1 (>= 3.0), libjack-jackd2-0 (>= 1.9.10+20150825) | libjack-0.125, libsamplerate0 (>= 0.1.7), libstdc++6 (>= 13.1)
+Suggests: jackd2 | pipewire-jack
+Filename: pool/main/b/beat-analyzer/beat-analyzer_03.2+1_arm64.deb
+Size: 110064
+MD5sum: 47a8a40cae8c888b1942219991a6d324
+SHA1: 1d152fd22053edf7c86f1dfdd45a7fad2e97a027
+SHA256: 69b2516b71e026965a14f2565c3dae35f37cf86fe664d64129746bf84ad159df
+Section: sound
+Priority: optional
+Description: real-time beat clock over JACK, sent as OSC
+ Tracks the tempo of a JACK input (BTrack), follows an external clock or a
+ Pioneer Pro DJ Link master; sends /beat as OSC to the targets in its
+ config. It does not meter: the A3 engine measures /vu. Works with any JACK
+ server, PipeWire's included, and needs nothing else of the A3 system.
+ .
+ Runs as the systemd user unit beat-analyzer.service, which is not enabled
+ on install: systemctl --user enable --now beat-analyzer. The config is
+ ~/.config/beat-analyzer/beat-analyzer.env, made from the shipped example
+ on the first start and never written over; files in its conf.d/ follow
+ it, a later one winning. It stays when the package is removed or purged.
+
+Package: stemdeck
+Version: 03.2+129
+Architecture: arm64
+Maintainer: Rafjagger
+Depends: libasound2t64 (>= 1.2.13), libavcodec61 (>= 7:7.1.5), libavformat61 (>= 7:7.1.5), libavutil59 (>= 7:7.1.5), libc6 (>= 2.38), libfontconfig1 (>= 2.12.6), libfreetype6 (>= 2.13.1), libgcc-s1 (>= 4.0), libjack-jackd2-0 (>= 1.9.10+20150825) | libjack-0.125, librubberband2 (>= 3.3.0+dfsg), libstdc++6 (>= 14), ethtool, pipewire-jack, jack-example-tools, xdotool, x11-xserver-utils, x11-utils, python3, onboard
+Recommends: i3
+Filename: pool/main/s/stemdeck/stemdeck_03.2+129_arm64.deb
+Size: 5763456
+MD5sum: 415b445fca2ed582f08879ac612c7245
+SHA1: e378532e8da7453e74ec8b4ee57dfa087088dd81
+SHA256: a664a26f84d58abdc034c6f14fe19d236a51027e127a43466a540ada993f21b0
+Section: sound
+Priority: optional
+Description: StemDeck, the stem player of the A3 system
+ Four decks of stems over JACK, a FLAC recorder on the JACK inputs
+ rec_L/rec_R, and the A3 beat clock. Runs as the systemd user unit
+ stemdeck.service on i3 workspace 2.
+ .
+ User data stays when the package is removed or purged: the settings in
+ ~/.config/StemDeck, the recordings in ~/.local/share/stemdeck, and the
+ stem library wherever stemFolder names it.
+
+Package: a3-update
+Version: 03.2+63
+Architecture: all
+Maintainer: Rafjagger
+Depends: python3, gpgv
+Recommends: sudo
+Filename: pool/trixie/main/a/a3-update/a3-update_03.2+63_all.deb
+Size: 14316
+MD5sum: 1e7297f73ad7effc131601a7a6383431
+SHA1: 03f14791ce4f43d0b3b24fd83836b75de17a1f27
+SHA256: 466d897a1712418eb8de05a1ab043a36456b429e9614e9b127176ec60528efcb
+Section: admin
+Priority: optional
+Description: A3 update, each machine's updater for a signed A3 release
+ A user service (a3-update.service) that installs the A3 packages of this
+ machine from a release of a3-system when Core asks: it downloads the
+ release's .debs for this machine, checks them against the signed
+ SHA256SUMS and hands them to the root helper /usr/lib/a3-update/a3-root,
+ which checks the signature with the A3 key, installs and holds them.
+ .
+ Root only through one sudoers line, written once by hand, never by the
+ package: aaa ALL=(root) NOPASSWD: /usr/lib/a3-update/a3-root install-release *
+

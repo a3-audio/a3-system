@@ -1,0 +1,29 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: a3-audio
+Label: a3-system
+Suite: trixie
+Codename: trixie
+Date: Fri, 13 Nov 2026 17:47:46 +0000
+Architectures: arm64
+Components: main
+SHA256:
+ 1ce91edac191e130a2354ec1551d82fcc3ec0732493fe8f1d0b16469fa53e256 7040 main/binary-arm64/Packages
+ 5ffba3269bdb2b6a4b9f0f1cb08d54515056301d39a602d834bb6e82fd746e33 2929 main/binary-arm64/Packages.gz
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE4YS0FwMXeddKBoXXZedL/pq/AHQFAmr3TUIACgkQZedL/pq/
+AHQBEg/+Jnk2CTJVP0wn7m1/rD2CG3IMl8/E4M/mLnelsQk6j16jf5t1FqxeZuEM
+cCyYh37XCpYmxhnPOU/hJ1Zp9aoG+/pvcuU2X2AEYyzE9FWvvsSf7SQP3LrTPe10
+QurfKEXFITss54HXObgBlknTmtPqn9uJEUPibeVk4Ff0rD/mIqzWPmFkABS8kYHh
+Znp5Y4iuMT71lY99ewyz9thSXdLif1P5kTQ2royjXEXlAIgVX+FEL2Ik1W9m8/vL
+7LkzXY1ZMBeVVDwnoBB8fIMlnSynWkKYB4QoEYtaK5WqSCEsnnpPtyqe7x94s8w+
+7VWER3oo+tQFi5WAzX0A6KZxof4MXsFulFU7p1ytrUgzNnxvAaT8zwx8QyaF40PR
+iiHzKqu4Eht4fENaMafYCdxHVmiXdQUHanrMfTHIcS896HXkVpX70pK95v65hyJb
+Bb6bV23UqWmOTlDHX81lHv5oe2jKUDItwbwxv8AW3X0KtSzx3OiY92Hj/8yeWSVT
+RW59i6EciZPx2iiuqOT/+tijAYpcJR8a1bZcFAvfQydP5YjD7XJYtwg4Hw8znWI4
+Um94/D220XcKoSMxwccWu72p1O9C1bDYvIGJyVQvnECsSN0R0O0op/XQmeJ3oMFm
+eZL++jliwgektD2ZTuW6C3ATbvikqjzh9XKGEejGrC/GyrNT2Xk=
+=yraO
+-----END PGP SIGNATURE-----

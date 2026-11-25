@@ -101,7 +101,11 @@ class DeckHostCase(unittest.TestCase):
                             self.irq_service_enabled):
             deckhost.DeckHost().install(ctx)
 
-    def drop_in(self, ctx, letter="B"):
+    def drop_in(self, ctx):
+        """One for every letter (2026-11-25): which deck runs here is the letter's link alone."""
+        return ctx.user_units / "stemdeck@.service.d" / "deck-host.conf"
+
+    def old_letter_drop_in(self, ctx, letter="B"):
         return ctx.user_units / f"stemdeck@{letter}.service.d" / "deck-host.conf"
 
     def i3_config(self, ctx, text):
@@ -131,18 +135,30 @@ class TheRoleIsOffered(unittest.TestCase):
 
 
 class TheDeckInstance(DeckHostCase):
-    def test_writes_the_drop_in_with_link_map_latency_and_panel(self):
+    def test_writes_one_drop_in_for_every_letter_with_latency_and_panel(self):
         ctx, _ = self.ctx()
         self.install(ctx)
         text = self.drop_in(ctx).read_text()
-        for line in ("Environment=STEMDECK_LINK_MAP=/usr/share/stemdeck/links-aes67.json",
-                     "Environment=STEMDECK_PATH_LATENCY_MS=0",
-                     "Environment=STEMDECK_PANEL_WORKSPACE=2:STEMDECK",
-                     "Wants=a3-aes67-deck@%i.service",
-                     "After=a3-aes67-deck@%i.service"):
+        for line in ("Environment=STEMDECK_PATH_LATENCY_MS=0",
+                     "Environment=STEMDECK_PANEL_WORKSPACE=2:STEMDECK"):
             self.assertIn(line, text.splitlines())
-        self.assertLess(text.index("[Unit]"), text.index("Wants="))
-        self.assertLess(text.index("[Service]"), text.index("Environment="))
+        self.assertFalse(self.old_letter_drop_in(ctx).exists())
+
+    def test_the_sender_and_the_link_map_are_the_package_s_not_the_drop_in_s(self):
+        ctx, _ = self.ctx()
+        self.install(ctx)
+        text = self.drop_in(ctx).read_text()
+        self.assertNotIn("a3-aes67-deck", text)
+        self.assertNotIn("STEMDECK_LINK_MAP", text)
+
+    def test_a_drop_in_of_the_old_kind_for_one_letter_goes(self):
+        ctx, _ = self.ctx({("deck-host", "letter"): "C"})
+        old = self.old_letter_drop_in(ctx, "C")
+        old.parent.mkdir(parents=True)
+        old.write_text(deckhost_written_by() + "[Service]\nEnvironment=STEMDECK_LINK_MAP=x\n")
+        ctx.runner.log.clear()
+        self.install(ctx)
+        self.assertIn(f"rm -f {old}", ctx.runner.log.commands())
 
     def test_enables_the_deck_instance_by_symlink(self):
         ctx, log = self.ctx()
@@ -168,11 +184,11 @@ class TheDeckInstance(DeckHostCase):
         ctx, log = self.ctx({("deck-host", "letter"): "C",
                              ("deck-host", "path_latency_ms"): "18"})
         self.install(ctx)
-        text = self.drop_in(ctx, "C").read_text()
+        text = self.drop_in(ctx).read_text()
         self.assertIn("Environment=STEMDECK_PATH_LATENCY_MS=18", text.splitlines())
         self.assertTrue((ctx.user_units / "default.target.wants" / "stemdeck@C.service")
                         .is_symlink())
-        self.assertFalse(self.drop_in(ctx, "B").exists())
+        self.assertFalse(self.old_letter_drop_in(ctx, "B").exists())
 
     def test_the_defaults_are_deck_b_without_latency(self):
         from installer.settings import Settings
@@ -234,14 +250,6 @@ class TheStemDeckAes67Units(DeckHostCase):
     def sender_drop_in(self, ctx):
         return ctx.user_units / "a3-aes67-deck@.service.d" / "deck-host.conf"
 
-    def test_the_instance_pulls_in_the_base_and_the_sender(self):
-        ctx, _ = self.ctx()
-        self.install(ctx)
-        lines = self.drop_in(ctx).read_text().splitlines()
-        for line in ("Wants=stemdeck-aes67.service", "After=stemdeck-aes67.service",
-                     "Wants=a3-aes67-deck@%i.service", "After=a3-aes67-deck@%i.service"):
-            self.assertIn(line, lines)
-
     def test_the_rendering_units_get_the_audio_port(self):
         ctx, _ = self.ctx()
         self.install(ctx)
@@ -266,8 +274,6 @@ class TheStemDeckAes67Units(DeckHostCase):
     def test_the_unchanged_environment_is_all_still_there(self):
         ctx, _ = self.ctx({("roles", "motion"): "yes"})
         self.install(ctx)
-        self.assertIn("Environment=STEMDECK_LINK_MAP=/usr/share/stemdeck/links-aes67.json",
-                      self.drop_in(ctx).read_text().splitlines())
         self.assertIn("Environment=STEMDECK_PANEL_WORKSPACE=2:STEMDECK",
                       self.drop_in(ctx).read_text().splitlines())
         self.assertIn("Environment=A3_MOTION_PANEL_WORKSPACE=1:MOTION",
@@ -938,6 +944,7 @@ class Leaving(DeckHostCase):
         i3 = self.i3_config(ctx, "set $mod Mod4\n")
         self.install(ctx)
         hand = ctx.user_units / "stemdeck@B.service.d" / "by-hand.conf"
+        hand.parent.mkdir(parents=True, exist_ok=True)
         hand.write_text("[Service]\nNice=0\n")
         motion_own = ctx.user_units / "a3-motion.service.d" / "display.conf"
         motion_own.write_text("[Service]\n")
@@ -1048,7 +1055,6 @@ class AChangedLetter(DeckHostCase):
         commands = ctx.runner.log.commands()
         self.assertIn("systemctl --user disable --now stemdeck@B.service", commands)
         self.assertIn("systemctl --user disable --now a3-aes67-deck@B.service", commands)
-        self.assertIn(f"rm -f {self.drop_in(ctx, 'B')}", commands)
         self.assertIn(f"rm -f {ctx.user_units / 'default.target.wants' / 'stemdeck@B.service'}",
                       commands)
         self.assertEqual("C", ctx.state.get("deck-host", "letter"))
@@ -1258,3 +1264,8 @@ class TheTwoDeckPlayerIsOff(DeckHostCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def deckhost_written_by():
+    from installer.roles import deckhost
+    return deckhost.WRITTEN_BY

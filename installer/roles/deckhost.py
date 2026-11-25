@@ -83,6 +83,7 @@ _QUANTUM_SETTING = re.compile(
     r"(?:^|[\s{,])(?:node\.latency|node\.quantum|default\.clock\.(?:min-|max-)?quantum)"
     r"\s*=\s*\[?\s*(\d+)")
 INSTANCE_TEMPLATE = Path("/usr/lib/systemd/user/stemdeck@.service")
+TEMPLATE_UNIT = "stemdeck@.service"
 DROP_IN = "deck-host.conf"
 PANEL_DROP_IN = "panel-follows.conf"
 # Written by an earlier run that had the "Motion here too" option; only cleaned up now.
@@ -190,15 +191,10 @@ def instance_unit(letter):
 
 
 def deck_drop_in(latency_ms, workspace=STEMDECK_WORKSPACE):
+    """What belongs to the host, not to a letter: the sender, the clock and the link
+    map come with the package's own unit (2026-11-25), whichever deck runs here."""
     return (WRITTEN_BY
-            + "[Unit]\n"
-            f"Wants={BASE_UNIT}\n"
-            f"After={BASE_UNIT}\n"
-            "Wants=a3-aes67-deck@%i.service\n"
-            "After=a3-aes67-deck@%i.service\n"
-            "\n"
-            "[Service]\n"
-            f"Environment=STEMDECK_LINK_MAP={LINK_MAP}\n"
+            + "[Service]\n"
             f"Environment=STEMDECK_PATH_LATENCY_MS={latency_ms}\n"
             f"Environment=STEMDECK_PANEL_WORKSPACE={workspace}\n")
 
@@ -473,8 +469,10 @@ class DeckHost(Role):
         stemdeck.install_package(ctx)
         self._set_aside_leftovers(ctx)
         self._leave_old_letter(ctx, letter)
-        write_drop_in(ctx, instance_unit(letter), DROP_IN,
-                      deck_drop_in(latency, workspace))
+        remove_files(ctx, [path for letter_ in _letters(ctx)
+                           for path in _old_letter_drop_in(ctx, letter_)
+                           if _written_by_us(path)])
+        write_drop_in(ctx, TEMPLATE_UNIT, DROP_IN, deck_drop_in(latency, workspace))
         self._two_deck_player_off(ctx)
         self._audio_port_drop_ins(ctx)
         link_server_rate(ctx)
@@ -665,6 +663,7 @@ class DeckHost(Role):
 
     def _candidate_files(self, ctx):
         return [*(path for letter in _letters(ctx) for path in _letter_files(ctx, letter)),
+                ctx.user_units / f"{TEMPLATE_UNIT}.d" / DROP_IN,
                 _panel_path(ctx),
                 ctx.user_units / f"{TWO_DECK_UNIT}.d" / DROP_IN,
                 *([_motion_conflict_path(ctx)] if _motion_excluded(ctx) else []),
@@ -759,8 +758,15 @@ def _letter_units(letter):
     return [instance_unit(letter), f"a3-aes67-deck@{letter}.service"]
 
 
+def _old_letter_drop_in(ctx, letter):
+    """Until 2026-11-25 the drop-in sat on one letter, and only that deck found its
+    sender. Listed only where such a file is still lying about."""
+    path = ctx.user_units / f"{instance_unit(letter)}.d" / DROP_IN
+    return [path] if path.exists() else []
+
+
 def _letter_files(ctx, letter):
-    return [ctx.user_units / f"{instance_unit(letter)}.d" / DROP_IN, _wants_link(ctx, letter)]
+    return [*_old_letter_drop_in(ctx, letter), _wants_link(ctx, letter)]
 
 
 def _audio_port(ctx):

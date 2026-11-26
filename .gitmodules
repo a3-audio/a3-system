@@ -44,3 +44,8 @@
 [submodule "a3-pro-dj"]
 	path = a3-pro-dj
 	url = https://github.com/a3-audio/a3-pro-dj
+# Track preparation, the counterpart to rekordbox: makes the .a3mkv files StemDeck plays.
+# Not part of the release (push.sh, release.py) until it has something to release.
+[submodule "a3-tunes"]
+	path = a3-tunes
+	url = https://github.com/a3-audio/a3-tunes

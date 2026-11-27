@@ -125,6 +125,7 @@ A³ System                   the umbrella: installer, CI, pins  v03.2      GPL-3
 ├─ a3-pro-dj                DJ knowledge, the autopilot        v03.2      GPL-3.0
 ├─ a3-stemdeck              the stem decks                     v03.2      GPL-3.0
 │  └─ a3-stem-separator     the stems, made off the rig        v03.2      GPL-3.0
+├─ a3-tunes                 track preparation (.a3mkv)         new        GPL-3.0
 └─ third-party              what A³ is built on
    ├─ Airwindows            PurestGain, SmoothEQ3, Isolator3   2026-10    MIT
    ├─ BTrack                beat tracking                      1.0.7      GPL-3.0

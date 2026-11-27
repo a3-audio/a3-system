@@ -108,7 +108,9 @@ class StemDeck(Role):
         # key lock: Rubber Band's time stretcher
         "librubberband-dev",
         # NI Stems (.stem.mp4): FFmpeg's demuxer and decoders
-        "libavcodec-dev", "libavformat-dev", "libavutil-dev")
+        "libavcodec-dev", "libavformat-dev", "libavutil-dev",
+        # a3-library (.a3mkv) checks for it when it configures; StemDeck does not link it
+        "libswresample-dev")
     needs_screen = True
 
     def configure(self, ctx):

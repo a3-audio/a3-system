@@ -502,7 +502,7 @@ class RolesNameTheirPackages(unittest.TestCase):
 
     def test_from_source_installs_both_as_before(self):
         before = {
-            "core": ['build-essential', 'ccache', 'cmake', 'curl', 'g++', 'git', 'i3', 'libasound2-dev', 'libegl-dev', 'libfontconfig1-dev', 'libfreetype-dev', 'libglu1-mesa-dev', 'libjack-jackd2-dev', 'libsamplerate0-dev', 'libx11-dev', 'libxcomposite-dev', 'libxcursor-dev', 'libxext-dev', 'libxi-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxrender-dev', 'patch', 'pkg-config', 'x11-xserver-utils', 'xinit'],
+            "core": ['build-essential', 'ccache', 'cmake', 'curl', 'g++', 'git', 'i3', 'libasound2-dev', 'libegl-dev', 'libfftw3-dev', 'libfontconfig1-dev', 'libfreetype-dev', 'libglu1-mesa-dev', 'libjack-jackd2-dev', 'libsamplerate0-dev', 'libx11-dev', 'libxcomposite-dev', 'libxcursor-dev', 'libxext-dev', 'libxi-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxrender-dev', 'patch', 'pkg-config', 'x11-xserver-utils', 'xinit'],
             "stemdeck": ['build-essential', 'ccache', 'cmake', 'git', 'i3', 'libasound2-dev', 'libavcodec-dev', 'libavformat-dev', 'libavutil-dev', 'libegl-dev', 'libflac-dev', 'libfontconfig1-dev', 'libfreetype-dev', 'libglu1-mesa-dev', 'libjack-jackd2-dev', 'libogg-dev', 'librubberband-dev', 'libswresample-dev', 'libvorbis-dev', 'libx11-dev', 'libxcomposite-dev', 'libxcursor-dev', 'libxext-dev', 'libxi-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxrender-dev', 'pkg-config', 'qjackctl', 'x11-xserver-utils', 'xinit'],
             "deck-host": ['build-essential', 'ccache', 'cmake', 'git', 'i3', 'libasound2-dev', 'libavcodec-dev', 'libavformat-dev', 'libavutil-dev', 'libegl-dev', 'libflac-dev', 'libfontconfig1-dev', 'libfreetype-dev', 'libglu1-mesa-dev', 'libjack-jackd2-dev', 'libogg-dev', 'librubberband-dev', 'libswresample-dev', 'libvorbis-dev', 'libx11-dev', 'libxcomposite-dev', 'libxcursor-dev', 'libxext-dev', 'libxi-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxrender-dev', 'linuxptp', 'pkg-config', 'qjackctl', 'x11-xserver-utils', 'xinit'],
             "motion": ['build-essential', 'ccache', 'cmake', 'git', 'i3', 'libasound2-dev', 'libegl-dev', 'libfontconfig1-dev', 'libfreetype-dev', 'libglu1-mesa-dev', 'libgpiod-dev', 'libgsl-dev', 'libserial-dev', 'libx11-dev', 'libxcomposite-dev', 'libxcursor-dev', 'libxext-dev', 'libxi-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxrender-dev', 'pkg-config', 'x11-xserver-utils', 'xinit'],
@@ -2495,6 +2495,9 @@ class TheAnalyzerComesWithTheCoreAsAPackage(unittest.TestCase):
         for needed in ("cmake", "g++", "pkg-config", "curl",
                        "libjack-jackd2-dev", "libsamplerate0-dev"):
             self.assertIn(needed, BY_NAME["core"].build_packages)
+
+    def test_the_core_builds_with_fftw(self):
+        self.assertIn("libfftw3-dev", BY_NAME["core"].build_packages)
 
 
     def test_core_role_builds_one_package_from_the_a3_core_submodule(self):

@@ -71,10 +71,10 @@ CORE_SOURCE = "a3-core"
 APP_RECIPE = "packaging/app"
 CORE_APP = apppackage.AppPackage("a3-core-app", "a3-engine.service", recipe=APP_RECIPE)
 CORE = apppackage.AppPackage("a3-core", "")
-# What a3-core's packaging/stage builds with: JUCE's build packages and the
-# JACK development files.
+# What a3-core's packaging/stage builds with: JUCE's build packages, the JACK
+# development files and FFTW (the Core's FFT; its configure step requires fftw3f).
 CORE_BUILD_PACKAGES = tuple(dict.fromkeys(
-    JUCE_PACKAGES + ("libjack-jackd2-dev",) + ANALYZER_BUILD_PACKAGES))
+    JUCE_PACKAGES + ("libjack-jackd2-dev", "libfftw3-dev") + ANALYZER_BUILD_PACKAGES))
 
 GROUP_LABELS = {
     "i3": "i3 config",

@@ -153,7 +153,7 @@ class Build(unittest.TestCase):
         self.assertIn("python3 ci/build_line.py ${{ matrix.suite }} --build-depends", self.build)
 
     def test_juce_is_cached_per_suite_and_arch(self):
-        self.assertIn("key: juce-9.0.3-${{ matrix.suite }}-${{ matrix.arch }}-v1", self.build)
+        self.assertIn("key: juce-9.0.3-${{ matrix.suite }}-${{ matrix.arch }}-v2", self.build)
         self.assertIn("--branch 9.0.3", self.build)
 
     def test_juce_is_the_installers_version(self):

@@ -55,3 +55,6 @@
 [submodule "a3-library"]
 	path = a3-library
 	url = https://github.com/a3-audio/a3-library.git
+[submodule "a3-analysis"]
+	path = a3-analysis
+	url = https://github.com/a3-audio/a3-analysis

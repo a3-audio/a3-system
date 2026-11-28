@@ -462,7 +462,7 @@ STEMDECK_NEEDS = JUCE_NEEDS + (
     "librubberband-dev",
     # NI Stems (.stem.mp4): FFmpeg's demuxer and decoders
     "libavcodec-dev", "libavformat-dev", "libavutil-dev",
-    # a3-library (.a3mkv) checks for it when it configures
+    # a3-mkv-format (.a3mkv) checks for it when it configures
     "libswresample-dev",
     # without the Core, qjackctl-stemdeck.service runs QjackCtl with
     # StemDeck's patchbay (stemdeck .config/rncbc.org)

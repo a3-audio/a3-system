@@ -1,0 +1,10 @@
+Origin: a3-audio
+Label: a3-system
+Suite: forky
+Codename: forky
+Date: Sat, 28 Nov 2026 17:51:11 +0000
+Architectures: amd64
+Components: main
+SHA256:
+ c964484ef224327e49ed7f6a15610e75350d07064f8c110da7730106bd5651f5 8937 main/binary-amd64/Packages
+ 7433e28f1d0e68e54350984b9762dc773bff419239548785eb0053c40ce5a909 3590 main/binary-amd64/Packages.gz

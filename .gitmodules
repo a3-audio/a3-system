@@ -52,3 +52,6 @@
 [submodule "a3-mkv-format"]
 	path = a3-mkv-format
 	url = https://github.com/a3-audio/a3-mkv-format
+[submodule "a3-library"]
+	path = a3-library
+	url = https://github.com/a3-audio/a3-library.git
